@@ -26,10 +26,47 @@ function errorText(error: unknown) {
   return String(error);
 }
 
+function isLocalN8nUrl(url: string) {
+  try {
+    const { hostname } = new URL(url);
+    return hostname === "localhost" || hostname === "127.0.0.1";
+  } catch {
+    return false;
+  }
+}
+
+const LOCAL_N8N_ON_VERCEL_ERROR =
+  "This deployed site cannot reach n8n on your computer (localhost:5678). In Vercel → Project → Settings → Environment Variables, set NEXT_PUBLIC_N8N_SOP_INGESTION_URL to a public n8n webhook URL (n8n Cloud or a tunnel like ngrok), then redeploy. Keep using localhost only for npm run dev.";
+
+function sopWebhookUrl() {
+  return (
+    env("NEXT_PUBLIC_N8N_SOP_INGESTION_URL") ||
+    env("N8N_WORKFLOW_ONE_URL") ||
+    SOP_WEBHOOK_FALLBACK
+  );
+}
+
+function webhookFetchHeaders(url: string): HeadersInit | undefined {
+  try {
+    if (new URL(url).hostname.endsWith(".loca.lt")) {
+      return { "bypass-tunnel-reminder": "1" };
+    }
+  } catch {
+    // Ignore invalid URLs; fetch will fail later.
+  }
+  return undefined;
+}
+
 export async function POST(request: Request) {
-  const webhookUrl =
-    env("NEXT_PUBLIC_N8N_SOP_INGESTION_URL") || SOP_WEBHOOK_FALLBACK;
+  const webhookUrl = sopWebhookUrl();
   const startedAt = new Date().toISOString();
+
+  if (isLocalN8nUrl(webhookUrl) && process.env.VERCEL) {
+    return NextResponse.json(
+      { error: LOCAL_N8N_ON_VERCEL_ERROR },
+      { status: 503 },
+    );
+  }
 
   try {
     const incoming = await request.formData();
@@ -71,6 +108,7 @@ export async function POST(request: Request) {
     const webhookResponse = await fetch(webhookUrl, {
       method: "POST",
       body: outbound,
+      headers: webhookFetchHeaders(webhookUrl),
       signal: AbortSignal.timeout(WEBHOOK_TIMEOUT_MS),
     });
 
@@ -91,9 +129,19 @@ export async function POST(request: Request) {
     });
 
     if (!webhookResponse.ok) {
+      const detail =
+        typeof webhookBody === "string"
+          ? webhookBody.slice(0, 280)
+          : webhookBody &&
+              typeof webhookBody === "object" &&
+              "message" in webhookBody
+            ? String((webhookBody as { message: unknown }).message)
+            : "";
       return NextResponse.json(
         {
-          error: `SOP webhook failed (${webhookResponse.status})`,
+          error: detail
+            ? `SOP webhook failed (${webhookResponse.status}): ${detail}`
+            : `SOP webhook failed (${webhookResponse.status})`,
           details: webhookBody,
         },
         { status: 502 },
@@ -121,6 +169,10 @@ export async function POST(request: Request) {
   } catch (error) {
     const message = errorText(error);
     console.warn("[Run Audit] SOP request failed", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    const friendly =
+      /ECONNREFUSED|127\.0\.0\.1:5678|localhost:5678/i.test(message)
+        ? LOCAL_N8N_ON_VERCEL_ERROR
+        : message;
+    return NextResponse.json({ error: friendly }, { status: 500 });
   }
 }
