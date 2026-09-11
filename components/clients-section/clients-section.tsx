@@ -10,6 +10,7 @@ export type ClientsSectionProps = {
     image: string;
     href?: string;
     ctaLabel?: string;
+    runAudit?: boolean;
   }>;
 };
 
@@ -20,7 +21,7 @@ export default function ClientsSection({ projects }: ClientsSectionProps) {
         <div className="max-w-[1328px] mx-auto flex flex-col min-w-0">
           <div className="w-full min-w-0 px-0 lg:px-16 py-4 mb-0 lg:pb-0 bg-transparent">
             <h2 className="text-h2 font-light text-left text-foreground m-0 p-0">
-              Projects
+              Good Manufacturing Practices
             </h2>
           </div>
 
@@ -33,6 +34,7 @@ export default function ClientsSection({ projects }: ClientsSectionProps) {
                 image={project.image}
                 href={project.href}
                 ctaLabel={project.ctaLabel}
+                runAudit={project.runAudit}
               />
             ))}
           </div>

@@ -3,11 +3,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Calendar, Download, Linkedin, Mail, Menu, Moon, Palette, Sun } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
-import { useTheme } from "@/hooks/use-theme";
-import { SIDEBAR_PROJECTS } from "@/lib/projects";
-import { SchedulingDialog } from "@/components/scheduling-dialog/scheduling-dialog";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import {
   SidebarGroup,
@@ -19,15 +16,10 @@ import {
 
 console.log("🔥 MODULE LOAD:", "header");
 
-const navIconClass = "h-5 w-5 shrink-0";
+const headerNavButtonClass =
+  "nav-button bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]";
 
-const themeButtonClass =
-  "sidebar-icon-btn flex h-8 w-8 min-h-8 min-w-8 items-center justify-center gap-2 p-0 rounded-md border bg-transparent border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)] text-foreground hover:text-sidebar-accent-foreground transition-colors hover:[&_svg]:text-sidebar-accent-foreground [&_svg]:size-5 [&_svg]:text-current [&_svg]:transition-colors";
-
-function MobileMenuCrown({ onNavigate }: { onNavigate?: () => void }) {
-  const { resolvedTheme } = useTheme();
-  const crownSrc =
-    resolvedTheme === "light" ? "/images/crown-black.svg" : "/images/crown-white.svg";
+function MobileMenuMark({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="mb-6">
       <Link
@@ -37,87 +29,30 @@ function MobileMenuCrown({ onNavigate }: { onNavigate?: () => void }) {
         aria-label="Home"
       >
         <img
-          suppressHydrationWarning
-          src={crownSrc}
-          alt=""
-          className="h-10 w-auto shrink-0"
-          width={40}
-          height={40}
+          src="/images/auditflow-logo.svg"
+          alt="AuditFlow"
+          className="h-5 w-auto shrink-0 dark:[filter:invert(1)] color:[filter:invert(1)]"
+          width={20}
+          height={20}
         />
       </Link>
     </div>
   );
 }
 
-function MobileMenuThemeSwitcher() {
-  const { resolvedTheme, setTheme } = useTheme();
-  return (
-    <nav
-      className="mobile-menu-theme-nav flex flex-row gap-2 shrink-0 w-full mb-8"
-      aria-label="Theme and preferences"
-    >
-      <Button
-        variant="ghost"
-        size="icon"
-        className={themeButtonClass}
-        aria-label="Light mode"
-        aria-pressed={resolvedTheme === "light"}
-        data-state={resolvedTheme === "light" ? "on" : "off"}
-          suppressHydrationWarning
-        onClick={() => setTheme("light")}
-      >
-        <Sun className="size-5 shrink-0" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className={themeButtonClass}
-        aria-label="Dark mode"
-        aria-pressed={resolvedTheme === "dark"}
-        data-state={resolvedTheme === "dark" ? "on" : "off"}
-          suppressHydrationWarning
-        onClick={() => setTheme("dark")}
-      >
-        <Moon className="size-5 shrink-0" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className={themeButtonClass}
-        aria-label="Color mode"
-        aria-pressed={resolvedTheme === "color"}
-        data-state={resolvedTheme === "color" ? "on" : "off"}
-          suppressHydrationWarning
-        onClick={() => setTheme("color")}
-      >
-        <Palette className="size-5 shrink-0" />
-      </Button>
-    </nav>
-  );
-}
-
 function NavItems({
   onItemClick,
   hideSidebarToggle,
-  hideIcons,
-  scheduleOpen,
-  setScheduleOpen,
-  deferRadixTriggers = false,
 }: {
   onItemClick?: () => void;
   hideSidebarToggle?: boolean;
-  hideIcons?: boolean;
-  scheduleOpen?: boolean;
-  setScheduleOpen?: (open: boolean) => void;
-  /** When true, render static buttons for Schedule to avoid Radix ID hydration mismatch */
-  deferRadixTriggers?: boolean;
 }) {
   const { toggle } = useSidebar();
   return (
     <>
       {!hideSidebarToggle && (
         <Button
-          className="nav-button bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]"
+          className={headerNavButtonClass}
           variant="outline"
           size="icon"
           onClick={() => {
@@ -133,48 +68,50 @@ function NavItems({
           />
         </Button>
       )}
-      <Button className="nav-button flex items-center gap-2 bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]" variant="outline" asChild>
-        <a href="mailto:mikemarchitto@gmail.com" className="text-button">
-          Email
-        </a>
+      <Button
+        className={headerNavButtonClass}
+        variant="outline"
+        size="lg"
+        asChild
+      >
+        <Link href="/" className="text-button" onClick={onItemClick}>
+          Clauses
+        </Link>
       </Button>
-      <Button className="nav-button flex items-center gap-2 bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]" variant="outline" asChild>
+      <Button
+        className={headerNavButtonClass}
+        variant="outline"
+        size="lg"
+        asChild
+      >
+        <Link href="/reports" className="text-button" onClick={onItemClick}>
+          Reports
+        </Link>
+      </Button>
+      <Button
+        className={headerNavButtonClass}
+        variant="outline"
+        size="lg"
+        asChild
+      >
+        <Link href="/help" className="text-button" onClick={onItemClick}>
+          Help
+        </Link>
+      </Button>
+      <Button
+        className={headerNavButtonClass}
+        variant="outline"
+        size="lg"
+        asChild
+      >
         <a
-          href="/images/mikemarchitto-cv.pdf"
-          download="mikemarchitto-cv.pdf"
+          href="mailto:mikemarchitto@gmail.com?subject=AuditFlow%20support"
           className="text-button"
+          onClick={onItemClick}
         >
-          Resume
+          Support
         </a>
       </Button>
-      <Button className="nav-button flex items-center gap-2 bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]" variant="outline" asChild>
-        <a
-          href="https://www.linkedin.com/in/mikemarchitto/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-button"
-        >
-          LinkedIn
-        </a>
-      </Button>
-      {setScheduleOpen != null &&
-        (deferRadixTriggers ? (
-          <Button className="nav-button flex items-center gap-2 bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]" variant="outline" aria-label="Open calendar">
-            {!hideIcons && <Calendar className={navIconClass} />}
-            <span className="text-button">Schedule</span>
-          </Button>
-        ) : (
-          <SchedulingDialog
-            open={scheduleOpen}
-            onOpenChange={setScheduleOpen}
-            trigger={
-              <Button className="nav-button flex items-center gap-2 bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]" variant="outline" aria-label="Open calendar" onClick={onItemClick}>
-                {!hideIcons && <Calendar className={navIconClass} />}
-                <span className="text-button">Schedule</span>
-              </Button>
-            }
-          />
-        ))}
     </>
   );
 }
@@ -183,8 +120,6 @@ let Header: React.FC;
 try {
   Header = function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [scheduleOpen, setScheduleOpen] = useState(false);
-    const [mounted, setMounted] = useState(false);
     const [headerHidden, setHeaderHidden] = useState(false);
     const [reduceMotion, setReduceMotion] = useState(false);
 
@@ -194,10 +129,6 @@ try {
     const scrollRafRef = useRef(0);
 
     mobileMenuOpenRef.current = mobileMenuOpen;
-
-    useEffect(() => {
-      setMounted(true);
-    }, []);
 
     useEffect(() => {
       const TOP_REVEAL_PX = 80;
@@ -276,11 +207,6 @@ try {
       return () => mq.removeEventListener("change", onMediaChange);
     }, []);
 
-    // Filter out AI Labs systematically from the projects mapping
-    const visibleProjects = SIDEBAR_PROJECTS.filter(
-      (item) => item.label?.toLowerCase().trim() !== "ai labs"
-    );
-
     console.log("🔥 COMPONENT RENDER:", "Header");
     console.log("MOUNT:", "Header");
     return (
@@ -311,13 +237,7 @@ try {
                     className="h-5 w-5 dark:[filter:invert(1)] color:[filter:invert(1)]"
                   />
                 </Button>
-                <NavItems
-                  hideSidebarToggle
-                  hideIcons
-                  scheduleOpen={scheduleOpen}
-                  setScheduleOpen={setScheduleOpen}
-                  deferRadixTriggers={!mounted}
-                />
+                <NavItems hideSidebarToggle />
               </div>
               <div className="flex lg:hidden items-center gap-2">
                 <button
@@ -343,54 +263,11 @@ try {
           <SheetTitle className="sr-only">Menu</SheetTitle>
           <div className="flex flex-col items-start px-2 py-4">
                       <div className="ps-sidebar-crown-row">
-                        <MobileMenuCrown onNavigate={() => setMobileMenuOpen(false)} />
-                      </div>
-                      <div className="ps-sidebar-theme-row ms-[2px]">
-                        <MobileMenuThemeSwitcher />
-                      </div>
-                      <div className="mt-[4px] w-full pl-0 min-w-0">
-                        <SidebarGroup>
-                          <SidebarGroupLabel className="text-subtitle1 font-medium mb-2 ps-[calc(var(--sidebar-menu-text-inset,0.25rem)+4px)]">
-                            Projects
-                          </SidebarGroupLabel>
-                          <SidebarMenu className="mobile-menu-clients-list gap-0 mt-0 w-full">
-                            {visibleProjects[0]?.href != null && (
-                              <SidebarMenuItem key={visibleProjects[0].href} className="w-full">
-                                <SidebarMenuButton asChild>
-                                  <Link
-                                    href={visibleProjects[0].href}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="no-underline w-full"
-                                  >
-                                    {visibleProjects[0].label}
-                                  </Link>
-                                </SidebarMenuButton>
-                              </SidebarMenuItem>
-                            )}
-
-                            {visibleProjects.slice(1).map((item) => (
-                              <SidebarMenuItem key={item.href ?? item.label} className="w-full">
-                                {item.href ? (
-                                  <SidebarMenuButton asChild>
-                                    <Link
-                                      href={item.href}
-                                      onClick={() => setMobileMenuOpen(false)}
-                                      className="no-underline w-full"
-                                    >
-                                      {item.label}
-                                    </Link>
-                                  </SidebarMenuButton>
-                                ) : (
-                                  <SidebarMenuButton type="button">{item.label}</SidebarMenuButton>
-                                )}
-                              </SidebarMenuItem>
-                            ))}
-                          </SidebarMenu>
-                        </SidebarGroup>
+                        <MobileMenuMark onNavigate={() => setMobileMenuOpen(false)} />
                       </div>
                       <SidebarGroup>
-                        <SidebarGroupLabel className="text-subtitle1 font-medium mb-2 mt-6 ps-[calc(var(--sidebar-menu-text-inset,0.25rem)+4px)]">
-                          Connect
+                        <SidebarGroupLabel className="text-subtitle1 font-medium mb-2 ps-[calc(var(--sidebar-menu-text-inset,0.25rem)+4px)]">
+                          Menu
                         </SidebarGroupLabel>
                         <SidebarMenu
                           className="mobile-menu-connect-nav gap-0 items-start w-full pl-0 min-w-0"
@@ -398,52 +275,46 @@ try {
                         >
                           <SidebarMenuItem className="w-full">
                             <SidebarMenuButton asChild>
-                              <a
-                                href="mailto:mikemarchitto@gmail.com"
+                              <Link
+                                href="/"
                                 onClick={() => setMobileMenuOpen(false)}
-                                aria-label="Email Mike"
                                 className="no-underline w-full"
                               >
-                                Email
-                              </a>
+                                Clauses
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                          <SidebarMenuItem className="w-full">
+                            <SidebarMenuButton asChild>
+                              <Link
+                                href="/reports"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="no-underline w-full"
+                              >
+                                Reports
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                          <SidebarMenuItem className="w-full">
+                            <SidebarMenuButton asChild>
+                              <Link
+                                href="/help"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="no-underline w-full"
+                              >
+                                Help
+                              </Link>
                             </SidebarMenuButton>
                           </SidebarMenuItem>
                           <SidebarMenuItem className="w-full">
                             <SidebarMenuButton asChild>
                               <a
-                                href="/images/mikemarchitto-cv.pdf"
-                                download="mikemarchitto-cv.pdf"
+                                href="mailto:mikemarchitto@gmail.com?subject=AuditFlow%20support"
                                 onClick={() => setMobileMenuOpen(false)}
-                                aria-label="Download Resume"
                                 className="no-underline w-full"
                               >
-                                Resume
+                                Support
                               </a>
-                            </SidebarMenuButton>
-                          </SidebarMenuItem>
-                          <SidebarMenuItem className="w-full">
-                            <SidebarMenuButton asChild>
-                              <a
-                                href="https://www.linkedin.com/in/mikemarchitto/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={() => setMobileMenuOpen(false)}
-                                aria-label="Connect on LinkedIn"
-                                className="no-underline w-full"
-                              >
-                                LinkedIn
-                              </a>
-                            </SidebarMenuButton>
-                          </SidebarMenuItem>
-                          <SidebarMenuItem className="w-full">
-                            <SidebarMenuButton
-                              aria-label="Open calendar"
-                              onClick={() => {
-                                setMobileMenuOpen(false);
-                                setScheduleOpen(true);
-                              }}
-                            >
-                              Schedule
                             </SidebarMenuButton>
                           </SidebarMenuItem>
                         </SidebarMenu>

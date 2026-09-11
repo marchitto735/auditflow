@@ -35,9 +35,11 @@ const ThemeContext = React.createContext<{
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [theme, setThemeState] = useState<Theme>(() =>
-    typeof window === "undefined" ? "light" : getThemeFromStorage()
-  );
+  const [theme, setThemeState] = useState<Theme>("light");
+
+  useLayoutEffect(() => {
+    setThemeState(getThemeFromStorage());
+  }, []);
 
   const resolvedTheme = useMemo(
     () => resolveThemeForRoute(theme, pathname),
@@ -66,9 +68,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
   const ctx = React.useContext(ThemeContext);
   const pathname = usePathname();
-  const [fallbackTheme, setFallbackTheme] = useState<Theme>(() =>
-    typeof window === "undefined" ? "light" : getThemeFromStorage()
-  );
+  const [fallbackTheme, setFallbackTheme] = useState<Theme>("light");
 
   useEffect(() => {
     if (!ctx) setFallbackTheme(getThemeFromStorage());

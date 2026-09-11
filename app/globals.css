@@ -181,7 +181,7 @@
 
     --page-texture: url("/images/forest-6.png?v=21");
 
-    --background: oklch(97% 0.002 286);
+    --background: oklch(95% 0.002 286);
     --card: oklch(100% 0 0);
     --popover: oklch(100% 0 0);
 
@@ -753,6 +753,11 @@
 }
 
 /* Scheduling dialog: desktop centered modal animation (fade + scale), mobile keeps drawer */
+@keyframes audit-cta-dash {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
 @keyframes scheduling-modal-in {
   from {
     opacity: 0;
@@ -929,6 +934,10 @@
   html.color .project-hero-metadata span,
   [data-theme="color"] .project-hero-metadata span {
     background-color: oklch(38% 0.035 165);
+  }
+
+  .audit-cta-dash {
+    animation: audit-cta-dash 1.6s linear infinite;
   }
 }
 

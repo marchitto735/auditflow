@@ -261,6 +261,10 @@ try {
   }
 
   SchedulingDialog = function SchedulingDialog({ trigger, open, onOpenChange }: SchedulingDialogProps) {
+    const [radixReady, setRadixReady] = React.useState(false);
+    React.useEffect(() => {
+      setRadixReady(true);
+    }, []);
     const { resolvedTheme } = useTheme();
     const [step, setStep] = React.useState<"date" | "time" | "details" | "confirm">("date");
     const [date, setDate] = React.useState<Date | undefined>(new Date());
@@ -640,6 +644,10 @@ try {
         ]) ?? null;
       return startRaw ? formatStartTimeLabel(startRaw, timeFormat) : selectedTimeLabel ?? "";
     }, [confirmation, selectedTimeLabel, timeFormat]);
+
+    if (!radixReady) {
+      return <>{trigger}</>;
+    }
 
     return (
     <Dialog open={open} onOpenChange={handleOpenChange}>

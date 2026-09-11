@@ -1,9 +1,13 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/use-theme";
-import { SchedulingDialog } from "@/components/scheduling-dialog/scheduling-dialog";
+
+const footerNavButtonClass =
+  "nav-button bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]";
+
 export default function Footer() {
   const { resolvedTheme } = useTheme();
 
@@ -17,63 +21,78 @@ export default function Footer() {
           <div className="max-w-[1328px] mx-auto">
             {/* 4. CONTENT WRAPPER — 64px padding, visible band */}
             <div className="w-full min-w-0 flex flex-col py-4 md:py-8 lg:py-16 px-0 lg:px-16 bg-transparent">
-              {/* Let's Connect band */}
               <div className="w-full bg-transparent pt-6 pb-2 md:pt-10 md:pb-6 lg:pt-0 lg:pb-12">
                 <div className="w-full min-w-0 text-left flex flex-col">
                   <div className="w-fit p-0 m-0">
-                    <h1 className="text-h1 font-light text-foreground p-0 m-0">
-                      Let's connect
-                    </h1>
+                    <h3 className="p-0 m-0">
+                      <img
+                        src="/images/auditflow-logo.svg"
+                        alt="AuditFlow"
+                        className="h-[var(--text-h3)] w-auto dark:[filter:invert(1)] color:[filter:invert(1)]"
+                      />
+                    </h3>
                   </div>
                   <div className="max-w-[576px] p-0 m-0 mt-4">
                     <h4 className="text-h4 max-w-[576px] text-foreground p-0 m-0">
-                      <span className="tracking-[-0.04em]">I{"'"}m</span> interested in creative partnerships that grow from meaningful work.
+                      Compliance made simple.
                     </h4>
                   </div>
                 </div>
               </div>
 
-              {/* Buttons band */}
               <div className="w-full bg-transparent pt-0 pb-4 md:pt-4 md:pb-8 lg:pt-8 lg:pb-12">
                 <div className="w-full flex flex-col sm:flex-row justify-between items-end gap-4">
-                  <div className="hidden lg:flex flex-col sm:flex-row flex-wrap gap-4">
-                    <Button className="nav-button bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]" variant="outline" size="lg" asChild>
-                      <a href="mailto:mikemarchitto@gmail.com" className="text-button">Email</a>
+                  <nav
+                    className="hidden lg:flex flex-row flex-wrap gap-4"
+                    aria-label="Footer"
+                  >
+                    <Button
+                      className={footerNavButtonClass}
+                      variant="outline"
+                      size="lg"
+                      asChild
+                    >
+                      <Link href="/" className="text-button">
+                        Clauses
+                      </Link>
                     </Button>
 
-                    <Button className="nav-button bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]" variant="outline" size="lg" asChild>
+                    <Button
+                      className={footerNavButtonClass}
+                      variant="outline"
+                      size="lg"
+                      asChild
+                    >
+                      <Link href="/reports" className="text-button">
+                        Reports
+                      </Link>
+                    </Button>
+
+                    <Button
+                      className={footerNavButtonClass}
+                      variant="outline"
+                      size="lg"
+                      asChild
+                    >
+                      <Link href="/help" className="text-button">
+                        Help
+                      </Link>
+                    </Button>
+
+                    <Button
+                      className={footerNavButtonClass}
+                      variant="outline"
+                      size="lg"
+                      asChild
+                    >
                       <a
-                        href="/images/mikemarchitto-cv.pdf"
-                        download="mikemarchitto-cv.pdf"
+                        href="mailto:mikemarchitto@gmail.com?subject=AuditFlow%20support"
                         className="text-button"
                       >
-                        Resume
+                        Support
                       </a>
                     </Button>
-
-                    <Button className="nav-button bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]" variant="outline" size="lg" asChild>
-                      <a
-                        href="https://www.linkedin.com/in/mikemarchitto/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-button"
-                      >
-                        LinkedIn
-                      </a>
-                    </Button>
-
-                    <SchedulingDialog
-                      trigger={
-                        <Button
-                          className="nav-button bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]"
-                          variant="outline"
-                          size="lg"
-                        >
-                          <span className="text-button">Schedule</span>
-                        </Button>
-                      }
-                    />
-                  </div>
+                  </nav>
                   <img
                     suppressHydrationWarning
                     src={

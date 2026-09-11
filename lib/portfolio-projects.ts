@@ -5,16 +5,20 @@ export type HomeProjectCard = {
   href?: string;
   /** Overrides default “See Case Study” CTA (e.g. Coming Soon when no case study yet). */
   ctaLabel?: string;
+  /** When true, CTA POSTs to the local n8n webhook instead of navigating. */
+  runAudit?: boolean;
 };
 
 /** Same list as the home page Projects section — single source of truth. */
 export const HOME_PROJECT_CARDS: HomeProjectCard[] = [
   {
-    title: "GloriFi",
+    title: "Clause 27",
     description:
-      "Fintech startup focused on modernizing mobile and web banking product experiences that clarify financial information and strengthen the brand's digital presence.",
+      "Good documentation practices shall be established and followed concerning paper and electronic documents and records.",
     image: "/images/glorifi-thumb.png",
     href: "/projects/glorifi",
+    ctaLabel: "Run Audit",
+    runAudit: true,
   },
   {
     title: "ServSafe",
