@@ -44,6 +44,17 @@ function formatStatusLabel(status: string | null | undefined) {
     .join(" ");
 }
 
+function splitFileName(name: string) {
+  const separator = name.lastIndexOf(".");
+  if (separator <= 0 || separator === name.length - 1) {
+    return { base: name, extension: "" };
+  }
+  return {
+    base: name.slice(0, separator),
+    extension: name.slice(separator),
+  };
+}
+
 function statusDotClass(status: string | null | undefined) {
   if ((status ?? "").toLowerCase().includes("partial")) {
     return "bg-[#F5C400]";
@@ -240,8 +251,12 @@ export default function ProjectCard({
 
   if (isAuditCard) {
     if (auditStatus === "success") {
+      const fileName = selectedFile?.name ?? "SOP.pdf";
+      const { base: fileBaseName, extension: fileExtension } =
+        splitFileName(fileName);
+
       return (
-        <div className="w-full min-w-0 max-w-[960px] rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.06)]">
+        <div className="w-full min-w-0 max-w-[960px] rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
           <Card className="relative w-full overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
             <CardContent className="flex flex-col bg-[oklch(100%_0_0)] px-6 pb-6 pt-4 md:px-8 md:pb-8 md:pt-6 lg:h-[min(40rem,calc(100dvh-12rem))] lg:max-h-[min(40rem,calc(100dvh-12rem))]">
               <button
@@ -257,69 +272,72 @@ export default function ProjectCard({
                 <h4 className="text-h4 font-semibold text-[oklch(0%_0_0)] m-0 mb-3">
                   Audit Verified
                 </h4>
+                <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-6">
+                  Document processed successfully. View your compliance report
+                  below.
+                </p>
               </div>
 
               <div className="grid min-h-0 flex-1 grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-x-10 lg:gap-y-8">
-                <div className="flex min-h-0 flex-col">
-                  <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-6">
-                    Document processed successfully. View your compliance report
-                    below.
-                  </p>
-
-                  <div className="mb-6">
-                    <div className="flex items-center gap-3 pb-4">
+                <div className="flex min-h-0 flex-col gap-6">
+                  <div className="flex shrink-0 flex-col gap-3 rounded-[8px] bg-[oklch(97%_0_0)] p-4">
+                    <div className="flex min-w-0 items-center gap-3">
                       <FileText className="size-6 shrink-0 text-[oklch(35%_0.04_264)]" />
-                      <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 truncate">
-                        {selectedFile?.name ?? "SOP.pdf"}
+                      <p
+                        className="text-body1-strong font-bold text-[oklch(0%_0_0)] m-0 flex min-w-0 items-baseline"
+                        title={fileName}
+                      >
+                        <span className="truncate">{fileBaseName}</span>
+                        {fileExtension ? (
+                          <span className="shrink-0">{fileExtension}</span>
+                        ) : null}
                       </p>
                     </div>
-                    <div className="flex flex-col gap-3">
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="text-body1 text-[oklch(0%_0_0)]">
-                          Score:
-                        </span>
-                        <span className="text-body1 text-right text-[oklch(0%_0_0)]">
-                          {sopReport?.score ?? "—"}
-                        </span>
-                      </div>
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="text-body1 text-[oklch(0%_0_0)]">
-                          Status:
-                        </span>
-                        <span className="inline-flex items-center justify-end gap-2 text-body1 text-right text-[oklch(0%_0_0)]">
-                          <span
-                            className={cn(
-                              "h-3 w-3 shrink-0 rounded-full",
-                              statusDotClass(sopReport?.status),
-                            )}
-                            aria-hidden
-                          />
-                          {formatStatusLabel(sopReport?.status)}
-                        </span>
-                      </div>
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="text-body1 text-[oklch(0%_0_0)]">
-                          Audited Clause:
-                        </span>
-                        <span className="text-body1 text-right text-[oklch(0%_0_0)]">
-                          {selectedClause
-                            ? `${selectedClause.label} (${selectedClause.shortName})`
-                            : `Clause ${sopReport?.clause_id ?? AUDIT_CLAUSE_ID} (Doc Practices)`}
-                        </span>
-                      </div>
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="text-body1 text-[oklch(0%_0_0)]">
-                          Timestamp:
-                        </span>
-                        <span className="text-body1 text-right text-[oklch(0%_0_0)]">
-                          {(processedAt ?? new Date()).toLocaleString()}
-                        </span>
-                      </div>
+                    <div className="flex items-start justify-between gap-4">
+                      <span className="text-body1 text-[oklch(0%_0_0)]">
+                        Score:
+                      </span>
+                      <span className="text-body1 text-right text-[oklch(0%_0_0)]">
+                        {sopReport?.score ?? "—"}
+                      </span>
+                    </div>
+                    <div className="flex items-start justify-between gap-4">
+                      <span className="text-body1 text-[oklch(0%_0_0)]">
+                        Status:
+                      </span>
+                      <span className="inline-flex items-center justify-end gap-2 text-body1 text-right text-[oklch(0%_0_0)]">
+                        <span
+                          className={cn(
+                            "h-3 w-3 shrink-0 rounded-full",
+                            statusDotClass(sopReport?.status),
+                          )}
+                          aria-hidden
+                        />
+                        {formatStatusLabel(sopReport?.status)}
+                      </span>
+                    </div>
+                    <div className="flex items-start justify-between gap-4">
+                      <span className="text-body1 text-[oklch(0%_0_0)]">
+                        Audited Clause:
+                      </span>
+                      <span className="text-body1 text-right text-[oklch(0%_0_0)]">
+                        {selectedClause
+                          ? `${selectedClause.label} (${selectedClause.shortName})`
+                          : `Clause ${sopReport?.clause_id ?? AUDIT_CLAUSE_ID} (Doc Practices)`}
+                      </span>
+                    </div>
+                    <div className="flex items-start justify-between gap-4">
+                      <span className="text-body1 text-[oklch(0%_0_0)]">
+                        Timestamp:
+                      </span>
+                      <span className="text-body1 text-right text-[oklch(0%_0_0)]">
+                        {(processedAt ?? new Date()).toLocaleString()}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="flex min-h-0 flex-1 flex-col">
-                    <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 mb-2 shrink-0">
+                  <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+                    <p className="text-body1-strong font-bold text-[oklch(0%_0_0)] m-0 mb-2 shrink-0">
                       Summary
                     </p>
                     <div className="min-h-0 max-h-40 flex-1 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin] lg:max-h-none">
@@ -331,8 +349,8 @@ export default function ProjectCard({
                 </div>
 
                 <div className="flex min-h-0 flex-col">
-                  <div className="mb-6 flex min-h-0 flex-1 flex-col">
-                    <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 mb-2 shrink-0">
+                  <div className="mb-6 flex min-h-0 flex-1 flex-col overflow-hidden">
+                    <p className="text-body1-strong font-bold text-[oklch(0%_0_0)] m-0 mb-2 shrink-0">
                       Findings
                     </p>
                     <ul className="m-0 min-h-0 max-h-40 flex-1 list-disc space-y-2 overflow-y-auto overscroll-contain py-0 pl-5 pr-1 [scrollbar-width:thin] lg:max-h-none">
@@ -350,8 +368,8 @@ export default function ProjectCard({
                     </ul>
                   </div>
 
-                  <div className="flex min-h-0 flex-1 flex-col">
-                    <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 mb-2 shrink-0">
+                  <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+                    <p className="text-body1-strong font-bold text-[oklch(0%_0_0)] m-0 mb-2 shrink-0">
                       Recommendation
                     </p>
                     <div className="min-h-0 max-h-40 flex-1 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin] lg:max-h-none">
@@ -365,7 +383,7 @@ export default function ProjectCard({
                 <Button
                   type="button"
                   size="lg"
-                  className="project-card-cta w-full shrink-0 rounded-full border border-[oklch(0%_0_0)] bg-[oklch(100%_0_0)] text-[oklch(0%_0_0)] hover:bg-[oklch(96%_0_0)] hover:text-[oklch(0%_0_0)]"
+                  className="project-card-cta w-full shrink-0 self-end rounded-full border border-[oklch(0%_0_0)] bg-[oklch(100%_0_0)] text-[oklch(0%_0_0)] hover:bg-[oklch(96%_0_0)] hover:text-[oklch(0%_0_0)]"
                   onClick={addCompliantSopToCart}
                 >
                   {addedToCart ? (
@@ -384,7 +402,7 @@ export default function ProjectCard({
                   type="button"
                   variant="black"
                   size="lg"
-                  className="project-card-cta w-full shrink-0 rounded-full"
+                  className="project-card-cta w-full shrink-0 self-end rounded-full"
                   onClick={downloadReport}
                 >
                   <span className="text-button">Download Report</span>
@@ -397,7 +415,7 @@ export default function ProjectCard({
     }
 
     return (
-      <div className="w-full min-w-0 max-w-[520px] rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.06)]">
+      <div className="w-full min-w-0 max-w-[520px] rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
         <Card className="w-full overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
           <CardContent className="flex flex-col text-left bg-[oklch(100%_0_0)] px-6 pb-6 pt-4 md:px-8 md:pb-8 md:pt-6">
             <h4 className="text-h4 text-[oklch(0%_0_0)] m-0 mb-2">

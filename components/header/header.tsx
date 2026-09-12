@@ -2,10 +2,19 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { CircleUser, Menu } from "lucide-react";
 import CartTrigger from "@/components/cart/cart-trigger";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import {
   SidebarGroup,
   SidebarMenu,
@@ -34,9 +43,35 @@ function MobileMenuMark({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
+function HeaderBreadcrumbs({ pathname }: { pathname: string }) {
+  const current =
+    pathname === "/reports"
+      ? "Reports"
+      : pathname === "/help"
+        ? "Help"
+        : "Dietary Supplements Audit";
+
+  return (
+    <Breadcrumb>
+      <BreadcrumbList className="text-body2">
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href="/">Audits</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator>/</BreadcrumbSeparator>
+        <BreadcrumbItem>
+          <BreadcrumbPage className="font-semibold">{current}</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+}
+
 let Header: React.FC;
 try {
   Header = function Header() {
+    const pathname = usePathname();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
@@ -56,38 +91,29 @@ try {
     return (
       <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 w-full min-w-0 bg-transparent pointer-events-none pt-6 text-foreground"
+        className="fixed top-0 left-0 right-0 z-50 w-full min-w-0 bg-background pt-6 text-foreground"
       >
         <div className="w-full px-4 md:px-8 lg:px-16">
           <div className="max-w-[1328px] mx-auto">
-            <div className="flex h-12 min-w-0 items-center py-0">
+            <div className="flex h-12 min-w-0 items-center gap-3 py-0">
               <Button
                 type="button"
                 variant="ghost"
-                className="nav-button pointer-events-auto hidden h-12 min-h-12 w-12 min-w-12 px-0 bg-transparent border-0 shadow-none hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)] lg:inline-flex"
+                className="nav-button h-12 min-h-12 w-12 min-w-12 justify-center px-0 bg-transparent border-0 shadow-none hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)] lg:ml-16"
                 onClick={() => setMobileMenuOpen(true)}
                 aria-label="Open menu"
               >
-                <img
-                  src="/images/panel-left.svg"
-                  alt=""
-                  className="h-5 w-5 dark:[filter:invert(1)] color:[filter:invert(1)]"
-                />
+                <Menu className="size-6 shrink-0 text-foreground" />
               </Button>
-              <button
-                type="button"
-                onClick={() => setMobileMenuOpen(true)}
-                className="hamburger-trigger pointer-events-auto inline-flex h-12 min-h-12 w-12 min-w-12 items-center justify-start rounded-none border-0 bg-transparent p-0 shadow-none outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 lg:hidden"
-                aria-label="Open menu"
-              >
-                <Menu className="h-6 w-6 shrink-0 text-foreground" />
-              </button>
-              <div className="ml-auto flex items-center">
+              <div className="min-w-0 flex-1">
+                <HeaderBreadcrumbs pathname={pathname} />
+              </div>
+              <div className="ml-auto flex shrink-0 items-center">
                 <CartTrigger />
                 <Button
                   type="button"
                   variant="ghost"
-                  className="nav-button pointer-events-auto h-12 min-h-12 w-12 min-w-12 px-0 bg-transparent border-0 shadow-none hover:bg-[var(--sidebar-hover)]"
+                  className="nav-button h-12 min-h-12 w-12 min-w-12 px-0 bg-transparent border-0 shadow-none hover:bg-[var(--sidebar-hover)]"
                   aria-label="Open profile"
                 >
                   <CircleUser className="size-5" />
@@ -97,6 +123,7 @@ try {
           </div>
         </div>
       </header>
+      <div className="h-[4.5rem] shrink-0" aria-hidden />
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetContent
           id="mobile-menu-sheet"
