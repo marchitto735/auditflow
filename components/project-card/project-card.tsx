@@ -2,9 +2,22 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { FileText, X } from "lucide-react";
+import { FileText, ChevronDown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { GMP_CLAUSES, clauseSearchFilter, clauseSearchKeywords, clauseSearchValue, getGmpClause } from "@/lib/gmp-clauses";
 import {
   formatSopReportDownload,
   type SopAuditReport,
@@ -19,6 +32,22 @@ const CLAUSE_DOCUMENTS = [
   "Form",
   "Training Record",
 ] as const;
+
+function formatStatusLabel(status: string | null | undefined) {
+  const raw = (status ?? "Processed").trim();
+  return raw
+    .toLowerCase()
+    .split(/\s+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function statusDotClass(status: string | null | undefined) {
+  if ((status ?? "").toLowerCase().includes("partial")) {
+    return "bg-[#F5C400]";
+  }
+  return "bg-[oklch(55%_0_0)]";
+}
 
 function serializeUnknownError(error: unknown) {
   if (error instanceof Error) {
@@ -67,15 +96,21 @@ export default function ProjectCard({
   const [selectedDocType, setSelectedDocType] = useState<
     (typeof CLAUSE_DOCUMENTS)[number] | null
   >(null);
+  const [selectedClauseId, setSelectedClauseId] = useState<string | null>(null);
+  const [clausePickerOpen, setClausePickerOpen] = useState(false);
 
   const [processedAt, setProcessedAt] = useState<Date | null>(null);
   const [sopReport, setSopReport] = useState<SopAuditReport | null>(null);
+  const selectedClause = getGmpClause(selectedClauseId);
+  const canRunAudit = Boolean(selectedClause && selectedFile);
 
   function resetAudit() {
     setAuditStatus("idle");
     setAuditMessage(null);
     setSelectedFile(null);
     setSelectedDocType(null);
+    setSelectedClauseId(null);
+    setClausePickerOpen(false);
     setProcessedAt(null);
     setSopReport(null);
   }
@@ -90,18 +125,18 @@ export default function ProjectCard({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `audit-report-clause-${AUDIT_CLAUSE_ID}.txt`;
+    link.download = `audit-report-clause-${selectedClause?.id ?? AUDIT_CLAUSE_ID}.txt`;
     link.click();
     URL.revokeObjectURL(url);
   }
 
   async function handleRunAudit() {
-    if (!selectedFile || auditStatus === "loading") return;
+    if (!selectedFile || !selectedClause || auditStatus === "loading") return;
 
     setAuditStatus("loading");
     setAuditMessage(`Running SOP audit for ${selectedFile.name}…`);
     console.log("[Run Audit] Uploading SOP PDF via /api/audit/run…", {
-      clause_id: AUDIT_CLAUSE_ID,
+      clause_id: selectedClause.id,
       documentType: selectedDocType,
       fileName: selectedFile.name,
       fileSize: selectedFile.size,
@@ -110,7 +145,7 @@ export default function ProjectCard({
     try {
       const body = new FormData();
       body.append("file", selectedFile);
-      body.append("clause_id", AUDIT_CLAUSE_ID);
+      body.append("clause_id", selectedClause.id);
       if (selectedDocType) {
         body.append("document_type", selectedDocType);
       }
@@ -173,7 +208,7 @@ export default function ProjectCard({
   }
 
   function openFilePicker(docType: (typeof CLAUSE_DOCUMENTS)[number]) {
-    if (auditStatus === "loading") return;
+    if (!selectedClause || auditStatus === "loading") return;
     pendingDocTypeRef.current = docType;
     fileInputRef.current?.click();
   }
@@ -192,63 +227,74 @@ export default function ProjectCard({
   if (isAuditCard) {
     if (auditStatus === "success") {
       return (
-        <div className="w-full min-w-0">
-          <Card className="relative w-full max-w-[520px] overflow-hidden rounded-3xl border-0 bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
-            <CardContent className="flex flex-col bg-[oklch(100%_0_0)] p-6 md:p-8">
+        <div className="w-full min-w-0 max-w-[520px] rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.06)]">
+          <Card className="relative w-full overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
+            <CardContent className="flex flex-col bg-[oklch(100%_0_0)] px-6 pb-6 pt-4 md:px-8 md:pb-8 md:pt-6">
               <button
                 type="button"
                 onClick={resetAudit}
-                className="absolute right-4 top-4 flex size-10 items-center justify-center rounded-full bg-[oklch(94%_0_0)] text-[oklch(0%_0_0)] hover:bg-[oklch(90%_0_0)]"
+                className="absolute right-4 top-4 flex size-10 items-center justify-center rounded-full bg-transparent text-[oklch(0%_0_0)] hover:bg-transparent"
                 aria-label="Close report"
               >
                 <X className="size-5" />
               </button>
 
-              <div className="pt-8 text-center">
-                <h4 className="text-h4 font-semibold text-[oklch(0%_0_0)] m-0 mb-3">
-                  Audit Processed!
+              <div className="text-left">
+                <h4 className="text-h4 font-semibold text-[oklch(0%_0_0)] m-0 mb-3 pr-12">
+                  Audit Verified
                 </h4>
-                <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-8 mx-auto max-w-[36ch]">
-                  Your SOP documentation has been processed and here are the
-                  results of your report.
+                <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-8">
+                  Document processed successfully. View your compliance report
+                  below.
                 </p>
               </div>
 
-              <div className="mb-6 rounded-2xl bg-[oklch(95%_0_0)] p-4 md:p-5">
-                <div className="flex items-center justify-between gap-3 pb-4">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <FileText className="size-6 shrink-0 text-[oklch(35%_0.04_264)]" />
-                    <p className="text-body1 font-semibold text-[oklch(0%_0_0)] m-0 truncate">
-                      {selectedFile?.name ?? "SOP.pdf"}
-                    </p>
-                  </div>
-                  <span className="shrink-0 rounded-md bg-[oklch(88%_0_0)] px-3 py-1 text-button uppercase tracking-wide text-[oklch(35%_0_0)]">
-                    {sopReport?.status ?? "Processed"}
-                  </span>
+              <div className="mb-6">
+                <div className="flex items-center gap-3 pb-4">
+                  <FileText className="size-6 shrink-0 text-[oklch(35%_0.04_264)]" />
+                  <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 truncate">
+                    {selectedFile?.name ?? "SOP.pdf"}
+                  </p>
                 </div>
-                <div className="border-t border-[oklch(88%_0_0)] pt-4 flex flex-col gap-3">
+                <div className="flex flex-col gap-3">
                   <div className="flex items-start justify-between gap-4">
                     <span className="text-body1 text-[oklch(0%_0_0)]">
                       Score:
                     </span>
-                    <span className="text-body1 font-semibold text-right text-[oklch(0%_0_0)]">
+                    <span className="text-body1 text-right text-[oklch(0%_0_0)]">
                       {sopReport?.score ?? "—"}
+                    </span>
+                  </div>
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="text-body1 text-[oklch(0%_0_0)]">
+                      Status:
+                    </span>
+                    <span className="inline-flex items-center justify-end gap-2 text-body1 text-right text-[oklch(0%_0_0)]">
+                      <span
+                        className={cn(
+                          "h-3 w-3 shrink-0 rounded-full",
+                          statusDotClass(sopReport?.status),
+                        )}
+                        aria-hidden
+                      />
+                      {formatStatusLabel(sopReport?.status)}
                     </span>
                   </div>
                   <div className="flex items-start justify-between gap-4">
                     <span className="text-body1 text-[oklch(0%_0_0)]">
                       Audited Clause:
                     </span>
-                    <span className="text-body1 font-semibold text-right text-[oklch(0%_0_0)]">
-                      Question {sopReport?.clause_id ?? AUDIT_CLAUSE_ID} (Doc
-                      Practices)
+                    <span className="text-body1 text-right text-[oklch(0%_0_0)]">
+                      {selectedClause
+                        ? `${selectedClause.label} (${selectedClause.shortName})`
+                        : `Clause ${sopReport?.clause_id ?? AUDIT_CLAUSE_ID} (Doc Practices)`}
                     </span>
                   </div>
                   <div className="flex items-start justify-between gap-4">
                     <span className="text-body1 text-[oklch(0%_0_0)]">
                       Timestamp:
                     </span>
-                    <span className="text-body1 font-semibold text-right text-[oklch(0%_0_0)]">
+                    <span className="text-body1 text-right text-[oklch(0%_0_0)]">
                       {(processedAt ?? new Date()).toLocaleString()}
                     </span>
                   </div>
@@ -257,10 +303,10 @@ export default function ProjectCard({
 
               {sopReport?.summary ? (
                 <div className="mb-6">
-                  <p className="text-body1 font-semibold text-[oklch(0%_0_0)] m-0 mb-2">
+                  <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 mb-2">
                     Summary
                   </p>
-                  <p className="text-body2 text-[oklch(0%_0_0)] m-0">
+                  <p className="text-body1 text-[oklch(0%_0_0)] m-0">
                     {sopReport.summary}
                   </p>
                 </div>
@@ -268,14 +314,14 @@ export default function ProjectCard({
 
               {sopReport?.findings.length ? (
                 <div className="mb-6">
-                  <p className="text-body1 font-semibold text-[oklch(0%_0_0)] m-0 mb-2">
+                  <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 mb-2">
                     Findings
                   </p>
                   <ul className="m-0 list-none p-0 space-y-2">
                     {sopReport.findings.map((finding) => (
                       <li
                         key={finding}
-                        className="flex gap-2 text-body2 text-[oklch(0%_0_0)]"
+                        className="flex gap-2 text-body1 text-[oklch(0%_0_0)]"
                       >
                         <span
                           className="mt-[0.55em] size-1.5 shrink-0 rounded-full bg-[oklch(0%_0_0)]"
@@ -290,10 +336,10 @@ export default function ProjectCard({
 
               {sopReport?.recommendation ? (
                 <div className="mb-8">
-                  <p className="text-body1 font-semibold text-[oklch(0%_0_0)] m-0 mb-2">
+                  <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 mb-2">
                     Recommendation
                   </p>
-                  <p className="text-body2 text-[oklch(0%_0_0)] m-0">
+                  <p className="text-body1 text-[oklch(0%_0_0)] m-0">
                     {sopReport.recommendation}
                   </p>
                 </div>
@@ -317,37 +363,117 @@ export default function ProjectCard({
     }
 
     return (
-      <div className="w-full min-w-0">
-        <Card className="w-full max-w-[520px] overflow-hidden rounded-3xl border-0 bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
-          <CardContent className="flex flex-col text-left bg-[oklch(100%_0_0)] p-6 md:p-8">
-            <h4 className="text-h4 text-[oklch(0%_0_0)] m-0 mb-2">{title}</h4>
+      <div className="w-full min-w-0 max-w-[520px] rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.06)]">
+        <Card className="w-full overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
+          <CardContent className="flex flex-col text-left bg-[oklch(100%_0_0)] px-6 pb-6 pt-4 md:px-8 md:pb-8 md:pt-6">
+            <h4 className="text-h4 text-[oklch(0%_0_0)] m-0 mb-2">
+              Clause Selection
+            </h4>
             <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-6">
-              {description}
+              Choose a regulatory clause to begin your compliance assessment.
             </p>
 
-            <p className="text-body1 font-medium text-[oklch(0%_0_0)] m-0 mb-3">
-              Select a document type to upload:
-            </p>
+            <Popover open={clausePickerOpen} onOpenChange={setClausePickerOpen}>
+              <div className="mb-6">
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    role="combobox"
+                    aria-expanded={clausePickerOpen}
+                    className={cn(
+                      "flex h-12 w-full items-center justify-between rounded-full border border-[oklch(0%_0_0)] bg-[oklch(100%_0_0)] px-4 text-body1 text-[oklch(0%_0_0)] transition-colors hover:bg-[oklch(96%_0_0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0%_0_0)] focus-visible:ring-offset-2",
+                      clausePickerOpen && "bg-[oklch(96%_0_0)]",
+                    )}
+                  >
+                    <span
+                      className={
+                        selectedClause ? undefined : "text-muted-foreground"
+                      }
+                    >
+                      {selectedClause?.label ?? "Select Clause..."}
+                    </span>
+                    <ChevronDown className="size-5 shrink-0 opacity-70" />
+                  </button>
+                </PopoverTrigger>
+                {clausePickerOpen ? (
+                  <div className="mt-3 overflow-hidden rounded-2xl border border-[oklch(88%_0_0)] bg-[oklch(100%_0_0)]">
+                    <Command filter={clauseSearchFilter}>
+                      <CommandInput placeholder="Search by number or keyword..." />
+                      <CommandList className="max-h-[280px]">
+                        <CommandEmpty>No clause found.</CommandEmpty>
+                        <CommandGroup>
+                          {GMP_CLAUSES.map((clause) => (
+                            <CommandItem
+                              key={clause.id}
+                              value={clauseSearchValue(clause)}
+                              keywords={clauseSearchKeywords(clause)}
+                              onSelect={() => {
+                                setSelectedClauseId(clause.id);
+                                setSelectedFile(null);
+                                setSelectedDocType(null);
+                                setAuditStatus("idle");
+                                setAuditMessage(null);
+                                setSopReport(null);
+                                setClausePickerOpen(false);
+                              }}
+                              className={cn(
+                                "items-start",
+                                selectedClauseId === clause.id &&
+                                  "bg-[oklch(96%_0_0)]",
+                              )}
+                            >
+                              <span className="flex min-w-0 flex-col gap-0.5">
+                                <span>{clause.label}</span>
+                                <span className="text-body2 text-muted-foreground line-clamp-1">
+                                  {clause.shortName}
+                                  {" · "}
+                                  {clause.description}
+                                </span>
+                              </span>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </div>
+                ) : null}
+              </div>
+            </Popover>
 
-            <div className="flex flex-wrap gap-2 mb-6">
-              {CLAUSE_DOCUMENTS.map((label) => (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={() => openFilePicker(label)}
-                  disabled={auditStatus === "loading"}
-                  className={cn(
-                    "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-button disabled:opacity-50",
-                    selectedDocType === label
-                      ? "border-[oklch(0%_0_0)] bg-[oklch(0%_0_0)] text-[oklch(100%_0_0)]"
-                      : "border-[oklch(0%_0_0)] bg-transparent text-[oklch(0%_0_0)] hover:bg-[oklch(96%_0_0)]",
-                  )}
+            {selectedClause ? (
+              <>
+                <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-6">
+                  {selectedClause.description}
+                </p>
+
+                <p
+                  className="text-body1 m-0 mb-3 text-[oklch(0%_0_0)]"
+                  style={{ fontWeight: 600 }}
                 >
-                  <FileText className="size-4 shrink-0" aria-hidden />
-                  {label}
-                </button>
-              ))}
-            </div>
+                  Documents needed for this clause:
+                </p>
+
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {CLAUSE_DOCUMENTS.map((label) => (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={() => openFilePicker(label)}
+                      disabled={auditStatus === "loading"}
+                      className={cn(
+                        "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-button disabled:opacity-50",
+                        selectedDocType === label
+                          ? "border-[oklch(0%_0_0)] bg-[oklch(0%_0_0)] text-[oklch(100%_0_0)]"
+                          : "border-[oklch(0%_0_0)] bg-transparent text-[oklch(0%_0_0)] hover:bg-[oklch(96%_0_0)]",
+                      )}
+                    >
+                      <FileText className="size-4 shrink-0" aria-hidden />
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : null}
 
             {selectedFile ? (
               <p className="text-body2 text-[oklch(0%_0_0)] m-0 mb-3">
@@ -375,11 +501,11 @@ export default function ProjectCard({
               variant="black"
               size="lg"
               className={cn(
-                "project-card-cta relative w-full overflow-hidden rounded-full border-0",
+                "project-card-cta relative w-full overflow-hidden rounded-full border-0 disabled:opacity-100 disabled:bg-[oklch(90%_0_0)] disabled:text-[oklch(62%_0_0)]",
                 auditStatus === "loading" && "pointer-events-none",
               )}
               onClick={handleRunAudit}
-              disabled={!selectedFile}
+              disabled={!canRunAudit}
               aria-busy={auditStatus === "loading"}
             >
               <svg

@@ -35,8 +35,11 @@ function isLocalN8nUrl(url: string) {
   }
 }
 
+const LOCAL_N8N_DOWN_ERROR =
+  "n8n is not running on localhost:5678. Start n8n, publish auditflow_sop_ingestion, and set Respond to When Last Node Finishes.";
+
 const LOCAL_N8N_ON_VERCEL_ERROR =
-  "This deployed site cannot reach n8n on your computer (localhost:5678). In Vercel → Project → Settings → Environment Variables, set NEXT_PUBLIC_N8N_SOP_INGESTION_URL to a public n8n webhook URL (n8n Cloud or a tunnel like ngrok), then redeploy. Keep using localhost only for npm run dev.";
+  "This deployed site cannot reach n8n on your computer (localhost:5678). Use npm run dev with n8n running locally.";
 
 function sopWebhookUrl() {
   return (
@@ -97,8 +100,13 @@ export async function POST(request: Request) {
     }
 
     const outbound = new FormData();
-    outbound.append("file", file, file.name);
-    outbound.append("clause_id", AUDIT_CLAUSE_ID);
+            outbound.append("file", file, file.name);
+    const clauseIdRaw = incoming.get("clause_id");
+    const clauseId =
+      typeof clauseIdRaw === "string" && clauseIdRaw.trim()
+        ? clauseIdRaw.trim()
+        : AUDIT_CLAUSE_ID;
+    outbound.append("clause_id", clauseId);
     outbound.append("timestamp", startedAt);
     const documentType = incoming.get("document_type");
     if (typeof documentType === "string" && documentType.trim()) {
@@ -170,8 +178,8 @@ export async function POST(request: Request) {
     const message = errorText(error);
     console.warn("[Run Audit] SOP request failed", message);
     const friendly =
-      /ECONNREFUSED|127\.0\.0\.1:5678|localhost:5678/i.test(message)
-        ? LOCAL_N8N_ON_VERCEL_ERROR
+      isLocalN8nUrl(webhookUrl) && /fetch failed|ECONNREFUSED|5678/i.test(message)
+        ? LOCAL_N8N_DOWN_ERROR
         : message;
     return NextResponse.json({ error: friendly }, { status: 500 });
   }

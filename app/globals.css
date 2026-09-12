@@ -147,6 +147,7 @@
   --font-weight-subtitle1: var(--text-subtitle1-weight);
   --font-weight-subtitle2: var(--text-subtitle2-weight);
   --font-weight-body1: var(--text-body1-weight);
+  --font-weight-body1-strong: var(--text-body1-strong-weight);
   --font-weight-body2: var(--text-body2-weight);
   --font-weight-button: var(--text-button-weight);
   --font-weight-caption: var(--text-caption-weight);
@@ -181,7 +182,7 @@
 
     --page-texture: url("/images/forest-6.png?v=21");
 
-    --background: oklch(95% 0.002 286);
+    --background: oklch(97% 0.002 286);
     --card: oklch(100% 0 0);
     --popover: oklch(100% 0 0);
 
@@ -275,6 +276,7 @@
     --text-body1-line: 1.5;
     --text-body1-weight: 400;
     --text-body1-letter-spacing: 0px;
+    --text-body1-strong-weight: 600;
 
     --text-body2-size: 0.875rem;
     --text-body2-line: 1.45;
@@ -829,6 +831,12 @@
     font-weight: var(--text-h4-weight);
     letter-spacing: var(--text-h4-letter-spacing);
   }
+  .text-h5 {
+    font-size: var(--text-h5-fluid);
+    line-height: var(--text-h5-line);
+    font-weight: var(--text-h5-weight);
+    letter-spacing: var(--text-h5-letter-spacing);
+  }
   .text-h6 {
     font-size: var(--text-h6-size);
     line-height: var(--text-h6-line);
@@ -849,6 +857,12 @@
     font-size: var(--text-body1-size);
     line-height: var(--line-height-body1);
     font-weight: var(--font-weight-body1);
+  }
+  .text-body1-strong {
+    font-size: var(--text-body1-size);
+    line-height: var(--line-height-body1);
+    font-weight: var(--font-weight-body1-strong);
+    letter-spacing: var(--text-body1-letter-spacing);
   }
   .text-caption {
     font-size: var(--text-caption-size);
@@ -982,4 +996,10 @@ html.dark openai-chatkit iframe.ck-iframe,
 [data-theme="dark"] openai-chatkit iframe.ck-iframe {
   background-color: var(--background) !important;
   color-scheme: dark;
+}
+
+/* Weight-only: do not name this text-* or Tailwind will treat it as a font-size. */
+.heading-weight-medium {
+  font-weight: 500 !important;
+  font-variation-settings: "wght" 500;
 }

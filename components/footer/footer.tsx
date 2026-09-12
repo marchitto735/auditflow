@@ -28,14 +28,14 @@ export default function Footer() {
                       <img
                         src="/images/auditflow-logo.svg"
                         alt="AuditFlow"
-                        className="h-[var(--text-h3)] w-auto dark:[filter:invert(1)] color:[filter:invert(1)]"
+                        className="h-6 w-auto dark:[filter:invert(1)] color:[filter:invert(1)]"
                       />
                     </h3>
                   </div>
                   <div className="max-w-[576px] p-0 m-0 mt-4">
-                    <h4 className="text-h4 max-w-[576px] text-foreground p-0 m-0">
+                    <h5 className="text-h5 max-w-[576px] text-foreground p-0 m-0">
                       Compliance made simple.
-                    </h4>
+                    </h5>
                   </div>
                 </div>
               </div>

@@ -59,8 +59,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mike Marchitto — Design",
-  description: "UX Engineer / Product Designer",
+  title: "AuditFlow",
+  description: "Compliance made simple.",
 };
 
 export default function RootLayout({

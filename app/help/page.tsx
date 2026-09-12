@@ -6,7 +6,9 @@ export default function HelpPage() {
       <main className="min-h-screen min-w-0 pb-0 md:pb-4">
         <section className="w-full px-4 md:px-8 lg:px-16 py-6 md:py-9">
           <div className="max-w-[1328px] mx-auto px-0 lg:px-16">
-            <h2 className="text-h2 font-light text-foreground m-0">Help</h2>
+            <h2 className="text-h2 heading-weight-medium text-foreground m-0">
+              Help
+            </h2>
             <p className="text-body1 text-foreground mt-4 max-w-[576px]">
               Select a document type on a clause, choose a PDF, then click Run
               Audit to start the SOP workflow.

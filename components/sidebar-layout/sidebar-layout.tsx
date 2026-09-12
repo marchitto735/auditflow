@@ -8,7 +8,6 @@ import {
   SidebarHeader,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
@@ -24,21 +23,19 @@ try {
 
   function SidebarMark() {
     return (
-      <div className="mb-6">
-        <Link
-          href="/"
-          className="inline-flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-md"
-          aria-label="Home"
-        >
-          <img
-            src="/images/auditflow-logo.svg"
-            alt="AuditFlow"
-            className="h-5 w-auto shrink-0 dark:[filter:invert(1)] color:[filter:invert(1)]"
-            width={20}
-            height={20}
-          />
-        </Link>
-      </div>
+      <Link
+        href="/"
+        className="inline-flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-md"
+        aria-label="Home"
+      >
+        <img
+          src="/images/auditflow-logo.svg"
+          alt="AuditFlow"
+          className="h-5 w-auto shrink-0 dark:[filter:invert(1)] color:[filter:invert(1)]"
+          width={20}
+          height={20}
+        />
+      </Link>
     );
   }
 
@@ -58,18 +55,14 @@ try {
     return (
       <SidebarProvider>
         <Sidebar>
-          <SidebarHeader className="px-2 py-4">
-            <div className="ps-sidebar-crown-row">
+          <SidebarHeader className="px-2 pt-6 pb-4">
+            <div className="ps-sidebar-crown-row mb-6 flex h-8 items-center">
               <SidebarMark />
             </div>
           </SidebarHeader>
 
           <SidebarContent className="px-2 py-4">
             <SidebarGroup>
-              <SidebarGroupLabel className="text-subtitle1 font-medium mb-2 ps-[calc(var(--sidebar-menu-text-inset,0.25rem)+4px)]">
-                Menu
-              </SidebarGroupLabel>
-
               <SidebarMenu className="gap-0">
                 <SidebarMenuItem>
                   <SidebarMenuButton variant="text" asChild>

@@ -8,7 +8,6 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
@@ -21,22 +20,20 @@ const headerNavButtonClass =
 
 function MobileMenuMark({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <div className="mb-6">
-      <Link
-        href="/"
-        onClick={onNavigate}
-        className="inline-flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
-        aria-label="Home"
-      >
-        <img
-          src="/images/auditflow-logo.svg"
-          alt="AuditFlow"
-          className="h-5 w-auto shrink-0 dark:[filter:invert(1)] color:[filter:invert(1)]"
-          width={20}
-          height={20}
-        />
-      </Link>
-    </div>
+    <Link
+      href="/"
+      onClick={onNavigate}
+      className="inline-flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
+      aria-label="Home"
+    >
+      <img
+        src="/images/auditflow-logo.svg"
+        alt="AuditFlow"
+        className="h-5 w-auto shrink-0 dark:[filter:invert(1)] color:[filter:invert(1)]"
+        width={20}
+        height={20}
+      />
+    </Link>
   );
 }
 
@@ -243,7 +240,7 @@ try {
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen(true)}
-                  className="hamburger-trigger inline-flex h-12 min-h-12 w-12 min-w-12 items-center justify-center rounded-none border-0 bg-transparent p-0 shadow-none outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="hamburger-trigger inline-flex h-12 min-h-12 w-12 min-w-12 items-center justify-start rounded-none border-0 bg-transparent p-0 shadow-none outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   aria-label="Open menu"
                 >
                   <Menu className="h-6 w-6 shrink-0 text-foreground" />
@@ -261,14 +258,11 @@ try {
           closeButtonClassName="top-6 right-[10px] h-8 w-8 min-h-8 min-w-8 p-0 rounded-md border-0 bg-transparent hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)] text-foreground hover:text-sidebar-accent-foreground !data-[state=open]:bg-transparent transition-colors flex items-center justify-center [&_svg]:text-current [&_svg]:transition-colors hover:[&_svg]:text-sidebar-accent-foreground"
         >
           <SheetTitle className="sr-only">Menu</SheetTitle>
-          <div className="flex flex-col items-start px-2 py-4">
-                      <div className="ps-sidebar-crown-row">
+          <div className="flex flex-col items-start px-2 pt-6 pb-4">
+                      <div className="ps-sidebar-crown-row mb-6 flex h-8 items-center">
                         <MobileMenuMark onNavigate={() => setMobileMenuOpen(false)} />
                       </div>
                       <SidebarGroup>
-                        <SidebarGroupLabel className="text-subtitle1 font-medium mb-2 ps-[calc(var(--sidebar-menu-text-inset,0.25rem)+4px)]">
-                          Menu
-                        </SidebarGroupLabel>
                         <SidebarMenu
                           className="mobile-menu-connect-nav gap-0 items-start w-full pl-0 min-w-0"
                           aria-label="Main"
