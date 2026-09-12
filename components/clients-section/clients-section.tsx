@@ -30,7 +30,7 @@ export default function ClientsSection({ projects }: ClientsSectionProps) {
         <div className="max-w-[1328px] mx-auto flex flex-col min-w-0">
           <div className="flex h-12 min-h-12 w-full min-w-0 items-center pl-14 lg:px-16 mb-0 bg-transparent">
             <Breadcrumb>
-              <BreadcrumbList className="text-body1">
+              <BreadcrumbList className="text-body2">
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
                     <Link href="/">Audits</Link>
