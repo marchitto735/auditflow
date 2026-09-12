@@ -2,9 +2,10 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { FileText, ChevronDown, ShoppingBag, X } from "lucide-react";
+import { FileText, Check, ChevronDown, ShoppingBag, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useCart } from "@/components/cart/cart-context";
 import {
   Command,
   CommandEmpty,
@@ -23,6 +24,7 @@ import {
   type SopAuditReport,
 } from "@/lib/sop-report";
 import { cn } from "@/lib/utils";
+import { goldStandardCatalogItem } from "@/lib/cart";
 
 const AUDIT_CLAUSE_ID = "27";
 const CLAUSE_DOCUMENTS = [
@@ -101,8 +103,10 @@ export default function ProjectCard({
 
   const [processedAt, setProcessedAt] = useState<Date | null>(null);
   const [sopReport, setSopReport] = useState<SopAuditReport | null>(null);
+  const [addedToCart, setAddedToCart] = useState(false);
   const selectedClause = getGmpClause(selectedClauseId);
   const canRunAudit = Boolean(selectedClause && selectedFile);
+  const { addItem } = useCart();
 
   function resetAudit() {
     setAuditStatus("idle");
@@ -130,27 +134,14 @@ export default function ProjectCard({
     URL.revokeObjectURL(url);
   }
 
-  function downloadGoldStandard() {
-    const lines = [
-      "AuditFlow Gold Standard SOP",
-      "",
-      selectedClause
-        ? `${selectedClause.label} (${selectedClause.shortName})`
-        : `Clause ${AUDIT_CLAUSE_ID}`,
-      selectedClause?.section,
-      "",
-      selectedClause?.description ?? "",
-    ].filter((line) => line !== undefined);
-
-    const blob = new Blob([lines.join("\n")], {
-      type: "text/plain;charset=utf-8",
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `gold-standard-clause-${selectedClause?.id ?? AUDIT_CLAUSE_ID}.txt`;
-    link.click();
-    URL.revokeObjectURL(url);
+  function addCompliantSopToCart() {
+    const clause =
+      selectedClause ??
+      getGmpClause(sopReport?.clause_id) ??
+      getGmpClause(AUDIT_CLAUSE_ID);
+    addItem(goldStandardCatalogItem(clause, selectedDocType));
+    setAddedToCart(true);
+    window.setTimeout(() => setAddedToCart(false), 1600);
   }
 
   async function handleRunAudit() {
@@ -374,11 +365,19 @@ export default function ProjectCard({
                 <Button
                   type="button"
                   size="lg"
-                  className="project-card-cta w-full shrink-0 rounded-full border border-amber-700 bg-[oklch(100%_0_0)] text-amber-700 hover:bg-amber-50 hover:text-amber-700"
-                  onClick={downloadGoldStandard}
+                  className="project-card-cta w-full shrink-0 rounded-full border border-[oklch(0%_0_0)] bg-[oklch(100%_0_0)] text-[oklch(0%_0_0)] hover:bg-[oklch(96%_0_0)] hover:text-[oklch(0%_0_0)]"
+                  onClick={addCompliantSopToCart}
                 >
-                  <ShoppingBag className="size-5" />
-                  <span className="text-button">Upgrade to Compliant SOP</span>
+                  {addedToCart ? (
+                    <Check className="size-5" />
+                  ) : (
+                    <ShoppingBag className="size-5" />
+                  )}
+                  <span className="text-button">
+                    {addedToCart
+                      ? "Added to cart"
+                      : "Upgrade to Compliant SOP"}
+                  </span>
                 </Button>
 
                 <Button

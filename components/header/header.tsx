@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { CircleUser, Menu } from "lucide-react";
+import CartTrigger from "@/components/cart/cart-trigger";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import {
   SidebarGroup,
@@ -81,6 +82,17 @@ try {
               >
                 <Menu className="h-6 w-6 shrink-0 text-foreground" />
               </button>
+              <div className="ml-auto flex items-center">
+                <CartTrigger />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="nav-button pointer-events-auto h-12 min-h-12 w-12 min-w-12 px-0 bg-transparent border-0 shadow-none hover:bg-[var(--sidebar-hover)]"
+                  aria-label="Open profile"
+                >
+                  <CircleUser className="size-5" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>

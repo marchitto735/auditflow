@@ -11,6 +11,8 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/hooks/use-theme";
+import { CartProvider } from "@/components/cart/cart-context";
+import { Toaster } from "@/components/ui/sonner";
 import ErrorBoundary from "./error-boundary";
 import SidebarLayout from "@/components/sidebar-layout/sidebar-layout";
 import { Analytics } from "@vercel/analytics/react"; // ⭐ ADDED
@@ -105,9 +107,12 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ThemeProvider>
-          <ErrorBoundary>
-            <SidebarLayout>{children}</SidebarLayout>
-          </ErrorBoundary>
+          <CartProvider>
+            <ErrorBoundary>
+              <SidebarLayout>{children}</SidebarLayout>
+            </ErrorBoundary>
+          </CartProvider>
+          <Toaster />
         </ThemeProvider>
 
         <Analytics /> {/* ⭐ ADDED */}
