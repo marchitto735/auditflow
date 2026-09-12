@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { FileText, ChevronDown, X } from "lucide-react";
+import { FileText, ChevronDown, ShoppingBag, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -130,6 +130,29 @@ export default function ProjectCard({
     URL.revokeObjectURL(url);
   }
 
+  function downloadGoldStandard() {
+    const lines = [
+      "AuditFlow Gold Standard SOP",
+      "",
+      selectedClause
+        ? `${selectedClause.label} (${selectedClause.shortName})`
+        : `Clause ${AUDIT_CLAUSE_ID}`,
+      selectedClause?.section,
+      "",
+      selectedClause?.description ?? "",
+    ].filter((line) => line !== undefined);
+
+    const blob = new Blob([lines.join("\n")], {
+      type: "text/plain;charset=utf-8",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `gold-standard-clause-${selectedClause?.id ?? AUDIT_CLAUSE_ID}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   async function handleRunAudit() {
     if (!selectedFile || !selectedClause || auditStatus === "loading") return;
 
@@ -227,135 +250,147 @@ export default function ProjectCard({
   if (isAuditCard) {
     if (auditStatus === "success") {
       return (
-        <div className="w-full min-w-0 max-w-[520px] rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.06)]">
+        <div className="w-full min-w-0 max-w-[960px] rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.06)]">
           <Card className="relative w-full overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
-            <CardContent className="flex flex-col bg-[oklch(100%_0_0)] px-6 pb-6 pt-4 md:px-8 md:pb-8 md:pt-6">
+            <CardContent className="flex flex-col bg-[oklch(100%_0_0)] px-6 pb-6 pt-4 md:px-8 md:pb-8 md:pt-6 lg:h-[min(40rem,calc(100dvh-12rem))] lg:max-h-[min(40rem,calc(100dvh-12rem))]">
               <button
                 type="button"
                 onClick={resetAudit}
-                className="absolute right-4 top-4 flex size-10 items-center justify-center rounded-full bg-transparent text-[oklch(0%_0_0)] hover:bg-transparent"
+                className="absolute right-4 top-4 z-10 flex size-10 items-center justify-center rounded-full bg-transparent text-[oklch(0%_0_0)] hover:bg-transparent"
                 aria-label="Close report"
               >
                 <X className="size-5" />
               </button>
 
-              <div className="text-left">
-                <h4 className="text-h4 font-semibold text-[oklch(0%_0_0)] m-0 mb-3 pr-12">
+              <div className="pr-12 text-left">
+                <h4 className="text-h4 font-semibold text-[oklch(0%_0_0)] m-0 mb-3">
                   Audit Verified
                 </h4>
-                <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-8">
-                  Document processed successfully. View your compliance report
-                  below.
-                </p>
               </div>
 
-              <div className="mb-6">
-                <div className="flex items-center gap-3 pb-4">
-                  <FileText className="size-6 shrink-0 text-[oklch(35%_0.04_264)]" />
-                  <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 truncate">
-                    {selectedFile?.name ?? "SOP.pdf"}
+              <div className="grid min-h-0 flex-1 grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-x-10 lg:gap-y-8">
+                <div className="flex min-h-0 flex-col">
+                  <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-6">
+                    Document processed successfully. View your compliance report
+                    below.
                   </p>
+
+                  <div className="mb-6">
+                    <div className="flex items-center gap-3 pb-4">
+                      <FileText className="size-6 shrink-0 text-[oklch(35%_0.04_264)]" />
+                      <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 truncate">
+                        {selectedFile?.name ?? "SOP.pdf"}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-start justify-between gap-4">
+                        <span className="text-body1 text-[oklch(0%_0_0)]">
+                          Score:
+                        </span>
+                        <span className="text-body1 text-right text-[oklch(0%_0_0)]">
+                          {sopReport?.score ?? "—"}
+                        </span>
+                      </div>
+                      <div className="flex items-start justify-between gap-4">
+                        <span className="text-body1 text-[oklch(0%_0_0)]">
+                          Status:
+                        </span>
+                        <span className="inline-flex items-center justify-end gap-2 text-body1 text-right text-[oklch(0%_0_0)]">
+                          <span
+                            className={cn(
+                              "h-3 w-3 shrink-0 rounded-full",
+                              statusDotClass(sopReport?.status),
+                            )}
+                            aria-hidden
+                          />
+                          {formatStatusLabel(sopReport?.status)}
+                        </span>
+                      </div>
+                      <div className="flex items-start justify-between gap-4">
+                        <span className="text-body1 text-[oklch(0%_0_0)]">
+                          Audited Clause:
+                        </span>
+                        <span className="text-body1 text-right text-[oklch(0%_0_0)]">
+                          {selectedClause
+                            ? `${selectedClause.label} (${selectedClause.shortName})`
+                            : `Clause ${sopReport?.clause_id ?? AUDIT_CLAUSE_ID} (Doc Practices)`}
+                        </span>
+                      </div>
+                      <div className="flex items-start justify-between gap-4">
+                        <span className="text-body1 text-[oklch(0%_0_0)]">
+                          Timestamp:
+                        </span>
+                        <span className="text-body1 text-right text-[oklch(0%_0_0)]">
+                          {(processedAt ?? new Date()).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex min-h-0 flex-1 flex-col">
+                    <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 mb-2 shrink-0">
+                      Summary
+                    </p>
+                    <div className="min-h-0 max-h-40 flex-1 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin] lg:max-h-none">
+                      <p className="text-body1 text-[oklch(0%_0_0)] m-0">
+                        {sopReport?.summary ?? "—"}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="text-body1 text-[oklch(0%_0_0)]">
-                      Score:
-                    </span>
-                    <span className="text-body1 text-right text-[oklch(0%_0_0)]">
-                      {sopReport?.score ?? "—"}
-                    </span>
+
+                <div className="flex min-h-0 flex-col">
+                  <div className="mb-6 flex min-h-0 flex-1 flex-col">
+                    <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 mb-2 shrink-0">
+                      Findings
+                    </p>
+                    <ul className="m-0 min-h-0 max-h-40 flex-1 list-disc space-y-2 overflow-y-auto overscroll-contain py-0 pl-5 pr-1 [scrollbar-width:thin] lg:max-h-none">
+                      {(sopReport?.findings.length
+                        ? sopReport.findings
+                        : ["No findings reported."]
+                      ).map((finding) => (
+                        <li
+                          key={finding}
+                          className="text-body1 text-[oklch(0%_0_0)]"
+                        >
+                          {finding}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="text-body1 text-[oklch(0%_0_0)]">
-                      Status:
-                    </span>
-                    <span className="inline-flex items-center justify-end gap-2 text-body1 text-right text-[oklch(0%_0_0)]">
-                      <span
-                        className={cn(
-                          "h-3 w-3 shrink-0 rounded-full",
-                          statusDotClass(sopReport?.status),
-                        )}
-                        aria-hidden
-                      />
-                      {formatStatusLabel(sopReport?.status)}
-                    </span>
-                  </div>
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="text-body1 text-[oklch(0%_0_0)]">
-                      Audited Clause:
-                    </span>
-                    <span className="text-body1 text-right text-[oklch(0%_0_0)]">
-                      {selectedClause
-                        ? `${selectedClause.label} (${selectedClause.shortName})`
-                        : `Clause ${sopReport?.clause_id ?? AUDIT_CLAUSE_ID} (Doc Practices)`}
-                    </span>
-                  </div>
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="text-body1 text-[oklch(0%_0_0)]">
-                      Timestamp:
-                    </span>
-                    <span className="text-body1 text-right text-[oklch(0%_0_0)]">
-                      {(processedAt ?? new Date()).toLocaleString()}
-                    </span>
+
+                  <div className="flex min-h-0 flex-1 flex-col">
+                    <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 mb-2 shrink-0">
+                      Recommendation
+                    </p>
+                    <div className="min-h-0 max-h-40 flex-1 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin] lg:max-h-none">
+                      <p className="text-body1 text-[oklch(0%_0_0)] m-0">
+                        {sopReport?.recommendation ?? "—"}
+                      </p>
+                    </div>
                   </div>
                 </div>
+
+                <Button
+                  type="button"
+                  size="lg"
+                  className="project-card-cta w-full shrink-0 rounded-full border border-amber-700 bg-[oklch(100%_0_0)] text-amber-700 hover:bg-amber-50 hover:text-amber-700"
+                  onClick={downloadGoldStandard}
+                >
+                  <ShoppingBag className="size-5" />
+                  <span className="text-button">Upgrade to Compliant SOP</span>
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="black"
+                  size="lg"
+                  className="project-card-cta w-full shrink-0 rounded-full"
+                  onClick={downloadReport}
+                >
+                  <span className="text-button">Download Report</span>
+                </Button>
               </div>
-
-              {sopReport?.summary ? (
-                <div className="mb-6">
-                  <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 mb-2">
-                    Summary
-                  </p>
-                  <p className="text-body1 text-[oklch(0%_0_0)] m-0">
-                    {sopReport.summary}
-                  </p>
-                </div>
-              ) : null}
-
-              {sopReport?.findings.length ? (
-                <div className="mb-6">
-                  <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 mb-2">
-                    Findings
-                  </p>
-                  <ul className="m-0 list-none p-0 space-y-2">
-                    {sopReport.findings.map((finding) => (
-                      <li
-                        key={finding}
-                        className="flex gap-2 text-body1 text-[oklch(0%_0_0)]"
-                      >
-                        <span
-                          className="mt-[0.55em] size-1.5 shrink-0 rounded-full bg-[oklch(0%_0_0)]"
-                          aria-hidden
-                        />
-                        <span className="min-w-0">{finding}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
-              {sopReport?.recommendation ? (
-                <div className="mb-8">
-                  <p className="text-body1-strong text-[oklch(0%_0_0)] m-0 mb-2">
-                    Recommendation
-                  </p>
-                  <p className="text-body1 text-[oklch(0%_0_0)] m-0">
-                    {sopReport.recommendation}
-                  </p>
-                </div>
-              ) : (
-                <div className="mb-8" />
-              )}
-
-              <Button
-                type="button"
-                variant="black"
-                size="lg"
-                className="project-card-cta w-full rounded-full"
-                onClick={downloadReport}
-              >
-                <span className="text-button">Download Report</span>
-              </Button>
             </CardContent>
           </Card>
         </div>

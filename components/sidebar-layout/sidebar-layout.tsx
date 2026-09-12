@@ -111,7 +111,7 @@ try {
 
         <div className="flex flex-col w-full min-w-0 overflow-x-clip">
           <Header />
-          <main className="min-h-screen min-w-0 w-full max-w-full overflow-x-clip flex-1 pt-16">
+          <main className="min-h-screen min-w-0 w-full max-w-full overflow-x-clip flex-1 pt-6">
             {children}
           </main>
         </div>

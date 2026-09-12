@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/use-theme";
 
 const footerNavButtonClass =
-  "nav-button bg-transparent border border-[oklch(92%_0_0)] focus-visible:border-[oklch(92%_0_0)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(40%_0.035_165)] hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]";
+  "nav-button h-auto min-h-0 justify-start rounded-none bg-transparent border-0 px-0 py-0 shadow-none hover:bg-transparent hover:opacity-70 dark:hover:bg-transparent color:hover:bg-transparent";
 
 export default function Footer() {
   const { resolvedTheme } = useTheme();
@@ -43,12 +43,12 @@ export default function Footer() {
               <div className="w-full bg-transparent pt-0 pb-4 md:pt-4 md:pb-8 lg:pt-8 lg:pb-12">
                 <div className="w-full flex flex-col sm:flex-row justify-between items-end gap-4">
                   <nav
-                    className="hidden lg:flex flex-row flex-wrap gap-4"
+                    className="hidden lg:flex flex-row flex-wrap items-center gap-8"
                     aria-label="Footer"
                   >
                     <Button
                       className={footerNavButtonClass}
-                      variant="outline"
+                      variant="ghost"
                       size="lg"
                       asChild
                     >
@@ -59,7 +59,7 @@ export default function Footer() {
 
                     <Button
                       className={footerNavButtonClass}
-                      variant="outline"
+                      variant="ghost"
                       size="lg"
                       asChild
                     >
@@ -70,7 +70,7 @@ export default function Footer() {
 
                     <Button
                       className={footerNavButtonClass}
-                      variant="outline"
+                      variant="ghost"
                       size="lg"
                       asChild
                     >
@@ -81,7 +81,7 @@ export default function Footer() {
 
                     <Button
                       className={footerNavButtonClass}
-                      variant="outline"
+                      variant="ghost"
                       size="lg"
                       asChild
                     >
