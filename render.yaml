@@ -12,6 +12,10 @@ services:
     image:
       url: docker.io/n8nio/n8n:latest
     envVars:
+      - key: PORT
+        value: "10000"
+      - key: N8N_PORT
+        value: "10000"
       - key: DB_TYPE
         value: postgresdb
       - key: DB_POSTGRESDB_HOST
