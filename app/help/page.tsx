@@ -1,18 +1,18 @@
 import Footer from "@/components/footer/footer";
+import SectionHeader from "@/components/section-header/section-header";
+import { PAGE_GUTTER_CLASS, PAGE_INNER_CLASS } from "@/lib/page-layout";
+import { cn } from "@/lib/utils";
 
 export default function HelpPage() {
   return (
     <>
       <main className="min-h-screen min-w-0 pb-0 md:pb-4">
-        <section className="w-full px-4 md:px-8 lg:px-16 pt-0 pb-6 md:pb-9">
-          <div className="max-w-[1328px] mx-auto flex flex-col px-0 lg:px-16">
-            <h2 className="text-h2 heading-weight-medium text-foreground m-0">
-              Help
-            </h2>
-            <p className="text-body1 text-foreground mt-4 max-w-[576px]">
-              Select a document type on a clause, choose a PDF, then click Run
-              Audit to start the SOP workflow.
-            </p>
+        <section className={cn(PAGE_GUTTER_CLASS, "pt-6 pb-6 md:pb-9")}>
+          <div className={cn(PAGE_INNER_CLASS, "flex flex-col")}>
+            <SectionHeader
+              title="Help"
+              description="On SOP, BPR, or FIR audit, choose a clause, upload a PDF (or an image for FIR), then click Run Audit. Reports are saved and listed under Reports."
+            />
           </div>
         </section>
       </main>

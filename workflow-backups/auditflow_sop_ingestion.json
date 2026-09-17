@@ -1,0 +1,613 @@
+{
+  "name": "auditflow_sop_ingestion",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "clauses",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $(\"Webhook Trigger\").first().json.body?.clause_id || 27 }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        224
+      ],
+      "id": "403fc73c-4a69-48ff-a0e0-8b56802162d2",
+      "name": "Get Clause Rule",
+      "executeOnce": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "cKHZABsCqrfBavHo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "auditflow/upload",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -112,
+        0
+      ],
+      "id": "8950902d-5c68-4b89-8d2f-688a559b29f4",
+      "name": "Webhook Trigger",
+      "webhookId": "b4295359-1829-46e9-b521-32e6a615db3d"
+    },
+    {
+      "parameters": {
+        "url": "https://uvqeuklielzocmwppupt.supabase.co/rest/v1/clauses",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "id,clause_number,clause_text,standard,category"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2cWV1a2xpZWx6b2Ntd3BwdXB0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTc4MDg2NCwiZXhwIjoyMTAxMzU2ODY0fQ.NcnbD24kJrg90q8ono35UM0pzvIqtnFj6JzfMk-2124"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        448,
+        0
+      ],
+      "id": "4099e323-a35f-422c-b9f6-f8745a17eca0",
+      "name": "Get Clauses Database",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "v7sflzN8hMkycE6R",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "file",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        0
+      ],
+      "id": "7b8c3864-320b-49f8-941a-b4bdae0e14a6",
+      "name": "Extract from Pdf"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nif (!items.length) {\n  throw new Error(\"No input received from Extract from File node.\");\n}\n\nconst item = items[0].json;\nlet rawText = item.text || item.data || item.text_content || item.content || \"\";\n\n// Convert double quotes to single quotes & sanitize backslashes/newlines\nconst sanitizedText = String(rawText)\n  .replace(/\"/g, \"'\")\n  .replace(/\\\\/g, \"/\")\n  .replace(/[\\r\\n]+/g, \" \")\n  .replace(/\\s+/g, \" \")\n  .trim();\n\nreturn [{\n  json: {\n    text: sanitizedText\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        656,
+        0
+      ],
+      "id": "08b34e01-49a1-4617-89da-27cdf8a53dd7",
+      "name": "Format Prompt Payload"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"gpt-4o-mini\",\n  \"max_tokens\": 4000,\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an SOP document parser. Extract every distinct section from the SOP document text (e.g., Purpose, Scope, Reference Documents, Definitions, Responsibility, Equipment/Materials, Precautions, Procedure - General Requirements, Procedure - Correcting Errors, Retention, Revision History, Biannual Review, Document Header/Meta). Do not skip sections marked as 'NA' and do not combine sections. For each section, extract 3 to 7 key technical terms, equipment names, role titles, or GDP concepts present in that specific section text. Return ONLY a valid raw JSON array of objects without markdown formatting or backticks using this schema: [{\\\"section_number\\\": 1, \\\"title\\\": \\\"Section Title\\\", \\\"content\\\": \\\"Full text of this section\\\", \\\"keywords\\\": [\\\"term1\\\", \\\"term2\\\", \\\"term3\\\"]}]\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($node[\"Extract from Pdf\"].json.text) }}\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        864,
+        0
+      ],
+      "id": "4273e3be-7d8e-4156-a177-06565f6a265b",
+      "name": "OpenAI Chunk Parser",
+      "credentials": {
+        "openAiApi": {
+          "id": "4u13WY2Ds8JB97XO",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pure JS UUID generator (bypasses n8n crypto restriction)\nfunction generateUUID() {\n  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {\n    const r = Math.random() * 16 | 0;\n    const v = c === 'x' ? r : (r & 0x3 | 0x8);\n    return v.toString(16);\n  });\n}\n\nconst uniqueSopId = generateUUID();\n\n// Safely extract clause_id without crashing if an upstream node hasn't executed\nlet activeClauseId = 27;\ntry {\n  activeClauseId = $(\"Module Context\").first().json.activeClauseId \n                || $(\"📦 Module Context\").first().json.activeClauseId \n                || $(\"Webhook Trigger\").first().json.body?.clause_id \n                || 27;\n} catch (e) {\n  activeClauseId = 27;\n}\n\n// Read the text response returned by OpenAI\nconst rawContent = $input.first().json.choices[0].message.content;\n\n// Clean up markdown backticks\nconst cleanedJsonString = rawContent\n  .replace(/```json/gi, \"\")\n  .replace(/```/g, \"\")\n  .trim();\n\n// Parse the JSON output\nconst parsedData = JSON.parse(cleanedJsonString);\n\n// Safely extract the array whether OpenAI returned [...] or { \"sections\": [...] }\nconst sectionsArray = Array.isArray(parsedData) \n  ? parsedData \n  : (parsedData.sections || Object.values(parsedData)[0] || []);\n\n// Return mapped n8n item objects with clause_id and keywords included\nreturn sectionsArray.map((section) => ({\n  json: {\n    sop_id: uniqueSopId,\n    section_number: section.section_number,\n    title: section.title,\n    content: section.content,\n    keywords: Array.isArray(section.keywords) ? section.keywords : [],\n    clause_id: activeClauseId\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        0
+      ],
+      "id": "7ac6425c-d1ff-4daa-88db-e5d9828bc2d3",
+      "name": "Format Sections for Database"
+    },
+    {
+      "parameters": {
+        "tableId": "sop_ingestions",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "section_number",
+              "fieldValue": "={{ $json.section_number }}"
+            },
+            {
+              "fieldId": "=sop_id",
+              "fieldValue": "={{ $json.sop_id }}"
+            },
+            {
+              "fieldId": "title",
+              "fieldValue": "={{ $json.title }}"
+            },
+            {
+              "fieldId": "content",
+              "fieldValue": "={{ $json.content }}"
+            },
+            {
+              "fieldId": "clause_id",
+              "fieldValue": "={{ $json.clause_id }}"
+            },
+            {
+              "fieldId": "keywords",
+              "fieldValue": "={{ $json.keywords }}"
+            },
+            {
+              "fieldId": "embedding",
+              "fieldValue": "={{ $json.embedding }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1616,
+        0
+      ],
+      "id": "3fb0a628-ec04-4669-ae22-612e0505a09f",
+      "name": "Save Ingested SOP Sections",
+      "credentials": {
+        "supabaseApi": {
+          "id": "cKHZABsCqrfBavHo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"gpt-4o\",\n  \"temperature\": 0.2,\n  \"response_format\": { \"type\": \"json_object\" },\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a senior GMP compliance auditor. You will be provided with: 1) A Regulatory Clause Rule, 2) A Golden Standard Benchmark SOP, and 3) An Incoming Facility SOP under audit. Compare the incoming SOP against both the clause rule and the golden standard. Identify gaps, compliance score (0-100), status ('Compliant', 'Partially Compliant', 'Non-Compliant'), summary, and actionable recommendations. Output strictly valid JSON with keys: 'score' (number), 'status' (string), 'gaps' (array of strings), 'summary' (string providing a 2-3 sentence executive overview of the audit results), and 'recommendation' (string providing clear corrective action steps).\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify(\"=== 1. REGULATORY CLAUSE ===\\n\" + ($(\"Get Clause Rule\").first().json.clause_text || $(\"Get Clause Rule\").first().json.title || \"\") + \"\\n\\n=== 2. GOLDEN STANDARD BENCHMARK SOP ===\\n\" + ($(\"Combine Masters\").first().json.golden_sop_text || \"\") + \"\\n\\n=== 3. INCOMING FACILITY SOP UNDER AUDIT ===\\n\" + ($(\"Extract from Pdf\").first().json.text || \"\")) }}\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -112,
+        448
+      ],
+      "id": "af3d3098-b5ad-4c8d-8e93-c91d2cd63ad1",
+      "name": "OpenAI 3-Way Audit",
+      "credentials": {
+        "openAiApi": {
+          "id": "4u13WY2Ds8JB97XO",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const responseText = $input.first().json.choices[0].message.content;\nconst parsedAudit = JSON.parse(responseText);\n\n// Safely extract clause_id without throwing an exception if an upstream node hasn't run\nlet activeClauseId = 27;\ntry {\n  activeClauseId = $(\"Webhook Trigger\").first().json.body?.clause_id \n                || $(\"Get Clause Rule\").first().json.clause_id \n                || $(\"Get Clause Rule\").first().json.id \n                || 27;\n} catch (e) {\n  activeClauseId = 27;\n}\n\nreturn [{\n  json: {\n    score: parsedAudit.score,\n    status: parsedAudit.status,\n    gaps: parsedAudit.gaps,\n    discrepancies: parsedAudit.gaps,\n    summary: parsedAudit.summary,\n    recommendation: parsedAudit.recommendation || parsedAudit.recommendations || null,\n    clause_id: activeClauseId,\n    sop_id: $(\"Save Ingested SOP Sections\").first().json.sop_id || null,\n    ingestion_id: $(\"Save Ingested SOP Sections\").first().json.id || null\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        448
+      ],
+      "id": "806ae806-5eaa-42a0-b549-eeb9a5fd22ba",
+      "name": "Parse Audit Output"
+    },
+    {
+      "parameters": {
+        "tableId": "sop_reports",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "sop_id",
+              "fieldValue": "={{ $json.sop_id }}"
+            },
+            {
+              "fieldId": "clause_id",
+              "fieldValue": "={{ $json.clause_id }}"
+            },
+            {
+              "fieldId": "score",
+              "fieldValue": "={{ $json.score }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "={{ $json.status }}"
+            },
+            {
+              "fieldId": "gaps",
+              "fieldValue": "={{ JSON.stringify($json.gaps) }}"
+            },
+            {
+              "fieldId": "discrepancies",
+              "fieldValue": "={{ $json.gaps }}"
+            },
+            {
+              "fieldId": "ingestion_id",
+              "fieldValue": "={{ $json.ingestion_id }}"
+            },
+            {
+              "fieldId": "recommendation",
+              "fieldValue": "={{ $json.recommendation }}"
+            },
+            {
+              "fieldId": "summary",
+              "fieldValue": "={{ $json.summary }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        256,
+        448
+      ],
+      "id": "e01a385c-d005-444a-80cd-f1ef67ab5778",
+      "name": "Save Audit Report",
+      "credentials": {
+        "supabaseApi": {
+          "id": "cKHZABsCqrfBavHo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "sop_masters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "clause_id",
+              "condition": "eq",
+              "keyValue": "={{ $(\"Webhook Trigger\").first().json.body?.clause_id || $(\"Webhook Trigger\").first().json?.clause_id || 27 }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        80,
+        224
+      ],
+      "id": "65893f14-27ae-4e3c-ad92-fbb45e8b48a1",
+      "name": "Get SOP Master",
+      "credentials": {
+        "supabaseApi": {
+          "id": "cKHZABsCqrfBavHo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Combine all reference sections into one formatted string\nconst sections = $input.all().map(item => item.json);\n\n// Sort by section_number and join text\nconst fullBenchmarkText = sections\n  .sort((a, b) => (a.section_number || 0) - (b.section_number || 0))\n  .map(sec => `Section ${sec.section_number || ''}: ${sec.title || 'Untitled'}\\n${sec.content || ''}`)\n  .join('\\n\\n');\n\nreturn [{\n  json: {\n    golden_sop_text: fullBenchmarkText\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        256,
+        224
+      ],
+      "id": "86e55396-4098-4ec8-9a30-999f5f5f0c2b",
+      "name": "Combine Masters"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "278bb878-9a31-48c5-ba0f-cd1549ca8dc7",
+              "name": "activeClauseId",
+              "value": "={{ $json.body?.clause_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        0
+      ],
+      "id": "fac8c7b9-92f8-46f0-ac8d-3922cb941dfe",
+      "name": "Module Context"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"text-embedding-3-small\",\n  \"input\": {{ JSON.stringify($json.title + \": \" + $json.content) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "788ab37b-a682-4cf3-92fd-5c3c2ac7c2b1",
+      "name": "Generate Embedding",
+      "credentials": {
+        "openAiApi": {
+          "id": "4u13WY2Ds8JB97XO",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item, index) => {\n  // Access section metadata from the chunking node upstream\n  const sectionData = $('Format Sections for Database').all()[index].json;\n\n  return {\n    json: {\n      sop_id: sectionData.sop_id,\n      section_number: sectionData.section_number,\n      content: sectionData.content,\n      // Pull metadata fields or default if missing\n      title: sectionData.title || null,\n      clause_id: sectionData.clause_id || null,\n      keywords: sectionData.keywords || [],\n      embedding: item.json.data[0].embedding\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        0
+      ],
+      "id": "7929f276-8be5-4fa0-98c7-3b4a861c8229",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Module Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Clauses Database": {
+      "main": [
+        [
+          {
+            "node": "Format Prompt Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from Pdf": {
+      "main": [
+        [
+          {
+            "node": "Get Clauses Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Prompt Payload": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Chunk Parser",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chunk Parser": {
+      "main": [
+        [
+          {
+            "node": "Format Sections for Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Sections for Database": {
+      "main": [
+        [
+          {
+            "node": "Generate Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Ingested SOP Sections": {
+      "main": [
+        [
+          {
+            "node": "Get Clause Rule",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Clause Rule": {
+      "main": [
+        [
+          {
+            "node": "Get SOP Master",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI 3-Way Audit": {
+      "main": [
+        [
+          {
+            "node": "Parse Audit Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Audit Output": {
+      "main": [
+        [
+          {
+            "node": "Save Audit Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get SOP Master": {
+      "main": [
+        [
+          {
+            "node": "Combine Masters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Masters": {
+      "main": [
+        [
+          {
+            "node": "OpenAI 3-Way Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Module Context": {
+      "main": [
+        [
+          {
+            "node": "Extract from Pdf",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Embedding": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Save Ingested SOP Sections",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Audit Report": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "88443671-eafc-40e0-97ec-2a7001672e1b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "32824d9fe0bc6c1ffc380577746a0f25aad0a9282681ece0c470772f7ae15970"
+  },
+  "id": "AeQh7Ey2BwErMHyy",
+  "tags": [
+    {
+      "updatedAt": "2026-08-18T18:52:41.751Z",
+      "createdAt": "2026-08-18T18:52:41.751Z",
+      "id": "yfVXfMZoNUqGokrJ",
+      "name": "AuditFlow"
+    }
+  ]
+}

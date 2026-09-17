@@ -1,20 +1,34 @@
 import { NextResponse } from "next/server";
+import {
+  AUDIT_WORKFLOWS,
+  isAuditWorkflowId,
+  workflowFromDocumentType,
+  type AuditWorkflowId,
+} from "@/lib/audit-workflows";
 import { readServerEnv } from "@/lib/server-env-local";
 import {
   n8nStartedWithoutReport,
   reportFromN8nWebhook,
 } from "@/lib/sop-report";
+import {
+  assertAuditUpload,
+  runNativeAudit,
+} from "@/lib/services/run-native-audit";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
 
 const AUDIT_CLAUSE_ID = "27";
-const SOP_WEBHOOK_FALLBACK = "http://localhost:5678/webhook/auditflow/upload";
 const MAX_FILE_BYTES = 20 * 1024 * 1024;
 const WEBHOOK_TIMEOUT_MS = 120_000;
 
 function env(name: string) {
   return readServerEnv(name) || process.env[name]?.trim() || "";
+}
+
+function useN8n() {
+  const flag = env("AUDIT_USE_N8N").toLowerCase();
+  return flag === "1" || flag === "true";
 }
 
 function errorText(error: unknown) {
@@ -36,17 +50,33 @@ function isLocalN8nUrl(url: string) {
 }
 
 const LOCAL_N8N_DOWN_ERROR =
-  "n8n is not running on localhost:5678. Start n8n, publish auditflow_sop_ingestion, and set Respond to When Last Node Finishes.";
+  "n8n is not running on localhost:5678. Start n8n, publish the SOP/BPR/FIR webhooks, and set Respond to When Last Node Finishes.";
 
 const LOCAL_N8N_ON_VERCEL_ERROR =
   "This deployed site cannot reach n8n on your computer (localhost:5678). Use npm run dev with n8n running locally.";
 
-function sopWebhookUrl() {
-  return (
-    env("NEXT_PUBLIC_N8N_SOP_INGESTION_URL") ||
-    env("N8N_WORKFLOW_ONE_URL") ||
-    SOP_WEBHOOK_FALLBACK
-  );
+function resolveWorkflow(
+  workflowRaw: FormDataEntryValue | null,
+  documentTypeRaw: FormDataEntryValue | null,
+): AuditWorkflowId {
+  if (typeof workflowRaw === "string" && isAuditWorkflowId(workflowRaw.trim())) {
+    return workflowRaw.trim() as AuditWorkflowId;
+  }
+  const fromDocument =
+    typeof documentTypeRaw === "string"
+      ? workflowFromDocumentType(documentTypeRaw)
+      : null;
+  return fromDocument ?? "sop";
+}
+
+function webhookUrlFor(workflow: AuditWorkflowId) {
+  const meta = AUDIT_WORKFLOWS[workflow];
+  const fromEnv = env(meta.webhookEnv);
+  if (fromEnv) return fromEnv;
+  if (workflow === "sop") {
+    return env("N8N_WORKFLOW_ONE_URL") || meta.webhookFallback;
+  }
+  return meta.webhookFallback;
 }
 
 function webhookFetchHeaders(url: string): HeadersInit | undefined {
@@ -61,15 +91,9 @@ function webhookFetchHeaders(url: string): HeadersInit | undefined {
 }
 
 export async function POST(request: Request) {
-  const webhookUrl = sopWebhookUrl();
   const startedAt = new Date().toISOString();
-
-  if (isLocalN8nUrl(webhookUrl) && process.env.VERCEL) {
-    return NextResponse.json(
-      { error: LOCAL_N8N_ON_VERCEL_ERROR },
-      { status: 503 },
-    );
-  }
+  let webhookUrl = AUDIT_WORKFLOWS.sop.webhookFallback;
+  let workflowLabel = AUDIT_WORKFLOWS.sop.label;
 
   try {
     const incoming = await request.formData();
@@ -77,40 +101,64 @@ export async function POST(request: Request) {
 
     if (!(file instanceof File) || file.size === 0) {
       return NextResponse.json(
-        { error: "A PDF file is required." },
-        { status: 400 },
-      );
-    }
-
-    const isPdf =
-      file.type === "application/pdf" ||
-      file.name.toLowerCase().endsWith(".pdf");
-    if (!isPdf) {
-      return NextResponse.json(
-        { error: "Only PDF files can be uploaded." },
+        { error: "A file is required." },
         { status: 400 },
       );
     }
 
     if (file.size > MAX_FILE_BYTES) {
       return NextResponse.json(
-        { error: "PDF must be 20 MB or smaller." },
+        { error: "File must be 20 MB or smaller." },
         { status: 400 },
       );
     }
 
-    const outbound = new FormData();
-            outbound.append("file", file, file.name);
     const clauseIdRaw = incoming.get("clause_id");
     const clauseId =
       typeof clauseIdRaw === "string" && clauseIdRaw.trim()
         ? clauseIdRaw.trim()
         : AUDIT_CLAUSE_ID;
+    const documentType = incoming.get("document_type");
+    const workflow = resolveWorkflow(incoming.get("workflow"), documentType);
+    workflowLabel = AUDIT_WORKFLOWS[workflow].label;
+
+    try {
+      assertAuditUpload(file, workflow);
+    } catch (error) {
+      return NextResponse.json({ error: errorText(error) }, { status: 400 });
+    }
+
+    if (!useN8n()) {
+      const result = await runNativeAudit({
+        workflow,
+        file,
+        clauseId,
+      });
+      return NextResponse.json({
+        ok: true,
+        startedAt,
+        fileName: file.name,
+        report: result.report,
+        document_id: result.document_id,
+        audit_run_id: result.audit_run_id,
+      });
+    }
+
+    const outbound = new FormData();
+    outbound.append("file", file, file.name);
     outbound.append("clause_id", clauseId);
     outbound.append("timestamp", startedAt);
-    const documentType = incoming.get("document_type");
     if (typeof documentType === "string" && documentType.trim()) {
       outbound.append("document_type", documentType.trim());
+    }
+    outbound.append("workflow", workflow);
+    webhookUrl = webhookUrlFor(workflow);
+
+    if (isLocalN8nUrl(webhookUrl) && process.env.VERCEL) {
+      return NextResponse.json(
+        { error: LOCAL_N8N_ON_VERCEL_ERROR },
+        { status: 503 },
+      );
     }
 
     const webhookResponse = await fetch(webhookUrl, {
@@ -128,8 +176,9 @@ export async function POST(request: Request) {
       // Keep raw text when the webhook does not return JSON.
     }
 
-    console.log("[Run Audit] SOP n8n webhook", {
+    console.log(`[Run Audit] ${workflowLabel} n8n webhook`, {
       url: webhookUrl,
+      workflow,
       status: webhookResponse.status,
       fileName: file.name,
       fileSize: file.size,
@@ -148,8 +197,8 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error: detail
-            ? `SOP webhook failed (${webhookResponse.status}): ${detail}`
-            : `SOP webhook failed (${webhookResponse.status})`,
+            ? `${workflowLabel} webhook failed (${webhookResponse.status}): ${detail}`
+            : `${workflowLabel} webhook failed (${webhookResponse.status})`,
           details: webhookBody,
         },
         { status: 502 },
@@ -159,8 +208,8 @@ export async function POST(request: Request) {
     const report = reportFromN8nWebhook(webhookBody);
     if (!report) {
       const error = n8nStartedWithoutReport(webhookBody)
-        ? "n8n replied before the audit finished. In the SOP Webhook node, set Respond to “When Last Node Finishes”, and return score, status, summary, gaps, and recommendation."
-        : "SOP webhook did not return a report. The last n8n node should output score, status, summary, gaps, and recommendation.";
+        ? `n8n replied before the audit finished. In the ${workflowLabel} Webhook node, set Respond to “When Last Node Finishes”, and return score, status, summary, gaps, and recommendation.`
+        : `${workflowLabel} webhook did not return a report. The last n8n node should output score, status, summary, gaps, and recommendation.`;
       return NextResponse.json(
         { error, details: webhookBody },
         { status: 502 },
@@ -176,7 +225,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     const message = errorText(error);
-    console.warn("[Run Audit] SOP request failed", message);
+    console.warn(`[Run Audit] ${workflowLabel} request failed`, message);
     const friendly =
       isLocalN8nUrl(webhookUrl) && /fetch failed|ECONNREFUSED|5678/i.test(message)
         ? LOCAL_N8N_DOWN_ERROR

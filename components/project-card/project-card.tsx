@@ -2,10 +2,11 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { FileText, Check, ChevronDown, ShoppingBag, X } from "lucide-react";
+import { FileText, ChevronDown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useCart } from "@/components/cart/cart-context";
+import SectionHeader from "@/components/section-header/section-header";
 import {
   Command,
   CommandEmpty,
@@ -20,47 +21,30 @@ import {
 } from "@/components/ui/popover";
 import { GMP_CLAUSES, clauseSearchFilter, clauseSearchKeywords, clauseSearchValue, getGmpClause } from "@/lib/gmp-clauses";
 import {
+  AuditRunError,
+  acceptForDocumentType,
+  acceptForWorkflow,
+  postAuditRun,
+  validateAuditFile,
+} from "@/lib/audit-client";
+import {
   formatSopReportDownload,
   type SopAuditReport,
 } from "@/lib/sop-report";
 import { cn } from "@/lib/utils";
+import {
+  AUDIT_WORKFLOWS,
+  documentTypesForWorkflow,
+  workflowFromDocumentType,
+  type AuditWorkflowId,
+  type DocumentType,
+} from "@/lib/audit-workflows";
 import { goldStandardCatalogItem } from "@/lib/cart";
+import {
+  AuditReportTable,
+} from "@/components/audit-report/audit-report-table";
 
 const AUDIT_CLAUSE_ID = "27";
-const CLAUSE_DOCUMENTS = [
-  "SOP",
-  "Policy",
-  "Work Instruction",
-  "Form",
-  "Training Record",
-] as const;
-
-function formatStatusLabel(status: string | null | undefined) {
-  const raw = (status ?? "Processed").trim();
-  return raw
-    .toLowerCase()
-    .split(/\s+/)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
-function splitFileName(name: string) {
-  const separator = name.lastIndexOf(".");
-  if (separator <= 0 || separator === name.length - 1) {
-    return { base: name, extension: "" };
-  }
-  return {
-    base: name.slice(0, separator),
-    extension: name.slice(separator),
-  };
-}
-
-function statusDotClass(status: string | null | undefined) {
-  if ((status ?? "").toLowerCase().includes("partial")) {
-    return "bg-[#F5C400]";
-  }
-  return "bg-[oklch(55%_0_0)]";
-}
 
 function serializeUnknownError(error: unknown) {
   if (error instanceof Error) {
@@ -82,8 +66,10 @@ export type ProjectCardProps = {
   href?: string;
   /** Default: “See Case Study”. */
   ctaLabel?: string;
-  /** When true, CTA uploads a PDF and POSTs to the SOP n8n webhook. */
+  /** When true, CTA uploads a file and POSTs to /api/audit/run. */
   runAudit?: boolean;
+  /** Dashboard entry point: SOP, BPR, or FIR. Document pills switch the native workflow. */
+  auditWorkflow?: AuditWorkflowId;
   /** Default: side-by-side on md+ (home). `vertical`: image on top, copy + CTA below (case study “Next project”). */
   layout?: "horizontal" | "vertical";
 };
@@ -95,20 +81,20 @@ export default function ProjectCard({
   href,
   ctaLabel = "See Case Study",
   runAudit: isAuditCard = false,
+  auditWorkflow = "sop",
   layout = "horizontal",
 }: ProjectCardProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const pendingDocTypeRef = useRef<(typeof CLAUSE_DOCUMENTS)[number] | null>(
-    null,
-  );
+  const pendingDocTypeRef = useRef<DocumentType | null>(null);
+  const documentTypes = documentTypesForWorkflow(auditWorkflow);
   const [auditStatus, setAuditStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [auditMessage, setAuditMessage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedDocType, setSelectedDocType] = useState<
-    (typeof CLAUSE_DOCUMENTS)[number] | null
-  >(null);
+  const [selectedDocType, setSelectedDocType] = useState<DocumentType | null>(
+    null,
+  );
   const [selectedClauseId, setSelectedClauseId] = useState<string | null>(null);
   const [clausePickerOpen, setClausePickerOpen] = useState(false);
 
@@ -118,6 +104,9 @@ export default function ProjectCard({
   const selectedClause = getGmpClause(selectedClauseId);
   const canRunAudit = Boolean(selectedClause && selectedFile);
   const { addItem } = useCart();
+  const runWorkflow: AuditWorkflowId =
+    workflowFromDocumentType(selectedDocType) ?? auditWorkflow;
+  const runLabel = AUDIT_WORKFLOWS[runWorkflow].label;
 
   function resetAudit() {
     setAuditStatus("idle");
@@ -131,10 +120,10 @@ export default function ProjectCard({
   }
 
   function downloadReport() {
-    const fileName = selectedFile?.name ?? "SOP.pdf";
+    const fileName = selectedFile?.name ?? `${runLabel}.pdf`;
     const report = sopReport
       ? formatSopReportDownload(sopReport, fileName)
-      : ["AuditFlow SOP Report", "", `File: ${fileName}`].join("\n");
+      : [`AuditFlow ${runLabel} Report`, "", `File: ${fileName}`].join("\n");
 
     const blob = new Blob([report], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -158,273 +147,149 @@ export default function ProjectCard({
   async function handleRunAudit() {
     if (!selectedFile || !selectedClause || auditStatus === "loading") return;
 
+    const fileError = validateAuditFile(selectedFile, runWorkflow);
+    if (fileError) {
+      setAuditStatus("error");
+      setAuditMessage(fileError);
+      return;
+    }
+
     setAuditStatus("loading");
-    setAuditMessage(`Running SOP audit for ${selectedFile.name}…`);
-    console.log("[Run Audit] Uploading SOP PDF via /api/audit/run…", {
-      clause_id: selectedClause.id,
-      documentType: selectedDocType,
-      fileName: selectedFile.name,
-      fileSize: selectedFile.size,
-    });
+    setAuditMessage(`Running ${runLabel} audit for ${selectedFile.name}…`);
+    setSopReport(null);
 
     try {
-      const body = new FormData();
-      body.append("file", selectedFile);
-      body.append("clause_id", selectedClause.id);
-      if (selectedDocType) {
-        body.append("document_type", selectedDocType);
-      }
-
       const started = Date.now();
-      const response = await fetch("/api/audit/run", {
-        method: "POST",
-        body,
+      const payload = await postAuditRun({
+        file: selectedFile,
+        clauseId: selectedClause.id,
+        workflow: runWorkflow,
+        documentType: selectedDocType,
       });
-      const raw = await response.text();
-      let payload: {
-        ok?: boolean;
-        webhook?: unknown;
-        error?: string;
-        details?: unknown;
-        fileName?: string;
-        report?: SopAuditReport;
-      } = {};
-      if (raw) {
-        try {
-          payload = JSON.parse(raw) as typeof payload;
-        } catch {
-          payload = { error: raw.slice(0, 300) };
-        }
-      }
 
       const elapsed = Date.now() - started;
-      if (elapsed < 1400) {
-        await new Promise((resolve) => setTimeout(resolve, 1400 - elapsed));
-      }
-
-      if (!response.ok || !payload.ok || !payload.report) {
-        const message =
-          (typeof payload.error === "string" && payload.error.trim()) ||
-          `SOP audit failed (${response.status} ${response.statusText})`.trim();
-        setAuditStatus("error");
-        setAuditMessage(message);
-        console.warn(
-          `[Run Audit] SOP audit failed: ${response.status} ${message}`,
-        );
-        return;
+      if (elapsed < 800) {
+        await new Promise((resolve) => setTimeout(resolve, 800 - elapsed));
       }
 
       setSopReport(payload.report);
       setAuditStatus("success");
+      setAuditMessage(null);
       setProcessedAt(
         payload.report.created_at
           ? new Date(payload.report.created_at)
           : new Date(),
       );
-      console.log("[Run Audit] SOP report ready", payload.report);
     } catch (error) {
       setAuditStatus("error");
-      const serialized = serializeUnknownError(error);
-      setAuditMessage(serialized.message || "Failed to trigger SOP workflow");
-      console.warn(
-        `[Run Audit] SOP webhook request failed: ${serialized.message}`,
-      );
+      const message =
+        error instanceof AuditRunError
+          ? error.message
+          : error instanceof Error &&
+              (error.name === "TimeoutError" || error.name === "AbortError")
+            ? `${runLabel} audit timed out. Try a smaller file or run it again.`
+            : serializeUnknownError(error).message ||
+              `${runLabel} audit failed.`;
+      setAuditMessage(message);
     }
   }
 
-  function openFilePicker(docType: (typeof CLAUSE_DOCUMENTS)[number]) {
+  function openFilePicker(docType: DocumentType) {
     if (!selectedClause || auditStatus === "loading") return;
     pendingDocTypeRef.current = docType;
-    fileInputRef.current?.click();
+    const input = fileInputRef.current;
+    if (input) {
+      input.accept = acceptForDocumentType(docType, auditWorkflow);
+    }
+    input?.click();
   }
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
+    const nextType = pendingDocTypeRef.current;
+    const nextWorkflow = workflowFromDocumentType(nextType) ?? auditWorkflow;
+    const fileError = validateAuditFile(file, nextWorkflow);
+    setSelectedDocType(nextType);
+    setSopReport(null);
+    if (fileError) {
+      setSelectedFile(null);
+      setAuditStatus("error");
+      setAuditMessage(fileError);
+      return;
+    }
     setSelectedFile(file);
-    setSelectedDocType(pendingDocTypeRef.current);
     setAuditStatus("idle");
     setAuditMessage(null);
-    setSopReport(null);
   }
 
   if (isAuditCard) {
     if (auditStatus === "success") {
-      const fileName = selectedFile?.name ?? "SOP.pdf";
-      const { base: fileBaseName, extension: fileExtension } =
-        splitFileName(fileName);
+      const fileName = selectedFile?.name ?? `${runLabel}.pdf`;
+      const clauseLabel = selectedClause
+        ? `${selectedClause.label} (${selectedClause.shortName})`
+        : `Clause ${sopReport?.clause_id ?? AUDIT_CLAUSE_ID}`;
 
       return (
-        <div className="w-full min-w-0 max-w-[960px] rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-          <Card className="relative w-full overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
-            <CardContent className="flex flex-col bg-[oklch(100%_0_0)] px-6 pb-6 pt-4 md:px-8 md:pb-8 md:pt-6 lg:h-[min(40rem,calc(100dvh-12rem))] lg:max-h-[min(40rem,calc(100dvh-12rem))]">
+        <div className="w-full min-w-0">
+          <SectionHeader
+            title="Audit Verified"
+            description={`Review document, type, timestamp, score, and status for each finding. Upgrade the ${selectedDocType ?? runLabel} to a compliant version, or download the report.`}
+            actions={
               <button
                 type="button"
                 onClick={resetAudit}
-                className="absolute right-4 top-4 z-10 flex size-10 items-center justify-center rounded-full bg-transparent text-[oklch(0%_0_0)] hover:bg-transparent"
+                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-transparent text-foreground hover:bg-[var(--sidebar-hover)]"
                 aria-label="Close report"
               >
                 <X className="size-5" />
               </button>
-
-              <div className="pr-12 text-left">
-                <h4 className="text-h4 font-semibold text-[oklch(0%_0_0)] m-0 mb-3">
-                  Audit Verified
-                </h4>
-                <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-6">
-                  Document processed successfully. View your compliance report
-                  below.
-                </p>
-              </div>
-
-              <div className="grid min-h-0 flex-1 grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-x-10 lg:gap-y-8">
-                <div className="flex min-h-0 flex-col gap-6">
-                  <div className="flex shrink-0 flex-col gap-3 rounded-[8px] bg-[oklch(97%_0_0)] p-4">
-                    <div className="flex min-w-0 items-center gap-3">
-                      <FileText className="size-6 shrink-0 text-[oklch(35%_0.04_264)]" />
-                      <p
-                        className="text-body1-strong font-bold text-[oklch(0%_0_0)] m-0 flex min-w-0 items-baseline"
-                        title={fileName}
-                      >
-                        <span className="truncate">{fileBaseName}</span>
-                        {fileExtension ? (
-                          <span className="shrink-0">{fileExtension}</span>
-                        ) : null}
-                      </p>
-                    </div>
-                    <div className="flex items-start justify-between gap-4">
-                      <span className="text-body1 text-[oklch(0%_0_0)]">
-                        Score:
-                      </span>
-                      <span className="text-body1 text-right text-[oklch(0%_0_0)]">
-                        {sopReport?.score ?? "—"}
-                      </span>
-                    </div>
-                    <div className="flex items-start justify-between gap-4">
-                      <span className="text-body1 text-[oklch(0%_0_0)]">
-                        Status:
-                      </span>
-                      <span className="inline-flex items-center justify-end gap-2 text-body1 text-right text-[oklch(0%_0_0)]">
-                        <span
-                          className={cn(
-                            "h-3 w-3 shrink-0 rounded-full",
-                            statusDotClass(sopReport?.status),
-                          )}
-                          aria-hidden
-                        />
-                        {formatStatusLabel(sopReport?.status)}
-                      </span>
-                    </div>
-                    <div className="flex items-start justify-between gap-4">
-                      <span className="text-body1 text-[oklch(0%_0_0)]">
-                        Audited Clause:
-                      </span>
-                      <span className="text-body1 text-right text-[oklch(0%_0_0)]">
-                        {selectedClause
-                          ? `${selectedClause.label} (${selectedClause.shortName})`
-                          : `Clause ${sopReport?.clause_id ?? AUDIT_CLAUSE_ID} (Doc Practices)`}
-                      </span>
-                    </div>
-                    <div className="flex items-start justify-between gap-4">
-                      <span className="text-body1 text-[oklch(0%_0_0)]">
-                        Timestamp:
-                      </span>
-                      <span className="text-body1 text-right text-[oklch(0%_0_0)]">
-                        {(processedAt ?? new Date()).toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-                    <p className="text-body1-strong font-bold text-[oklch(0%_0_0)] m-0 mb-2 shrink-0">
-                      Summary
-                    </p>
-                    <div className="min-h-0 max-h-40 flex-1 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin] lg:max-h-none">
-                      <p className="text-body1 text-[oklch(0%_0_0)] m-0">
-                        {sopReport?.summary ?? "—"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex min-h-0 flex-col">
-                  <div className="mb-6 flex min-h-0 flex-1 flex-col overflow-hidden">
-                    <p className="text-body1-strong font-bold text-[oklch(0%_0_0)] m-0 mb-2 shrink-0">
-                      Findings
-                    </p>
-                    <ul className="m-0 min-h-0 max-h-40 flex-1 list-disc space-y-2 overflow-y-auto overscroll-contain py-0 pl-5 pr-1 [scrollbar-width:thin] lg:max-h-none">
-                      {(sopReport?.findings.length
-                        ? sopReport.findings
-                        : ["No findings reported."]
-                      ).map((finding) => (
-                        <li
-                          key={finding}
-                          className="text-body1 text-[oklch(0%_0_0)]"
-                        >
-                          {finding}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-                    <p className="text-body1-strong font-bold text-[oklch(0%_0_0)] m-0 mb-2 shrink-0">
-                      Recommendation
-                    </p>
-                    <div className="min-h-0 max-h-40 flex-1 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin] lg:max-h-none">
-                      <p className="text-body1 text-[oklch(0%_0_0)] m-0">
-                        {sopReport?.recommendation ?? "—"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
+            }
+          />
+          <div className="rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+            <Card className="relative w-full overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
+              <CardContent className="h-auto bg-[oklch(100%_0_0)] p-0">
+                <AuditReportTable
+                  report={sopReport}
+                  fileName={fileName}
+                  documentType={selectedDocType ?? runLabel}
+                  clauseLabel={clauseLabel}
+                  timestamp={processedAt ?? new Date()}
+                />
+              </CardContent>
+              <CardFooter className="justify-end gap-3 border-t-[1px] border-border px-6 py-4">
                 <Button
                   type="button"
-                  size="lg"
-                  className="project-card-cta w-full shrink-0 self-end rounded-full border border-[oklch(0%_0_0)] bg-[oklch(100%_0_0)] text-[oklch(0%_0_0)] hover:bg-[oklch(96%_0_0)] hover:text-[oklch(0%_0_0)]"
+                  variant="outline"
+                  className="h-8 min-h-8 rounded-full px-4 py-0 text-xs"
                   onClick={addCompliantSopToCart}
                 >
-                  {addedToCart ? (
-                    <Check className="size-5" />
-                  ) : (
-                    <ShoppingBag className="size-5" />
-                  )}
-                  <span className="text-button">
-                    {addedToCart
-                      ? "Added to cart"
-                      : "Upgrade to Compliant SOP"}
-                  </span>
+                  {addedToCart
+                    ? "Added"
+                    : `Upgrade ${selectedDocType ?? runLabel}`}
                 </Button>
-
                 <Button
                   type="button"
                   variant="black"
-                  size="lg"
-                  className="project-card-cta w-full shrink-0 self-end rounded-full"
+                  className="h-8 min-h-8 rounded-full px-4 py-0 text-xs"
                   onClick={downloadReport}
                 >
-                  <span className="text-button">Download Report</span>
+                  Download Report
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </CardFooter>
+            </Card>
+          </div>
         </div>
       );
     }
 
     return (
-      <div className="w-full min-w-0 max-w-[520px] rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+      <div className="w-full min-w-0 max-w-[520px]">
+        <SectionHeader title={title} description={description} />
+        <div className="rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
         <Card className="w-full overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
-          <CardContent className="flex flex-col text-left bg-[oklch(100%_0_0)] px-6 pb-6 pt-4 md:px-8 md:pb-8 md:pt-6">
-            <h4 className="text-h4 text-[oklch(0%_0_0)] m-0 mb-2">
-              Clause Selection
-            </h4>
-            <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-6">
-              Choose a regulatory clause to begin your compliance assessment.
-            </p>
-
+          <CardContent className="flex flex-col text-left bg-[oklch(100%_0_0)] px-6 pb-6 pt-6 md:px-8 md:pb-8">
             <Popover open={clausePickerOpen} onOpenChange={setClausePickerOpen}>
               <div className="mb-6">
                 <PopoverTrigger asChild>
@@ -506,7 +371,7 @@ export default function ProjectCard({
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {CLAUSE_DOCUMENTS.map((label) => (
+                  {documentTypes.map((label) => (
                     <button
                       key={label}
                       type="button"
@@ -535,7 +400,15 @@ export default function ProjectCard({
             ) : null}
 
             {auditMessage ? (
-              <p className="text-body2 text-[oklch(0%_0_0)] m-0 mb-4">
+              <p
+                role={auditStatus === "error" ? "alert" : "status"}
+                className={cn(
+                  "text-body2 m-0 mb-4",
+                  auditStatus === "error"
+                    ? "text-[oklch(42%_0.16_25)]"
+                    : "text-[oklch(0%_0_0)]",
+                )}
+              >
                 {auditMessage}
               </p>
             ) : null}
@@ -543,7 +416,7 @@ export default function ProjectCard({
             <input
               ref={fileInputRef}
               type="file"
-              accept="application/pdf,.pdf"
+              accept={acceptForWorkflow(auditWorkflow)}
               className="sr-only"
               onChange={handleFileChange}
             />
@@ -557,7 +430,7 @@ export default function ProjectCard({
                 auditStatus === "loading" && "pointer-events-none",
               )}
               onClick={handleRunAudit}
-              disabled={!canRunAudit}
+              disabled={!canRunAudit || auditStatus === "loading"}
               aria-busy={auditStatus === "loading"}
             >
               <svg
@@ -599,6 +472,7 @@ export default function ProjectCard({
             </Button>
           </CardContent>
         </Card>
+        </div>
       </div>
     );
   }

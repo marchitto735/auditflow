@@ -21,6 +21,8 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import { PAGE_GUTTER_CLASS, PAGE_INNER_CLASS, NAV_UTILITY_BUTTON_CLASS } from "@/lib/page-layout";
+import { cn } from "@/lib/utils";
 
 console.log("🔥 MODULE LOAD:", "header");
 
@@ -44,12 +46,28 @@ function MobileMenuMark({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 function HeaderBreadcrumbs({ pathname }: { pathname: string }) {
+  const drillDown =
+    pathname === "/dashboard/audits"
+      ? "Audit Log"
+      : pathname === "/dashboard/findings"
+        ? "Open Findings"
+        : pathname === "/dashboard/score-analysis"
+          ? "Score Breakdown"
+          : null;
+
   const current =
-    pathname === "/reports"
+    drillDown ??
+    (pathname === "/reports"
       ? "Reports"
       : pathname === "/help"
         ? "Help"
-        : "Dietary Supplements Audit";
+        : pathname === "/audit/sop"
+          ? "SOP Audit"
+          : pathname === "/audit/bpr"
+            ? "BPR Audit"
+            : pathname === "/audit/fir"
+              ? "FIR Audit"
+              : "Dashboard");
 
   return (
     <Breadcrumb>
@@ -60,9 +78,23 @@ function HeaderBreadcrumbs({ pathname }: { pathname: string }) {
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator>/</BreadcrumbSeparator>
-        <BreadcrumbItem>
-          <BreadcrumbPage className="font-semibold">{current}</BreadcrumbPage>
-        </BreadcrumbItem>
+        {drillDown ? (
+          <>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/">Dashboard</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator>/</BreadcrumbSeparator>
+            <BreadcrumbItem>
+              <BreadcrumbPage className="font-semibold">{drillDown}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </>
+        ) : (
+          <BreadcrumbItem>
+            <BreadcrumbPage className="font-semibold">{current}</BreadcrumbPage>
+          </BreadcrumbItem>
+        )}
       </BreadcrumbList>
     </Breadcrumb>
   );
@@ -93,27 +125,32 @@ try {
       <header
         className="fixed top-0 left-0 right-0 z-50 w-full min-w-0 bg-background pt-6 text-foreground"
       >
-        <div className="w-full px-4 md:px-8 lg:px-16">
-          <div className="max-w-[1328px] mx-auto">
-            <div className="flex h-12 min-w-0 items-center gap-3 py-0">
-              <Button
-                type="button"
-                variant="ghost"
-                className="nav-button h-12 min-h-12 w-12 min-w-12 justify-center px-0 bg-transparent border-0 shadow-none hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)] lg:ml-16"
-                onClick={() => setMobileMenuOpen(true)}
-                aria-label="Open menu"
-              >
-                <Menu className="size-6 shrink-0 text-foreground" />
-              </Button>
-              <div className="min-w-0 flex-1">
-                <HeaderBreadcrumbs pathname={pathname} />
+        <div className={PAGE_GUTTER_CLASS}>
+          <div className={PAGE_INNER_CLASS}>
+            <div className="flex h-12 min-w-0 items-center py-0">
+              <div className="flex min-w-0 flex-1 items-center gap-4">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className={cn(
+                    NAV_UTILITY_BUTTON_CLASS,
+                    "-ml-2 dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]",
+                  )}
+                  onClick={() => setMobileMenuOpen(true)}
+                  aria-label="Open menu"
+                >
+                  <Menu className="size-5 shrink-0 text-foreground" />
+                </Button>
+                <div className="min-w-0 flex-1">
+                  <HeaderBreadcrumbs pathname={pathname} />
+                </div>
               </div>
-              <div className="ml-auto flex shrink-0 items-center">
+              <div className="ml-auto flex shrink-0 items-center gap-3">
                 <CartTrigger />
                 <Button
                   type="button"
                   variant="ghost"
-                  className="nav-button h-12 min-h-12 w-12 min-w-12 px-0 bg-transparent border-0 shadow-none hover:bg-[var(--sidebar-hover)]"
+                  className={NAV_UTILITY_BUTTON_CLASS}
                   aria-label="Open profile"
                 >
                   <CircleUser className="size-5" />
@@ -129,11 +166,11 @@ try {
           id="mobile-menu-sheet"
           side="left"
           className="mobile-menu-sheet w-full max-w-full sm:max-w-full lg:max-w-[240px] border-r-0 bg-sidebar border-border text-sidebar-foreground"
-          closeButtonClassName="top-6 right-[10px] h-8 w-8 min-h-8 min-w-8 p-0 rounded-md border-0 bg-transparent hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)] text-foreground hover:text-sidebar-accent-foreground !data-[state=open]:bg-transparent transition-colors flex items-center justify-center [&_svg]:text-current [&_svg]:transition-colors hover:[&_svg]:text-sidebar-accent-foreground"
+          closeButtonClassName="top-6 right-[10px] h-12 min-h-12 w-12 min-w-12 p-0 rounded-full border-0 bg-transparent shadow-none outline-none ring-0 ring-offset-0 hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)] text-foreground hover:text-sidebar-accent-foreground !data-[state=open]:bg-transparent focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors flex items-center justify-center [&_svg]:text-current [&_svg]:transition-colors hover:[&_svg]:text-sidebar-accent-foreground"
         >
           <SheetTitle className="sr-only">Menu</SheetTitle>
           <div className="flex flex-col items-start px-2 pt-6 pb-4">
-                      <div className="ps-sidebar-crown-row mb-6 flex h-8 items-center">
+                      <div className="ps-sidebar-crown-row mb-6 flex h-12 items-center">
                         <MobileMenuMark onNavigate={() => setMobileMenuOpen(false)} />
                       </div>
                       <SidebarGroup>
@@ -148,7 +185,7 @@ try {
                                 onClick={() => setMobileMenuOpen(false)}
                                 className="no-underline w-full"
                               >
-                                Clauses
+                                Dashboard
                               </Link>
                             </SidebarMenuButton>
                           </SidebarMenuItem>

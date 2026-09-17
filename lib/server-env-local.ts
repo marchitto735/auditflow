@@ -127,7 +127,10 @@ function mergeDotenvFromAllCandidates(): Map<string, string> {
   parsed.sort((a, b) => a.len - b.len);
   const merged = new Map<string, string>();
   for (const { map } of parsed) {
-    for (const [k, v] of map) merged.set(k, v);
+    for (const [k, v] of map) {
+      if (!v) continue;
+      merged.set(k, v);
+    }
   }
   return merged;
 }

@@ -53,7 +53,7 @@ export default function Footer() {
                       asChild
                     >
                       <Link href="/" className="text-button">
-                        Clauses
+                        Dashboard
                       </Link>
                     </Button>
 

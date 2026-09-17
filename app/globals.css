@@ -86,6 +86,7 @@
   --font-size-subtitle2: var(--text-subtitle2-size);
   --font-size-body1: var(--text-body1-size);
   --font-size-body2: var(--text-body2-size);
+  --font-size-button: var(--text-button-size);
   --font-size-caption: var(--text-caption-size);
   --font-size-overline: var(--text-overline-size);
 
@@ -111,7 +112,9 @@
   --text-subtitle2--line-height: var(--line-height-subtitle2);
   --text-body1--line-height: var(--line-height-body1);
   --text-body2--line-height: var(--line-height-body2);
+  --text-button: var(--text-button-size);
   --text-button--line-height: var(--line-height-button);
+  --text-button--letter-spacing: var(--text-button-letter-spacing);
   --text-caption--line-height: var(--line-height-caption);
   --text-overline--line-height: var(--line-height-overline);
 
@@ -150,6 +153,7 @@
   --font-weight-body1-strong: var(--text-body1-strong-weight);
   --font-weight-body2: var(--text-body2-weight);
   --font-weight-button: var(--text-button-weight);
+  --letter-spacing-button: var(--text-button-letter-spacing);
   --font-weight-caption: var(--text-caption-weight);
   --font-weight-overline: var(--text-overline-weight);
 }
@@ -896,6 +900,7 @@
     font-size: var(--text-button-size);
     line-height: var(--line-height-button);
     font-weight: var(--font-weight-button);
+    letter-spacing: var(--text-button-letter-spacing);
   }
 
   /* Crown row — same as theme row: plain CSS so inset always applies. */

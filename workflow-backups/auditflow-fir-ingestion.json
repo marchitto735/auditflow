@@ -1,0 +1,671 @@
+{
+  "name": "auditflow-fir-ingestion",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "clauses",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $(\"Webhook Trigger\").first().json.body?.clause_id || 27 }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        -160
+      ],
+      "id": "4ee51f9b-90d2-4204-875e-54cbfa27cd4d",
+      "name": "Get Clause Rule",
+      "executeOnce": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "cKHZABsCqrfBavHo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "eda02a12-3985-4259-9339-48a5f4731a9e",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -208,
+        -160
+      ],
+      "id": "3810e8ed-dd2b-492c-a84b-960e0da77da7",
+      "name": "Webhook Trigger",
+      "webhookId": "eda02a12-3985-4259-9339-48a5f4731a9e"
+    },
+    {
+      "parameters": {
+        "url": "https://uvqeuklielzocmwppupt.supabase.co/rest/v1/clauses",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "id,clause_number,clause_text,standard,category"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2cWV1a2xpZWx6b2Ntd3BwdXB0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTc4MDg2NCwiZXhwIjoyMTAxMzU2ODY0fQ.NcnbD24kJrg90q8ono35UM0pzvIqtnFj6JzfMk-2124"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        768,
+        -160
+      ],
+      "id": "e9aca76e-3431-44a0-bad8-d7a6a7be1fbb",
+      "name": "Get Clauses Database",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "v7sflzN8hMkycE6R",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nif (!items.length) {\n  throw new Error(\"No input received from Extract from File node.\");\n}\n\nconst item = items[0].json;\n\n// Check all common n8n file extraction key variants\nlet rawText = \n  item.text || \n  item.text_0 || \n  item.data || \n  item.text_content || \n  item.content || \n  item.extractedText || \n  (item.binary && item.binary.data ? item.binary.data : \"\") || \n  \"\";\n\n// Convert double quotes to single quotes & sanitize backslashes/newlines\nconst sanitizedText = String(rawText)\n  .replace(/\"/g, \"'\")\n  .replace(/\\\\/g, \"/\")\n  .replace(/[\\r\\n]+/g, \" \")\n  .replace(/\\s+/g, \" \")\n  .trim();\n\nreturn [{\n  json: {\n    text: sanitizedText\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        -160
+      ],
+      "id": "53e31ec9-41ae-488d-b7ee-fd548644f3c6",
+      "name": "Format Prompt Payload"
+    },
+    {
+      "parameters": {
+        "jsCode": "const outputItem = $input.first().json;\n// If the previous node outputted directly or nested, let's grab the text payload:\nconst textContent = outputItem.output?.content?.[0]?.text || outputItem.text || {};\n\nlet activeClauseId = 27;\ntry {\n  if (typeof $ !== 'undefined' && $(\"Get Clause Rule\")?.length) {\n    activeClauseId = $(\"Get Clause Rule\").first().json.clause_id || $(\"Get Clause Rule\").first().json.id || 27;\n  }\n} catch (e) {}\n\nreturn [{\n  json: {\n    score: textContent.score || 70,\n    status: textContent.status || \"Partially Compliant\",\n    gaps: textContent.gaps || [],\n    discrepancies: textContent.gaps || [],\n    summary: textContent.summary || \"Audit completed with findings.\",\n    recommendation: textContent.recommendation || textContent.recommendations || null,\n    clause_id: activeClauseId,\n    sop_id: null,\n    ingestion_id: null\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2272,
+        -160
+      ],
+      "id": "65923181-1daf-4537-8245-0e5fa01464e4",
+      "name": "Parse Audit Output"
+    },
+    {
+      "parameters": {
+        "tableId": "fir_reports",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "id",
+              "fieldValue": "={{ $json.id }}"
+            },
+            {
+              "fieldId": "created_at",
+              "fieldValue": "={{ $json.created_at }}"
+            },
+            {
+              "fieldId": "fir_id",
+              "fieldValue": "={{ $json.fir_id }}"
+            },
+            {
+              "fieldId": "clause_id",
+              "fieldValue": "={{ $json.clause_id }}"
+            },
+            {
+              "fieldId": "score",
+              "fieldValue": "={{ $json.score }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "={{ $json.status }}"
+            },
+            {
+              "fieldId": "gaps",
+              "fieldValue": "={{ $json.gaps }}"
+            },
+            {
+              "fieldId": "discrepancies",
+              "fieldValue": "={{ JSON.stringify($json.discrepancies) }}"
+            },
+            {
+              "fieldId": "ingestion_id",
+              "fieldValue": "={{ $json.ingestion_id }}"
+            },
+            {
+              "fieldId": "audit_run_id",
+              "fieldValue": "={{ $json.audit_run_id }}"
+            },
+            {
+              "fieldId": "recommendation",
+              "fieldValue": "={{ $json.recommendation }}"
+            },
+            {
+              "fieldId": "summary",
+              "fieldValue": "={{ $json.summary }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2464,
+        -160
+      ],
+      "id": "c0ff6439-c131-47a3-9141-297e8b9ababd",
+      "name": "Save Audit Report",
+      "credentials": {
+        "supabaseApi": {
+          "id": "cKHZABsCqrfBavHo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "fir_masters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "asset_tag_id",
+              "condition": "eq",
+              "keyValue": "={{ $(\"Webhook Trigger\").first().json.body?.asset_tag_id || $(\"Webhook Trigger\").first().json?.asset_tag_id || \"BIO-SUITE3-01\" }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1632,
+        -160
+      ],
+      "id": "04453b4b-0cbe-49e5-a89f-47fbf6775d50",
+      "name": "Get SOP Master",
+      "credentials": {
+        "supabaseApi": {
+          "id": "cKHZABsCqrfBavHo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Combine all reference sections into one formatted string\nconst sections = $input.all().map(item => item.json);\n\n// Sort by section_number and join text\nconst fullBenchmarkText = sections\n  .sort((a, b) => (a.section_number || 0) - (b.section_number || 0))\n  .map(sec => `Section ${sec.section_number || ''}: ${sec.title || 'Untitled'}\\n${sec.content || ''}`)\n  .join('\\n\\n');\n\nreturn [{\n  json: {\n    golden_sop_text: fullBenchmarkText\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1808,
+        -160
+      ],
+      "id": "6fd84ce8-f5a3-40d1-8f44-05e728a367d7",
+      "name": "Combine Masters"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "You are a regulatory compliance auditor evaluating physical evidence and handwritten documentation for Good Documentation Practices (GDP). Analyze the provided checklist image (fir_checklist) and equipment photo (equipment_photo). Extract all visual signatures, handwritten notes, pass/fail checkmarks, asset tag numbers, and any visible physical non-compliance issues into a structured JSON object. Return strictly valid JSON."
+            },
+            {
+              "type": "image",
+              "imageType": "base64",
+              "binaryPropertyName": "fir_log",
+              "imageDetail": "high"
+            },
+            {
+              "type": "image",
+              "imageType": "base64",
+              "binaryPropertyName": "equipment_photo",
+              "imageDetail": "high"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "include": []
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        128,
+        -160
+      ],
+      "id": "6a7de6ad-5a53-439e-b994-2b0e8fdfcc7f",
+      "name": "Message a model Jpg",
+      "credentials": {
+        "openAiApi": {
+          "id": "4u13WY2Ds8JB97XO",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "fir_ingestions",
+          "mode": "list",
+          "cachedResultName": "fir_ingestions"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        1168,
+        -160
+      ],
+      "id": "89a60b15-cd85-48a6-ac7d-97bcae249b70",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "cKHZABsCqrfBavHo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        48
+      ],
+      "id": "1a9a7723-39bd-4bfb-b93d-f53207b85f55",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "4u13WY2Ds8JB97XO",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "=={{ $json.text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        1296,
+        48
+      ],
+      "id": "151edde9-5094-4d0d-bbae-9f33d7739a5f",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a senior GMP compliance auditor. You will be provided with: 1) A Regulatory Clause Rule, 2) A Golden Standard Benchmark SOP, and 3) An Incoming Facility SOP under audit. Compare the incoming SOP against both the clause rule and the golden standard. Identify gaps, compliance score (0-100), status ('Compliant', 'Partially Compliant', 'Non-Compliant'), summary, and actionable recommendations. Output strictly valid JSON with keys: 'score' (number), 'status' (string), 'gaps' (array of strings), 'summary' (string providing a 2-3 sentence executive overview of the audit results), and 'recommendation' (string providing clear corrective action steps)."
+            },
+            {
+              "content": "=={{\n  \"=== 1. REGULATORY CLAUSE ===\\n\" + \n  (($(\"Get Clause Rule\").first().json.clause_text || $(\"Get Clause Rule\").first().json.title) || \"\") + \n  \"\\n\\n=== 2. GOLDEN STANDARD BENCHMARK SOP ===\\n\" + \n  ($json.golden_sop_text || \"\") + \n  \"\\n\\n=== 3. INCOMING FACILITY SOP UNDER AUDIT ===\\n\" + \n  ($json.text || \"\")\n}}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "textFormat": {
+            "textOptions": {
+              "type": "json_object"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1968,
+        -160
+      ],
+      "id": "cc078f32-57ca-4363-8578-69783e9d00eb",
+      "name": "OpenAI 3-Way Audit",
+      "credentials": {
+        "openAiApi": {
+          "id": "4u13WY2Ds8JB97XO",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  if (!item.binary) continue;\n\n  for (const key of Object.keys(item.binary)) {\n    const file = item.binary[key];\n    const fileName = (file.fileName || '').toLowerCase();\n    const mime = (file.mimeType || '').toLowerCase();\n\n    // 1. Repair PDFs\n    if (mime.includes('octet-stream') && fileName.endsWith('.pdf')) {\n      file.mimeType = 'application/pdf';\n      file.fileExtension = 'pdf';\n    } \n    \n    // 2. Repair JPEGs\n    else if (mime.includes('octet-stream') && (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg'))) {\n      file.mimeType = 'image/jpeg';\n      file.fileExtension = 'jpg';\n    } \n    \n    // 3. Repair PNGs\n    else if (mime.includes('octet-stream') && fileName.endsWith('.png')) {\n      file.mimeType = 'image/png';\n      file.fileExtension = 'png';\n    }\n  }\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        -160
+      ],
+      "id": "838d66ef-e915-4669-86f5-1d58b8eef17f",
+      "name": "Format Ingestion Payload"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Get the raw text from the OpenAI vision model output\n// Based on your screenshot, it's located in the output array's content text\nlet rawText = $input.first().json.output[0].content[0].text;\n\n// 2. Clean up markdown formatting (OpenAI often wraps JSON in ```json ... ```)\nrawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();\n\n// 3. Parse the cleaned text into a real JavaScript object\nlet parsedData = {};\ntry {\n  parsedData = JSON.parse(rawText);\n} catch (error) {\n  console.log(\"Error parsing JSON:\", error);\n}\n\n// 4. Point to the 'checklist' object based on your OpenAI output structure\nconst checklist = parsedData.checklist || {};\n\n// 5. Map the fields and return the clean object for Supabase\nreturn {\n  json: {\n    // Generate a fallback ID using the current timestamp if one doesn't exist\n    fir_id: checklist.fir_id ? parseInt(checklist.fir_id, 10) : Date.now(),\n    \n    // Map the exact keys extracted by the vision model\n    title: checklist.document_ref || \"FIR-DEFAULT\",\n    asset_tag_id: checklist.asset_tag_id || \"UNKNOWN\",\n    inspector_name: checklist.lead_inspector || \"Unassigned\",\n    location_zone: checklist.facility || \"General\",\n    inspection_date: checklist.date || new Date().toISOString().split('T')[0],\n    operational_status: checklist.operational_status || \"PENDING\",\n    \n    // Store the findings/defects if present\n    defects_found: checklist.audit_evaluation ? JSON.stringify(checklist.audit_evaluation) : null,\n    \n    // Store the full raw JSON safely in case you need it later\n    raw_extracted_json: parsedData\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        -160
+      ],
+      "id": "1bbed632-e367-40a3-8c88-60893be21182",
+      "name": "Parse Vision JSON Output"
+    },
+    {
+      "parameters": {
+        "tableId": "fir_ingestions",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "title",
+              "fieldValue": "={{ $json.title }}"
+            },
+            {
+              "fieldId": "content",
+              "fieldValue": "={{ JSON.stringify($json.raw_extracted_json) }}"
+            },
+            {
+              "fieldId": "created_at",
+              "fieldValue": "={{ $now.toISO() }}"
+            },
+            {
+              "fieldId": "keywords",
+              "fieldValue": "={{ [\"inspection\", \"audit\"] }}"
+            },
+            {
+              "fieldId": "file_url"
+            },
+            {
+              "fieldId": "asset_tag_id",
+              "fieldValue": "={{ $json.asset_tag_id }}"
+            },
+            {
+              "fieldId": "location_zone",
+              "fieldValue": "={{ $json.location_zone }}"
+            },
+            {
+              "fieldId": "inspector_name",
+              "fieldValue": "={{ $json.inspector_name }}"
+            },
+            {
+              "fieldId": "inspection_date",
+              "fieldValue": "={{ $json.inspection_date }}"
+            },
+            {
+              "fieldId": "raw_extracted_json",
+              "fieldValue": "={{ JSON.stringify($json.raw_extracted_json) }}"
+            },
+            {
+              "fieldId": "defects_found",
+              "fieldValue": "={{ $json.defects_found }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "={{ $json.operational_status }}"
+            },
+            {
+              "fieldId": "clause_id",
+              "fieldValue": "={{ $json.clause_id - integer}}"
+            },
+            {
+              "fieldId": "section_number",
+              "fieldValue": "={{ $json.section_number - integer}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        592,
+        -160
+      ],
+      "id": "e2fd3bea-6c17-4100-a905-c4170ac2b670",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "cKHZABsCqrfBavHo",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Format Ingestion Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Clauses Database": {
+      "main": [
+        [
+          {
+            "node": "Format Prompt Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Prompt Payload": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Clause Rule": {
+      "main": [
+        [
+          {
+            "node": "Get SOP Master",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Audit Output": {
+      "main": [
+        [
+          {
+            "node": "Save Audit Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get SOP Master": {
+      "main": [
+        [
+          {
+            "node": "Combine Masters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Masters": {
+      "main": [
+        [
+          {
+            "node": "OpenAI 3-Way Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model Jpg": {
+      "main": [
+        [
+          {
+            "node": "Parse Vision JSON Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "main": [
+        [
+          {
+            "node": "Get Clause Rule",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI 3-Way Audit": {
+      "main": [
+        [
+          {
+            "node": "Parse Audit Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Ingestion Payload": {
+      "main": [
+        [
+          {
+            "node": "Message a model Jpg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Vision JSON Output": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a row": {
+      "main": [
+        [
+          {
+            "node": "Get Clauses Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "5c665961-f344-486a-b565-c8e6a0c6dac8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "32824d9fe0bc6c1ffc380577746a0f25aad0a9282681ece0c470772f7ae15970"
+  },
+  "id": "D5gGKgwAlTC4sGH3",
+  "tags": [
+    {
+      "updatedAt": "2026-08-18T18:52:41.751Z",
+      "createdAt": "2026-08-18T18:52:41.751Z",
+      "id": "yfVXfMZoNUqGokrJ",
+      "name": "AuditFlow"
+    }
+  ]
+}

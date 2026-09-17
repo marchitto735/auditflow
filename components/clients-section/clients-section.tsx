@@ -11,6 +11,7 @@ export type ClientsSectionProps = {
     href?: string;
     ctaLabel?: string;
     runAudit?: boolean;
+    auditWorkflow?: "sop" | "bpr" | "fir";
   }>;
 };
 
@@ -29,6 +30,7 @@ export default function ClientsSection({ projects }: ClientsSectionProps) {
                 href={project.href}
                 ctaLabel={project.ctaLabel}
                 runAudit={project.runAudit}
+                auditWorkflow={project.auditWorkflow}
               />
             ))}
           </div>

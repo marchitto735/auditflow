@@ -70,7 +70,7 @@ try {
                       href="/"
                       className="text-button text-foreground no-underline w-full"
                     >
-                      Clauses
+                      Dashboard
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

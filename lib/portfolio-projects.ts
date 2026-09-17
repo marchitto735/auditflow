@@ -5,7 +5,7 @@ export type HomeProjectCard = {
   href?: string;
   /** Overrides default “See Case Study” CTA (e.g. Coming Soon when no case study yet). */
   ctaLabel?: string;
-  /** When true, CTA POSTs to the local n8n webhook instead of navigating. */
+  /** When true, CTA uploads a file and POSTs to /api/audit/run. */
   runAudit?: boolean;
 };
 

@@ -1,20 +1,26 @@
 'use client'
 
-import { triggerN8nWorkflow } from '@/app/actions/audit-actions'
+import { AUDIT_REPORTS_PATH, AUDIT_RUN_PATH } from "@/lib/audit-client"
 
 export default function TestPage() {
-  const handleTestTrigger = async () => {
-    const result = await triggerN8nWorkflow('one', { test: true, message: 'Hello from AuditFlow' })
-    console.log(result)
+  async function pingReports() {
+    const response = await fetch(AUDIT_REPORTS_PATH)
+    const payload = await response.json()
+    console.log("Native audit reports", payload)
   }
 
   return (
     <main className="p-8">
-      <button 
-        onClick={handleTestTrigger}
-        className="px-4 py-2 bg-blue-600 text-white rounded-md font-medium"
+      <p className="mb-4 text-sm">
+        Audits run through {AUDIT_RUN_PATH}. Reports are listed from{" "}
+        {AUDIT_REPORTS_PATH}.
+      </p>
+      <button
+        type="button"
+        onClick={pingReports}
+        className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white"
       >
-        Test n8n Workflow One
+        Load stored reports
       </button>
     </main>
   )
