@@ -23,8 +23,6 @@ export type AuditWorkflow = {
   status: string;
   lastRun: string;
   cta: string;
-  webhookEnv: string;
-  webhookFallback: string;
 };
 
 export const AUDIT_WORKFLOWS: Record<AuditWorkflowId, AuditWorkflow> = {
@@ -37,8 +35,6 @@ export const AUDIT_WORKFLOWS: Record<AuditWorkflowId, AuditWorkflow> = {
     status: "Active",
     lastRun: "10m ago",
     cta: "Launch SOP Audit",
-    webhookEnv: "NEXT_PUBLIC_N8N_SOP_INGESTION_URL",
-    webhookFallback: "http://localhost:5678/webhook/auditflow/upload",
   },
   bpr: {
     id: "bpr",
@@ -49,9 +45,6 @@ export const AUDIT_WORKFLOWS: Record<AuditWorkflowId, AuditWorkflow> = {
     status: "Ready",
     lastRun: "2h ago",
     cta: "Launch BPR Audit",
-    webhookEnv: "NEXT_PUBLIC_N8N_BPR_INGESTION_URL",
-    webhookFallback:
-      "http://localhost:5678/webhook/76dabb5f-1c5c-4dcc-9537-86327a05ad9f",
   },
   fir: {
     id: "fir",
@@ -62,9 +55,6 @@ export const AUDIT_WORKFLOWS: Record<AuditWorkflowId, AuditWorkflow> = {
     status: "Draft",
     lastRun: "—",
     cta: "Launch FIR Audit",
-    webhookEnv: "NEXT_PUBLIC_N8N_FIR_INGESTION_URL",
-    webhookFallback:
-      "http://localhost:5678/webhook/eda02a12-3985-4259-9339-48a5f4731a9e",
   },
 };
 

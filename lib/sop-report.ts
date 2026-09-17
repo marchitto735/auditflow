@@ -71,57 +71,6 @@ export function toPublicSopReport(row: {
   };
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function looksLikeReport(value: Record<string, unknown>) {
-  return (
-    "score" in value ||
-    "status" in value ||
-    "summary" in value ||
-    "recommendation" in value ||
-    "gaps" in value ||
-    "findings" in value
-  );
-}
-
-export function reportFromN8nWebhook(body: unknown): SopAuditReport | null {
-  if (body == null) return null;
-
-  if (Array.isArray(body) && body[0] && isRecord(body[0])) {
-    return looksLikeReport(body[0])
-      ? toPublicSopReport(body[0] as Parameters<typeof toPublicSopReport>[0])
-      : reportFromN8nWebhook(body[0]);
-  }
-
-  if (!isRecord(body)) return null;
-
-  const message = typeof body.message === "string" ? body.message : "";
-  if (/workflow was started/i.test(message) && !looksLikeReport(body)) {
-    return null;
-  }
-
-  if (looksLikeReport(body)) {
-    return toPublicSopReport(body as Parameters<typeof toPublicSopReport>[0]);
-  }
-
-  for (const key of ["report", "data", "json", "body"] as const) {
-    if (key in body) {
-      const nested = reportFromN8nWebhook(body[key]);
-      if (nested) return nested;
-    }
-  }
-
-  return null;
-}
-
-export function n8nStartedWithoutReport(body: unknown) {
-  if (!isRecord(body)) return false;
-  const message = typeof body.message === "string" ? body.message : "";
-  return /workflow was started/i.test(message);
-}
-
 export function formatSopReportDownload(
   report: SopAuditReport,
   fileName: string,
