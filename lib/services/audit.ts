@@ -2,7 +2,8 @@ import "server-only";
 
 import { openaiClient } from "@/lib/services/openai";
 import { toPublicSopReport, type SopAuditReport } from "@/lib/sop-report";
-import { createSupabaseAdmin } from "@/lib/supabase/admin";
+import { createSupabaseAdmin, readSupabaseServerConfig } from "@/lib/supabase/admin";
+import { formatSupabaseReachError } from "@/lib/supabase/url";
 import type { AuditWorkflowId } from "@/lib/audit-workflows";
 
 const AUDIT_MODEL = "gpt-4o";
@@ -141,7 +142,11 @@ async function insertBestEffort(
   const supabase = createSupabaseAdmin();
   const { data, error } = await supabase.from(table).insert(row).select("id").maybeSingle();
   if (error) {
-    console.warn(`[Audit] ${table} insert skipped: ${error.message}`);
+    const { url } = readSupabaseServerConfig();
+    console.warn(
+      `[Audit] ${table} insert skipped:`,
+      formatSupabaseReachError(table, error.message, url),
+    );
     return null;
   }
   const id = (data as { id?: unknown } | null)?.id;

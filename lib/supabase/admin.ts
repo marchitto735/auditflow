@@ -2,6 +2,7 @@ import "server-only";
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { readServerEnv } from "@/lib/server-env-local";
+import { parseSupabaseProjectUrl } from "@/lib/supabase/url";
 
 function env(name: string) {
   return readServerEnv(name) || process.env[name]?.trim() || "";
@@ -16,7 +17,9 @@ function firstEnv(...names: string[]) {
 }
 
 export function readSupabaseServerConfig() {
-  const url = firstEnv("NEXT_PUBLIC_SUPABASE_URL", "SUPABASE_URL");
+  const url = parseSupabaseProjectUrl(
+    firstEnv("NEXT_PUBLIC_SUPABASE_URL", "SUPABASE_URL"),
+  ).origin;
   const serviceRoleKey = firstEnv(
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_SECRET_KEY",
@@ -27,13 +30,10 @@ export function readSupabaseServerConfig() {
 
 export function createSupabaseAdmin(): SupabaseClient {
   const { url, serviceRoleKey } = readSupabaseServerConfig();
-  const missing: string[] = [];
-  if (!url) missing.push("NEXT_PUBLIC_SUPABASE_URL");
-  if (!serviceRoleKey) missing.push("SUPABASE_SERVICE_ROLE_KEY");
 
-  if (missing.length) {
+  if (!serviceRoleKey) {
     throw new Error(
-      `Missing ${missing.join(" and ")}. Add ${missing.join(" and ")} to .env.local and restart npm run dev. SUPABASE_SERVICE_ROLE_KEY is the service_role secret from Supabase → Project Settings → API (server-only; do not prefix with NEXT_PUBLIC_).`,
+      "Missing SUPABASE_SERVICE_ROLE_KEY. Set the service_role or sb_secret key on this host (Vercel env or .env.local). Do not prefix with NEXT_PUBLIC_.",
     );
   }
 

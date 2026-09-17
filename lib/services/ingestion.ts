@@ -4,7 +4,8 @@ import { randomUUID } from "node:crypto";
 import { extractText } from "unpdf";
 import { EMBEDDING_MODEL } from "@/lib/rag/model-constants";
 import { openaiClient } from "@/lib/services/openai";
-import { createSupabaseAdmin } from "@/lib/supabase/admin";
+import { createSupabaseAdmin, readSupabaseServerConfig } from "@/lib/supabase/admin";
+import { formatSupabaseReachError } from "@/lib/supabase/url";
 
 const DEFAULT_CLAUSE_ID = 27;
 const CHUNK_MODEL = "gpt-4o-mini";
@@ -183,7 +184,10 @@ export async function saveDocumentIngestions(
     .select("id");
 
   if (error) {
-    throw new Error(`Failed to save ${table}: ${error.message}`);
+    const { url } = readSupabaseServerConfig();
+    throw new Error(
+      formatSupabaseReachError(`Failed to save ${table}`, error.message, url),
+    );
   }
 
   return (data ?? []).map((row) => String((row as { id: unknown }).id));

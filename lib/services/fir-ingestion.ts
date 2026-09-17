@@ -7,7 +7,11 @@ import {
   parseClauseId,
 } from "@/lib/services/ingestion";
 import { openaiClient } from "@/lib/services/openai";
-import { createSupabaseAdmin } from "@/lib/supabase/admin";
+import {
+  createSupabaseAdmin,
+  readSupabaseServerConfig,
+} from "@/lib/supabase/admin";
+import { formatSupabaseReachError } from "@/lib/supabase/url";
 
 const VISION_MODEL = "gpt-4o-mini";
 const EMBEDDING_DIMENSIONS = 1536;
@@ -166,7 +170,14 @@ export async function ingestFirDocument(options: {
     .maybeSingle();
 
   if (error) {
-    throw new Error(`Failed to save fir_ingestions: ${error.message}`);
+    const { url } = readSupabaseServerConfig();
+    throw new Error(
+      formatSupabaseReachError(
+        "Failed to save fir_ingestions",
+        error.message,
+        url,
+      ),
+    );
   }
 
   return {
