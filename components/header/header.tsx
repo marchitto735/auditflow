@@ -21,6 +21,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import SmartHeader from "@/components/header/smart-header";
 import { PAGE_GUTTER_CLASS, PAGE_INNER_CLASS, NAV_UTILITY_BUTTON_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -122,8 +123,10 @@ try {
     console.log("MOUNT:", "Header");
     return (
       <>
-      <header
-        className="fixed top-0 left-0 right-0 z-50 w-full min-w-0 bg-background pt-6 text-foreground"
+      <SmartHeader
+        className="bg-background pt-6 text-foreground"
+        locked={mobileMenuOpen}
+        resetKey={pathname}
       >
         <div className={PAGE_GUTTER_CLASS}>
           <div className={PAGE_INNER_CLASS}>
@@ -159,7 +162,7 @@ try {
             </div>
           </div>
         </div>
-      </header>
+      </SmartHeader>
       <div className="h-[4.5rem] shrink-0" aria-hidden />
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetContent
