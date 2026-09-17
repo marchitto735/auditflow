@@ -13,7 +13,7 @@ export function parseSupabaseProjectUrl(raw: string | undefined | null): URL {
   const normalized = normalizeSupabaseUrl(raw);
   if (!normalized) {
     throw new Error(
-      "Missing NEXT_PUBLIC_SUPABASE_URL. Set it to https://<project-ref>.supabase.co (no trailing slash).",
+      "Missing SUPABASE_URL. Set it to https://<project-ref>.supabase.co (no trailing slash).",
     );
   }
 
@@ -22,13 +22,13 @@ export function parseSupabaseProjectUrl(raw: string | undefined | null): URL {
     parsed = new URL(normalized);
   } catch {
     throw new Error(
-      `Invalid NEXT_PUBLIC_SUPABASE_URL "${normalized}". Use https://<project-ref>.supabase.co with no quotes or trailing slash.`,
+      `Invalid SUPABASE_URL "${normalized}". Use https://<project-ref>.supabase.co with no quotes or trailing slash.`,
     );
   }
 
   if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
     throw new Error(
-      `NEXT_PUBLIC_SUPABASE_URL must be an http(s) URL, got "${parsed.protocol}".`,
+      `SUPABASE_URL must be an http(s) URL, got "${parsed.protocol}".`,
     );
   }
 
@@ -49,5 +49,5 @@ export function formatSupabaseReachError(
   url: string | undefined | null,
 ): string {
   const host = supabaseHostHint(url);
-  return `${action}: ${message} (host: ${host}). Confirm NEXT_PUBLIC_SUPABASE_URL on this deployment matches Project Settings → API.`;
+  return `${action}: ${message} (host: ${host}). Confirm SUPABASE_URL on this deployment matches Project Settings → API.`;
 }

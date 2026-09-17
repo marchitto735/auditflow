@@ -248,7 +248,7 @@ export default function ProjectCard({
             }
           />
           <div className="rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-            <Card className="relative w-full overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
+            <Card className="relative w-full overflow-hidden rounded-2xl border border-border bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
               <CardContent className="h-auto bg-[oklch(100%_0_0)] p-0">
                 <AuditReportTable
                   report={sopReport}
@@ -258,27 +258,31 @@ export default function ProjectCard({
                   timestamp={processedAt ?? new Date()}
                 />
               </CardContent>
-              <CardFooter className="justify-end gap-3 border-t-[1px] border-border px-6 py-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-8 min-h-8 rounded-full px-4 py-0 text-xs"
-                  onClick={addCompliantSopToCart}
-                >
-                  {addedToCart
-                    ? "Added"
-                    : `Upgrade ${selectedDocType ?? runLabel}`}
-                </Button>
+              <CardFooter className="flex w-full justify-end border-t-[1px] border-border px-6 py-4">
                 <Button
                   type="button"
                   variant="black"
-                  className="h-8 min-h-8 rounded-full px-4 py-0 text-xs"
+                  className="rounded-full"
                   onClick={downloadReport}
                 >
                   Download Report
                 </Button>
               </CardFooter>
             </Card>
+          </div>
+          <div className="mt-4 flex w-full items-center justify-center rounded-2xl border border-[oklch(82%_0.05_220)] bg-[oklch(95%_0.03_220)] px-6 py-5 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+            <p className="text-body1 m-0 text-center text-[oklch(0%_0_0)]">
+              Want to fix these issues immediately?{" "}
+              <button
+                type="button"
+                className="text-button inline underline decoration-solid underline-offset-2 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0%_0_0)] focus-visible:ring-offset-2"
+                onClick={addCompliantSopToCart}
+              >
+                {addedToCart
+                  ? "Added to cart"
+                  : `Upgrade ${selectedDocType ?? runLabel} Document`}
+              </button>
+            </p>
           </div>
         </div>
       );

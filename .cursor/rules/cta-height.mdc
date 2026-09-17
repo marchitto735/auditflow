@@ -1,0 +1,12 @@
+---
+description: Primary CTA height is 48px from the design system token.
+globs: components/**/*.tsx,app/**/*.tsx
+alwaysApply: false
+---
+
+# Primary CTAs
+
+- Labeled action buttons (`Button`, `buttonVariants`) are **48px** tall via `--cta-height`.
+- Primary CTA: filled (`variant="black"`). Secondary CTA: outlined, no fill (`variant="outline"`) with a **black** border (`oklch(0% 0 0)`), not `--border` grey.
+- Do not override height with `h-8`, `h-9`, `h-10`, `min-h-8`, or `text-xs` on labeled CTAs.
+- When a primary and secondary CTA sit together, wrap them in `CtaPair` so they share equal width (side by side or stacked). Do not size them to their labels.
