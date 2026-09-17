@@ -96,7 +96,7 @@ export default function ProjectCard({
     null,
   );
   const [selectedClauseId, setSelectedClauseId] = useState<string | null>(null);
-  const [clausePickerOpen, setClausePickerOpen] = useState(false);
+  const [clausePickerOpen, setClausePickerOpen] = useState(true);
 
   const [processedAt, setProcessedAt] = useState<Date | null>(null);
   const [sopReport, setSopReport] = useState<SopAuditReport | null>(null);
