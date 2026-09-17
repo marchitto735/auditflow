@@ -17,8 +17,10 @@ function firstEnv(...names: string[]) {
 }
 
 export function readSupabaseServerConfig() {
+  // Prefer SUPABASE_URL on the server. NEXT_PUBLIC_* is inlined at build time on
+  // Vercel, so a dashboard edit does not take effect until Preview is redeployed.
   const url = parseSupabaseProjectUrl(
-    firstEnv("NEXT_PUBLIC_SUPABASE_URL", "SUPABASE_URL"),
+    firstEnv("SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_URL"),
   ).origin;
   const serviceRoleKey = firstEnv(
     "SUPABASE_SERVICE_ROLE_KEY",
