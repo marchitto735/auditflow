@@ -256,6 +256,8 @@ export default function ProjectCard({
                   documentType={selectedDocType ?? runLabel}
                   clauseLabel={clauseLabel}
                   timestamp={processedAt ?? new Date()}
+                  onDownloadReport={downloadReport}
+                  onRerunAudit={resetAudit}
                 />
               </CardContent>
               <CardFooter className="flex w-full justify-end px-6 pt-4 pb-6">

@@ -4,10 +4,9 @@ import { useMemo, useState, type ReactNode } from "react";
 import {
   ChevronDown,
   Copy,
-  FileText,
-  History,
+  Download,
   MoreHorizontal,
-  SlidersHorizontal,
+  RefreshCw,
 } from "lucide-react";
 import {
   Collapsible,
@@ -42,6 +41,8 @@ type AuditReportTableProps = {
   documentType: string;
   clauseLabel: string;
   timestamp: Date;
+  onDownloadReport?: () => void;
+  onRerunAudit?: () => void;
 };
 
 const COLUMN_GUTTER_CLASS = "gap-x-12";
@@ -134,7 +135,23 @@ function CellTooltip({
   );
 }
 
-function AuditReportActionsMenu() {
+function AuditReportActionsMenu({
+  auditId,
+  onDownloadReport,
+  onRerunAudit,
+}: {
+  auditId: string;
+  onDownloadReport?: () => void;
+  onRerunAudit?: () => void;
+}) {
+  async function copyAuditId() {
+    try {
+      await navigator.clipboard.writeText(auditId);
+    } catch {
+      // Clipboard may be unavailable in insecure contexts.
+    }
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -143,7 +160,7 @@ function AuditReportActionsMenu() {
           variant="ghost"
           size="icon"
           className="size-8 min-h-8 min-w-8 shrink-0 rounded-md border-0 bg-transparent p-0 text-slate-700 shadow-none hover:bg-slate-100"
-          aria-label="Report actions"
+          aria-label="Row actions"
         >
           <MoreHorizontal className="size-4" />
         </Button>
@@ -152,22 +169,24 @@ function AuditReportActionsMenu() {
         align="end"
         className="min-w-[13rem] rounded-lg border border-slate-200 bg-white p-1 shadow-lg"
       >
-        <DropdownMenuItem className={ACTION_ITEM_CLASS}>
-          <FileText className="size-4" />
-          Export Row Data
+        <DropdownMenuItem
+          className={ACTION_ITEM_CLASS}
+          onSelect={() => onDownloadReport?.()}
+        >
+          <Download className="size-4" />
+          Download Report
         </DropdownMenuItem>
-        <DropdownMenuItem className={ACTION_ITEM_CLASS}>
+        <DropdownMenuItem className={ACTION_ITEM_CLASS} onSelect={copyAuditId}>
           <Copy className="size-4" />
           Copy Audit ID
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-slate-200" />
-        <DropdownMenuItem className={ACTION_ITEM_CLASS}>
-          <History className="size-4" />
-          View Full Change History
-        </DropdownMenuItem>
-        <DropdownMenuItem className={ACTION_ITEM_CLASS}>
-          <SlidersHorizontal className="size-4" />
-          Manage Columns
+        <DropdownMenuItem
+          className={ACTION_ITEM_CLASS}
+          onSelect={() => onRerunAudit?.()}
+        >
+          <RefreshCw className="size-4" />
+          Re-run Audit
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -180,12 +199,17 @@ export function AuditReportTable({
   documentType,
   clauseLabel,
   timestamp,
+  onDownloadReport,
+  onRerunAudit,
 }: AuditReportTableProps) {
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   const date = timestamp.toLocaleString();
   const score = report?.score != null ? String(report.score) : "—";
   const status = activityStatusLabel(report?.status);
+  const auditId = report?.clause_id
+    ? `clause-${report.clause_id}`
+    : fileName || "audit";
   const summary = report?.summary?.trim() || "—";
   const findings = useMemo(() => {
     if (report?.findings.length) return report.findings;
@@ -196,9 +220,13 @@ export function AuditReportTable({
   return (
     <TooltipProvider delayDuration={0}>
       <div className="min-w-0 w-full">
-        <div className="relative px-6 pt-6 pb-2">
+        <div className="relative border-b border-border bg-muted px-6 pt-6 pb-6">
           <div className="absolute top-6 right-6 z-10">
-            <AuditReportActionsMenu />
+            <AuditReportActionsMenu
+              auditId={auditId}
+              onDownloadReport={onDownloadReport}
+              onRerunAudit={onRerunAudit}
+            />
           </div>
           <div className={cn(REPORT_GRID_CLASS, "items-start text-left")}>
             <div className={cn(META_FIELD_CLASS, "min-w-0")}>
@@ -246,8 +274,7 @@ export function AuditReportTable({
           onOpenChange={setDetailsOpen}
           className="min-w-0"
         >
-          <div className="mt-4 mb-3 border-t border-border" />
-          <div className="flex flex-col gap-3 px-6 py-4">
+          <div className="flex flex-col gap-6 px-6 pt-6 pb-4">
             <CollapsibleTrigger asChild>
               <button
                 type="button"
@@ -265,7 +292,7 @@ export function AuditReportTable({
             </CollapsibleTrigger>
             <div
               className={cn(
-                "mt-[2px] grid transition-[grid-template-rows] duration-300 ease-out",
+                "grid transition-[grid-template-rows] duration-300 ease-out",
                 detailsOpen
                   ? "grid-rows-[1fr]"
                   : "pointer-events-none grid-rows-[6.5rem]",
