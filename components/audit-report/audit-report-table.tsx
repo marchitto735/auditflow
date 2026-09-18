@@ -1,11 +1,26 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
-import { ChevronDown } from "lucide-react";
+import {
+  ChevronDown,
+  Copy,
+  FileText,
+  History,
+  MoreHorizontal,
+  SlidersHorizontal,
+} from "lucide-react";
 import {
   Collapsible,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   activityStatusLabel,
   statusBadgeClass,
@@ -29,9 +44,15 @@ type AuditReportTableProps = {
   timestamp: Date;
 };
 
-const REPORT_GRID_CLASS = "grid w-full grid-cols-1 gap-4 md:grid-cols-3";
-const META_FIELD_CLASS = "flex shrink-0 flex-col gap-2 text-body1";
+const COLUMN_GUTTER_CLASS = "gap-x-12";
+const REPORT_GRID_CLASS = cn(
+  "grid w-full grid-cols-1 gap-y-4 md:grid-cols-3",
+  COLUMN_GUTTER_CLASS,
+);
+const META_FIELD_CLASS = "flex min-w-0 flex-col gap-2 text-body1";
 const META_VALUE_CLASS = "text-body1 text-foreground";
+const ACTION_ITEM_CLASS =
+  "cursor-pointer gap-2 text-sm hover:bg-slate-100 focus:bg-slate-100";
 
 function HeaderLabel({
   label,
@@ -40,6 +61,31 @@ function HeaderLabel({
 }) {
   return (
     <span className="text-sm font-bold text-foreground">{label}</span>
+  );
+}
+
+function StatusValue({ status }: { status: string }) {
+  if (status === "—") {
+    return <span className={META_VALUE_CLASS}>—</span>;
+  }
+
+  return (
+    <span className="inline-flex min-w-0 items-center gap-2 text-body1 text-foreground">
+      <span
+        className={cn(
+          "size-2.5 shrink-0 rounded-full",
+          status === "Compliant" && "bg-[#22C55E]",
+          status === "Critical" && "bg-[#EF4444]",
+          status === "Partial" && "bg-[#F5C400]",
+          status !== "Compliant" &&
+            status !== "Critical" &&
+            status !== "Partial" &&
+            "bg-[oklch(70%_0_0)]",
+        )}
+        aria-hidden
+      />
+      <span className="truncate">{status}</span>
+    </span>
   );
 }
 
@@ -88,6 +134,46 @@ function CellTooltip({
   );
 }
 
+function AuditReportActionsMenu() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="size-8 min-h-8 min-w-8 shrink-0 rounded-md border-0 bg-transparent p-0 text-slate-700 shadow-none hover:bg-slate-100"
+          aria-label="Report actions"
+        >
+          <MoreHorizontal className="size-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        className="min-w-[13rem] rounded-lg border border-slate-200 bg-white p-1 shadow-lg"
+      >
+        <DropdownMenuItem className={ACTION_ITEM_CLASS}>
+          <FileText className="size-4" />
+          Export Row Data
+        </DropdownMenuItem>
+        <DropdownMenuItem className={ACTION_ITEM_CLASS}>
+          <Copy className="size-4" />
+          Copy Audit ID
+        </DropdownMenuItem>
+        <DropdownMenuSeparator className="bg-slate-200" />
+        <DropdownMenuItem className={ACTION_ITEM_CLASS}>
+          <History className="size-4" />
+          View Full Change History
+        </DropdownMenuItem>
+        <DropdownMenuItem className={ACTION_ITEM_CLASS}>
+          <SlidersHorizontal className="size-4" />
+          Manage Columns
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 export function AuditReportTable({
   report,
   fileName,
@@ -110,9 +196,12 @@ export function AuditReportTable({
   return (
     <TooltipProvider delayDuration={0}>
       <div className="min-w-0 w-full">
-        <div className="overflow-x-auto px-6 pt-4 pb-2">
-          <div className="flex w-[calc(100%-192px)] items-start justify-between gap-6 text-left text-body1">
-            <div className={cn(META_FIELD_CLASS, "min-w-0 max-w-[12rem]")}>
+        <div className="relative px-6 pt-4 pb-2">
+          <div className="absolute top-4 right-6 z-10">
+            <AuditReportActionsMenu />
+          </div>
+          <div className={cn(REPORT_GRID_CLASS, "items-start text-left")}>
+            <div className={cn(META_FIELD_CLASS, "min-w-0")}>
               <HeaderLabel label="Document" />
               <CellTooltip
                 label={[fileName, clauseLabel].filter(Boolean).join(" · ")}
@@ -122,48 +211,33 @@ export function AuditReportTable({
                 </span>
               </CellTooltip>
             </div>
-            <div className={META_FIELD_CLASS}>
-              <HeaderLabel label="Type" />
-              <CellTooltip label={documentType}>
-                <span className={cn("block cursor-default whitespace-nowrap", META_VALUE_CLASS)}>
-                  {documentType}
-                </span>
-              </CellTooltip>
+            <div className="flex min-w-0 items-start gap-6">
+              <div className={cn(META_FIELD_CLASS, "shrink-0")}>
+                <HeaderLabel label="Type" />
+                <CellTooltip label={documentType}>
+                  <span className={cn("block cursor-default whitespace-nowrap", META_VALUE_CLASS)}>
+                    {documentType}
+                  </span>
+                </CellTooltip>
+              </div>
+              <div className={cn(META_FIELD_CLASS, "ml-12 min-w-0")}>
+                <HeaderLabel label="Timestamp" />
+                <CellTooltip label={date}>
+                  <span className={cn("block min-w-0 cursor-default truncate", META_VALUE_CLASS)}>
+                    {date}
+                  </span>
+                </CellTooltip>
+              </div>
             </div>
-            <div className={META_FIELD_CLASS}>
-              <HeaderLabel label="Timestamp" />
-              <CellTooltip label={date}>
-                <span className={cn("block cursor-default whitespace-nowrap", META_VALUE_CLASS)}>
-                  {date}
-                </span>
-              </CellTooltip>
-            </div>
-            <div className={META_FIELD_CLASS}>
-              <HeaderLabel label="Score" />
-              <span className={META_VALUE_CLASS}>{score}</span>
-            </div>
-            <div className={META_FIELD_CLASS}>
-              <HeaderLabel label="Status" />
-              {status === "—" ? (
-                <span className={META_VALUE_CLASS}>—</span>
-              ) : (
-                <span className="inline-flex items-center gap-2 text-body1 text-foreground">
-                  <span
-                    className={cn(
-                      "size-2.5 shrink-0 rounded-full",
-                      status === "Compliant" && "bg-[#22C55E]",
-                      status === "Critical" && "bg-[#EF4444]",
-                      status === "Partial" && "bg-[#F5C400]",
-                      status !== "Compliant" &&
-                        status !== "Critical" &&
-                        status !== "Partial" &&
-                        "bg-[oklch(70%_0_0)]",
-                    )}
-                    aria-hidden
-                  />
-                  <span>{status}</span>
-                </span>
-              )}
+            <div className="flex min-w-0 items-start gap-6 pr-10">
+              <div className={cn(META_FIELD_CLASS, "shrink-0")}>
+                <HeaderLabel label="Score" />
+                <span className={META_VALUE_CLASS}>{score}</span>
+              </div>
+              <div className={cn(META_FIELD_CLASS, "ml-12 min-w-0")}>
+                <HeaderLabel label="Status" />
+                <StatusValue status={status} />
+              </div>
             </div>
           </div>
         </div>
