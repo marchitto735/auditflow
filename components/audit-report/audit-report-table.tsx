@@ -107,7 +107,7 @@ function DetailColumn({
         className={cn(
           "text-body1 min-w-0 text-left text-foreground whitespace-normal break-words [overflow-wrap:anywhere]",
           preview
-            ? "line-clamp-2 overflow-hidden"
+            ? "line-clamp-3 overflow-hidden"
             : "pb-1",
         )}
       >
@@ -268,7 +268,7 @@ export function AuditReportTable({
                 "mt-[2px] grid transition-[grid-template-rows] duration-300 ease-out",
                 detailsOpen
                   ? "grid-rows-[1fr]"
-                  : "pointer-events-none grid-rows-[4.5rem]",
+                  : "pointer-events-none grid-rows-[6.5rem]",
               )}
             >
               <div className="min-h-0 overflow-hidden">
