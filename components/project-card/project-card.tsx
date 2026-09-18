@@ -247,7 +247,7 @@ export default function ProjectCard({
               </button>
             }
           />
-          <div className="rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+          <div className="rounded-2xl">
             <Card className="relative w-full overflow-hidden rounded-2xl border border-border bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
               <CardContent className="h-auto bg-[oklch(100%_0_0)] p-0">
                 <AuditReportTable
@@ -270,7 +270,11 @@ export default function ProjectCard({
               </CardFooter>
             </Card>
           </div>
-          <div className="mt-4 flex w-full items-center justify-center rounded-2xl border border-[oklch(90%_0_0)] bg-[oklch(95%_0_0)] px-6 py-5 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+          <div className="relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-[oklch(100%_0_0)] px-6 py-5">
+            <div
+              aria-hidden
+              className="absolute inset-y-0 left-0 w-2.5 rounded-l-2xl bg-indigo-600"
+            />
             <p className="text-body1 m-0 text-center text-[oklch(0%_0_0)]">
               Want to fix these issues immediately?{" "}
               <button
