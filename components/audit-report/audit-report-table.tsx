@@ -246,7 +246,7 @@ export function AuditReportTable({
           onOpenChange={setDetailsOpen}
           className="min-w-0"
         >
-          <div className="mx-6 mt-4 mb-3 border-t border-border" />
+          <div className="mt-4 mb-3 border-t border-border" />
           <div className="flex flex-col gap-3 px-6 py-4">
             <CollapsibleTrigger asChild>
               <button
