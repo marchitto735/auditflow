@@ -2,14 +2,12 @@
 
 import { useMemo, useState, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import {
   Collapsible,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
   activityStatusLabel,
-  STATUS_BADGE_CLASS,
   statusBadgeClass,
 } from "@/components/activity-table/activity-table";
 import {
@@ -32,8 +30,8 @@ type AuditReportTableProps = {
 };
 
 const REPORT_GRID_CLASS = "grid w-full grid-cols-1 gap-4 md:grid-cols-3";
-const META_FIELD_CLASS = "flex shrink-0 flex-col gap-3 text-sm";
-const META_VALUE_CLASS = "text-sm leading-5 text-foreground";
+const META_FIELD_CLASS = "flex shrink-0 flex-col gap-2 text-body1";
+const META_VALUE_CLASS = "text-body1 text-foreground";
 
 function HeaderLabel({
   label,
@@ -41,7 +39,7 @@ function HeaderLabel({
   label: string;
 }) {
   return (
-    <span className="text-sm font-medium leading-5 text-foreground">{label}</span>
+    <span className="text-sm font-bold text-foreground">{label}</span>
   );
 }
 
@@ -56,12 +54,12 @@ function DetailColumn({
 }) {
   return (
     <div className="flex h-full min-w-0 flex-col items-stretch text-left">
-      <h3 className="m-0 mb-1 w-full shrink-0 truncate text-left text-sm font-medium leading-5 text-foreground">
+      <h3 className="m-0 mb-2 w-full shrink-0 truncate text-left text-sm font-bold text-foreground">
         {title}
       </h3>
       <div
         className={cn(
-          "min-w-0 text-left text-sm leading-5 text-foreground whitespace-normal break-words [overflow-wrap:anywhere]",
+          "text-body1 min-w-0 text-left text-foreground whitespace-normal break-words [overflow-wrap:anywhere]",
           preview
             ? "line-clamp-2 overflow-hidden"
             : "pb-1",
@@ -113,7 +111,7 @@ export function AuditReportTable({
     <TooltipProvider delayDuration={0}>
       <div className="min-w-0 w-full">
         <div className="overflow-x-auto px-6 pt-4 pb-2">
-          <div className="flex w-[calc(100%-192px)] items-start justify-between gap-6 text-left text-sm">
+          <div className="flex w-[calc(100%-192px)] items-start justify-between gap-6 text-left text-body1">
             <div className={cn(META_FIELD_CLASS, "min-w-0 max-w-[12rem]")}>
               <HeaderLabel label="Document" />
               <CellTooltip
@@ -149,16 +147,22 @@ export function AuditReportTable({
               {status === "—" ? (
                 <span className={META_VALUE_CLASS}>—</span>
               ) : (
-                <Badge
-                  variant="secondary"
-                  className={cn(
-                    STATUS_BADGE_CLASS,
-                    "text-sm leading-5",
-                    statusBadgeClass(status),
-                  )}
-                >
-                  {status}
-                </Badge>
+                <span className="inline-flex items-center gap-2 text-body1 text-foreground">
+                  <span
+                    className={cn(
+                      "size-2.5 shrink-0 rounded-full",
+                      status === "Compliant" && "bg-[#22C55E]",
+                      status === "Critical" && "bg-[#EF4444]",
+                      status === "Partial" && "bg-[#F5C400]",
+                      status !== "Compliant" &&
+                        status !== "Critical" &&
+                        status !== "Partial" &&
+                        "bg-[oklch(70%_0_0)]",
+                    )}
+                    aria-hidden
+                  />
+                  <span>{status}</span>
+                </span>
               )}
             </div>
           </div>
@@ -168,40 +172,32 @@ export function AuditReportTable({
           onOpenChange={setDetailsOpen}
           className="min-w-0"
         >
-          <div className="relative">
+          <div className="flex flex-col gap-3 px-6 py-4">
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className={cn(
-                  "absolute inset-x-0 top-0 z-10 cursor-pointer border-0 bg-transparent p-0",
-                  detailsOpen ? "h-[5.5rem]" : "inset-0",
-                )}
-                aria-label="Toggle audit details"
-              />
-            </CollapsibleTrigger>
-            <div
-              className={cn(
-                "flex flex-col gap-3 px-6 py-4",
-                !detailsOpen && "pointer-events-none",
-              )}
-            >
-              <div className="inline-flex items-center gap-1 text-sm font-medium leading-5 text-foreground">
+                className="inline-flex w-fit cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-medium text-slate-900 transition-colors hover:opacity-70"
+              >
                 Audit Details
                 <ChevronDown
                   className={cn(
-                    "size-3.5 shrink-0 text-muted-foreground transition-transform duration-300",
+                    "size-4 shrink-0 transition-transform duration-300",
                     detailsOpen && "rotate-180",
                   )}
                   aria-hidden
                 />
-              </div>
-              <div
-                className={cn(
-                  "relative grid transition-[grid-template-rows] duration-300 ease-out",
-                  detailsOpen ? "grid-rows-[1fr]" : "grid-rows-[4.5rem]",
-                )}
-              >
-                <div className="min-h-0 overflow-hidden">
+              </button>
+            </CollapsibleTrigger>
+            <div
+              className={cn(
+                "mt-[2px] grid transition-[grid-template-rows] duration-300 ease-out",
+                detailsOpen
+                  ? "grid-rows-[1fr]"
+                  : "pointer-events-none grid-rows-[4.5rem]",
+              )}
+            >
+              <div className="min-h-0 overflow-hidden">
+                <div className="rounded-lg bg-white p-0 shadow-none">
                   <div className={cn(REPORT_GRID_CLASS, "items-stretch")}>
                     <DetailColumn title="Summary" preview={!detailsOpen}>
                       <p className="m-0">{summary}</p>
@@ -218,12 +214,6 @@ export function AuditReportTable({
                     </DetailColumn>
                   </div>
                 </div>
-                <div
-                  className={cn(
-                    "pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-[oklch(100%_0_0)] transition-opacity duration-300",
-                    detailsOpen ? "opacity-0" : "opacity-100",
-                  )}
-                />
               </div>
             </div>
           </div>

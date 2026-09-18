@@ -262,7 +262,7 @@ export default function ProjectCard({
                 <Button
                   type="button"
                   variant="black"
-                  className="rounded-full"
+                  className="rounded-full text-body1"
                   onClick={downloadReport}
                 >
                   Download Report
@@ -273,13 +273,13 @@ export default function ProjectCard({
           <div className="relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-[oklch(100%_0_0)] px-6 py-5">
             <div
               aria-hidden
-              className="absolute inset-y-0 left-0 w-2 rounded-l-2xl bg-indigo-600"
+              className="absolute inset-y-0 left-0 w-2 rounded-l-2xl bg-slate-600"
             />
             <p className="text-body1 m-0 text-center text-[oklch(0%_0_0)]">
               Want to fix these issues immediately?{" "}
               <button
                 type="button"
-                className="text-button inline underline decoration-solid underline-offset-2 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0%_0_0)] focus-visible:ring-offset-2"
+                className="text-button inline text-slate-800 underline decoration-solid underline-offset-2 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-800 focus-visible:ring-offset-2"
                 onClick={addCompliantSopToCart}
               >
                 {addedToCart

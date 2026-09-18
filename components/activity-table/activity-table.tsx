@@ -47,12 +47,12 @@ export function activityStatusLabel(status: string | null | undefined) {
 export function statusBadgeClass(status: string | null | undefined) {
   const label = activityStatusLabel(status);
   if (label === "Compliant") {
-    return "bg-[oklch(93%_0.05_145)] text-[oklch(32%_0.08_145)]";
+    return "border-[oklch(78%_0.04_145)] bg-[oklch(93%_0.05_145)] text-[oklch(32%_0.08_145)]";
   }
   if (label === "Critical") {
-    return "bg-[oklch(93%_0.05_25)] text-[oklch(38%_0.12_25)]";
+    return "border-[oklch(78%_0.05_25)] bg-[oklch(93%_0.05_25)] text-[oklch(38%_0.12_25)]";
   }
-  return "bg-[oklch(96%_0.06_95)] text-[oklch(42%_0.1_85)]";
+  return "border-[oklch(88%_0.06_95)] bg-[oklch(96%_0.06_95)] text-[oklch(0%_0_0)]";
 }
 
 export const STATUS_BADGE_CLASS =
