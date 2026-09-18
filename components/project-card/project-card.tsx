@@ -235,7 +235,7 @@ export default function ProjectCard({
         <div className="w-full min-w-0">
           <SectionHeader
             title="Audit Report"
-            description={`Review document, type, timestamp, score, and status for each finding. Upgrade the ${selectedDocType ?? runLabel} to a compliant version, or download the report.`}
+            description="Review your compliance breakdown and instantly resolve vulnerabilities by upgrading to a fully compliant SOP version."
             actions={
               <button
                 type="button"
@@ -258,7 +258,7 @@ export default function ProjectCard({
                   timestamp={processedAt ?? new Date()}
                 />
               </CardContent>
-              <CardFooter className="flex w-full justify-end border-t-[1px] border-border px-6 py-4">
+              <CardFooter className="flex w-full justify-end px-6 py-4">
                 <Button
                   type="button"
                   variant="black"
@@ -270,7 +270,7 @@ export default function ProjectCard({
               </CardFooter>
             </Card>
           </div>
-          <div className="mt-4 flex w-full items-center justify-center rounded-2xl border border-[oklch(82%_0_0)] bg-[oklch(95%_0_0)] px-6 py-5 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+          <div className="mt-4 flex w-full items-center justify-center rounded-2xl border border-[oklch(90%_0_0)] bg-[oklch(95%_0_0)] px-6 py-5 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
             <p className="text-body1 m-0 text-center text-[oklch(0%_0_0)]">
               Want to fix these issues immediately?{" "}
               <button

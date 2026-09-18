@@ -1,20 +1,12 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Collapsible,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   activityStatusLabel,
   STATUS_BADGE_CLASS,
@@ -39,26 +31,9 @@ type AuditReportTableProps = {
   timestamp: Date;
 };
 
-const COL_PX = {
-  document: 200,
-  type: 88,
-  timestamp: 168,
-  score: 88,
-  scoreGap: 24,
-  status: 128,
-} as const;
-
-const TABLE_MIN_WIDTH =
-  COL_PX.document +
-  COL_PX.type +
-  COL_PX.timestamp +
-  COL_PX.score +
-  COL_PX.scoreGap +
-  COL_PX.status;
-
-function colStyle(width: number): CSSProperties {
-  return { width, minWidth: width };
-}
+const REPORT_GRID_CLASS = "grid w-full grid-cols-1 gap-4 md:grid-cols-3";
+const META_FIELD_CLASS = "flex shrink-0 flex-col gap-3 text-sm";
+const META_VALUE_CLASS = "text-sm leading-5 text-foreground";
 
 function HeaderLabel({
   label,
@@ -66,7 +41,7 @@ function HeaderLabel({
   label: string;
 }) {
   return (
-    <span className="text-sm font-medium text-foreground">{label}</span>
+    <span className="text-sm font-medium leading-5 text-foreground">{label}</span>
   );
 }
 
@@ -80,19 +55,21 @@ function DetailColumn({
   preview?: boolean;
 }) {
   return (
-    <Card
-      className={cn(
-        "h-full min-w-0 rounded-2xl bg-[oklch(97%_0_0)] p-0 shadow-none",
-        preview ? "pointer-events-none border-0" : "border border-border",
-      )}
-    >
-      <CardContent className="flex h-full min-w-0 flex-col p-4 md:p-5">
-        <h3 className="m-0 text-sm font-medium text-foreground">{title}</h3>
-        <div className="mt-3 min-w-0 text-sm text-foreground whitespace-normal break-words [overflow-wrap:anywhere]">
-          {children}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="flex h-full min-w-0 flex-col items-stretch text-left">
+      <h3 className="m-0 mb-1 w-full shrink-0 truncate text-left text-sm font-medium leading-5 text-foreground">
+        {title}
+      </h3>
+      <div
+        className={cn(
+          "min-w-0 text-left text-sm leading-5 text-foreground whitespace-normal break-words [overflow-wrap:anywhere]",
+          preview
+            ? "line-clamp-2 overflow-hidden"
+            : "pb-1",
+        )}
+      >
+        {children}
+      </div>
+    </div>
   );
 }
 
@@ -135,166 +112,119 @@ export function AuditReportTable({
   return (
     <TooltipProvider delayDuration={0}>
       <div className="min-w-0 w-full">
-        <div className="w-full overflow-x-auto">
-          <table
-            data-slot="table"
-            className="caption-bottom border-separate border-spacing-0 text-sm whitespace-nowrap"
-            style={{
-              tableLayout: "fixed",
-              width: "100%",
-              minWidth: TABLE_MIN_WIDTH,
-            }}
-          >
-            <colgroup>
-              {(Object.keys(COL_PX) as (keyof typeof COL_PX)[]).map((key) => (
-                <col
-                  key={key}
-                  style={{ width: COL_PX[key], minWidth: COL_PX[key] }}
-                />
-              ))}
-            </colgroup>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent [&>th]:border-b [&>th]:border-b-[1px] [&>th]:border-border">
-                <TableHead className="px-6" style={colStyle(COL_PX.document)}>
-                  <HeaderLabel label="Document" />
-                </TableHead>
-                <TableHead style={colStyle(COL_PX.type)}>
-                  <HeaderLabel label="Type" />
-                </TableHead>
-                <TableHead style={colStyle(COL_PX.timestamp)}>
-                  <HeaderLabel label="Timestamp" />
-                </TableHead>
-                <TableHead className="pr-0" style={colStyle(COL_PX.score)}>
-                  <HeaderLabel label="Score" />
-                </TableHead>
-                <TableHead
-                  aria-hidden
-                  className="p-0"
-                  style={colStyle(COL_PX.scoreGap)}
-                />
-                <TableHead className="pl-0 pr-6" style={colStyle(COL_PX.status)}>
-                  <HeaderLabel label="Status" />
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow className="hover:bg-transparent">
-                <TableCell
-                  className="align-top overflow-hidden px-6 py-4 font-medium"
-                  style={colStyle(COL_PX.document)}
-                >
-                  <CellTooltip
-                    label={[fileName, clauseLabel].filter(Boolean).join(" · ")}
-                  >
-                    <span className="block w-full cursor-default truncate">
-                      {fileName}
-                    </span>
-                  </CellTooltip>
-                </TableCell>
-                <TableCell
-                  className="align-top overflow-hidden py-4"
-                  style={colStyle(COL_PX.type)}
-                >
-                  <CellTooltip label={documentType}>
-                    <span className="block w-full cursor-default truncate">
-                      {documentType}
-                    </span>
-                  </CellTooltip>
-                </TableCell>
-                <TableCell
-                  className="align-top overflow-hidden py-4"
-                  style={colStyle(COL_PX.timestamp)}
-                >
-                  <CellTooltip label={date}>
-                    <span className="block w-full cursor-default truncate">
-                      {date}
-                    </span>
-                  </CellTooltip>
-                </TableCell>
-                <TableCell
-                  className="align-top py-4 pr-0"
-                  style={colStyle(COL_PX.score)}
-                >
-                  {score}
-                </TableCell>
-                <TableCell
-                  aria-hidden
-                  className="p-0"
-                  style={colStyle(COL_PX.scoreGap)}
-                />
-                <TableCell
-                  className="align-top overflow-hidden py-4 pl-0 pr-6"
-                  style={colStyle(COL_PX.status)}
-                >
-                  {status === "—" ? (
-                    "—"
-                  ) : (
-                    <Badge
-                      variant="secondary"
-                      className={cn(
-                        STATUS_BADGE_CLASS,
-                        statusBadgeClass(status),
-                      )}
-                    >
-                      {status}
-                    </Badge>
+        <div className="overflow-x-auto px-6 pt-4 pb-2">
+          <div className="flex w-[calc(100%-192px)] items-start justify-between gap-6 text-left text-sm">
+            <div className={cn(META_FIELD_CLASS, "min-w-0 max-w-[12rem]")}>
+              <HeaderLabel label="Document" />
+              <CellTooltip
+                label={[fileName, clauseLabel].filter(Boolean).join(" · ")}
+              >
+                <span className={cn("block min-w-0 cursor-default truncate", META_VALUE_CLASS)}>
+                  {fileName}
+                </span>
+              </CellTooltip>
+            </div>
+            <div className={META_FIELD_CLASS}>
+              <HeaderLabel label="Type" />
+              <CellTooltip label={documentType}>
+                <span className={cn("block cursor-default whitespace-nowrap", META_VALUE_CLASS)}>
+                  {documentType}
+                </span>
+              </CellTooltip>
+            </div>
+            <div className={META_FIELD_CLASS}>
+              <HeaderLabel label="Timestamp" />
+              <CellTooltip label={date}>
+                <span className={cn("block cursor-default whitespace-nowrap", META_VALUE_CLASS)}>
+                  {date}
+                </span>
+              </CellTooltip>
+            </div>
+            <div className={META_FIELD_CLASS}>
+              <HeaderLabel label="Score" />
+              <span className={META_VALUE_CLASS}>{score}</span>
+            </div>
+            <div className={META_FIELD_CLASS}>
+              <HeaderLabel label="Status" />
+              {status === "—" ? (
+                <span className={META_VALUE_CLASS}>—</span>
+              ) : (
+                <Badge
+                  variant="secondary"
+                  className={cn(
+                    STATUS_BADGE_CLASS,
+                    "text-sm leading-5",
+                    statusBadgeClass(status),
                   )}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </table>
+                >
+                  {status}
+                </Badge>
+              )}
+            </div>
+          </div>
         </div>
         <Collapsible
           open={detailsOpen}
           onOpenChange={setDetailsOpen}
-          className="min-w-0 border-t border-border px-6 py-4"
+          className="min-w-0"
         >
-          <CollapsibleTrigger asChild>
-            <button
-              type="button"
-              className="inline-flex items-center gap-1 text-left text-sm font-medium text-foreground"
-            >
-              Audit Details
-              <ChevronDown
+          <div className="relative">
+            <CollapsibleTrigger asChild>
+              <button
+                type="button"
                 className={cn(
-                  "size-3.5 shrink-0 text-muted-foreground transition-transform duration-300",
-                  detailsOpen && "rotate-180",
+                  "absolute inset-x-0 top-0 z-10 cursor-pointer border-0 bg-transparent p-0",
+                  detailsOpen ? "h-[5.5rem]" : "inset-0",
                 )}
-                aria-hidden
+                aria-label="Toggle audit details"
               />
-            </button>
-          </CollapsibleTrigger>
-          <div className="mt-3">
+            </CollapsibleTrigger>
             <div
               className={cn(
-                "relative grid overflow-hidden transition-[grid-template-rows] duration-300 ease-out",
-                detailsOpen ? "grid-rows-[1fr]" : "pointer-events-none select-none grid-rows-[18px]",
+                "flex flex-col gap-3 px-6 py-4",
+                !detailsOpen && "pointer-events-none",
               )}
-              aria-hidden={!detailsOpen}
             >
-              <div className="min-h-0 overflow-hidden">
-                <div className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-3">
-                  <DetailColumn title="Summary" preview={!detailsOpen}>
-                    <p className="m-0">{summary}</p>
-                  </DetailColumn>
-                  <DetailColumn title="Findings" preview={!detailsOpen}>
-                    <ul className="m-0 list-disc space-y-2 pl-4">
-                      {findings.map((finding) => (
-                        <li key={finding}>{finding}</li>
-                      ))}
-                    </ul>
-                  </DetailColumn>
-                  <DetailColumn title="Recommendations" preview={!detailsOpen}>
-                    <p className="m-0">{recommendation}</p>
-                  </DetailColumn>
-                </div>
+              <div className="inline-flex items-center gap-1 text-sm font-medium leading-5 text-foreground">
+                Audit Details
+                <ChevronDown
+                  className={cn(
+                    "size-3.5 shrink-0 text-muted-foreground transition-transform duration-300",
+                    detailsOpen && "rotate-180",
+                  )}
+                  aria-hidden
+                />
               </div>
               <div
                 className={cn(
-                  "pointer-events-none absolute inset-x-0 bottom-0 h-1.5 bg-gradient-to-b from-transparent to-[oklch(100%_0_0)] transition-opacity duration-300",
-                  detailsOpen ? "opacity-0" : "opacity-100",
+                  "relative grid transition-[grid-template-rows] duration-300 ease-out",
+                  detailsOpen ? "grid-rows-[1fr]" : "grid-rows-[4.5rem]",
                 )}
-              />
+              >
+                <div className="min-h-0 overflow-hidden">
+                  <div className={cn(REPORT_GRID_CLASS, "items-stretch")}>
+                    <DetailColumn title="Summary" preview={!detailsOpen}>
+                      <p className="m-0">{summary}</p>
+                    </DetailColumn>
+                    <DetailColumn title="Findings" preview={!detailsOpen}>
+                      <ul className="m-0 list-disc space-y-1 pl-4">
+                        {findings.map((finding) => (
+                          <li key={finding}>{finding}</li>
+                        ))}
+                      </ul>
+                    </DetailColumn>
+                    <DetailColumn title="Recommendations" preview={!detailsOpen}>
+                      <p className="m-0">{recommendation}</p>
+                    </DetailColumn>
+                  </div>
+                </div>
+                <div
+                  className={cn(
+                    "pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-[oklch(100%_0_0)] transition-opacity duration-300",
+                    detailsOpen ? "opacity-0" : "opacity-100",
+                  )}
+                />
+              </div>
             </div>
           </div>
         </Collapsible>
