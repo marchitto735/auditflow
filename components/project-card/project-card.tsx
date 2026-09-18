@@ -258,7 +258,7 @@ export default function ProjectCard({
                   timestamp={processedAt ?? new Date()}
                 />
               </CardContent>
-              <CardFooter className="flex w-full justify-end px-6 py-4">
+              <CardFooter className="flex w-full justify-end px-6 pt-4 pb-6">
                 <Button
                   type="button"
                   variant="black"

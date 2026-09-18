@@ -196,8 +196,8 @@ export function AuditReportTable({
   return (
     <TooltipProvider delayDuration={0}>
       <div className="min-w-0 w-full">
-        <div className="relative px-6 pt-4 pb-2">
-          <div className="absolute top-4 right-6 z-10">
+        <div className="relative px-6 pt-6 pb-2">
+          <div className="absolute top-6 right-6 z-10">
             <AuditReportActionsMenu />
           </div>
           <div className={cn(REPORT_GRID_CLASS, "items-start text-left")}>
@@ -246,13 +246,14 @@ export function AuditReportTable({
           onOpenChange={setDetailsOpen}
           className="min-w-0"
         >
+          <div className="mx-6 mt-6 border-t border-[oklch(84%_0_0)]" />
           <div className="flex flex-col gap-3 px-6 py-4">
             <CollapsibleTrigger asChild>
               <button
                 type="button"
                 className="inline-flex w-fit cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-medium text-slate-900 transition-colors hover:opacity-70"
               >
-                Audit Details
+                Compliance Breakdown
                 <ChevronDown
                   className={cn(
                     "size-4 shrink-0 transition-transform duration-300",
