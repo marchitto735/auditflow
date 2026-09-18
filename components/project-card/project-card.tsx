@@ -270,7 +270,7 @@ export default function ProjectCard({
               </CardFooter>
             </Card>
           </div>
-          <div className="mt-4 flex w-full items-center justify-center rounded-2xl border border-[oklch(82%_0.05_220)] bg-[oklch(95%_0.03_220)] px-6 py-5 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+          <div className="mt-4 flex w-full items-center justify-center rounded-2xl border border-[oklch(82%_0.08_350)] bg-[oklch(95%_0.05_350)] px-6 py-5 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
             <p className="text-body1 m-0 text-center text-[oklch(0%_0_0)]">
               Want to fix these issues immediately?{" "}
               <button
