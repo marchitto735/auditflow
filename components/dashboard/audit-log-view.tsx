@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import {
   activityStatusLabel,
+  STATUS_BADGE_CLASS,
   statusBadgeClass,
 } from "@/components/activity-table/activity-table";
 import { Badge } from "@/components/ui/badge";
@@ -247,7 +248,7 @@ export default function AuditLogView({
                       <Badge
                         variant="secondary"
                         className={cn(
-                          "border-0 font-medium",
+                          STATUS_BADGE_CLASS,
                           statusBadgeClass(row.status),
                         )}
                       >

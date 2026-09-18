@@ -38,30 +38,32 @@ export default function Dashboard({
               return (
                 <Card
                   key={id}
-                  className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]"
+                  className="h-full rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]"
                 >
-                  <CardContent className="flex h-full flex-col items-center p-6 text-center">
-                    <h3 className="text-h4 m-0 font-semibold leading-tight text-foreground">
-                      {workflow.title}
-                    </h3>
-                    <p className="text-body1 m-0 mt-3 text-foreground">
-                      {workflow.description}
-                    </p>
-                    <p className="text-body2 m-0 mt-4 flex flex-wrap items-center justify-center gap-x-2 text-foreground">
-                      <span>Status:</span>
-                      <span
-                        className={cn(
-                          "size-2.5 shrink-0 rounded-full",
-                          workflow.status === "Active" && "bg-[#22C55E]",
-                          workflow.status === "Ready" && "bg-[#F5C400]",
-                          workflow.status === "Draft" && "bg-[oklch(70%_0_0)]",
-                        )}
-                        aria-hidden
-                      />
-                      <span>{workflow.status}</span>
-                      <span aria-hidden>•</span>
-                      <span>Last run: {workflow.lastRun}</span>
-                    </p>
+                  <CardContent className="flex h-full flex-col justify-between items-center p-6 text-center">
+                    <div className="w-full">
+                      <h3 className="text-h4 m-0 font-semibold leading-tight text-foreground">
+                        {workflow.title}
+                      </h3>
+                      <p className="text-body1 m-0 mt-3 text-foreground">
+                        {workflow.description}
+                      </p>
+                      <p className="text-body2 m-0 mt-4 flex flex-wrap items-center justify-center gap-x-2 text-foreground">
+                        <span>Status:</span>
+                        <span
+                          className={cn(
+                            "size-2.5 shrink-0 rounded-full",
+                            workflow.status === "Active" && "bg-[#22C55E]",
+                            workflow.status === "Ready" && "bg-[#F5C400]",
+                            workflow.status === "Draft" && "bg-[oklch(70%_0_0)]",
+                          )}
+                          aria-hidden
+                        />
+                        <span>{workflow.status}</span>
+                        <span aria-hidden>•</span>
+                        <span>Last run: {workflow.lastRun}</span>
+                      </p>
+                    </div>
                     <Link
                       href={workflow.href}
                       className={cn(

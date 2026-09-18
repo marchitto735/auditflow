@@ -55,6 +55,9 @@ export function statusBadgeClass(status: string | null | undefined) {
   return "bg-[oklch(96%_0.06_95)] text-[oklch(42%_0.1_85)]";
 }
 
+export const STATUS_BADGE_CLASS =
+  "h-auto min-h-0 border-0 px-3 py-1 text-xs font-medium leading-none";
+
 function cellKey(rowId: string, column: ActivityColumnKey) {
   return `${rowId}:${column}`;
 }
@@ -230,7 +233,7 @@ export function ActivityTable({
                     <Badge
                       variant="secondary"
                       className={cn(
-                        "border-0 font-medium",
+                        STATUS_BADGE_CLASS,
                         statusBadgeClass(row.status),
                       )}
                     >
@@ -246,9 +249,11 @@ export function ActivityTable({
                   <TableCell colSpan={5} className="p-0">
                     <Collapsible open={open}>
                       <CollapsibleContent>
-                        <p className="text-sm m-0 whitespace-normal px-6 pb-4 pt-1 text-foreground">
-                          {row.detail}
-                        </p>
+                        <div className="px-6 pb-4 pt-1">
+                          <p className="text-sm m-0 w-full max-w-lg whitespace-normal text-foreground break-words [overflow-wrap:anywhere]">
+                            {row.detail}
+                          </p>
+                        </div>
                       </CollapsibleContent>
                     </Collapsible>
                   </TableCell>
