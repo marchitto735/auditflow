@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 export const ACTIVITY_COLUMNS = [
   { key: "document", label: "Document", headerClassName: "px-6 w-[30%]", width: "30%" },
   { key: "type", label: "Type", width: "15%" },
-  { key: "date", label: "Date", width: "25%" },
+  { key: "date", label: "Timestamp", width: "25%" },
   { key: "score", label: "Score", width: "15%" },
   { key: "status", label: "Status", headerClassName: "px-6 w-[15%]", width: "15%" },
 ] as const;
