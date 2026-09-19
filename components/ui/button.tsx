@@ -6,14 +6,14 @@ import { cn } from "@/lib/utils"
 
 /** Dashboard CTA geometry: 48px tall, 8px radius, flat black primary. */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg border-0 text-button font-medium shadow-none h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] px-6 py-3 transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-5 shrink-0 [&_svg]:shrink-0 [&_svg]:text-current outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg border-0 text-button font-medium shadow-none h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] px-6 py-3 transition-colors duration-200 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-5 shrink-0 [&_svg]:shrink-0 [&_svg]:text-current outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
         default:
-          "bg-black text-white hover:bg-neutral-900 active:bg-neutral-800 disabled:bg-muted disabled:text-black/40 [&_svg]:text-white",
+          "border-0 bg-black text-white hover:bg-zinc-800 hover:text-white active:bg-zinc-900 active:text-white disabled:bg-muted disabled:text-black/40 [&_svg]:text-white",
         black:
-          "bg-black text-white hover:bg-neutral-900 active:bg-neutral-800 disabled:bg-muted disabled:text-black/40 [&_svg]:text-white",
+          "border-0 bg-black text-white hover:bg-zinc-800 hover:text-white active:bg-zinc-900 active:text-white disabled:bg-muted disabled:text-black/40 [&_svg]:text-white",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/80 focus-visible:ring-destructive/20",
         outline:
