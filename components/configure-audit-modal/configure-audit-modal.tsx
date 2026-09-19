@@ -493,7 +493,7 @@ export function ConfigureAuditModal({
                 }}
                 onDragOver={handleDropZoneDragOver}
                 onDrop={handleDropZoneDrop}
-                className="flex cursor-pointer flex-col gap-3 rounded-lg border border-dashed border-black/25 bg-neutral-50 px-4 py-4 transition-colors hover:border-black/40 hover:bg-neutral-100 sm:flex-row sm:items-center"
+                className="flex cursor-pointer flex-col gap-3 rounded-lg border border-black/20 bg-white px-4 py-4 transition-colors hover:border-black/40 hover:bg-neutral-50 sm:flex-row sm:items-center"
               >
                 <div className="flex min-w-0 flex-1 items-center gap-3 text-sm text-black">
                   <Paperclip className="size-4 shrink-0 text-black" aria-hidden />
