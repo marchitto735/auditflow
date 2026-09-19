@@ -272,21 +272,20 @@ export default function ProjectCard({
               </CardFooter>
             </Card>
           </div>
+
           <div className="relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-black bg-neutral-50 px-4 py-4">
             <div
               aria-hidden
               className="absolute inset-y-0 left-0 w-1.5 rounded-l-2xl bg-black"
             />
-            <p className="text-body1 m-0 text-center text-black">
-              Want to fix these issues immediately?{" "}
+            <p className="m-0 text-center text-[14px] leading-5 text-black">
+              Resolve findings by uploading a revised version.{" "}
               <button
                 type="button"
-                className="text-button inline text-black underline decoration-solid underline-offset-2 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                className="inline text-[14px] leading-5 font-medium text-black underline decoration-solid underline-offset-2 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                 onClick={addCompliantSopToCart}
               >
-                {addedToCart
-                  ? "Added to cart"
-                  : `Upgrade ${selectedDocType ?? runLabel} to Resolve Vulnerabilities`}
+                {addedToCart ? "Added to cart" : "Upgrade document"}
               </button>
             </p>
           </div>

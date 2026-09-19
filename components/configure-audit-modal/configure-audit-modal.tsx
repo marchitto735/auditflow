@@ -6,7 +6,6 @@ import {
   Check,
   ChevronDown,
   FileText,
-  Info,
   Loader2,
   Paperclip,
   X,
@@ -21,7 +20,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider";
 import {
   Command,
   CommandEmpty,
@@ -35,12 +33,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import type { AuditWorkflowId } from "@/lib/audit-workflows";
 import { AUDIT_WORKFLOWS } from "@/lib/audit-workflows";
 import {
@@ -50,18 +42,11 @@ import {
   getAuditFramework,
   getClausesForFramework,
 } from "@/lib/audit-frameworks";
-import { GMP_CLAUSES } from "@/lib/gmp-clauses";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_SELECTED_SHORT_NAMES = ["1.1", "5.5.1"] as const;
 const DEFAULT_FILE = "SOP_Manufacturing_v4.2.pdf";
 const DEFAULT_FRAMEWORK = AUDIT_FRAMEWORKS[0]?.value ?? "iso-9001-2015";
-
-const STRICTNESS_MARKS = [
-  { value: 0, label: "Standard" },
-  { value: 50, label: "Strict" },
-  { value: 100, label: "Custom" },
-] as const;
 
 const SECTION_LABEL =
   "mb-2 text-xs font-semibold uppercase tracking-wider text-black";
@@ -116,7 +101,6 @@ export function ConfigureAuditModal({
   const [selectedClauses, setSelectedClauses] = React.useState<Set<string>>(
     () => defaultSelectionForFramework(DEFAULT_FRAMEWORK),
   );
-  const [strictness, setStrictness] = React.useState([50]);
   const [isInitializing, setIsInitializing] = React.useState(false);
   const [initError, setInitError] = React.useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -130,7 +114,6 @@ export function ConfigureAuditModal({
     setAttachedFileName(DEFAULT_FILE);
     setClauseQuery("");
     setSelectedClauses(defaultSelectionForFramework(DEFAULT_FRAMEWORK));
-    setStrictness([50]);
     setIsInitializing(false);
     setInitError(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -251,7 +234,6 @@ export function ConfigureAuditModal({
     try {
       const params = new URLSearchParams();
       params.set("framework", framework);
-      params.set("strictness", String(strictness[0] ?? 50));
       params.set("workflow", workflowId);
       if (attachedFileName) {
         params.set("document", attachedFileName);
@@ -294,7 +276,7 @@ export function ConfigureAuditModal({
               Configure Audit Parameters
             </DialogTitle>
             <DialogDescription className="m-0 max-w-xl text-sm text-black">
-              Define scope, link documentation, and set AI analysis thresholds
+              Choose a framework, select clauses, and link target documentation
               for the {assessmentLabel} compliance assessment.
             </DialogDescription>
           </DialogHeader>
@@ -329,8 +311,9 @@ export function ConfigureAuditModal({
                 </PopoverTrigger>
                 <PopoverContent
                   align="start"
+                  side="bottom"
                   sideOffset={6}
-                  collisionPadding={16}
+                  avoidCollisions={false}
                   onWheel={(event) => event.stopPropagation()}
                   onTouchMove={(event) => event.stopPropagation()}
                   className="z-[300] w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-lg border border-black/20 bg-white p-0 text-black shadow-lg"
@@ -380,77 +363,6 @@ export function ConfigureAuditModal({
                   </Command>
                 </PopoverContent>
               </Popover>
-              <p className="m-0 mt-2 text-xs text-black">
-                Showing {frameworkClauses.length} of {GMP_CLAUSES.length} master
-                clauses for this framework.
-              </p>
-            </section>
-
-            {/* Target Documentation */}
-            <section>
-              <h3 className={SECTION_LABEL}>Target Documentation</h3>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
-                className="sr-only"
-                onChange={handleFileInputChange}
-                aria-hidden
-                tabIndex={-1}
-              />
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={handleBrowseClick}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    handleBrowseClick();
-                  }
-                }}
-                onDragOver={handleDropZoneDragOver}
-                onDrop={handleDropZoneDrop}
-                className="flex cursor-pointer flex-col gap-3 rounded-lg border border-dashed border-black/25 bg-neutral-50 px-4 py-4 transition-colors hover:border-black/40 hover:bg-neutral-100 sm:flex-row sm:items-center"
-              >
-                <div className="flex min-w-0 flex-1 items-center gap-3 text-sm text-black">
-                  <Paperclip className="size-4 shrink-0 text-black" aria-hidden />
-                  <span className="leading-snug">
-                    Drag &amp; drop target {assessmentLabel} PDF or browse your
-                    computer…
-                  </span>
-                </div>
-                <Button
-                  type="button"
-                  variant="muted"
-                  className="h-9 shrink-0 rounded-lg border border-black/10 bg-neutral-200 px-4 text-sm font-medium text-black hover:bg-neutral-300"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleBrowseClick();
-                  }}
-                >
-                  Browse
-                </Button>
-              </div>
-
-              {attachedFileName ? (
-                <div className="mt-3 flex items-center gap-3 rounded-lg border border-black/15 bg-white px-3 py-2.5">
-                  <FileText className="size-4 shrink-0 text-black" aria-hidden />
-                  <span className="min-w-0 flex-1 truncate text-sm font-medium text-black">
-                    {attachedFileName}
-                    {attachedFile
-                      ? ` · ${(attachedFile.size / 1024).toFixed(0)} KB`
-                      : null}
-                  </span>
-                  <button
-                    type="button"
-                    className="inline-flex size-8 items-center justify-center rounded-sm text-black transition-colors hover:bg-neutral-100"
-                    aria-label="Remove attached document"
-                    onClick={() => assignDocument(null)}
-                  >
-                    <X className="size-4" />
-                  </button>
-                </div>
-              ) : null}
             </section>
 
             {/* Clause Selection — searchable multi-select combobox */}
@@ -482,8 +394,9 @@ export function ConfigureAuditModal({
                 </PopoverTrigger>
                 <PopoverContent
                   align="start"
+                  side="bottom"
                   sideOffset={6}
-                  collisionPadding={16}
+                  avoidCollisions={false}
                   onWheel={(event) => event.stopPropagation()}
                   onTouchMove={(event) => event.stopPropagation()}
                   className="z-[300] w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-lg border border-black/20 bg-white p-0 text-black shadow-lg"
@@ -554,76 +467,73 @@ export function ConfigureAuditModal({
                   </div>
                 </PopoverContent>
               </Popover>
-              <p className="m-0 mt-2 text-xs text-black">
-                {selectedClauses.size} of {frameworkClauses.length} clauses
-                selected for this framework.
-              </p>
             </section>
 
-            {/* AI Analysis Settings */}
+            {/* Target Documentation */}
             <section>
-              <div className="mb-2 flex items-center gap-1.5">
-                <h3 className={cn(SECTION_LABEL, "mb-0")}>
-                  AI Analysis Settings
-                </h3>
-                <TooltipProvider delayDuration={200}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        type="button"
-                        className="inline-flex size-5 items-center justify-center rounded-full text-black"
-                        aria-label="About AI analysis settings"
-                      >
-                        <Info className="size-3.5" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side="top"
-                      className="max-w-xs border border-black/15 bg-white text-xs text-black"
-                    >
-                      Adjust how aggressively the model flags weak or ambiguous
-                      compliance language.
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <p className="m-0 mb-4 text-sm text-black">
-                Strictness dictates AI sensitivity to compliance language (shall
-                vs. should).
-              </p>
-
-              <div className="px-1">
-                <Slider
-                  value={strictness}
-                  onValueChange={setStrictness}
-                  min={0}
-                  max={100}
-                  step={50}
-                  aria-label="AI analysis strictness"
-                />
-                <div className="mt-3 flex justify-between">
-                  {STRICTNESS_MARKS.map((mark) => {
-                    const active = (strictness[0] ?? 50) === mark.value;
-                    return (
-                      <button
-                        key={mark.value}
-                        type="button"
-                        onClick={() => setStrictness([mark.value])}
-                        className="flex flex-col items-center gap-1.5 text-xs font-medium text-black"
-                      >
-                        <span
-                          className={cn(
-                            "size-3 rounded-full border-2 border-black",
-                            active ? "bg-black" : "bg-white",
-                          )}
-                          aria-hidden
-                        />
-                        {mark.label}
-                      </button>
-                    );
-                  })}
+              <h3 className={SECTION_LABEL}>Target Documentation</h3>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
+                className="sr-only"
+                onChange={handleFileInputChange}
+                aria-hidden
+                tabIndex={-1}
+              />
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={handleBrowseClick}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    handleBrowseClick();
+                  }
+                }}
+                onDragOver={handleDropZoneDragOver}
+                onDrop={handleDropZoneDrop}
+                className="flex cursor-pointer flex-col gap-3 rounded-lg border border-dashed border-black/25 bg-neutral-50 px-4 py-4 transition-colors hover:border-black/40 hover:bg-neutral-100 sm:flex-row sm:items-center"
+              >
+                <div className="flex min-w-0 flex-1 items-center gap-3 text-sm text-black">
+                  <Paperclip className="size-4 shrink-0 text-black" aria-hidden />
+                  <span className="leading-snug">
+                    Drag &amp; drop target {assessmentLabel} PDF or browse your
+                    computer…
+                  </span>
                 </div>
+                <Button
+                  type="button"
+                  variant="muted"
+                  className="h-9 shrink-0 rounded-lg border border-black/10 bg-neutral-200 px-4 text-sm font-medium text-black hover:bg-neutral-300"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleBrowseClick();
+                  }}
+                >
+                  Browse
+                </Button>
               </div>
+
+              {attachedFileName ? (
+                <div className="mt-3 flex items-center gap-3 rounded-lg border border-black/15 bg-white px-3 py-2.5">
+                  <FileText className="size-4 shrink-0 text-black" aria-hidden />
+                  <span className="min-w-0 flex-1 truncate text-sm font-medium text-black">
+                    {attachedFileName}
+                    {attachedFile
+                      ? ` · ${(attachedFile.size / 1024).toFixed(0)} KB`
+                      : null}
+                  </span>
+                  <button
+                    type="button"
+                    className="inline-flex size-8 items-center justify-center rounded-sm text-black transition-colors hover:bg-neutral-100"
+                    aria-label="Remove attached document"
+                    onClick={() => assignDocument(null)}
+                  >
+                    <X className="size-4" />
+                  </button>
+                </div>
+              ) : null}
             </section>
           </div>
 
