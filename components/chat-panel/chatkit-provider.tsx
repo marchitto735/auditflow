@@ -163,11 +163,11 @@ function ChatSessionErrorFallback({
   return (
     <div
       role="alert"
-      className="mx-4 flex min-h-[200px] flex-col justify-center gap-4 rounded-md border border-destructive/35 bg-destructive/5 px-4 py-6 text-left text-sm text-foreground"
+      className="mx-4 flex min-h-[200px] flex-col justify-center gap-4 rounded-2xl border border-destructive/35 bg-destructive/5 px-4 py-4 text-left text-sm text-foreground"
     >
       <p className="font-medium">Chat couldn’t start</p>
       <p className="text-muted-foreground">{message}</p>
-      <Button type="button" variant="outline" size="sm" className="w-fit" onClick={onRetry}>
+      <Button type="button" variant="black" className="w-fit" onClick={onRetry}>
         Try again
       </Button>
       <p className="text-xs text-muted-foreground">
@@ -296,7 +296,7 @@ export function ChatKitProvider({ children }: { children: React.ReactNode }) {
           {showDomainKeyWarning ? (
             <div
               role="status"
-              className="mx-4 mb-2 shrink-0 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-left text-sm text-amber-950 dark:border-amber-400/35 dark:bg-amber-400/10 dark:text-amber-50"
+              className="mx-4 mb-2 shrink-0 rounded-2xl border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-left text-sm text-amber-950 dark:border-amber-400/35 dark:bg-amber-400/10 dark:text-amber-50"
             >
               {process.env.NODE_ENV === "development" ? (
                 <>

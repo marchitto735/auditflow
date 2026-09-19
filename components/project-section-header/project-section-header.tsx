@@ -26,7 +26,7 @@ export default function ProjectSectionHeader({
   return (
     <div className={cn("w-full text-left min-w-0", className)}>
       <h2 className="text-h2 font-light text-foreground">{title}</h2>
-      <h4 className="text-h4 text-foreground mt-4 max-w-[800px]">{resolvedIntro}</h4>
+      <h4 className="text-h4 text-foreground mt-4 max-w-2xl">{resolvedIntro}</h4>
     </div>
   );
 }

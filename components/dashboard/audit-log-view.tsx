@@ -143,10 +143,10 @@ export default function AuditLogView({
 
   return (
     <TooltipProvider delayDuration={150}>
-    <div className="flex flex-col gap-6">
-      <div className="grid gap-4 sm:grid-cols-3">
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-          <CardContent className="p-5">
+          <CardContent className="p-4">
             <p className="text-body2 m-0 text-muted-foreground">Pass rate</p>
             <p className="text-h4 m-0 mt-2 font-semibold text-foreground">
               {passRate}%
@@ -154,7 +154,7 @@ export default function AuditLogView({
           </CardContent>
         </Card>
         <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-          <CardContent className="p-5">
+          <CardContent className="p-4">
             <p className="text-body2 m-0 text-muted-foreground">Fail rate</p>
             <p className="text-h4 m-0 mt-2 font-semibold text-foreground">
               {failRate}%
@@ -162,7 +162,7 @@ export default function AuditLogView({
           </CardContent>
         </Card>
         <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-          <CardContent className="p-5">
+          <CardContent className="p-4">
             <p className="text-body2 m-0 text-muted-foreground">
               Volume by type
             </p>
@@ -178,7 +178,7 @@ export default function AuditLogView({
           value={typeFilter}
           onValueChange={(value) => setTypeFilter(value as TypeFilter)}
         >
-          <SelectTrigger className="h-10 w-[12rem] rounded-full">
+          <SelectTrigger className="h-10 w-[12rem] rounded-lg">
             <SelectValue placeholder="All types" />
           </SelectTrigger>
           <SelectContent>
@@ -191,8 +191,7 @@ export default function AuditLogView({
         <div className="flex flex-wrap gap-2">
           <Button
             type="button"
-            variant="outline"
-            className="rounded-full"
+            variant="black"
             onClick={exportCsv}
           >
             Export CSV
@@ -200,7 +199,6 @@ export default function AuditLogView({
           <Button
             type="button"
             variant="black"
-            className="rounded-full"
             onClick={exportPdf}
           >
             Export PDF
@@ -214,12 +212,12 @@ export default function AuditLogView({
             <Table className="table-fixed w-full min-w-[720px]">
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
-                  <TableHead className="px-6 w-[28%]">Document</TableHead>
+                  <TableHead className="px-4 w-[28%]">Document</TableHead>
                   <TableHead className="w-[10%]">Type</TableHead>
                   <TableHead className="w-[16%]">Date</TableHead>
                   <TableHead className="w-[10%]">Score</TableHead>
                   <TableHead className="w-[16%]">Auditor</TableHead>
-                  <TableHead className="px-6 w-[20%]">Status</TableHead>
+                  <TableHead className="px-4 w-[20%]">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -227,7 +225,7 @@ export default function AuditLogView({
                   <TableRow className="hover:bg-transparent">
                     <TableCell
                       colSpan={6}
-                      className="max-w-none whitespace-normal px-6 py-10 text-muted-foreground"
+                      className="max-w-none whitespace-normal px-4 py-4 text-muted-foreground"
                     >
                       No stored audits yet. Run an SOP, BPR, or FIR audit to
                       populate this log.
@@ -236,7 +234,7 @@ export default function AuditLogView({
                 ) : (
                   rows.map((row) => (
                   <TableRow key={row.id} className="hover:bg-transparent">
-                    <TableCell className="px-6 font-medium">
+                    <TableCell className="px-4 font-medium">
                       <TruncatedText text={row.document} className="font-medium" />
                     </TableCell>
                     <TableCell>
@@ -251,7 +249,7 @@ export default function AuditLogView({
                     <TableCell>
                       <TruncatedText text={row.auditor} />
                     </TableCell>
-                    <TableCell className="px-6">
+                    <TableCell className="px-4">
                       <ActivityStatus status={row.status} />
                     </TableCell>
                   </TableRow>

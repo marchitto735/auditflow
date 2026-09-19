@@ -24,14 +24,14 @@ export default function ProjectHero({
   return (
     <section
       className={cn(
-        "pt-[17px] md:pt-[33px] lg:pt-[65px] pb-0 md:pb-[48px] mb-12 md:mb-20 text-left min-w-0",
+        "pt-[17px] md:pt-[33px] lg:pt-[65px] pb-0 md:pb-[48px] mb-4 md:mb-20 text-left min-w-0",
         className
       )}
     >
       <h1 className="text-h1 font-light text-foreground min-w-0">
         {title}
       </h1>
-      <h4 className="text-h4 text-foreground mt-4 max-w-[800px]">
+      <h4 className="text-h4 text-foreground mt-4 max-w-2xl">
         {subtitle.includes("\n")
           ? subtitle.split("\n").map((line, idx, arr) => (
               <React.Fragment key={idx}>

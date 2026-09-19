@@ -240,7 +240,7 @@ export default function ProjectCard({
               <button
                 type="button"
                 onClick={resetAudit}
-                className="flex size-9 shrink-0 items-center justify-center rounded-md bg-transparent text-foreground hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]"
+                className="flex size-9 shrink-0 items-center justify-center rounded-sm bg-transparent text-foreground hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]"
                 aria-label="Close report"
               >
                 <X className="size-5" />
@@ -260,11 +260,11 @@ export default function ProjectCard({
                   onRerunAudit={resetAudit}
                 />
               </CardContent>
-              <CardFooter className="flex w-full justify-end px-6 pt-4 pb-6">
+              <CardFooter className="flex w-full justify-end px-4 pt-4 pb-4">
                 <Button
                   type="button"
                   variant="black"
-                  className="rounded-full text-body1"
+                  className="text-button"
                   onClick={downloadReport}
                 >
                   Download Report
@@ -272,7 +272,7 @@ export default function ProjectCard({
               </CardFooter>
             </Card>
           </div>
-          <div className="relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-[oklch(100%_0_0)] px-6 py-5">
+          <div className="relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-[oklch(100%_0_0)] px-4 py-4">
             <div
               aria-hidden
               className="absolute inset-y-0 left-0 w-2 rounded-l-2xl bg-slate-600"
@@ -299,16 +299,16 @@ export default function ProjectCard({
         <SectionHeader title={title} description={description} />
         <div className="rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
         <Card className="w-full overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-none p-0 gap-0">
-          <CardContent className="flex flex-col text-left bg-[oklch(100%_0_0)] px-6 pb-6 pt-6 md:px-8 md:pb-8">
+          <CardContent className="flex flex-col text-left bg-[oklch(100%_0_0)] px-4 pb-4 pt-4 md:px-4 md:pb-4">
             <Popover open={clausePickerOpen} onOpenChange={setClausePickerOpen}>
-              <div className="mb-6">
+              <div className="mb-4">
                 <PopoverTrigger asChild>
                   <button
                     type="button"
                     role="combobox"
                     aria-expanded={clausePickerOpen}
                     className={cn(
-                      "flex h-12 w-full items-center justify-between rounded-full border border-[oklch(0%_0_0)] bg-[oklch(100%_0_0)] px-4 text-body1 text-[oklch(0%_0_0)] transition-colors hover:bg-[oklch(96%_0_0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0%_0_0)] focus-visible:ring-offset-2",
+                      "inline-flex h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] w-full items-center justify-between rounded-lg border border-[oklch(0%_0_0)] bg-transparent px-4 py-3 text-button font-medium text-[oklch(0%_0_0)] shadow-none transition-colors hover:bg-[oklch(96%_0_0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0%_0_0)] focus-visible:ring-offset-2",
                       clausePickerOpen && "bg-[oklch(96%_0_0)]",
                     )}
                   >
@@ -369,7 +369,7 @@ export default function ProjectCard({
 
             {selectedClause ? (
               <>
-                <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-6">
+                <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-4">
                   {selectedClause.description}
                 </p>
 
@@ -380,23 +380,18 @@ export default function ProjectCard({
                   Documents needed for this clause:
                 </p>
 
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-4">
                   {documentTypes.map((label) => (
-                    <button
+                    <Button
                       key={label}
                       type="button"
+                      variant={selectedDocType === label ? "black" : "outline"}
                       onClick={() => openFilePicker(label)}
                       disabled={auditStatus === "loading"}
-                      className={cn(
-                        "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-button disabled:opacity-50",
-                        selectedDocType === label
-                          ? "border-[oklch(0%_0_0)] bg-[oklch(0%_0_0)] text-[oklch(100%_0_0)]"
-                          : "border-[oklch(0%_0_0)] bg-transparent text-[oklch(0%_0_0)] hover:bg-[oklch(96%_0_0)]",
-                      )}
                     >
                       <FileText className="size-4 shrink-0" aria-hidden />
                       {label}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </>
@@ -436,7 +431,7 @@ export default function ProjectCard({
               variant="black"
               size="lg"
               className={cn(
-                "project-card-cta relative w-full overflow-hidden rounded-full border-0 disabled:opacity-100 disabled:bg-[oklch(90%_0_0)] disabled:text-[oklch(62%_0_0)]",
+                "project-card-cta relative w-full overflow-hidden border-0 disabled:opacity-100 disabled:bg-[oklch(90%_0_0)] disabled:text-[oklch(62%_0_0)]",
                 auditStatus === "loading" && "pointer-events-none",
               )}
               onClick={handleRunAudit}
@@ -452,8 +447,8 @@ export default function ProjectCard({
                   y="1"
                   width="calc(100% - 2px)"
                   height="calc(100% - 2px)"
-                  rx="24"
-                  ry="24"
+                  rx="8"
+                  ry="8"
                   fill="none"
                   stroke="oklch(48% 0 0)"
                   strokeWidth="2"
@@ -464,8 +459,8 @@ export default function ProjectCard({
                     y="1"
                     width="calc(100% - 2px)"
                     height="calc(100% - 2px)"
-                    rx="24"
-                    ry="24"
+                    rx="8"
+                    ry="8"
                     pathLength="100"
                     fill="none"
                     stroke="oklch(78% 0 0)"
@@ -521,17 +516,17 @@ export default function ProjectCard({
       <CardContent
         className={cn(
           "flex flex-col justify-center text-left bg-[oklch(100%_0_0)]",
-          layout === "vertical" ? "p-4 md:p-8" : "p-4 md:p-8 lg:p-16",
+          layout === "vertical" ? "p-4 md:p-4" : "p-4 md:p-4 lg:p-4",
         )}
       >
         <h4 className="text-h4 text-[oklch(0%_0_0)] m-0 mb-2">{title}</h4>
 
-        <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-8">{description}</p>
+        <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-4">{description}</p>
 
         <Button
           variant="black"
           size="lg"
-          className="project-card-cta w-fit rounded-full"
+          className="project-card-cta w-fit"
           asChild
         >
           {href ? (

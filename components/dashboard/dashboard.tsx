@@ -15,8 +15,8 @@ export default function Dashboard({
   activityRows?: ActivityRow[];
 }) {
   return (
-    <section className={cn(PAGE_GUTTER_CLASS, "pt-6 pb-10")}>
-      <div className={cn(PAGE_INNER_CLASS, "flex flex-col gap-8")}>
+    <section className={cn(PAGE_GUTTER_CLASS, "pt-4 pb-4")}>
+      <div className={cn(PAGE_INNER_CLASS, "flex flex-col gap-4")}>
         <div>
           <SectionHeader
             title="Compliance Snapshot"
@@ -30,7 +30,7 @@ export default function Dashboard({
             title="Audit Launcher"
             description="Launch an SOP, BPR, or FIR audit, choose a regulatory clause, get your report."
           />
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {(
               ["sop", "bpr", "fir"] as const
             ).map((id) => {
@@ -40,7 +40,7 @@ export default function Dashboard({
                   key={id}
                   className="h-full rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]"
                 >
-                  <CardContent className="flex h-full flex-col justify-between items-center p-6 text-center">
+                  <CardContent className="flex h-full flex-col justify-between items-center p-4 text-center">
                     <div className="w-full">
                       <h3 className="text-h4 m-0 font-semibold leading-tight text-foreground">
                         {workflow.title}
@@ -68,7 +68,7 @@ export default function Dashboard({
                       href={workflow.href}
                       className={cn(
                         buttonVariants({ variant: "black" }),
-                        "mt-6 w-full rounded-full",
+                        "mt-4 w-full",
                       )}
                     >
                       {workflow.cta}

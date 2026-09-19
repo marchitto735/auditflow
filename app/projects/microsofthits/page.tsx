@@ -5,7 +5,6 @@ import ProjectCard from "@/components/project-card/project-card";
 import ProjectHero from "@/components/project-hero/project-hero";
 import ProjectOverview from "@/components/project-overview/project-overview";
 import ProjectSectionHeader from "@/components/project-section-header/project-section-header";
-import Footer from "@/components/footer/footer";
 import { getNextCaseStudyHomeCard } from "@/lib/portfolio-projects";
 
 import "../../styles/App.css";
@@ -24,9 +23,9 @@ function Work() {
 
     return (
         <>
-        <div className="w-full px-4 md:px-8 lg:px-16">
-        <div className="max-w-[1328px] mx-auto">
-        <div className="w-full min-w-0 flex flex-col pt-0 pb-4 md:pt-0 md:pb-8 lg:pt-0 lg:pb-16 px-0 lg:px-16 bg-transparent">
+        <div className="w-full min-w-0 px-6 md:px-8">
+        <div className="mx-auto w-full max-w-[1400px]">
+        <div className="w-full min-w-0 flex flex-col pt-0 pb-4 md:pt-0 md:pb-4 lg:pt-0 lg:pb-4 px-0 lg:px-4 bg-transparent">
 
             <ProjectHero
               title="A research repository built to streamline discovery"
@@ -44,7 +43,7 @@ function Work() {
             <div className="grid grid-cols-12 gap-4 pb-0 md:pb-[80px]">
 
                 <div className="col-span-12">
-                    <div className="h-[520px] rounded-[16px] overflow-hidden">
+                    <div className="h-[520px] rounded-2xl overflow-hidden">
                         <ActionAreaCard
                             thumbnail={image_hero}
                             thumbHeight={"520"}
@@ -104,11 +103,11 @@ function Work() {
             <ProjectSectionHeader
               title="Discovery"
               intro="I conducted foundational research to understand how teams interacted with the legacy system, identifying friction points and opportunities for improvement."
-              className="mt-12 md:mt-32"
+              className="mt-4 md:mt-4"
             />
 
 
-            <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 sm:col-span-4 md:col-span-4">
                     <h3 className="text-h3 text-foreground mb-4">System audit</h3>
                     <p className="text-body1 text-foreground">
@@ -119,7 +118,7 @@ function Work() {
                 <div className="col-span-12 sm:col-span-8 md:col-span-8">
                     <img
                       src={image_audit}
-                      className="w-full h-auto rounded-[16px] object-contain"
+                      className="w-full h-auto rounded-2xl object-contain"
                       width={"100%"}
                       height={"100%"}
                       alt="Large Pizza"
@@ -128,11 +127,11 @@ function Work() {
             </div>
 
 
-            <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 sm:col-span-8 md:col-span-8 order-2 sm:order-1">
                     <img
                       src={image_empathy}
-                      className="w-full h-auto rounded-[16px] object-contain"
+                      className="w-full h-auto rounded-2xl object-contain"
                       width={"100%"}
                       height={"100%"}
                       alt="Large Pizza"
@@ -151,10 +150,10 @@ function Work() {
             <ProjectSectionHeader
               title="Information architecture"
               intro="I restructured the navigation and content hierarchy to reduce cognitive load and make key workflows easier to discover and complete."
-              className="mt-12 md:mt-[128px]"
+              className="mt-4 md:mt-[128px]"
             />
 
-            <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 sm:col-span-4 md:col-span-4">
                     <h3 className="text-h3 text-foreground mb-4">Wireframe flows</h3>
                     <p className="text-body1 text-foreground">
@@ -165,7 +164,7 @@ function Work() {
                 <div className="col-span-12 sm:col-span-8 md:col-span-8">
                     <img
                       src={image_wireframe}
-                      className="w-full h-auto rounded-[16px] object-contain"
+                      className="w-full h-auto rounded-2xl object-contain"
                       width={"100%"}
                       height={"100%"}
                       alt="Large Pizza"
@@ -177,10 +176,10 @@ function Work() {
             <ProjectSectionHeader
               title="Visual design"
               intro="I applied Microsoft’s design principles to create a cleaner, more accessible interface that supports clarity, consistency, and long‑term scalability."
-              className="mt-12 md:mt-32"
+              className="mt-4 md:mt-4"
             />
 
-            <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 sm:col-span-4 md:col-span-4">
                     <h3 className="text-h3 text-foreground mb-4">UI exploration</h3>
                     <p className="text-body1 text-foreground">
@@ -191,7 +190,7 @@ function Work() {
                 <div className="col-span-12 sm:col-span-8 md:col-span-8">
                     <img
                       src={image_uiexplore}
-                      className="w-full h-auto rounded-[16px] object-contain"
+                      className="w-full h-auto rounded-2xl object-contain"
                       width={"100%"}
                       height={"100%"}
                       alt="Large Pizza"
@@ -199,11 +198,11 @@ function Work() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-12 gap-8 mt-12 md:mt-[128px] pt-0">
+            <div className="grid grid-cols-12 gap-4 mt-4 md:mt-[128px] pt-0">
                 <div className="col-span-12 sm:col-span-8 md:col-span-8 order-2 sm:order-1">
                     <img
                       src={image_designsystem}
-                      className="w-full h-auto rounded-[16px] object-contain"
+                      className="w-full h-auto rounded-2xl object-contain"
                       width={"100%"}
                       height={"100%"}
                       alt="Large Pizza"
@@ -219,7 +218,7 @@ function Work() {
             </div>
 
 
-            <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 sm:col-span-4 md:col-span-4">
                     <h3 className="text-h3 text-foreground mb-4">UI specs</h3>
                     <p className="text-body1 text-foreground">
@@ -230,7 +229,7 @@ function Work() {
                 <div className="col-span-12 sm:col-span-8 md:col-span-8">
                     <img
                       src={image_redlines}
-                      className="w-full h-auto rounded-[16px] object-contain"
+                      className="w-full h-auto rounded-2xl object-contain"
                       width={"100%"}
                       height={"100%"}
                       alt="Large Pizza"
@@ -243,15 +242,15 @@ function Work() {
             <ProjectSectionHeader
               title="Product shipped"
               intro="The final release delivered a modernized research platform that improved usability, reduced friction, and enabled teams to work more efficiently."
-              className="mt-12 md:mt-[128px]"
+              className="mt-4 md:mt-[128px]"
             />
 
-            <div className="grid grid-cols-12 gap-4 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 lg:col-span-6 text-left min-w-0">
                     <h3 className="text-h3 text-foreground mb-0">
                       Content ingestion editor
                     </h3>
-                    <p className="text-body1 text-foreground mt-4 mb-8">
+                    <p className="text-body1 text-foreground mt-4 mb-4">
                       This customizable tool facilitates the ingestion, editing, and collaborative management of UX research content for Microsoft, providing valuable insights and data to the organization.
                     </p>
                 </div>
@@ -259,7 +258,7 @@ function Work() {
                 <div className="col-span-12">
                     <img
                       src={image_finaldesign}
-                      className="w-full rounded-[16px]"
+                      className="w-full rounded-2xl"
                       width={"100%"}
                       height={"100%"}
                       alt="Large Pizza"
@@ -268,7 +267,7 @@ function Work() {
             </div>
 
 
-            <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
 
                 <div className="col-span-12 lg:col-span-5">
                     <div className="w-full">
@@ -290,7 +289,6 @@ function Work() {
         </div>
         </div>
         </div>
-        <Footer />
         </>
     );
 }

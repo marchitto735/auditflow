@@ -33,13 +33,13 @@ export default function ScoreAnalysisView() {
   const trend = SCORE_TRENDS[range];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-        <CardContent className="p-6">
+        <CardContent className="p-4">
           <h3 className="text-h4 m-0 font-semibold text-foreground">
             Category breakdown
           </h3>
-          <p className="text-body2 m-0 mt-1 mb-6 text-muted-foreground">
+          <p className="text-body2 m-0 mt-1 mb-4 text-muted-foreground">
             GMP threshold is {GMP_THRESHOLD}%. Bars use the same score color
             scale as the dashboard gauge.
           </p>
@@ -67,7 +67,7 @@ export default function ScoreAnalysisView() {
       </Card>
 
       <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-        <CardContent className="p-6">
+        <CardContent className="p-4">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
               <h3 className="text-h4 m-0 font-semibold text-foreground">
@@ -84,7 +84,6 @@ export default function ScoreAnalysisView() {
                   key={value}
                   type="button"
                   variant={range === value ? "black" : "outline"}
-                  className="rounded-full"
                   onClick={() => setRange(value)}
                 >
                   {value}d

@@ -10,7 +10,7 @@ export default function TestPage() {
   }
 
   return (
-    <main className="p-8">
+    <div className="p-4">
       <p className="mb-4 text-sm">
         Audits run through {AUDIT_RUN_PATH}. Reports are listed from{" "}
         {AUDIT_REPORTS_PATH}.
@@ -18,10 +18,10 @@ export default function TestPage() {
       <button
         type="button"
         onClick={pingReports}
-        className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white"
+        className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white"
       >
         Load stored reports
       </button>
-    </main>
+    </div>
   )
 }

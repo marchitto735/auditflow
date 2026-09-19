@@ -15,11 +15,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 export const ACTIVITY_COLUMNS = [
-  { key: "document", label: "Document", headerClassName: "px-6 w-[30%]", width: "30%" },
+  { key: "document", label: "Document", headerClassName: "px-4 w-[30%]", width: "30%" },
   { key: "type", label: "Type", width: "15%" },
   { key: "date", label: "Timestamp", width: "25%" },
   { key: "score", label: "Score", width: "15%" },
-  { key: "status", label: "Status", headerClassName: "px-6 w-[15%]", width: "15%" },
+  { key: "status", label: "Status", headerClassName: "px-4 w-[15%]", width: "15%" },
 ] as const;
 
 export type ActivityColumnKey = (typeof ACTIVITY_COLUMNS)[number]["key"];
@@ -202,7 +202,7 @@ export function ActivityTable({
                 onClick={() => handleRowClick(row)}
               >
                 <TableCell
-                  className="overflow-hidden px-6 font-medium"
+                  className="overflow-hidden px-4 font-medium"
                   style={{ width: ACTIVITY_COLUMNS[0].width }}
                   onClick={(event) =>
                     handleCellClick(event, row, "document")
@@ -250,7 +250,7 @@ export function ActivityTable({
                   {row.score}
                 </TableCell>
                 <TableCell
-                  className="overflow-hidden px-6"
+                  className="overflow-hidden px-4"
                   style={{ width: ACTIVITY_COLUMNS[4].width }}
                   onClick={(event) => handleCellClick(event, row, "status")}
                 >
@@ -268,7 +268,7 @@ export function ActivityTable({
                   <TableCell colSpan={5} className="max-w-none overflow-visible whitespace-normal p-0">
                     <Collapsible open={open}>
                       <CollapsibleContent>
-                        <div className="px-6 pb-4 pt-1">
+                        <div className="px-4 pb-4 pt-1">
                           <p className="text-sm m-0 w-full max-w-lg whitespace-normal text-foreground break-words [overflow-wrap:anywhere]">
                             {row.detail}
                           </p>

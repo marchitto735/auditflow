@@ -68,13 +68,14 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  /* Design system radii: cards 8px, buttons 8px, badges/icon hovers 4px */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 8px;
+  --radius-2xl: 8px;
+  --radius-3xl: 8px;
+  --radius-4xl: 8px;
 
   --font-size-h1: var(--text-h1);
   --font-size-h2: var(--text-h2);
@@ -165,7 +166,7 @@
 @layer base {
   :root,
   :root.light {
-    --radius: 0.625rem;
+    --radius: 8px;
     --baseline: 4px;
     /* Matches SidebarMenuButton horizontal padding; labels/crown use the same inset as menu text. */
     --sidebar-menu-text-inset: 0.25rem;
@@ -465,7 +466,7 @@
     --chat-message-assistant-background: #0d2a1f;
     --chat-message-assistant-foreground: #ffffff;
     --chat-message-border-color: #4b6459;
-    --chat-message-radius: 16px;
+    --chat-message-radius: 8px;
   }
 
   /* ChatKit bubbles (light): black text on white / light-gray chips */
@@ -480,7 +481,7 @@
     --chat-message-assistant-background: #ffffff;
     --chat-message-assistant-foreground: #000000;
     --chat-message-border-color: #a1a1aa;
-    --chat-message-radius: 16px;
+    --chat-message-radius: 8px;
   }
 
   /* ChatKit bubbles (dark): white text on black / near-black */
@@ -491,7 +492,7 @@
     --chat-message-assistant-background: #000000;
     --chat-message-assistant-foreground: #ffffff;
     --chat-message-border-color: #525252;
-    --chat-message-radius: 16px;
+    --chat-message-radius: 8px;
   }
 
   /* sidebar theme icon buttons: no border in any theme */

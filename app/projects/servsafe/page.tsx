@@ -1,7 +1,6 @@
 "use client";
 
 import ActionAreaCard from "@/components/project-three/ActionAreaCard";
-import Footer from "@/components/footer/footer";
 import ProjectCard from "@/components/project-card/project-card";
 import ProjectHero from "@/components/project-hero/project-hero";
 import ProjectOverview from "@/components/project-overview/project-overview";
@@ -15,10 +14,10 @@ export default function ServSafeCaseStudy() {
 
   return (
     <>
-      <main className="min-h-screen min-w-0">
-        <div className="w-full px-4 md:px-8 lg:px-16">
-          <div className="max-w-[1328px] mx-auto">
-            <div className="w-full min-w-0 flex flex-col pt-0 pb-4 md:pt-0 md:pb-8 lg:pt-0 lg:pb-16 px-0 lg:px-16 bg-transparent">
+      <div className="min-h-screen min-w-0">
+        <div className="w-full min-w-0 px-6 md:px-8">
+          <div className="mx-auto w-full max-w-[1400px]">
+            <div className="w-full min-w-0 flex flex-col pt-0 pb-4 md:pt-0 md:pb-4 lg:pt-0 lg:pb-4 px-0 lg:px-4 bg-transparent">
               <ProjectHero
                 title="Food safety training and certification made clearer"
                 subtitle="ServSafe strengthens learning flows, usability, and intuitive training experiences for teams and learners across the food service industry."
@@ -32,9 +31,9 @@ export default function ServSafeCaseStudy() {
                 ]}
               />
 
-              <div className="grid grid-cols-12 gap-4 pb-0 md:pb-20">
+              <div className="grid grid-cols-12 gap-4 pb-0 md:pb-4">
                 <div className="col-span-12">
-                  <div className="h-[504px] overflow-hidden rounded-[16px]">
+                  <div className="h-[504px] overflow-hidden rounded-2xl">
                     <ActionAreaCard thumbnail={image_hero} thumbHeight={"520"} />
                   </div>
                 </div>
@@ -50,10 +49,10 @@ export default function ServSafeCaseStudy() {
               <ProjectSectionHeader
                 title="Discovery"
                 intro="A series of research activities were conducted to understand user expectations around food safety training and certification workflows."
-                className="mt-12 md:mt-32"
+                className="mt-4 md:mt-4"
               />
 
-              <div className="grid grid-cols-12 gap-8 mt-12 md:mt-32">
+              <div className="grid grid-cols-12 gap-4 mt-4 md:mt-4">
                 <div className="col-span-12 sm:col-span-4 md:col-span-4">
                   <h3 className="text-h3 text-foreground mb-4">System audit</h3>
                   <p className="text-body1 text-foreground">
@@ -68,17 +67,17 @@ export default function ServSafeCaseStudy() {
                 <div className="col-span-12 sm:col-span-8 md:col-span-8">
                   <img
                     src="/images/servsafe-systemaudit.png"
-                    className="w-full h-auto rounded-[16px] object-contain"
+                    className="w-full h-auto rounded-2xl object-contain"
                     alt="System audit"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-8 pt-12 md:pt-32">
+              <div className="grid grid-cols-12 gap-4 pt-4 md:pt-4">
                 <div className="col-span-12 sm:col-span-8 md:col-span-8 order-2 sm:order-1">
                   <img
                     src="/images/servsafe-workshops.png"
-                    className="w-full h-auto rounded-[16px] object-contain"
+                    className="w-full h-auto rounded-2xl object-contain"
                     alt="Workshop synthesis"
                   />
                 </div>
@@ -97,10 +96,10 @@ export default function ServSafeCaseStudy() {
               <ProjectSectionHeader
               title="Information architecture"
                 intro="The core navigation, content hierarchy, and user flows were mapped to ensure the experience remained intuitive, predictable, and aligned with established user mental models."
-                className="mt-12 md:mt-32"
+                className="mt-4 md:mt-4"
               />
 
-              <div className="grid grid-cols-12 gap-8 pt-12 md:pt-32">
+              <div className="grid grid-cols-12 gap-4 pt-4 md:pt-4">
                 <div className="col-span-12 sm:col-span-4 md:col-span-4">
                   <h3 className="text-h3 text-foreground mb-4">User flows</h3>
                   <p className="text-body1 text-foreground">
@@ -111,17 +110,17 @@ export default function ServSafeCaseStudy() {
                 <div className="col-span-12 sm:col-span-8 md:col-span-8">
                   <img
                     src="/images/servsafe-userflows.png"
-                    className="w-full h-auto rounded-[16px] object-contain"
+                    className="w-full h-auto rounded-2xl object-contain"
                     alt="UI explorations"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-8 mt-12 md:mt-[128px] pt-0">
+              <div className="grid grid-cols-12 gap-4 mt-4 md:mt-[128px] pt-0">
                 <div className="col-span-12 sm:col-span-8 md:col-span-8 order-2 sm:order-1">
                   <img
                     src="/images/servsafe-wireframeflows.png"
-                    className="w-full h-auto rounded-[16px] object-contain"
+                    className="w-full h-auto rounded-2xl object-contain"
                     alt="Design system"
                   />
                 </div>
@@ -138,10 +137,10 @@ export default function ServSafeCaseStudy() {
               <ProjectSectionHeader
               title="Visual design"
                 intro="A scalable design system was developed to unify typography, color, spacing, and component patterns across mobile and web, ensuring consistency and predictability throughout the product experience."
-                className="mt-12 md:mt-32"
+                className="mt-4 md:mt-4"
               />
 
-              <div className="grid grid-cols-12 gap-8 pt-12 md:pt-32">
+              <div className="grid grid-cols-12 gap-4 pt-4 md:pt-4">
                 <div className="col-span-12 sm:col-span-4 md:col-span-4">
                   <h3 className="text-h3 text-foreground mb-4">UI Exploration</h3>
                   <p className="text-body1 text-foreground">
@@ -157,17 +156,17 @@ export default function ServSafeCaseStudy() {
                 <div className="col-span-12 sm:col-span-8 md:col-span-8">
                   <img
                     src="/images/servsafe-uiexploration.png"
-                    className="w-full h-auto rounded-[16px] object-contain"
+                    className="w-full h-auto rounded-2xl object-contain"
                     alt="UI explorations"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-8 mt-12 md:mt-[128px] pt-0">
+              <div className="grid grid-cols-12 gap-4 mt-4 md:mt-[128px] pt-0">
                 <div className="col-span-12 sm:col-span-8 md:col-span-8 order-2 sm:order-1">
                   <img
                     src="/images/servsafe_designsystem.png"
-                    className="w-full h-auto rounded-[16px] object-contain"
+                    className="w-full h-auto rounded-2xl object-contain"
                     alt="Design system"
                   />
                 </div>
@@ -186,10 +185,10 @@ export default function ServSafeCaseStudy() {
               <ProjectSectionHeader
                 title="Testing"
                 intro="The interactive flow was reviewed to assess clarity, ease of navigation, and overall usability. This evaluation surfaced opportunities to strengthen the experience and better align it with user expectations."
-                className="mt-12 md:mt-[128px]"
+                className="mt-4 md:mt-[128px]"
               />
 
-              <div className="grid grid-cols-12 gap-8 pt-12 md:pt-32">
+              <div className="grid grid-cols-12 gap-4 pt-4 md:pt-4">
                 <div className="col-span-12 sm:col-span-4 md:col-span-4">
                   <h3 className="text-h3 text-foreground mb-4">Prototyping</h3>
                   <p className="text-body1 text-foreground">
@@ -203,17 +202,17 @@ export default function ServSafeCaseStudy() {
                 <div className="col-span-12 sm:col-span-8 md:col-span-8">
                   <img
                     src="/images/servsafe-prototype.png"
-                    className="w-full h-auto rounded-[16px] object-contain"
+                    className="w-full h-auto rounded-2xl object-contain"
                     alt="Prototyping"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-8 mt-12 md:mt-[128px] pt-0">
+              <div className="grid grid-cols-12 gap-4 mt-4 md:mt-[128px] pt-0">
                 <div className="col-span-12 sm:col-span-8 md:col-span-8 order-2 sm:order-1">
                   <img
                     src="/images/servsafe_observinsights.png"
-                    className="w-full h-auto rounded-[16px] object-contain"
+                    className="w-full h-auto rounded-2xl object-contain"
                     alt="Observations and insights"
                   />
                 </div>
@@ -232,10 +231,10 @@ export default function ServSafeCaseStudy() {
               <ProjectSectionHeader
               title="Product shipped"
                 intro="A refined, intuitive training experience built on clearer workflows, consistent design, and streamlined paths that help learners complete courses and manage certifications with confidence."
-                className="mt-12 md:mt-[128px]"
+                className="mt-4 md:mt-[128px]"
               />
 
-              <div className="grid grid-cols-12 gap-8 pt-12 md:pt-32">
+              <div className="grid grid-cols-12 gap-4 pt-4 md:pt-4">
                 <div className="col-span-12 text-left min-w-0 mb-4">
                   <h3 className="text-h3 text-foreground mb-4">Dashboard</h3>
                   <p className="text-body1 text-foreground w-full lg:w-1/2">
@@ -246,13 +245,13 @@ export default function ServSafeCaseStudy() {
                 <div className="col-span-12">
                   <img
                     src="/images/servsafe-dashboard.png"
-                    className="w-full h-auto rounded-[16px] object-contain"
+                    className="w-full h-auto rounded-2xl object-contain"
                     alt="Dashboard"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+              <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 text-left min-w-0 mb-4">
                   <h3 className="text-h3 text-foreground mb-4">Login</h3>
                   <p className="text-body1 text-foreground w-full lg:w-1/2">
@@ -263,13 +262,13 @@ export default function ServSafeCaseStudy() {
                 <div className="col-span-12">
                   <img
                     src="/images/servsafe-login.png"
-                    className="w-full h-auto rounded-[16px] object-contain"
+                    className="w-full h-auto rounded-2xl object-contain"
                     alt="Login"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+              <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 text-left min-w-0 mb-4">
                   <h3 className="text-h3 text-foreground mb-4">Profile settings</h3>
                   <p className="text-body1 text-foreground w-full lg:w-1/2">
@@ -280,7 +279,7 @@ export default function ServSafeCaseStudy() {
                 <div className="col-span-12">
                   <img
                     src="/images/servsafe-profilesettings.png"
-                    className="w-full h-auto rounded-[16px] object-contain"
+                    className="w-full h-auto rounded-2xl object-contain"
                     alt="Rewards feature"
                   />
                 </div>
@@ -288,7 +287,7 @@ export default function ServSafeCaseStudy() {
 
               
 
-              <div className="grid grid-cols-12 gap-8 mt-12 md:mt-[128px]">
+              <div className="grid grid-cols-12 gap-4 mt-4 md:mt-[128px]">
                 <div className="col-span-12 lg:col-span-5 pb-0">
                   <div className="w-full">
                     <h2 className="text-h2 text-foreground mb-4">Next project</h2>
@@ -302,8 +301,7 @@ export default function ServSafeCaseStudy() {
             </div>
           </div>
         </div>
-      </main>
-      <Footer />
+      </div>
     </>
   );
 }

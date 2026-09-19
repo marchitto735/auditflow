@@ -238,17 +238,17 @@ export default function ImpactTechStackSection({
 
   return (
     <section
-      className="w-full min-w-0 min-h-0 py-6 md:py-9 lg:pt-16 lg:pb-0 bg-transparent"
+      className="w-full min-w-0 min-h-0 py-4 md:py-4 lg:pt-4 lg:pb-0 bg-transparent"
     >
-      <div className="w-full px-4 md:px-8 lg:px-16">
-        <div className="max-w-[1328px] mx-auto min-h-0">
-          <div className="w-full mb-0 py-4 px-0 lg:px-16 lg:pb-0 bg-transparent">
+      <div className="w-full min-w-0 px-6 md:px-8">
+        <div className="mx-auto w-full max-w-[1400px] min-h-0">
+          <div className="w-full mb-0 py-4 px-0 lg:px-4 lg:pb-0 bg-transparent">
             <h2 className="text-h2 font-light text-left text-foreground">
               {title}
             </h2>
           </div>
 
-          <div className="w-full min-w-0 flex flex-col py-4 md:py-8 lg:py-16 px-0 lg:px-16 bg-transparent">
+          <div className="w-full min-w-0 flex flex-col py-4 md:py-4 lg:py-4 px-0 lg:px-4 bg-transparent">
             <div
               className={cn(
                 "w-full grid gap-4",
@@ -294,8 +294,8 @@ export default function ImpactTechStackSection({
                   className={cn(
                     "rounded-2xl w-full min-w-0 flex flex-col bg-[oklch(100%_0_0)] border-0 gap-0",
                     hideStats
-                      ? "py-10 px-4 md:py-14 md:px-8 lg:py-[68px] lg:px-12 min-h-0 md:min-h-[426px] flex-1"
-                      : "h-full min-h-0 py-[34px] px-4 md:py-[26px] md:px-8 lg:py-[44px] lg:px-12 flex-1"
+                      ? "py-4 px-4 md:py-4 md:px-4 lg:py-4 lg:px-4 min-h-0 md:min-h-[426px] flex-1"
+                      : "h-full min-h-0 py-[34px] px-4 md:py-[26px] md:px-4 lg:py-[44px] lg:px-4 flex-1"
                   )}
                 >
                   <CardContent
@@ -309,7 +309,7 @@ export default function ImpactTechStackSection({
                       className={cn(
                         "logo-columns-grid grid w-full min-w-0",
                         hideStats
-                          ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[minmax(56px,_auto)] md:auto-rows-[minmax(72px,_auto)] lg:auto-rows-[minmax(80px,_auto)] content-center max-w-none items-center justify-items-center gap-x-8 gap-y-[23px] md:gap-x-14 md:gap-y-[47px] lg:gap-x-4 lg:gap-y-[87px]"
+                          ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[minmax(56px,_auto)] md:auto-rows-[minmax(72px,_auto)] lg:auto-rows-[minmax(80px,_auto)] content-center max-w-none items-center justify-items-center gap-x-4 gap-y-[23px] md:gap-x-14 md:gap-y-[47px] lg:gap-x-4 lg:gap-y-[87px]"
                           : "grid-cols-2 lg:grid-cols-3 auto-rows-[minmax(36px,_auto)] md:auto-rows-[minmax(38px,_auto)] lg:auto-rows-[minmax(40px,_auto)] content-center max-w-xl lg:max-w-4xl mx-auto items-center gap-x-2 gap-y-[33px] md:gap-x-3 md:gap-y-[27px] lg:gap-x-4 lg:gap-y-[35px]"
                       )}
                     >

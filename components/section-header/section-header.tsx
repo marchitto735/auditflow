@@ -15,7 +15,7 @@ export default function SectionHeader({
   return (
     <div
       className={cn(
-        "mb-6",
+        "mb-4",
         actions && "flex items-start justify-between gap-4",
         className,
       )}
@@ -25,7 +25,7 @@ export default function SectionHeader({
           {title}
         </h2>
         {description ? (
-          <p className="m-0 mt-1 max-w-[42rem] text-sm text-neutral-600">
+          <p className="m-0 mt-1 max-w-xl text-sm text-neutral-600">
             {description}
           </p>
         ) : null}

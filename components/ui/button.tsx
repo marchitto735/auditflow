@@ -4,36 +4,36 @@ import { Slot } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+/** Dashboard CTA geometry: 48px tall, 8px radius, flat black primary. */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-button h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] px-[24px] py-[12px] transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-5 shrink-0 [&_svg]:shrink-0 [&_svg]:text-current outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg border-0 text-button font-medium shadow-none h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] px-6 py-3 transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-5 shrink-0 [&_svg]:shrink-0 [&_svg]:text-current outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 disabled:bg-muted disabled:text-muted-foreground",
+          "bg-black text-white hover:bg-gray-800 active:bg-gray-700 disabled:bg-muted disabled:text-muted-foreground",
+        black:
+          "bg-black text-white hover:bg-gray-800 active:bg-gray-700 disabled:bg-muted disabled:text-muted-foreground",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/80 focus-visible:ring-destructive/20",
         outline:
           "border border-[oklch(0%_0_0)] bg-transparent text-foreground hover:bg-[oklch(96%_0_0)] dark:border-white color:border-white dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)]",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/90 active:bg-secondary/80",
-        ghost:
-          "text-foreground hover:bg-accent",
+        ghost: "text-foreground hover:bg-accent",
         muted:
           "bg-gray-200 text-foreground hover:bg-gray-300 active:bg-gray-400 disabled:bg-muted disabled:text-muted-foreground",
-        black:
-          "bg-black text-white hover:bg-gray-800 active:bg-gray-700 disabled:bg-muted disabled:text-muted-foreground",
         link: "text-primary underline-offset-4 hover:underline hover:text-primary/80",
       },
       size: {
-        default: "px-[24px] py-[12px]",
-        xs: "px-[24px] py-[12px] text-caption [&_svg:not([class*='size-'])]:size-5",
-        sm: "px-[24px] py-[12px] [&_svg:not([class*='size-'])]:size-5",
-        lg: "px-[24px] py-[12px]",
-        icon: "px-[24px] py-[12px] [&_svg:not([class*='size-'])]:size-5",
-        "icon-xs": "px-[24px] py-[12px] [&_svg:not([class*='size-'])]:size-5",
-        "icon-sm": "px-[24px] py-[12px] [&_svg:not([class*='size-'])]:size-5",
-        "icon-lg": "px-[24px] py-[12px] [&_svg:not([class*='size-'])]:size-5",
+        default: "px-6 py-3",
+        xs: "px-6 py-3 text-caption [&_svg:not([class*='size-'])]:size-5",
+        sm: "px-6 py-3 [&_svg:not([class*='size-'])]:size-5",
+        lg: "px-6 py-3",
+        icon: "px-6 py-3 [&_svg:not([class*='size-'])]:size-5",
+        "icon-xs": "px-6 py-3 [&_svg:not([class*='size-'])]:size-5",
+        "icon-sm": "px-6 py-3 [&_svg:not([class*='size-'])]:size-5",
+        "icon-lg": "px-6 py-3 [&_svg:not([class*='size-'])]:size-5",
       },
     },
     defaultVariants: {

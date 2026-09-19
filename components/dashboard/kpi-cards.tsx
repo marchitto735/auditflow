@@ -36,7 +36,7 @@ function KpiCard({
 }) {
   return (
     <Card className={CARD_CLASS}>
-      <CardContent className="flex h-full flex-col p-6">
+      <CardContent className="flex h-full flex-col p-4">
         <div className="flex min-h-0 flex-1 flex-col">{children}</div>
         <div className="mt-auto flex w-full justify-end pt-4">
           <Link href={href} className={CTA_CLASS}>
@@ -165,7 +165,7 @@ function AvgScoreGauge() {
 
 export default function KpiCards() {
   return (
-    <div className="grid items-stretch gap-4 sm:grid-cols-3">
+    <div className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-3">
       <KpiCard href="/dashboard/audits" cta="View Audit Log">
         <p className="text-body2 m-0 text-muted-foreground">Total Audits</p>
         <p className="text-h4 m-0 mt-2 font-semibold leading-none text-foreground">

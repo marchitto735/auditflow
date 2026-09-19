@@ -60,11 +60,11 @@ function Calendar({
           classNames?.nav
         ),
         button_previous: cn(
-          "ml-auto size-8 shrink-0 rounded-full inline-flex items-center justify-center transition-colors hover:bg-black/10 dark:hover:bg-white/10 color:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-0 aria-disabled:opacity-50 p-0 select-none text-muted-foreground hover:text-foreground",
+          "ml-auto size-8 shrink-0 rounded-sm inline-flex items-center justify-center transition-colors hover:bg-black/10 dark:hover:bg-white/10 color:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-0 aria-disabled:opacity-50 p-0 select-none text-muted-foreground hover:text-foreground",
           defaultClassNames.button_previous
         ),
         button_next: cn(
-          "size-8 shrink-0 rounded-full inline-flex items-center justify-center transition-colors hover:bg-black/10 dark:hover:bg-white/10 color:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-0 aria-disabled:opacity-50 p-0 select-none text-muted-foreground hover:text-foreground",
+          "size-8 shrink-0 rounded-sm inline-flex items-center justify-center transition-colors hover:bg-black/10 dark:hover:bg-white/10 color:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-0 aria-disabled:opacity-50 p-0 select-none text-muted-foreground hover:text-foreground",
           defaultClassNames.button_next
         ),
         month_caption: cn(
@@ -76,7 +76,7 @@ function Calendar({
           defaultClassNames.dropdowns
         ),
         dropdown_root: cn(
-          "relative has-focus:border-ring border border-input has-focus:ring-ring/50 has-focus:ring-[3px] rounded-md",
+          "relative has-focus:border-ring border border-input has-focus:ring-ring/50 has-focus:ring-[3px] rounded-lg",
           defaultClassNames.dropdown_root
         ),
         dropdown: cn(
@@ -87,13 +87,13 @@ function Calendar({
           "select-none text-subtitle1 font-semibold text-foreground leading-8 h-8 flex items-center",
           captionLayout === "label"
             ? ""
-            : "rounded-md pl-2 pr-1 [&>svg]:text-muted-foreground [&>svg]:size-3.5",
+            : "rounded-lg pl-2 pr-1 [&>svg]:text-muted-foreground [&>svg]:size-3.5",
           defaultClassNames.caption_label
         ),
         table: "w-full border-collapse",
         weekdays: cn("flex gap-2", defaultClassNames.weekdays),
         weekday: cn(
-          "calendar-weekday text-subtitle2 font-medium text-muted-foreground tracking-wide rounded-md flex-1 select-none",
+          "calendar-weekday text-subtitle2 font-medium text-muted-foreground tracking-wide rounded-lg flex-1 select-none",
           defaultClassNames.weekday
         ),
         week: cn("flex w-full gap-2", defaultClassNames.week),
@@ -119,7 +119,7 @@ function Calendar({
         range_middle: cn("rounded-none", defaultClassNames.range_middle),
         range_end: cn("rounded-r-md bg-accent", defaultClassNames.range_end),
         today: cn(
-          "bg-accent text-accent-foreground rounded-md data-[selected=true]:rounded-none has-[[data-selected-single=true]]:bg-transparent has-[[data-selected-single=true]]:text-foreground",
+          "bg-accent text-accent-foreground rounded-lg data-[selected=true]:rounded-none has-[[data-selected-single=true]]:bg-transparent has-[[data-selected-single=true]]:text-foreground",
           defaultClassNames.today
         ),
         outside: cn(
@@ -219,7 +219,7 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "rdp-day-button inline-flex items-center justify-center gap-2 rounded-md transition-all disabled:pointer-events-none disabled:opacity-50 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] focus-visible:outline-none text-overline font-normal bg-muted text-foreground hover:bg-accent data-[outside=true]:bg-transparent data-[outside=true]:text-muted-foreground data-[outside=true]:hover:bg-transparent data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[selected-single=true]:hover:bg-primary data-[range-middle=true]:bg-muted data-[range-middle=true]:text-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md [&>span]:text-overline [&>span]:opacity-70 px-0 py-0",
+        "rdp-day-button inline-flex items-center justify-center gap-2 rounded-lg transition-all disabled:pointer-events-none disabled:opacity-50 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] focus-visible:outline-none text-overline font-normal bg-muted text-foreground hover:bg-accent data-[outside=true]:bg-transparent data-[outside=true]:text-muted-foreground data-[outside=true]:hover:bg-transparent data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[selected-single=true]:hover:bg-primary data-[range-middle=true]:bg-muted data-[range-middle=true]:text-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-lg data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-lg data-[range-start=true]:rounded-l-md [&>span]:text-overline [&>span]:opacity-70 px-0 py-0",
         defaultClassNames.day,
         className
       )}

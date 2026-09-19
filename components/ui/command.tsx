@@ -14,7 +14,7 @@ function Command({
     <CommandPrimitive
       data-slot="command"
       className={cn(
-        "bg-popover text-popover-foreground flex h-full w-full flex-col overflow-hidden rounded-md",
+        "bg-popover text-popover-foreground flex h-full w-full flex-col overflow-hidden rounded-2xl",
         className,
       )}
       {...props}
@@ -35,7 +35,7 @@ function CommandInput({
       <CommandPrimitive.Input
         data-slot="command-input"
         className={cn(
-          "placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-body1 outline-none disabled:cursor-not-allowed disabled:opacity-50",
+          "placeholder:text-muted-foreground flex h-10 w-full rounded-lg bg-transparent py-3 text-body1 outline-none disabled:cursor-not-allowed disabled:opacity-50",
           className,
         )}
         {...props}
@@ -66,7 +66,7 @@ function CommandEmpty({
   return (
     <CommandPrimitive.Empty
       data-slot="command-empty"
-      className="py-6 text-center text-body2"
+      className="py-4 text-center text-body2"
       {...props}
     />
   );
@@ -96,7 +96,7 @@ function CommandItem({
     <CommandPrimitive.Item
       data-slot="command-item"
       className={cn(
-        "relative flex cursor-default items-center gap-2 rounded-md px-3 py-2 text-body1 outline-none select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected=true]:bg-[oklch(96%_0_0)] data-[selected=true]:text-foreground",
+        "relative flex cursor-default items-center gap-2 rounded-sm px-3 py-2 text-body1 outline-none select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected=true]:bg-[oklch(96%_0_0)] data-[selected=true]:text-foreground",
         className,
       )}
       {...props}

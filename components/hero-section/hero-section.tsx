@@ -4,15 +4,15 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function HeroSection() {
   return (
-    <section className="hero w-full min-w-0 pt-6 pb-6 md:pt-9 md:pb-9 lg:pt-16 lg:pb-0 bg-transparent">
-      <div className="content w-full px-4 md:px-8 lg:px-16">
-        <div className="max-w-[1328px] mx-auto">
+    <section className="hero w-full min-w-0 pt-4 pb-4 md:pt-9 md:pb-9 lg:pt-4 lg:pb-0 bg-transparent">
+      <div className="content w-full min-w-0 px-6 md:px-8">
+        <div className="mx-auto w-full max-w-[1400px]">
 
           {/* OUTER BOX */}
-          <div className="w-full min-w-0 flex flex-col py-4 md:py-8 lg:py-16 px-0 lg:px-16 bg-transparent">
+          <div className="w-full min-w-0 flex flex-col py-4 md:py-4 lg:py-4 px-0 lg:px-4 bg-transparent">
 
             {/* Tablet uses a tighter gutter; desktop restores the full visual gap */}
-            <div className="flex w-full min-w-0 flex-col gap-12 md:flex-row md:items-stretch md:gap-8 lg:gap-24">
+            <div className="flex w-full min-w-0 flex-col gap-4 md:flex-row md:items-stretch md:gap-4 lg:gap-24">
               <div className="min-w-0 flex-1 basis-0 md:min-w-[20rem] text-foreground bg-transparent">
                 <h1 className="text-h1 font-light whitespace-nowrap">
                   Mike Marchitto
@@ -53,7 +53,7 @@ export default function HeroSection() {
                     />
                   </div>
                   <CardContent className="hidden p-0" aria-hidden="true">
-                    <blockquote className="profile-quote text-body2 text-foreground font-light text-center m-0 p-0 mb-8">
+                    <blockquote className="profile-quote text-body2 text-foreground font-light text-center m-0 p-0 mb-4">
                       <p className="italic text-foreground [font-size:var(--text-body2-size)] [line-height:24px]">
                         "A king is a man who turns hope into action."
                       </p>

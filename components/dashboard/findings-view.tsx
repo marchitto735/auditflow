@@ -108,19 +108,19 @@ export default function FindingsView() {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
         <Card className="overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <Table className="table-fixed w-full min-w-[880px]">
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className="w-[28%] px-6">Finding</TableHead>
+                    <TableHead className="w-[28%] px-4">Finding</TableHead>
                     <TableHead className="w-[16%]">Document</TableHead>
                     <TableHead className="w-[12%]">Severity</TableHead>
                     <TableHead className="w-[16%]">Citation</TableHead>
                     <TableHead className="w-[12%]">Owner</TableHead>
-                    <TableHead className="w-[16%] px-6">Status</TableHead>
+                    <TableHead className="w-[16%] px-4">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -133,7 +133,7 @@ export default function FindingsView() {
                       )}
                       onClick={() => setActiveId(row.id)}
                     >
-                      <TableCell className="px-6 font-medium">
+                      <TableCell className="px-4 font-medium">
                         <TruncatedText text={row.title} className="font-medium" />
                       </TableCell>
                       <TableCell>
@@ -149,7 +149,7 @@ export default function FindingsView() {
                         <TruncatedText text={row.owner} />
                       </TableCell>
                       <TableCell
-                        className="px-6"
+                        className="px-4"
                         onClick={(event) => event.stopPropagation()}
                       >
                         <Select
@@ -159,7 +159,7 @@ export default function FindingsView() {
                           }
                         >
                           <SelectTrigger
-                            className="h-9 w-full min-w-0 rounded-full"
+                            className="h-9 w-full min-w-0 rounded-lg"
                             title={row.status}
                           >
                             <SelectValue>
@@ -186,7 +186,7 @@ export default function FindingsView() {
         </Card>
 
         <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-          <CardContent className="flex flex-col gap-4 p-6">
+          <CardContent className="flex flex-col gap-4 p-4">
             <div>
               <p className="text-caption m-0 text-muted-foreground">
                 Selected finding
@@ -218,7 +218,6 @@ export default function FindingsView() {
               <Button
                 type="button"
                 variant="black"
-                className="rounded-full"
                 onClick={logCapa}
               >
                 Assign owner / log CAPA

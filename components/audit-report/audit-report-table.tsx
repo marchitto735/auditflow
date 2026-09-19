@@ -144,7 +144,7 @@ function AuditReportActionsMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="min-w-[13rem] rounded-lg border border-slate-200 bg-white p-1 shadow-lg"
+        className="min-w-[13rem] rounded-2xl border border-slate-200 bg-white p-1 shadow-lg"
       >
         <DropdownMenuItem
           className={ACTION_ITEM_CLASS}
@@ -197,8 +197,8 @@ export function AuditReportTable({
   return (
     <TooltipProvider delayDuration={0}>
       <div className="min-w-0 w-full">
-        <div className="relative border-b border-border bg-muted px-6 pt-6 pb-6">
-          <div className="absolute top-6 right-6 z-10">
+        <div className="relative border-b border-border bg-muted px-4 pt-4 pb-4">
+          <div className="absolute top-4 right-4 z-10">
             <AuditReportActionsMenu
               auditId={auditId}
               onDownloadReport={onDownloadReport}
@@ -216,7 +216,7 @@ export function AuditReportTable({
                 </span>
               </CellTooltip>
             </div>
-            <div className="flex min-w-0 items-start gap-6">
+            <div className="flex min-w-0 items-start gap-4">
               <div className={cn(META_FIELD_CLASS, "shrink-0")}>
                 <HeaderLabel label="Type" />
                 <CellTooltip label={documentType}>
@@ -225,7 +225,7 @@ export function AuditReportTable({
                   </span>
                 </CellTooltip>
               </div>
-              <div className={cn(META_FIELD_CLASS, "ml-12 min-w-0")}>
+              <div className={cn(META_FIELD_CLASS, "ml-4 min-w-0")}>
                 <HeaderLabel label="Timestamp" />
                 <CellTooltip label={date}>
                   <span className={cn("block min-w-0 cursor-default truncate", META_VALUE_CLASS)}>
@@ -234,12 +234,12 @@ export function AuditReportTable({
                 </CellTooltip>
               </div>
             </div>
-            <div className="flex min-w-0 items-start gap-6 pr-10">
+            <div className="flex min-w-0 items-start gap-4 pr-4">
               <div className={cn(META_FIELD_CLASS, "shrink-0")}>
                 <HeaderLabel label="Score" />
                 <span className={META_VALUE_CLASS}>{score}</span>
               </div>
-              <div className={cn(META_FIELD_CLASS, "ml-12 min-w-0")}>
+              <div className={cn(META_FIELD_CLASS, "ml-4 min-w-0")}>
                 <HeaderLabel label="Status" />
                 <ActivityStatus status={status} className="text-body1" />
               </div>
@@ -251,7 +251,7 @@ export function AuditReportTable({
           onOpenChange={setDetailsOpen}
           className="min-w-0"
         >
-          <div className="flex flex-col gap-6 px-6 pt-6 pb-4">
+          <div className="flex flex-col gap-4 px-4 pt-4 pb-4">
             <CollapsibleTrigger asChild>
               <button
                 type="button"
@@ -276,7 +276,7 @@ export function AuditReportTable({
               )}
             >
               <div className="min-h-0 overflow-hidden">
-                <div className="rounded-lg bg-white p-0 shadow-none">
+                <div className="rounded-2xl bg-white p-0 shadow-none">
                   <div className={cn(REPORT_GRID_CLASS, "items-stretch")}>
                     <DetailColumn title="Summary" preview={!detailsOpen}>
                       <p className="m-0">{summary}</p>

@@ -8,9 +8,9 @@ export function Container({ className, variant = "default", ...props }: Containe
   return (
     <div
       className={cn(
-        variant === "wide" && "w-full max-w-[1328px] mx-auto",
-        variant === "narrow" && "w-full max-w-[640px] mx-auto",
-        variant === "default" && "w-full mx-auto",
+        variant === "wide" && "mx-auto w-full max-w-[1400px]",
+        variant === "narrow" && "mx-auto w-full max-w-[640px]",
+        variant === "default" && "mx-auto w-full",
         className
       )}
       {...props}

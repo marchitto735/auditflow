@@ -122,7 +122,7 @@ try {
         data-range-middle={modifiers.range_middle}
         style={colorStyle}
         className={cn(
-          "rdp-day-button border border-border dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] bg-muted hover:bg-[oklch(92%_0_0)] dark:bg-[oklch(26%_0.01_264)] dark:hover:bg-[oklch(30%_0.01_264)] color:bg-[oklch(38%_0.035_165)] color:hover:bg-[oklch(48%_0.035_165)] data-[selected-single=true]:border-[oklch(22%_0_0)] color:data-[selected-single=true]:border-transparent inline-flex items-center justify-center rounded-[6px] transition-all disabled:pointer-events-none disabled:opacity-50 focus-visible:border-0 focus-visible:ring-0 focus-visible:outline-none text-button text-foreground data-[outside=true]:!border-transparent data-[outside=true]:!bg-transparent data-[outside=true]:!hover:bg-transparent color:data-[outside=true]:!text-white data-[selected-single=true]:!bg-black data-[selected-single=true]:!text-white data-[selected-single=true]:hover:!bg-black data-[selected-single=true]:dark:!bg-white data-[selected-single=true]:dark:!text-black data-[selected-single=true]:color:!bg-white data-[selected-single=true]:color:!text-[oklch(24%_0.035_165)] data-[selected-single=true]:rounded-full data-[range-middle=true]:text-foreground data-[range-start=true]:text-white data-[range-end=true]:text-white group-data-[focused=true]/day:border-0 group-data-[focused=true]/day:ring-0 flex aspect-square size-auto w-full min-w-(--cell-size) leading-none group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 data-[range-end=true]:rounded-full data-[range-end=true]:rounded-r-full data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-full data-[range-start=true]:rounded-l-full px-0 py-0",
+          "rdp-day-button border border-border dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] bg-muted hover:bg-[oklch(92%_0_0)] dark:bg-[oklch(26%_0.01_264)] dark:hover:bg-[oklch(30%_0.01_264)] color:bg-[oklch(38%_0.035_165)] color:hover:bg-[oklch(48%_0.035_165)] data-[selected-single=true]:border-[oklch(22%_0_0)] color:data-[selected-single=true]:border-transparent inline-flex items-center justify-center rounded-lg transition-all disabled:pointer-events-none disabled:opacity-50 focus-visible:border-0 focus-visible:ring-0 focus-visible:outline-none text-button text-foreground data-[outside=true]:!border-transparent data-[outside=true]:!bg-transparent data-[outside=true]:!hover:bg-transparent color:data-[outside=true]:!text-white data-[selected-single=true]:!bg-black data-[selected-single=true]:!text-white data-[selected-single=true]:hover:!bg-black data-[selected-single=true]:dark:!bg-white data-[selected-single=true]:dark:!text-black data-[selected-single=true]:color:!bg-white data-[selected-single=true]:color:!text-[oklch(24%_0.035_165)] data-[selected-single=true]:rounded-lg data-[range-middle=true]:text-foreground data-[range-start=true]:text-white data-[range-end=true]:text-white group-data-[focused=true]/day:border-0 group-data-[focused=true]/day:ring-0 flex aspect-square size-auto w-full min-w-(--cell-size) leading-none group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 data-[range-end=true]:rounded-lg data-[range-end=true]:rounded-r-lg data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-lg data-[range-start=true]:rounded-l-lg px-0 py-0",
           className
         )}
         {...props}
@@ -673,7 +673,7 @@ try {
 
         {/* Close button: fixed top-right of viewport, above overlay */}
         <DialogClose
-          className="fixed right-4 top-4 z-[100] flex size-12 min-h-12 min-w-12 items-center justify-center rounded-full border-0 bg-transparent text-foreground dark:text-white color:text-white opacity-90 transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-offset-0 ring-0 ring-offset-0 scheduling-dialog-close lg:text-white"
+          className="fixed right-4 top-4 z-[100] flex size-12 min-h-12 min-w-12 items-center justify-center rounded-sm border-0 bg-transparent text-foreground dark:text-white color:text-white opacity-90 transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-offset-0 ring-0 ring-offset-0 scheduling-dialog-close lg:text-white"
           aria-label="Close"
         >
           <XIcon className="size-6 shrink-0 text-foreground dark:text-white color:text-white lg:text-white" />
@@ -684,7 +684,7 @@ try {
           data-slot="scheduling-panel"
           data-theme={resolvedTheme}
           className={cn(
-            "relative flex min-h-screen max-h-[90vh] lg:min-h-0 lg:h-fit lg:max-h-[85vh] w-full max-w-full lg:max-w-[1000px] flex-col overflow-y-auto lg:overflow-x-visible lg:overflow-y-auto rounded-none lg:rounded-lg border border-border dark:border-[oklch(30%_0.01_264)] color:border-[oklch(28%_0.035_165)] p-6 px-6 text-foreground",
+            "relative flex min-h-screen max-h-[90vh] lg:min-h-0 lg:h-fit lg:max-h-[85vh] w-full max-w-full lg:max-w-[1000px] flex-col overflow-y-auto lg:overflow-x-visible lg:overflow-y-auto rounded-none lg:rounded-2xl border border-border dark:border-[oklch(30%_0.01_264)] color:border-[oklch(28%_0.035_165)] p-4 px-4 text-foreground",
             (step === "date" || step === "time") && "pb-[88px]",
             resolvedTheme === "color" && "!bg-[oklch(24%_0.035_165)]",
             step === "details" && "lg:w-fit",
@@ -699,7 +699,7 @@ try {
           }
         >
           {step === "confirm" ? (
-            <div className="flex min-h-0 w-full flex-none lg:flex-1 lg:min-h-0 flex-col items-start p-[24px]">
+            <div className="flex min-h-0 w-full flex-none lg:flex-1 lg:min-h-0 flex-col items-start p-4">
               <ConfirmStep
                 name={name}
                 email={email}
@@ -719,7 +719,7 @@ try {
             </div>
           ) : step === "date" || step === "time" ? (
             /* Stage 1: left panel | calendar | time slots */
-            <div className="flex min-h-0 flex-none lg:flex-1 lg:min-h-0 flex-col gap-12 lg:flex-row lg:gap-12 max-w-full">
+            <div className="flex min-h-0 flex-none lg:flex-1 lg:min-h-0 flex-col gap-4 lg:flex-row lg:gap-4 max-w-full">
               <div
                 data-slot="scheduling-left-panel"
                 className="flex h-auto min-h-0 w-full flex-col text-foreground pt-1 lg:w-[236px] shrink-0"
@@ -769,7 +769,7 @@ try {
                         <button
                           type="button"
                           style={{ paddingTop: 8, paddingBottom: 8 }}
-                          className="-ml-2 -mt-[6px] flex items-center gap-2 rounded-[6px] px-2 leading-normal text-body2 text-foreground transition-colors hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)]"
+                          className="-ml-2 -mt-[6px] flex items-center gap-2 rounded-lg px-2 leading-normal text-body2 text-foreground transition-colors hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)]"
                         >
                           <Globe className="h-4 w-4 shrink-0" />
                           <span className="max-w-[180px] truncate">{formatTimezoneLabel(timeZone)}</span>
@@ -790,7 +790,7 @@ try {
                             ref={tz === timeZone ? selectedRef : null}
                             onSelect={() => setTimeZone(tz)}
                             className={cn(
-                              "flex items-center gap-2 rounded-[4px] py-2 pl-0.5 leading-normal hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)] focus:bg-[oklch(92%_0_0)] dark:focus:bg-[oklch(30%_0.01_264)] color:focus:bg-[oklch(48%_0.035_165)]",
+                              "flex items-center gap-2 rounded-sm py-2 pl-0.5 leading-normal hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)] focus:bg-[oklch(92%_0_0)] dark:focus:bg-[oklch(30%_0.01_264)] color:focus:bg-[oklch(48%_0.035_165)]",
                               timeZone === tz && "!bg-white !text-black dark:!bg-transparent dark:!text-white color:!bg-transparent color:!text-white"
                             )}
                           >
@@ -840,7 +840,7 @@ try {
                           {selectedLabel}
                         </span>
                       </div>
-                      <div className="text-body2 text-foreground flex items-center gap-2 mt-8 justify-center">
+                      <div className="text-body2 text-foreground flex items-center gap-2 mt-4 justify-center">
                         <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
                         Loading available times...
                       </div>
@@ -885,7 +885,7 @@ try {
             </div>
           ) : (
             /* Stage 2: left panel | details form */
-            <div className="flex min-h-0 flex-none lg:flex-1 lg:min-h-0 flex-col gap-12 lg:flex-row lg:gap-12 max-w-full">
+            <div className="flex min-h-0 flex-none lg:flex-1 lg:min-h-0 flex-col gap-4 lg:flex-row lg:gap-4 max-w-full">
               <div
                 data-slot="scheduling-left-panel"
                 className="flex h-auto min-h-0 w-full flex-col text-foreground pt-1 lg:w-[236px] shrink-0"

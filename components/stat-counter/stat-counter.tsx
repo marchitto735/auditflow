@@ -50,7 +50,7 @@ export function StatCounter({ value, label, startAnimation }: StatCounterProps) 
   const isTen = value === 10;
 
   return (
-    <Card className="w-full h-full min-h-0 flex flex-col items-center justify-center text-center pt-1.5 px-4 pb-4 md:pt-[22px] md:px-8 md:pb-8 lg:pt-[38px] lg:px-12 lg:pb-12 rounded-2xl bg-[oklch(100%_0_0)] text-[oklch(0%_0_0)] border-0 gap-0">
+    <Card className="w-full h-full min-h-0 flex flex-col items-center justify-center text-center pt-1.5 px-4 pb-4 md:pt-[22px] md:px-4 md:pb-4 lg:pt-[38px] lg:px-4 lg:pb-4 rounded-2xl bg-[oklch(100%_0_0)] text-[oklch(0%_0_0)] border-0 gap-0">
       <CardContent className="p-0 flex flex-col items-center justify-center text-center flex-1">
         <div className="flex flex-col items-center text-center mt-[7px] md:mt-0">
           <div className="text-h1 font-light -mb-1 !py-0 text-[oklch(0%_0_0)]">

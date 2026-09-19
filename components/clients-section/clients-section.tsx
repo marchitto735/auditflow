@@ -18,9 +18,9 @@ export type ClientsSectionProps = {
 export default function ClientsSection({ projects }: ClientsSectionProps) {
   return (
     <section className="w-full min-w-0 flex flex-col pt-0 pb-0 bg-transparent">
-      <div className="w-full px-4 md:px-8 lg:px-16">
-        <div className="max-w-[1328px] mx-auto flex flex-col min-w-0">
-          <div className="w-full min-w-0 flex flex-col pt-6 md:pt-8 lg:pt-10 px-0 lg:px-16 gap-12 bg-transparent">
+      <div className="w-full min-w-0 px-6 md:px-8">
+        <div className="mx-auto w-full max-w-[1400px] flex flex-col min-w-0">
+          <div className="w-full min-w-0 flex flex-col pt-4 md:pt-4 lg:pt-4 px-0 lg:px-4 gap-4 bg-transparent">
             {projects.map((project, i) => (
               <ProjectCard
                 key={i}

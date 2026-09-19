@@ -5,7 +5,6 @@ import ProjectCard from "@/components/project-card/project-card";
 import ProjectHero from "@/components/project-hero/project-hero";
 import ProjectOverview from "@/components/project-overview/project-overview";
 import ProjectSectionHeader from "@/components/project-section-header/project-section-header";
-import Footer from "@/components/footer/footer";
 import { getNextCaseStudyHomeCard } from "@/lib/portfolio-projects";
 
 import "../../styles/App.css";
@@ -24,9 +23,9 @@ function Work() {
 
     return (
         <>
-        <div className="w-full px-4 md:px-8 lg:px-16">
-        <div className="max-w-[1328px] mx-auto">
-        <div className="w-full min-w-0 flex flex-col pt-0 pb-4 md:pt-0 md:pb-8 lg:pt-0 lg:pb-16 px-0 lg:px-16 bg-transparent">
+        <div className="w-full min-w-0 px-6 md:px-8">
+        <div className="mx-auto w-full max-w-[1400px]">
+        <div className="w-full min-w-0 flex flex-col pt-0 pb-4 md:pt-0 md:pb-4 lg:pt-0 lg:pb-4 px-0 lg:px-4 bg-transparent">
 
             <ProjectHero
               title="An ecommerce experience to modernize the brand"
@@ -44,7 +43,7 @@ function Work() {
             <div className="grid grid-cols-12 gap-4 pb-0 md:pb-[80px]">
 
                 <div className="col-span-12">
-                    <div className="h-[520px] rounded-[16px] overflow-hidden">
+                    <div className="h-[520px] rounded-2xl overflow-hidden">
                         <ActionAreaCard
                             thumbnail={image_hero}
                             thumbHeight={"520"}
@@ -76,11 +75,11 @@ function Work() {
             <ProjectSectionHeader
               title="Discovery"
               intro="I analyzed customer behavior, ecommerce patterns, and outdoor retail trends to identify opportunities for a more engaging and conversion‑friendly experience."
-              className="mt-12 md:mt-32"
+              className="mt-4 md:mt-4"
             />
 
 
-            <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 sm:col-span-4 md:col-span-4">
                     <h3 className="text-h3 text-foreground mb-4">Competitive audit</h3>
                     <p className="text-body1 text-foreground">
@@ -89,14 +88,14 @@ function Work() {
                 </div>
 
                 <div className="col-span-12 sm:col-span-8 md:col-span-8">
-                    <img src={image_compaudit} className="w-full h-auto rounded-[16px] object-contain" alt="Competitive audit" />
+                    <img src={image_compaudit} className="w-full h-auto rounded-2xl object-contain" alt="Competitive audit" />
                 </div>
             </div>
 
 
-            <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 sm:col-span-8 md:col-span-8 order-2 sm:order-1">
-                    <img src={image_workshops} className="w-full h-auto rounded-[16px] object-contain" alt="Workshops" />
+                    <img src={image_workshops} className="w-full h-auto rounded-2xl object-contain" alt="Workshops" />
                 </div>
 
                 <div className="col-span-12 sm:col-span-4 md:col-span-4 order-1 sm:order-2">
@@ -112,10 +111,10 @@ function Work() {
             <ProjectSectionHeader
               title="Information architecture"
               intro="I refined the site structure and product hierarchy to make browsing easier and ensure customers could quickly find relevant gear and apparel."
-              className="mt-12 md:mt-[128px]"
+              className="mt-4 md:mt-[128px]"
             />
 
-            <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 sm:col-span-4 md:col-span-4">
                     <h3 className="text-h3 text-foreground mb-4">Wireframe flows</h3>
                     <p className="text-body1 text-foreground">
@@ -124,7 +123,7 @@ function Work() {
                 </div>
 
                 <div className="col-span-12 sm:col-span-8 md:col-span-8">
-                    <img src={image_wireframe} className="w-full h-auto rounded-[16px] object-contain" alt="Wireframe flows" />
+                    <img src={image_wireframe} className="w-full h-auto rounded-2xl object-contain" alt="Wireframe flows" />
                 </div>
             </div>
 
@@ -132,10 +131,10 @@ function Work() {
             <ProjectSectionHeader
               title="Visual design"
               intro="I developed updated visual styles and UI components that modernized the brand while maintaining its heritage and outdoor identity."
-              className="mt-12 md:mt-[128px]"
+              className="mt-4 md:mt-[128px]"
             />
 
-            <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 sm:col-span-4 md:col-span-4">
                     <h3 className="text-h3 text-foreground mb-4">UI exploration</h3>
                     <p className="text-body1 text-foreground">
@@ -144,13 +143,13 @@ function Work() {
                 </div>
 
                 <div className="col-span-12 sm:col-span-8 md:col-span-8">
-                    <img src={image_uiexplore} className="w-full h-auto rounded-[16px] object-contain" alt="UI exploration" />
+                    <img src={image_uiexplore} className="w-full h-auto rounded-2xl object-contain" alt="UI exploration" />
                 </div>
             </div>
 
-            <div className="grid grid-cols-12 gap-8 mt-12 md:mt-[128px] pt-0">
+            <div className="grid grid-cols-12 gap-4 mt-4 md:mt-[128px] pt-0">
                 <div className="col-span-12 sm:col-span-8 md:col-span-8 order-2 sm:order-1">
-                    <img src={image_systemicons} className="w-full h-auto rounded-[16px] object-contain" alt="System icons" />
+                    <img src={image_systemicons} className="w-full h-auto rounded-2xl object-contain" alt="System icons" />
                 </div>
 
                 <div className="col-span-12 sm:col-span-4 md:col-span-4 order-1 sm:order-2">
@@ -161,11 +160,11 @@ function Work() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-12 gap-8 mt-12 md:mt-[128px] pt-0">
+            <div className="grid grid-cols-12 gap-4 mt-4 md:mt-[128px] pt-0">
                 <div className="col-span-12 sm:col-span-8 md:col-span-8 order-2 sm:order-2">
                     <img
                       src={image_designsystem}
-                      className="w-full h-auto rounded-[16px] object-contain"
+                      className="w-full h-auto rounded-2xl object-contain"
                       alt="Design system"
                     />
                 </div>
@@ -182,26 +181,26 @@ function Work() {
             <ProjectSectionHeader
               title="Product shipped"
               intro="The final experience delivered a cleaner, more cohesive ecommerce platform with reusable components that support ongoing marketing and merchandising needs."
-              className="mt-12 md:mt-[128px]"
+              className="mt-4 md:mt-[128px]"
             />
 
 
-            <div className="grid grid-cols-12 gap-4 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
                 <div className="col-span-12 lg:col-span-6 text-left min-w-0">
                     <h3 className="text-h3 text-foreground mb-0">Product details</h3>
-                    <p className="text-body1 text-foreground mt-4 mb-8">
+                    <p className="text-body1 text-foreground mt-4 mb-4">
                       The product details page now has a modern and minimalistic design giving a sophisticated impression. The search function helps users navigate reviews and questions, boosting customer confidence in purchasing decisions.
                     </p>
                 </div>
 
                 <div className="col-span-12">
-                    <img src={image_productdetails} className="w-full rounded-[16px]" width={"100%"} height={"100%"} alt="Large Pizza" />
+                    <img src={image_productdetails} className="w-full rounded-2xl" width={"100%"} height={"100%"} alt="Large Pizza" />
                 </div>
             </div>
 
 
 
-            <div className="grid grid-cols-12 gap-8 pt-12 md:pt-[128px]">
+            <div className="grid grid-cols-12 gap-4 pt-4 md:pt-[128px]">
 
                 <div className="col-span-12 lg:col-span-5">
                     <div className="w-full">
@@ -223,7 +222,6 @@ function Work() {
         </div>
         </div>
         </div>
-        <Footer />
         </>
     );
 }

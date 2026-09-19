@@ -23,17 +23,17 @@ export default function ProjectOverview({
   className,
 }: ProjectOverviewProps) {
   return (
-    <section className={cn("w-full pt-12 text-left min-w-0", className)}>
+    <section className={cn("w-full pt-4 text-left min-w-0", className)}>
       {intro ? (
         <>
           <h2 className="text-h2 font-light text-foreground">Summary</h2>
-          <h4 className="text-h4 text-foreground mt-4 max-w-[800px]">{intro}</h4>
+          <h4 className="text-h4 text-foreground mt-4 max-w-2xl">{intro}</h4>
         </>
       ) : null}
       <div
         className={cn(
-          "grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10 lg:gap-12",
-          intro ? "mt-12 md:mt-[128px]" : null,
+          "grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-4 lg:gap-4",
+          intro ? "mt-4 md:mt-[128px]" : null,
         )}
       >
         <div className="min-w-0">

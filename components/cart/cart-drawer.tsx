@@ -59,7 +59,7 @@ export default function CartDrawer() {
         className="flex h-full w-full min-h-0 flex-col overflow-hidden sm:max-w-md"
         closeButtonClassName="top-5 right-5"
       >
-        <SheetHeader className="px-6 py-5 pr-12">
+        <SheetHeader className="px-4 py-4 pr-4">
           <SheetTitle>
             {view === "checkout"
               ? "Checkout"
@@ -78,17 +78,17 @@ export default function CartDrawer() {
         <Separator />
 
         {view === "success" ? (
-          <div className="flex flex-1 flex-col px-6 py-6">
+          <div className="flex flex-1 flex-col px-4 py-4">
             <p className="text-body1 text-foreground m-0">
               Order {lastOrderNumber} is confirmed. You can keep reviewing the
               audit report while we prepare your compliant SOP package.
             </p>
-            <SheetFooter className="mt-auto gap-3 pt-6">
+            <SheetFooter className="mt-auto gap-3 pt-4">
               <Button
                 type="button"
                 variant="black"
                 size="lg"
-                className="w-full rounded-full"
+                className="w-full"
                 onClick={closeCart}
               >
                 Continue reviewing
@@ -101,7 +101,7 @@ export default function CartDrawer() {
             onSubmit={handlePlaceOrder}
           >
             <ScrollArea className="min-h-0 flex-1">
-              <div className="px-6 py-6">
+              <div className="px-4 py-4">
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-1.5">
                     <Label htmlFor="cart-checkout-name">Name</Label>
@@ -125,7 +125,7 @@ export default function CartDrawer() {
                     />
                   </div>
                 </div>
-                <Separator className="my-6" />
+                <Separator className="my-4" />
                 <div className="space-y-2">
                   <SummaryRow label="Subtotal" value={formatUsd(subtotalCents)} />
                   <SummaryRow
@@ -141,12 +141,12 @@ export default function CartDrawer() {
               </div>
             </ScrollArea>
             <Separator />
-            <SheetFooter className="gap-3 px-6 py-5">
+            <SheetFooter className="gap-3 px-4 py-4">
               <Button
                 type="submit"
                 variant="black"
                 size="lg"
-                className="w-full rounded-full"
+                className="w-full"
                 disabled={submitting || items.length === 0}
               >
                 {submitting ? "Placing order…" : "Place order"}
@@ -154,7 +154,7 @@ export default function CartDrawer() {
               <Button
                 type="button"
                 variant="ghost"
-                className="w-full rounded-full"
+                className="w-full"
                 onClick={() => setView("cart")}
               >
                 Back to cart
@@ -164,9 +164,9 @@ export default function CartDrawer() {
         ) : (
           <div className="flex min-h-0 flex-1 flex-col">
             <ScrollArea className="min-h-0 flex-1">
-              <div className="px-6 py-5">
+              <div className="px-4 py-4">
                 {items.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+                  <div className="flex flex-col items-center justify-center gap-3 py-4 text-center">
                     <ShoppingBag className="size-8 text-muted-foreground" />
                     <p className="text-body1 text-muted-foreground m-0">
                       Your cart is empty.
@@ -187,12 +187,12 @@ export default function CartDrawer() {
                           {item.description}
                         </p>
                         <div className="mt-3 flex items-center justify-between gap-3">
-                          <div className="inline-flex items-center rounded-full border border-border">
+                          <div className="inline-flex items-center rounded-lg border border-border">
                             <Button
                               type="button"
                               variant="ghost"
                               size="icon"
-                              className="size-8 min-h-8 min-w-8 rounded-full p-0"
+                              className="size-8 min-h-8 min-w-8 rounded-sm p-0"
                               onClick={() =>
                                 setQuantity(item.sku, item.quantity - 1)
                               }
@@ -210,7 +210,7 @@ export default function CartDrawer() {
                               type="button"
                               variant="ghost"
                               size="icon"
-                              className="size-8 min-h-8 min-w-8 rounded-full p-0"
+                              className="size-8 min-h-8 min-w-8 rounded-sm p-0"
                               onClick={() =>
                                 setQuantity(item.sku, item.quantity + 1)
                               }
@@ -242,7 +242,7 @@ export default function CartDrawer() {
               </div>
             </ScrollArea>
             <Separator />
-            <SheetFooter className="gap-3 px-6 py-5">
+            <SheetFooter className="gap-3 px-4 py-4">
               <div className="w-full space-y-2 pb-2">
                 <SummaryRow label="Subtotal" value={formatUsd(subtotalCents)} />
                 <SummaryRow
@@ -259,7 +259,7 @@ export default function CartDrawer() {
                 type="button"
                 variant="black"
                 size="lg"
-                className="w-full rounded-full"
+                className="w-full"
                 disabled={items.length === 0}
                 onClick={() => setView("checkout")}
               >
@@ -268,7 +268,7 @@ export default function CartDrawer() {
               <Button
                 type="button"
                 variant="ghost"
-                className="w-full rounded-full"
+                className="w-full"
                 onClick={closeCart}
               >
                 Continue reviewing

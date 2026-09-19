@@ -24,7 +24,7 @@ export default function ActionAreaCard({
       <img
         src={thumbnail}
         alt={name ?? "Project"}
-        className="rounded-[16px]"
+        className="rounded-2xl"
         style={{
           width: "100%",
           height: height ?? "auto",

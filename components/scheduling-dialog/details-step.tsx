@@ -47,7 +47,7 @@ const DetailsStep = React.memo(function DetailsStep({
       >
         Your Details
       </h2>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
         <div>
           <label htmlFor="scheduling-name" className="block text-subtitle2 text-foreground mb-1.5">Name *</label>
           <Input
@@ -98,7 +98,7 @@ const DetailsStep = React.memo(function DetailsStep({
           </div>
         )}
       </div>
-      <div className="flex gap-2 mt-8 justify-end">
+      <div className="flex gap-2 mt-4 justify-end">
         <Button
           variant="outline"
           className="text-button flex-1 min-w-0 border-0 hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)]"
