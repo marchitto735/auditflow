@@ -31,6 +31,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { SopAuditReport } from "@/lib/sop-report";
+import { NAV_UTILITY_BUTTON_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 export { statusBadgeClass };
@@ -159,10 +160,10 @@ function AuditReportActionsMenu({
           type="button"
           variant="ghost"
           size="icon"
-          className="size-8 min-h-8 min-w-8 shrink-0 rounded-md border-0 bg-transparent p-0 text-slate-700 shadow-none hover:bg-slate-100"
+          className={cn(NAV_UTILITY_BUTTON_CLASS, "shrink-0 text-foreground")}
           aria-label="Row actions"
         >
-          <MoreHorizontal className="size-4" />
+          <MoreHorizontal className="size-5" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent

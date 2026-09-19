@@ -36,7 +36,7 @@ export default function RecentActivity({
               rows.length > COLLAPSED_ROW_COUNT ? (
                 <button
                   type="button"
-                  className="-mr-2 flex size-8 shrink-0 items-center justify-center rounded-full bg-transparent text-foreground hover:bg-[var(--sidebar-hover)]"
+                  className="-mr-2 flex size-9 shrink-0 items-center justify-center rounded-md bg-transparent text-foreground hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]"
                   aria-expanded={expanded}
                   aria-label={
                     expanded

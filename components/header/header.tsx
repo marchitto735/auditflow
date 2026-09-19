@@ -135,10 +135,7 @@ try {
                 <Button
                   type="button"
                   variant="ghost"
-                  className={cn(
-                    NAV_UTILITY_BUTTON_CLASS,
-                    "-ml-2 dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]",
-                  )}
+                  className={cn(NAV_UTILITY_BUTTON_CLASS, "-ml-2")}
                   onClick={() => setMobileMenuOpen(true)}
                   aria-label="Open menu"
                 >
@@ -169,7 +166,7 @@ try {
           id="mobile-menu-sheet"
           side="left"
           className="mobile-menu-sheet w-full max-w-full sm:max-w-full lg:max-w-[240px] border-r-0 bg-sidebar border-border text-sidebar-foreground"
-          closeButtonClassName="top-6 right-[10px] h-12 min-h-12 w-12 min-w-12 p-0 rounded-full border-0 bg-transparent shadow-none outline-none ring-0 ring-offset-0 hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)] text-foreground hover:text-sidebar-accent-foreground !data-[state=open]:bg-transparent focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors flex items-center justify-center [&_svg]:text-current [&_svg]:transition-colors hover:[&_svg]:text-sidebar-accent-foreground"
+          closeButtonClassName="top-6 right-[10px] h-9 min-h-9 w-9 min-w-9 p-0 rounded-md border-0 bg-transparent shadow-none outline-none ring-0 ring-offset-0 hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)] text-foreground hover:text-sidebar-accent-foreground !data-[state=open]:bg-transparent focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors flex items-center justify-center [&_svg]:text-current [&_svg]:transition-colors hover:[&_svg]:text-sidebar-accent-foreground"
         >
           <SheetTitle className="sr-only">Menu</SheetTitle>
           <div className="flex flex-col items-start px-2 pt-6 pb-4">
