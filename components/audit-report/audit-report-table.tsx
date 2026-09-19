@@ -52,7 +52,7 @@ const REPORT_GRID_CLASS = cn(
   "grid w-full grid-cols-1 gap-y-4 md:grid-cols-3",
   COLUMN_GUTTER_CLASS,
 );
-const META_FIELD_CLASS = "flex min-w-0 flex-col gap-2 text-body1";
+const META_FIELD_CLASS = "flex min-w-0 flex-col gap-2";
 const META_VALUE_CLASS = "text-body1 text-foreground";
 const ACTION_ITEM_CLASS =
   "cursor-pointer gap-2 text-sm hover:bg-slate-100 focus:bg-slate-100";
@@ -63,7 +63,7 @@ function HeaderLabel({
   label: string;
 }) {
   return (
-    <span className="text-sm font-bold text-foreground">{label}</span>
+    <span className="text-sm font-medium text-foreground">{label}</span>
   );
 }
 
@@ -78,7 +78,7 @@ function DetailColumn({
 }) {
   return (
     <div className="flex h-full min-w-0 flex-col items-stretch text-left">
-      <h3 className="m-0 mb-2 w-full shrink-0 truncate text-left text-sm font-bold text-foreground">
+      <h3 className="m-0 mb-2 w-full shrink-0 truncate text-left text-sm font-medium text-foreground">
         {title}
       </h3>
       <div

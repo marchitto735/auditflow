@@ -5,7 +5,11 @@ import {
 } from "@/components/activity-table/activity-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { storedReportToActivityRow } from "@/lib/audit-report-rows";
-import { PAGE_GUTTER_CLASS, PAGE_INNER_CLASS } from "@/lib/page-layout";
+import {
+  DASHBOARD_CARD_CLASS,
+  PAGE_GUTTER_CLASS,
+  PAGE_INNER_CLASS,
+} from "@/lib/page-layout";
 import { listStoredAuditReports } from "@/lib/services/list-audit-reports";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +25,7 @@ export default async function ReportsPage() {
             title="Reports"
             description="Completed SOP, BPR, and FIR audit reports from the native audit pipeline."
           />
-          <Card className="overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+          <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
             <CardContent className="p-0">
               {rows.length === 0 ? (
                 <p className="text-body1 m-0 px-4 py-4 text-muted-foreground">

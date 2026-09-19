@@ -8,6 +8,7 @@ import {
 } from "@/components/activity-table/activity-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
 
 const COLLAPSED_ROW_COUNT = 5;
 
@@ -22,7 +23,7 @@ export default function RecentActivity({
     : rows.slice(0, COLLAPSED_ROW_COUNT);
 
   return (
-    <Card className="overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+    <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
       <CardContent className="p-0">
         {rows.length === 0 ? (
           <p className="text-body1 m-0 px-4 py-4 text-muted-foreground">

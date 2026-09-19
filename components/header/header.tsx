@@ -80,12 +80,12 @@ function HeaderBreadcrumbs({ pathname }: { pathname: string }) {
             </BreadcrumbItem>
             <BreadcrumbSeparator>/</BreadcrumbSeparator>
             <BreadcrumbItem>
-              <BreadcrumbPage className="font-semibold">{drillDown}</BreadcrumbPage>
+              <BreadcrumbPage className="font-medium">{drillDown}</BreadcrumbPage>
             </BreadcrumbItem>
           </>
         ) : (
           <BreadcrumbItem>
-            <BreadcrumbPage className="font-semibold">{current}</BreadcrumbPage>
+            <BreadcrumbPage className="font-medium">{current}</BreadcrumbPage>
           </BreadcrumbItem>
         )}
       </BreadcrumbList>

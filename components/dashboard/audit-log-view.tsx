@@ -24,6 +24,8 @@ import {
 import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { type AuditLogRow } from "@/lib/dashboard-insights";
+import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
+import { cn } from "@/lib/utils";
 
 type TypeFilter = "All" | AuditLogRow["type"];
 
@@ -145,25 +147,25 @@ export default function AuditLogView({
     <TooltipProvider delayDuration={150}>
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+        <Card className={cn(DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-4">
-            <p className="text-body2 m-0 text-muted-foreground">Pass rate</p>
+            <p className="text-sm font-medium m-0 text-muted-foreground">Pass rate</p>
             <p className="text-h4 m-0 mt-2 font-semibold text-foreground">
               {passRate}%
             </p>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+        <Card className={cn(DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-4">
-            <p className="text-body2 m-0 text-muted-foreground">Fail rate</p>
+            <p className="text-sm font-medium m-0 text-muted-foreground">Fail rate</p>
             <p className="text-h4 m-0 mt-2 font-semibold text-foreground">
               {failRate}%
             </p>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+        <Card className={cn(DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-4">
-            <p className="text-body2 m-0 text-muted-foreground">
+            <p className="text-sm font-medium m-0 text-muted-foreground">
               Volume by type
             </p>
             <p className="text-body1 m-0 mt-2 text-foreground">
@@ -206,7 +208,7 @@ export default function AuditLogView({
         </div>
       </div>
 
-      <Card className="overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+      <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table className="table-fixed w-full min-w-[720px]">
@@ -234,8 +236,8 @@ export default function AuditLogView({
                 ) : (
                   rows.map((row) => (
                   <TableRow key={row.id} className="hover:bg-transparent">
-                    <TableCell className="px-4 font-medium">
-                      <TruncatedText text={row.document} className="font-medium" />
+                    <TableCell className="px-4">
+                      <TruncatedText text={row.document} />
                     </TableCell>
                     <TableCell>
                       <TruncatedText text={row.type} />

@@ -18,6 +18,7 @@ import {
   SCORE_CATEGORIES,
   SCORE_TRENDS,
 } from "@/lib/dashboard-insights";
+import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 type Range = keyof typeof SCORE_TRENDS;
@@ -34,12 +35,12 @@ export default function ScoreAnalysisView() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+      <Card className={cn(DASHBOARD_CARD_CLASS)}>
         <CardContent className="p-4">
-          <h3 className="text-h4 m-0 font-semibold text-foreground">
+          <h3 className="m-0 text-xl font-medium tracking-tight text-foreground">
             Category breakdown
           </h3>
-          <p className="text-body2 m-0 mt-1 mb-4 text-muted-foreground">
+          <p className="m-0 mt-1 mb-4 text-sm font-normal text-muted-foreground">
             GMP threshold is {GMP_THRESHOLD}%. Bars use the same score color
             scale as the dashboard gauge.
           </p>
@@ -66,14 +67,14 @@ export default function ScoreAnalysisView() {
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+      <Card className={cn(DASHBOARD_CARD_CLASS)}>
         <CardContent className="p-4">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h3 className="text-h4 m-0 font-semibold text-foreground">
+              <h3 className="m-0 text-xl font-medium tracking-tight text-foreground">
                 Compliance trend
               </h3>
-              <p className="text-body2 m-0 mt-1 text-muted-foreground">
+              <p className="m-0 mt-1 text-sm font-normal text-muted-foreground">
                 Benchmarked against the {GMP_THRESHOLD}% enterprise GMP
                 standard.
               </p>

@@ -272,10 +272,10 @@ export function ConfigureAuditModal({
       >
         <div className="flex max-h-[min(90vh,840px)] w-full flex-col overflow-hidden rounded-xl border border-black/20 bg-white text-black shadow-2xl">
           <DialogHeader className="shrink-0 gap-1 border-b border-black/10 px-6 py-5 text-left">
-            <DialogTitle className="m-0 text-xl font-bold tracking-tight text-black">
+            <DialogTitle className="m-0 text-xl font-medium tracking-tight text-black">
               Configure Audit Parameters
             </DialogTitle>
-            <DialogDescription className="m-0 max-w-xl text-sm text-black">
+            <DialogDescription className="m-0 max-w-xl text-sm font-normal text-muted-foreground">
               Choose a framework, select clauses, and link target documentation
               for the {assessmentLabel} compliance assessment.
             </DialogDescription>

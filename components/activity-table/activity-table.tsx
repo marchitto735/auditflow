@@ -224,7 +224,7 @@ export function ActivityTable({
                 onClick={() => handleRowClick(row)}
               >
                 <TableCell
-                  className="overflow-hidden px-4 font-medium"
+                  className="overflow-hidden px-4"
                   style={{ width: ACTIVITY_COLUMNS[0].width }}
                   onClick={(event) =>
                     handleCellClick(event, row, "document")
@@ -235,7 +235,7 @@ export function ActivityTable({
                       {row.document}
                     </span>
                   ) : (
-                    <TruncatedText text={row.document} className="font-medium" />
+                    <TruncatedText text={row.document} />
                   )}
                 </TableCell>
                 <TableCell
@@ -291,7 +291,7 @@ export function ActivityTable({
                     <Collapsible open={open}>
                       <CollapsibleContent>
                         <div className="px-4 pb-4 pt-1">
-                          <p className="text-sm m-0 w-full max-w-lg whitespace-normal text-foreground break-words [overflow-wrap:anywhere]">
+                          <p className="text-body1 m-0 w-full max-w-lg whitespace-normal text-foreground break-words [overflow-wrap:anywhere]">
                             {row.detail}
                           </p>
                         </div>

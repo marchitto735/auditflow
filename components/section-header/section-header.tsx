@@ -25,7 +25,7 @@ export default function SectionHeader({
           {title}
         </h2>
         {description ? (
-          <p className="m-0 mt-1 max-w-xl text-sm text-black">
+          <p className="m-0 mt-1 max-w-xl text-sm font-normal text-muted-foreground">
             {description}
           </p>
         ) : null}

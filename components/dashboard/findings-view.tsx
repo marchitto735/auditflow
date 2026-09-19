@@ -29,6 +29,7 @@ import {
   type FindingSeverity,
   type FindingStatus,
 } from "@/lib/dashboard-insights";
+import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 const SEVERITY_ORDER: FindingSeverity[] = [
@@ -109,7 +110,7 @@ export default function FindingsView() {
   return (
     <TooltipProvider delayDuration={150}>
       <div className="flex flex-col gap-4">
-        <Card className="overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+        <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <Table className="table-fixed w-full min-w-[880px]">
@@ -133,8 +134,8 @@ export default function FindingsView() {
                       )}
                       onClick={() => setActiveId(row.id)}
                     >
-                      <TableCell className="px-4 font-medium">
-                        <TruncatedText text={row.title} className="font-medium" />
+                      <TableCell className="px-4">
+                        <TruncatedText text={row.title} />
                       </TableCell>
                       <TableCell>
                         <TruncatedText text={row.document} />
@@ -185,21 +186,21 @@ export default function FindingsView() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+        <Card className={cn(DASHBOARD_CARD_CLASS)}>
           <CardContent className="flex flex-col gap-4 p-4">
             <div>
-              <p className="text-caption m-0 text-muted-foreground">
+              <p className="text-sm font-medium m-0 text-muted-foreground">
                 Selected finding
               </p>
               <h3 className="text-h4 m-0 mt-1 whitespace-normal break-words font-semibold text-foreground">
                 {active ? active.title : "Select a finding"}
               </h3>
               {active ? (
-                <p className="text-body2 m-0 mt-2 text-muted-foreground">
+                <p className="text-body1 m-0 mt-2 text-muted-foreground">
                   {active.document} · {active.citation} · {active.severity}
                 </p>
               ) : null}
-              <p className="text-body2 m-0 mt-3 text-muted-foreground">
+              <p className="text-body1 m-0 mt-3 text-muted-foreground">
                 Assign a remediation owner and CAPA notes below.
               </p>
             </div>

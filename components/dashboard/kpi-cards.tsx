@@ -12,6 +12,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
+import { INTERACTIVE_CARD_CLASS } from "@/lib/page-layout";
+import { cn } from "@/lib/utils";
 
 const GREEN = "#16a34a";
 const GRAY = "#e5e7eb";
@@ -20,8 +22,12 @@ const AMBER = "#f59e0b";
 const NEUTRAL = "#9ca3af";
 const AUDIT_THRESHOLD = 20;
 const AVG_SCORE = 88;
-const CARD_CLASS =
-  "group flex h-full flex-col justify-between rounded-2xl border border-transparent bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)] text-inherit no-underline transition-colors hover:border-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30";
+
+const CARD_CLASS = cn(
+  INTERACTIVE_CARD_CLASS,
+  "group flex h-full flex-col justify-between text-inherit no-underline",
+);
+
 const CTA_CLASS =
   "inline-flex items-center gap-0.5 text-sm font-medium text-black transition-colors";
 
@@ -169,34 +175,34 @@ export default function KpiCards() {
   return (
     <div className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-3">
       <KpiCard href="/dashboard/audits" cta="View Audit Log">
-        <p className="text-body2 m-0 text-black">Total Audits</p>
+        <p className="text-sm font-medium m-0 text-black">Total Audits</p>
         <p className="text-h4 m-0 mt-2 font-semibold leading-none text-foreground">
           142
         </p>
         <div className="mt-4 flex flex-1 items-center">
           <TotalAuditsChart />
         </div>
-        <p className="text-body2 m-0 mt-3 text-black">
+        <p className="text-body1 m-0 mt-3 text-black">
           +4% this week
         </p>
       </KpiCard>
 
       <KpiCard href="/dashboard/findings" cta="Inspect Findings">
-        <p className="text-body2 m-0 text-black">Open Findings</p>
+        <p className="text-sm font-medium m-0 text-black">Open Findings</p>
         <div className="mt-3 flex flex-1 items-center justify-center">
           <OpenFindingsChart />
         </div>
-        <p className="text-body2 m-0 mt-3 text-black">
+        <p className="text-body1 m-0 mt-3 text-black">
           −2 this week
         </p>
       </KpiCard>
 
       <KpiCard href="/dashboard/score-analysis" cta="Score Breakdown">
-        <p className="text-body2 m-0 text-black">Avg Score</p>
+        <p className="text-sm font-medium m-0 text-black">Avg Score</p>
         <div className="mt-3 flex flex-1 items-center justify-center">
           <AvgScoreGauge />
         </div>
-        <p className="text-body2 m-0 mt-3 text-black">
+        <p className="text-body1 m-0 mt-3 text-black">
           +1.2 pts this week
         </p>
       </KpiCard>

@@ -10,3 +10,14 @@ export const APP_TOPBAR_HEIGHT_CLASS = "h-16";
 /** Icon utility buttons: 4px radius hover target */
 export const NAV_UTILITY_BUTTON_CLASS =
   "nav-button flex h-9 w-9 min-h-9 min-w-9 items-center justify-center rounded-sm p-0! bg-transparent border-0 shadow-none transition-colors hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]";
+
+/** Static dashboard card chrome — flat white surface, subtle zinc border, no shadow. */
+export const DASHBOARD_CARD_CLASS =
+  "rounded-2xl border border-zinc-200 bg-white shadow-none";
+
+/**
+ * Interactive card chrome — flat at rest; soft border + shadow lift on hover.
+ * Compose with layout utilities (flex, group, etc.) as needed.
+ */
+export const INTERACTIVE_CARD_CLASS =
+  "rounded-2xl border border-zinc-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";

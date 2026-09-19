@@ -8,10 +8,13 @@ import {
   AUDIT_WORKFLOWS,
   type AuditWorkflowId,
 } from "@/lib/audit-workflows";
+import { INTERACTIVE_CARD_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
-const CARD_CLASS =
-  "group flex h-full w-full min-w-0 flex-col rounded-2xl border border-transparent bg-[oklch(100%_0_0)] text-left text-inherit shadow-[0_1px_4px_rgba(0,0,0,0.06)] transition-[border-color,box-shadow] hover:border-black/40 hover:shadow-[0_4px_14px_rgba(0,0,0,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30";
+const CARD_CLASS = cn(
+  INTERACTIVE_CARD_CLASS,
+  "group flex h-full w-full min-w-0 flex-col text-left text-inherit",
+);
 
 const CTA_CLASS =
   "inline-flex shrink-0 items-center gap-0.5 text-sm font-medium text-black transition-colors";
@@ -48,14 +51,14 @@ export default function AuditLauncher() {
             >
               <Card className="h-full w-full border-0 bg-transparent shadow-none">
                 <CardContent className="flex h-full min-h-[220px] w-full flex-col p-5 text-left md:p-6">
-                  <p className="text-body2 m-0 text-black">
+                  <p className="text-sm font-medium m-0 text-black">
                     {workflow.title}
                   </p>
                   <h3 className="text-h4 m-0 mt-2 max-w-full text-balance font-semibold leading-snug text-black">
                     {TITLE_DISPLAY[id]}
                   </h3>
 
-                  <p className="text-body2 m-0 mt-5 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 text-black">
+                  <p className="text-body1 m-0 mt-5 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 text-black">
                     <span>Status:</span>
                     <span
                       className={cn(
