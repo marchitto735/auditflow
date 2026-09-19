@@ -18,7 +18,7 @@ import {
   scoreSeriesColor,
   severityFill,
 } from "@/lib/chart-tokens";
-import { INTERACTIVE_CARD_CLASS } from "@/lib/page-layout";
+import { DASHBOARD_GAP_CLASS, INTERACTIVE_CARD_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 const AUDIT_THRESHOLD = 20;
@@ -186,7 +186,12 @@ function AvgScoreGauge() {
 
 export default function KpiCards() {
   return (
-    <div className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-3">
+    <div
+      className={cn(
+        "grid grid-cols-1 items-stretch md:grid-cols-3",
+        DASHBOARD_GAP_CLASS,
+      )}
+    >
       <KpiCard href="/dashboard/audits" cta="View Audit Log">
         <p className="text-sm font-medium m-0 text-black">Total Audits</p>
         <p className="text-h4 m-0 mt-2 font-semibold leading-none text-foreground">

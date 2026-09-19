@@ -24,7 +24,7 @@ import {
 import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { type AuditLogRow } from "@/lib/dashboard-insights";
-import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
+import { DASHBOARD_CARD_CLASS, DASHBOARD_GAP_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 type TypeFilter = "All" | AuditLogRow["type"];
@@ -145,8 +145,10 @@ export default function AuditLogView({
 
   return (
     <TooltipProvider delayDuration={150}>
-    <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div className={cn("flex flex-col", DASHBOARD_GAP_CLASS)}>
+      <div
+        className={cn("grid grid-cols-1 md:grid-cols-3", DASHBOARD_GAP_CLASS)}
+      >
         <Card className={cn(DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-4">
             <p className="text-sm font-medium m-0 text-muted-foreground">Pass rate</p>

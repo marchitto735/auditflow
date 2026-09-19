@@ -5,6 +5,11 @@ export const PAGE_GUTTER_CLASS = "w-full min-w-0 px-6 md:px-8";
 export const PAGE_INNER_CLASS = "mx-auto w-full max-w-[1400px]";
 
 /**
+ * Uniform dashboard grid gutter — 24px on both axes (row sections + card columns).
+ */
+export const DASHBOARD_GAP_CLASS = "gap-6";
+
+/**
  * App canvas behind cards — light theme maps `--background` to zinc-50.
  * Prefer this (or `bg-background`) over hard-coded whites on page shells.
  */

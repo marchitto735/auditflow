@@ -3,7 +3,7 @@ import RecentActivity from "@/components/dashboard/recent-activity";
 import AuditLauncher from "@/components/dashboard/audit-launcher";
 import SectionHeader from "@/components/section-header/section-header";
 import type { ActivityRow } from "@/components/activity-table/activity-table";
-import { PAGE_GUTTER_CLASS, PAGE_INNER_CLASS } from "@/lib/page-layout";
+import { DASHBOARD_GAP_CLASS, PAGE_GUTTER_CLASS, PAGE_INNER_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 export default function Dashboard({
@@ -13,7 +13,7 @@ export default function Dashboard({
 }) {
   return (
     <section className={cn(PAGE_GUTTER_CLASS, "pt-4 pb-4")}>
-      <div className={cn(PAGE_INNER_CLASS, "flex flex-col gap-4")}>
+      <div className={cn(PAGE_INNER_CLASS, "flex flex-col", DASHBOARD_GAP_CLASS)}>
         <div>
           <SectionHeader
             title="Compliance Snapshot"

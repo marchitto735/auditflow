@@ -19,7 +19,7 @@ import {
   SCORE_CATEGORIES,
   SCORE_TRENDS,
 } from "@/lib/dashboard-insights";
-import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
+import { DASHBOARD_CARD_CLASS, DASHBOARD_GAP_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 type Range = keyof typeof SCORE_TRENDS;
@@ -29,7 +29,7 @@ export default function ScoreAnalysisView() {
   const trend = SCORE_TRENDS[range];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={cn("flex flex-col", DASHBOARD_GAP_CLASS)}>
       <Card className={cn(DASHBOARD_CARD_CLASS)}>
         <CardContent className="p-4">
           <h3 className="m-0 text-xl font-medium tracking-tight text-foreground">

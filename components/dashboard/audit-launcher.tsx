@@ -8,7 +8,7 @@ import {
   AUDIT_WORKFLOWS,
   type AuditWorkflowId,
 } from "@/lib/audit-workflows";
-import { INTERACTIVE_CARD_CLASS } from "@/lib/page-layout";
+import { DASHBOARD_GAP_CLASS, INTERACTIVE_CARD_CLASS } from "@/lib/page-layout";
 import { workflowStatusDotClass } from "@/lib/chart-tokens";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +39,12 @@ export default function AuditLauncher() {
 
   return (
     <>
-      <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-3 md:gap-6">
+      <div
+        className={cn(
+          "grid w-full grid-cols-1 md:grid-cols-3",
+          DASHBOARD_GAP_CLASS,
+        )}
+      >
         {(["sop", "bpr", "fir"] as const).map((id) => {
           const workflow = AUDIT_WORKFLOWS[id];
           return (

@@ -15,8 +15,8 @@ export default function SectionHeader({
   return (
     <div
       className={cn(
-        "mb-4",
-        actions && "flex items-start justify-between gap-4",
+        "mb-6",
+        actions && "flex items-start justify-between gap-6",
         className,
       )}
     >

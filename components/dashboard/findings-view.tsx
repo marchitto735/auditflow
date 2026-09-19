@@ -29,7 +29,7 @@ import {
   type FindingSeverity,
   type FindingStatus,
 } from "@/lib/dashboard-insights";
-import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
+import { DASHBOARD_CARD_CLASS, DASHBOARD_GAP_CLASS } from "@/lib/page-layout";
 import { severityDotClass } from "@/lib/chart-tokens";
 import { cn } from "@/lib/utils";
 
@@ -103,7 +103,7 @@ export default function FindingsView() {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <div className="flex flex-col gap-4">
+      <div className={cn("flex flex-col", DASHBOARD_GAP_CLASS)}>
         <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
