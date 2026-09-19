@@ -70,12 +70,12 @@ export function activityStatusLabel(status: string | null | undefined) {
 export function statusBadgeClass(status: string | null | undefined) {
   const label = activityStatusLabel(status);
   if (label === "Compliant" || label === "Pass") {
-    return "border-[oklch(78%_0.04_145)] bg-[oklch(93%_0.05_145)] text-[oklch(32%_0.08_145)]";
+    return "border-emerald-200 bg-emerald-50 text-emerald-800";
   }
   if (label === "Critical" || label === "Fail") {
-    return "border-[oklch(78%_0.05_25)] bg-[oklch(93%_0.05_25)] text-[oklch(38%_0.12_25)]";
+    return "border-red-200 bg-red-50 text-red-800";
   }
-  return "border-[oklch(88%_0.06_95)] bg-[oklch(96%_0.06_95)] text-[oklch(0%_0_0)]";
+  return "border-amber-200 bg-amber-50 text-amber-900";
 }
 
 export const STATUS_BADGE_CLASS =
@@ -83,11 +83,11 @@ export const STATUS_BADGE_CLASS =
 
 export function statusDotClass(status: string | null | undefined) {
   const label = activityStatusLabel(status);
-  if (label === "Compliant" || label === "Pass") return "bg-[#22C55E]";
-  if (label === "Critical" || label === "Fail") return "bg-[#EF4444]";
-  if (label === "Partial" || label === "Review") return "bg-[#F5C400]";
+  if (label === "Compliant" || label === "Pass") return "bg-emerald-500";
+  if (label === "Critical" || label === "Fail") return "bg-red-600";
+  if (label === "Partial" || label === "Review") return "bg-amber-500";
   if (label === "—") return "";
-  return "bg-[oklch(70%_0_0)]";
+  return "bg-slate-400";
 }
 
 export function ActivityStatus({

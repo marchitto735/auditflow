@@ -12,16 +12,18 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  CHART,
+  scoreSeriesColor,
+  severityFill,
+} from "@/lib/chart-tokens";
 import { INTERACTIVE_CARD_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
-const GREEN = "#16a34a";
-const GRAY = "#e5e7eb";
-const RED = "#dc2626";
-const AMBER = "#f59e0b";
-const NEUTRAL = "#9ca3af";
 const AUDIT_THRESHOLD = 20;
 const AVG_SCORE = 88;
+/** Thin donut / gauge stroke — architectural, not fitness-tracker thick. */
+const RING_STROKE = 5;
 
 const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
@@ -68,22 +70,19 @@ const AUDIT_VOLUME = [
 ];
 
 const FINDINGS_BY_SEVERITY = [
-  { name: "Critical", value: 2, color: RED },
-  { name: "High", value: 3, color: RED },
-  { name: "Medium", value: 2, color: AMBER },
-  { name: "Low", value: 1, color: NEUTRAL },
-];
+  { name: "Critical" as const, value: 2 },
+  { name: "High" as const, value: 3 },
+  { name: "Medium" as const, value: 2 },
+  { name: "Low" as const, value: 1 },
+].map((entry) => ({
+  ...entry,
+  color: severityFill(entry.name),
+}));
 
 const FINDINGS_TOTAL = FINDINGS_BY_SEVERITY.reduce(
   (sum, item) => sum + item.value,
   0,
 );
-
-function scoreColor(score: number) {
-  if (score < 70) return RED;
-  if (score <= 85) return AMBER;
-  return GREEN;
-}
 
 function TotalAuditsChart() {
   return (
@@ -92,13 +91,22 @@ function TotalAuditsChart() {
         <BarChart
           data={AUDIT_VOLUME}
           margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-          barCategoryGap="18%"
+          barCategoryGap="22%"
         >
-          <Bar dataKey="audits" radius={[3, 3, 0, 0]} maxBarSize={18}>
+          <Bar
+            dataKey="audits"
+            radius={[2, 2, 0, 0]}
+            maxBarSize={14}
+            background={{ fill: CHART.track, radius: [2, 2, 0, 0] }}
+          >
             {AUDIT_VOLUME.map((entry) => (
               <Cell
                 key={entry.day}
-                fill={entry.audits >= AUDIT_THRESHOLD ? GREEN : GRAY}
+                fill={
+                  entry.audits >= AUDIT_THRESHOLD
+                    ? CHART.structural
+                    : CHART.structuralMuted
+                }
               />
             ))}
           </Bar>
@@ -109,6 +117,9 @@ function TotalAuditsChart() {
 }
 
 function OpenFindingsChart() {
+  const outer = 56;
+  const inner = outer - RING_STROKE;
+
   return (
     <div className="relative mx-auto h-[120px] w-[120px]">
       <ResponsiveContainer width="100%" height="100%">
@@ -117,10 +128,10 @@ function OpenFindingsChart() {
             data={FINDINGS_BY_SEVERITY}
             dataKey="value"
             nameKey="name"
-            innerRadius={38}
-            outerRadius={56}
+            innerRadius={inner}
+            outerRadius={outer}
             stroke="none"
-            paddingAngle={1.5}
+            paddingAngle={2}
             startAngle={90}
             endAngle={-270}
           >
@@ -139,11 +150,13 @@ function OpenFindingsChart() {
 
 function AvgScoreGauge() {
   const remainder = 100 - AVG_SCORE;
-  const fill = scoreColor(AVG_SCORE);
+  const fill = scoreSeriesColor(AVG_SCORE);
   const data = [
     { name: "score", value: AVG_SCORE },
     { name: "rest", value: remainder },
   ];
+  const outer = 60;
+  const inner = outer - RING_STROKE;
 
   return (
     <div className="relative mx-auto h-[100px] w-[168px]">
@@ -154,13 +167,14 @@ function AvgScoreGauge() {
             dataKey="value"
             startAngle={180}
             endAngle={0}
-            innerRadius={52}
-            outerRadius={68}
+            innerRadius={inner}
+            outerRadius={outer}
             stroke="none"
+            paddingAngle={0}
             cy="78%"
           >
             <Cell fill={fill} />
-            <Cell fill={GRAY} />
+            <Cell fill={CHART.track} />
           </Pie>
         </PieChart>
       </ResponsiveContainer>

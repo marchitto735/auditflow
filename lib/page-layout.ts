@@ -4,6 +4,12 @@ export const PAGE_GUTTER_CLASS = "w-full min-w-0 px-6 md:px-8";
 /** Centered content rail — caps width on ultra-wide displays. */
 export const PAGE_INNER_CLASS = "mx-auto w-full max-w-[1400px]";
 
+/**
+ * App canvas behind cards — light theme maps `--background` to zinc-50.
+ * Prefer this (or `bg-background`) over hard-coded whites on page shells.
+ */
+export const PAGE_CANVAS_CLASS = "bg-zinc-50 dark:bg-background color:bg-background";
+
 /** Shared height for sidebar brand bar + main sticky navbar. */
 export const APP_TOPBAR_HEIGHT_CLASS = "h-16";
 

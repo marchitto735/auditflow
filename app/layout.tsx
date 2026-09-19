@@ -103,7 +103,7 @@ export default function RootLayout({
       </head>
 
       <body
-        className={`${inter.variable} font-sans antialiased bg-background`}
+        className={`${inter.variable} font-sans antialiased bg-zinc-50 dark:bg-background color:bg-background`}
         suppressHydrationWarning
       >
         <ThemeProvider>

@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CHART, scoreFillClass } from "@/lib/chart-tokens";
 import {
   GMP_THRESHOLD,
   SCORE_CATEGORIES,
@@ -22,12 +23,6 @@ import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 type Range = keyof typeof SCORE_TRENDS;
-
-function scoreFill(score: number) {
-  if (score < 70) return "bg-[#dc2626]";
-  if (score <= 85) return "bg-[#f59e0b]";
-  return "bg-[#16a34a]";
-}
 
 export default function ScoreAnalysisView() {
   const [range, setRange] = useState<Range>(90);
@@ -55,9 +50,12 @@ export default function ScoreAnalysisView() {
                     {category.score}%
                   </p>
                 </div>
-                <div className="h-2 overflow-hidden rounded-full bg-[#e5e7eb]">
+                <div className="h-1.5 overflow-hidden rounded-full bg-zinc-200">
                   <div
-                    className={cn("h-full rounded-full", scoreFill(category.score))}
+                    className={cn(
+                      "h-full rounded-full",
+                      scoreFillClass(category.score),
+                    )}
                     style={{ width: `${category.score}%` }}
                   />
                 </div>
@@ -98,26 +96,50 @@ export default function ScoreAnalysisView() {
                 data={[...trend]}
                 margin={{ top: 8, right: 12, left: 0, bottom: 0 }}
               >
-                <CartesianGrid stroke="#f3f4f6" vertical={false} />
-                <XAxis dataKey="label" tickLine={false} axisLine={false} />
+                <CartesianGrid stroke={CHART.grid} vertical={false} />
+                <XAxis
+                  dataKey="label"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: CHART.structuralMuted, fontSize: 12 }}
+                />
                 <YAxis
                   domain={[70, 100]}
                   tickLine={false}
                   axisLine={false}
                   width={32}
+                  tick={{ fill: CHART.structuralMuted, fontSize: 12 }}
                 />
-                <Tooltip />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: 8,
+                    border: `1px solid ${CHART.track}`,
+                    boxShadow: "none",
+                    fontSize: 13,
+                  }}
+                />
                 <ReferenceLine
                   y={GMP_THRESHOLD}
-                  stroke="#9ca3af"
-                  strokeDasharray="4 4"
+                  stroke={CHART.reference}
+                  strokeDasharray="3 5"
+                  strokeWidth={1}
                 />
                 <Line
                   type="monotone"
                   dataKey="score"
-                  stroke="#16a34a"
-                  strokeWidth={2}
-                  dot={{ r: 3, fill: "#16a34a" }}
+                  stroke={CHART.primary}
+                  strokeWidth={1.75}
+                  dot={{
+                    r: 2.5,
+                    fill: CHART.primary,
+                    strokeWidth: 0,
+                  }}
+                  activeDot={{
+                    r: 4,
+                    fill: CHART.primary,
+                    stroke: "#fff",
+                    strokeWidth: 1.5,
+                  }}
                 />
               </LineChart>
             </ResponsiveContainer>

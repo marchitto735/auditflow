@@ -9,6 +9,7 @@ import {
   type AuditWorkflowId,
 } from "@/lib/audit-workflows";
 import { INTERACTIVE_CARD_CLASS } from "@/lib/page-layout";
+import { workflowStatusDotClass } from "@/lib/chart-tokens";
 import { cn } from "@/lib/utils";
 
 const CARD_CLASS = cn(
@@ -63,9 +64,7 @@ export default function AuditLauncher() {
                     <span
                       className={cn(
                         "size-2.5 shrink-0 rounded-full",
-                        workflow.status === "Active" && "bg-[#22C55E]",
-                        workflow.status === "Ready" && "bg-[#F5C400]",
-                        workflow.status === "Draft" && "bg-[oklch(70%_0_0)]",
+                        workflowStatusDotClass(workflow.status),
                       )}
                       aria-hidden
                     />

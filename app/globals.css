@@ -49,6 +49,11 @@
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+  --color-chart-primary: var(--chart-primary);
+  --color-chart-structural: var(--chart-structural);
+  --color-chart-alert: var(--chart-alert);
+  --color-chart-caution: var(--chart-caution);
+  --color-chart-track: var(--chart-track);
 
   --color-ring: var(--ring);
   --color-input: var(--input);
@@ -188,7 +193,8 @@
 
     --page-texture: url("/images/forest-6.png?v=21");
 
-    --background: oklch(98% 0.002 286);
+    /* Canvas = Tailwind zinc-50; cards/popovers stay pure white for layered Swiss grid */
+    --background: oklch(98.5% 0 0);
     --card: oklch(100% 0 0);
     --popover: oklch(100% 0 0);
 
@@ -214,15 +220,21 @@
     --input: oklch(95% 0 0);
     --ring: oklch(70% 0 0);
 
-    --chart-1: oklch(64.6% 0.222 41.116);
-    --chart-2: oklch(60% 0.118 184.704);
-    --chart-3: oklch(39.8% 0.07 227.392);
-    --chart-4: oklch(82.8% 0.189 84.429);
-    --chart-5: oklch(76.9% 0.188 70.08);
+    /* Swiss chart scale — cobalt/teal bars, emerald gauge, mineral severity, quiet tracks */
+    --chart-1: oklch(52% 0.12 215);
+    --chart-2: oklch(52% 0.14 155);
+    --chart-3: oklch(52% 0.18 25);
+    --chart-4: oklch(72% 0.14 75);
+    --chart-5: oklch(92% 0.004 286);
+    --chart-primary: var(--chart-1);
+    --chart-structural: oklch(48% 0.13 220);
+    --chart-alert: var(--chart-3);
+    --chart-caution: var(--chart-4);
+    --chart-track: var(--chart-5);
 
-    --sidebar: var(--background);
-    --sidebar-background: var(--background);
-    --surface-sidebar-sheet: var(--background);
+    --sidebar: oklch(100% 0 0);
+    --sidebar-background: oklch(100% 0 0);
+    --surface-sidebar-sheet: oklch(100% 0 0);
     --scheduling-toggle-track-bg: oklch(96.2% 0.004 264);
     --sidebar-primary: #000000;
     --sidebar-primary-foreground: #ffffff;
@@ -365,6 +377,18 @@
     --border: oklch(28% 0.02 264);
     --input: oklch(34% 0.02 264);
     --ring: oklch(55% 0.02 264);
+
+    --chart-1: oklch(62% 0.12 215);
+    --chart-2: oklch(62% 0.14 155);
+    --chart-3: oklch(62% 0.16 25);
+    --chart-4: oklch(76% 0.12 75);
+    --chart-5: oklch(32% 0.01 286);
+    --chart-primary: var(--chart-1);
+    --chart-structural: oklch(58% 0.12 220);
+    --chart-alert: var(--chart-3);
+    --chart-caution: var(--chart-4);
+    --chart-track: var(--chart-5);
+
     --sidebar: var(--background);
     --sidebar-background: var(--background);
     --surface-sidebar-sheet: var(--background);

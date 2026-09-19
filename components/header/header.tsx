@@ -156,7 +156,7 @@ export default function Header() {
         className={cn(
           APP_TOPBAR_HEIGHT_CLASS,
           // `fixed` — sticky is broken by html/body overflow-x:hidden in globals.css
-          "fixed top-0 right-0 left-0 z-30 flex w-auto items-center border-b border-border bg-background/95 backdrop-blur xl:left-[var(--sidebar-width,16rem)]",
+          "fixed top-0 right-0 left-0 z-30 flex w-auto items-center border-b border-zinc-200 bg-zinc-50/95 backdrop-blur dark:border-border dark:bg-background/95 color:border-border color:bg-background/95 xl:left-[var(--sidebar-width,16rem)]",
         )}
       >
         <div className={cn(PAGE_GUTTER_CLASS, "flex h-full w-full items-center")}>

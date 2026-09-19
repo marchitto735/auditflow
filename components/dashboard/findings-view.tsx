@@ -30,6 +30,7 @@ import {
   type FindingStatus,
 } from "@/lib/dashboard-insights";
 import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
+import { severityDotClass } from "@/lib/chart-tokens";
 import { cn } from "@/lib/utils";
 
 const SEVERITY_ORDER: FindingSeverity[] = [
@@ -50,13 +51,6 @@ function sortFindings(rows: FindingRow[]) {
     (a, b) =>
       SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity),
   );
-}
-
-function severityDotClass(severity: FindingSeverity) {
-  if (severity === "Critical") return "bg-[#EF4444]";
-  if (severity === "High") return "bg-[#F97316]";
-  if (severity === "Medium") return "bg-[#F5C400]";
-  return "bg-[oklch(70%_0_0)]";
 }
 
 function SeverityStatus({ severity }: { severity: FindingSeverity }) {
