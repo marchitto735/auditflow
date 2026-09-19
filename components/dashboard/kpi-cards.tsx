@@ -1,7 +1,9 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import {
   Bar,
@@ -18,11 +20,15 @@ import {
   scoreSeriesColor,
   severityFill,
 } from "@/lib/chart-tokens";
-import { DASHBOARD_GAP_CLASS, INTERACTIVE_CARD_CLASS } from "@/lib/page-layout";
+import {
+  DASHBOARD_GAP_CLASS,
+  INTERACTIVE_CARD_CLASS,
+} from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 const AUDIT_THRESHOLD = 20;
 const AVG_SCORE = 88;
+const AUDITS_HREF = "/dashboard/audits";
 
 const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
@@ -41,8 +47,16 @@ function KpiCard({
   cta: string;
   children: ReactNode;
 }) {
+  const router = useRouter();
+
   return (
-    <Link href={href} className={CARD_CLASS}>
+    <Link
+      href={href}
+      prefetch
+      className={CARD_CLASS}
+      onMouseEnter={() => router.prefetch(href)}
+      onFocus={() => router.prefetch(href)}
+    >
       <Card className="h-full border-0 bg-transparent shadow-none">
         <CardContent className="flex h-full flex-col p-4">
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
@@ -85,18 +99,23 @@ const FINDINGS_TOTAL = FINDINGS_BY_SEVERITY.reduce(
 
 function TotalAuditsChart() {
   return (
-    <div className="h-[72px] w-full">
+    <div
+      className="pointer-events-none h-[72px] w-full outline-none [&_*]:outline-none"
+      aria-hidden
+    >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={AUDIT_VOLUME}
           margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
           barCategoryGap={CHART_GEOMETRY.barCategoryGap}
+          style={{ outline: "none" }}
         >
           <Bar
             dataKey="audits"
             radius={CHART_GEOMETRY.barRadius}
             maxBarSize={CHART_GEOMETRY.barMaxSize}
             background={{ fill: CHART.track }}
+            isAnimationActive={false}
           >
             {AUDIT_VOLUME.map((entry) => (
               <Cell
@@ -120,9 +139,12 @@ function OpenFindingsChart() {
   const inner = outer - CHART_GEOMETRY.stroke;
 
   return (
-    <div className="relative mx-auto h-[120px] w-[120px]">
+    <div
+      className="pointer-events-none relative mx-auto h-[120px] w-[120px] outline-none [&_*]:outline-none"
+      aria-hidden
+    >
       <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
+        <PieChart style={{ outline: "none" }}>
           <Pie
             data={FINDINGS_BY_SEVERITY}
             dataKey="value"
@@ -133,6 +155,7 @@ function OpenFindingsChart() {
             paddingAngle={2}
             startAngle={90}
             endAngle={-270}
+            isAnimationActive={false}
           >
             {FINDINGS_BY_SEVERITY.map((entry) => (
               <Cell key={entry.name} fill={entry.color} />
@@ -158,9 +181,12 @@ function AvgScoreGauge() {
   const inner = outer - CHART_GEOMETRY.stroke;
 
   return (
-    <div className="relative mx-auto h-[100px] w-[168px]">
+    <div
+      className="pointer-events-none relative mx-auto h-[100px] w-[168px] outline-none [&_*]:outline-none"
+      aria-hidden
+    >
       <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
+        <PieChart style={{ outline: "none" }}>
           <Pie
             data={data}
             dataKey="value"
@@ -171,6 +197,7 @@ function AvgScoreGauge() {
             stroke="none"
             paddingAngle={0}
             cy="78%"
+            isAnimationActive={false}
           >
             <Cell fill={fill} />
             <Cell fill={CHART.track} />
@@ -185,6 +212,13 @@ function AvgScoreGauge() {
 }
 
 export default function KpiCards() {
+  const router = useRouter();
+
+  // Warm the Audit Log route as soon as the dashboard paints so click lands ready.
+  useEffect(() => {
+    router.prefetch(AUDITS_HREF);
+  }, [router]);
+
   return (
     <div
       className={cn(
@@ -192,7 +226,7 @@ export default function KpiCards() {
         DASHBOARD_GAP_CLASS,
       )}
     >
-      <KpiCard href="/dashboard/audits" cta="View Audit Log">
+      <KpiCard href={AUDITS_HREF} cta="View Audit Log">
         <p className="text-sm font-medium m-0 text-black">Total Audits</p>
         <p className="text-h4 m-0 mt-2 font-semibold leading-none text-foreground">
           142

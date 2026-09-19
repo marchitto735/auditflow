@@ -841,6 +841,32 @@
     line-height: var(--line-height-button) !important;
     font-weight: var(--font-weight-button) !important;
   }
+
+  /* Prevent persistent focus outlines on click for charts, SVGs, and icon wrappers.
+     Keyboard focus via :focus-visible remains intact for form controls. */
+  .recharts-wrapper:focus,
+  .recharts-wrapper:focus-visible,
+  .recharts-responsive-container:focus,
+  .recharts-responsive-container:focus-visible,
+  .recharts-surface:focus,
+  .recharts-surface:focus-visible,
+  .recharts-wrapper *:focus,
+  .recharts-wrapper *:focus-visible,
+  svg:focus,
+  svg:focus-visible,
+  a:focus:not(:focus-visible),
+  button:focus:not(:focus-visible),
+  [role="button"]:focus:not(:focus-visible),
+  [role="link"]:focus:not(:focus-visible) {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .recharts-wrapper,
+  .recharts-responsive-container,
+  .recharts-surface {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 /* Scheduling dialog: desktop centered modal animation (fade + scale), mobile keeps drawer */

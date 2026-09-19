@@ -1,5 +1,6 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
 import type { AuditWorkflowId } from "@/lib/audit-workflows";
 import { toPublicSopReport, type SopAuditReport } from "@/lib/sop-report";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
@@ -65,8 +66,8 @@ async function loadTable(
   }
 }
 
-export async function listStoredAuditReports(
-  limit = 40,
+async function fetchStoredAuditReports(
+  limit: number,
 ): Promise<StoredAuditReport[]> {
   const groups = await Promise.all(
     REPORT_TABLES.map(({ workflow, table, idField }) =>
@@ -82,4 +83,16 @@ export async function listStoredAuditReports(
       return bTime - aTime;
     })
     .slice(0, limit);
+}
+
+/** Cached list so dashboard prefetch + navigation share a warm result. */
+export async function listStoredAuditReports(
+  limit = 40,
+): Promise<StoredAuditReport[]> {
+  const cached = unstable_cache(
+    () => fetchStoredAuditReports(limit),
+    ["stored-audit-reports", String(limit)],
+    { revalidate: 60 },
+  );
+  return cached();
 }
