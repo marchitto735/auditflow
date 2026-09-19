@@ -17,7 +17,7 @@ export default function Dashboard({
         <div>
           <SectionHeader
             title="Compliance Snapshot"
-            description="Real-time performance metrics across active audits, open regulatory findings, and overall compliance scores."
+            description="Performance metrics across active audits, findings, and compliance scores."
           />
           <KpiCards />
         </div>
