@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,6 +21,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { TruncatedText } from "@/components/ui/truncated-text";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   OPEN_FINDINGS,
   type FindingRow,
@@ -37,6 +38,12 @@ const SEVERITY_ORDER: FindingSeverity[] = [
   "Low",
 ];
 
+const STATUS_SHORT_LABEL: Record<FindingStatus, string> = {
+  Open: "Open",
+  "In Remediation": "Remediation",
+  "Pending Verification": "Pending",
+};
+
 function sortFindings(rows: FindingRow[]) {
   return [...rows].sort(
     (a, b) =>
@@ -44,14 +51,23 @@ function sortFindings(rows: FindingRow[]) {
   );
 }
 
-function severityClass(severity: FindingSeverity) {
-  if (severity === "Critical" || severity === "High") {
-    return "bg-[oklch(93%_0.05_25)] text-[oklch(38%_0.12_25)]";
-  }
-  if (severity === "Medium") {
-    return "bg-[oklch(96%_0.06_95)] text-[oklch(42%_0.1_85)]";
-  }
-  return "bg-[oklch(94%_0_0)] text-[oklch(40%_0_0)]";
+function severityDotClass(severity: FindingSeverity) {
+  if (severity === "Critical") return "bg-[#EF4444]";
+  if (severity === "High") return "bg-[#F97316]";
+  if (severity === "Medium") return "bg-[#F5C400]";
+  return "bg-[oklch(70%_0_0)]";
+}
+
+function SeverityStatus({ severity }: { severity: FindingSeverity }) {
+  return (
+    <span className="inline-flex max-w-full min-w-0 items-center gap-2 text-foreground">
+      <span
+        className={cn("size-2.5 shrink-0 rounded-full", severityDotClass(severity))}
+        aria-hidden
+      />
+      <span className="min-w-0 truncate">{severity}</span>
+    </span>
+  );
 }
 
 export default function FindingsView() {
@@ -91,106 +107,126 @@ export default function FindingsView() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <Card className="overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table className="table-fixed w-full min-w-[880px]">
-              <TableHeader>
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="px-6 w-[28%]">Finding</TableHead>
-                  <TableHead className="w-[16%]">Document</TableHead>
-                  <TableHead className="w-[12%]">Severity</TableHead>
-                  <TableHead className="w-[16%]">Citation</TableHead>
-                  <TableHead className="w-[12%]">Owner</TableHead>
-                  <TableHead className="px-6 w-[16%]">Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sorted.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    className={cn(
-                      "cursor-pointer hover:bg-transparent",
-                      active?.id === row.id && "bg-[oklch(97%_0_0)]",
-                    )}
-                    onClick={() => setActiveId(row.id)}
-                  >
-                    <TableCell className="px-6 font-medium">{row.title}</TableCell>
-                    <TableCell>{row.document}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="secondary"
-                        className={cn("border-0 font-medium", severityClass(row.severity))}
-                      >
-                        {row.severity}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{row.citation}</TableCell>
-                    <TableCell>{row.owner}</TableCell>
-                    <TableCell className="px-6" onClick={(event) => event.stopPropagation()}>
-                      <Select
-                        value={row.status}
-                        onValueChange={(value) =>
-                          updateStatus(row.id, value as FindingStatus)
-                        }
-                      >
-                        <SelectTrigger className="h-9 rounded-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Open">Open</SelectItem>
-                          <SelectItem value="In Remediation">
-                            In Remediation
-                          </SelectItem>
-                          <SelectItem value="Pending Verification">
-                            Pending Verification
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
+    <TooltipProvider delayDuration={150}>
+      <div className="flex flex-col gap-6">
+        <Card className="overflow-hidden rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table className="table-fixed w-full min-w-[880px]">
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="w-[28%] px-6">Finding</TableHead>
+                    <TableHead className="w-[16%]">Document</TableHead>
+                    <TableHead className="w-[12%]">Severity</TableHead>
+                    <TableHead className="w-[16%]">Citation</TableHead>
+                    <TableHead className="w-[12%]">Owner</TableHead>
+                    <TableHead className="w-[16%] px-6">Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+                </TableHeader>
+                <TableBody>
+                  {sorted.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      className={cn(
+                        "cursor-pointer hover:bg-transparent",
+                        active?.id === row.id && "bg-[oklch(97%_0_0)]",
+                      )}
+                      onClick={() => setActiveId(row.id)}
+                    >
+                      <TableCell className="px-6 font-medium">
+                        <TruncatedText text={row.title} className="font-medium" />
+                      </TableCell>
+                      <TableCell>
+                        <TruncatedText text={row.document} />
+                      </TableCell>
+                      <TableCell>
+                        <SeverityStatus severity={row.severity} />
+                      </TableCell>
+                      <TableCell>
+                        <TruncatedText text={row.citation} />
+                      </TableCell>
+                      <TableCell>
+                        <TruncatedText text={row.owner} />
+                      </TableCell>
+                      <TableCell
+                        className="px-6"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <Select
+                          value={row.status}
+                          onValueChange={(value) =>
+                            updateStatus(row.id, value as FindingStatus)
+                          }
+                        >
+                          <SelectTrigger
+                            className="h-9 w-full min-w-0 rounded-full"
+                            title={row.status}
+                          >
+                            <SelectValue>
+                              {STATUS_SHORT_LABEL[row.status]}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Open">Open</SelectItem>
+                            <SelectItem value="In Remediation">
+                              In Remediation
+                            </SelectItem>
+                            <SelectItem value="Pending Verification">
+                              Pending Verification
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
 
-      <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-        <CardContent className="flex flex-col gap-4 p-6">
-          <div>
-            <h3 className="text-h4 m-0 font-semibold text-foreground">
-              Log corrective action
-            </h3>
-            <p className="text-body2 m-0 mt-1 text-muted-foreground">
-              Assign a remediation owner and CAPA notes for{" "}
-              {active ? active.title : "the selected finding"}.
-            </p>
-          </div>
-          <Input
-            value={owner}
-            onChange={(event) => setOwner(event.target.value)}
-            placeholder="Remediation owner"
-          />
-          <Textarea
-            value={plan}
-            onChange={(event) => setPlan(event.target.value)}
-            placeholder="Corrective action plan"
-            rows={4}
-          />
-          <div className="flex justify-end">
-            <Button
-              type="button"
-              variant="black"
-              className="rounded-full"
-              onClick={logCapa}
-            >
-              Assign owner / log CAPA
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+          <CardContent className="flex flex-col gap-4 p-6">
+            <div>
+              <p className="text-caption m-0 text-muted-foreground">
+                Selected finding
+              </p>
+              <h3 className="text-h4 m-0 mt-1 whitespace-normal break-words font-semibold text-foreground">
+                {active ? active.title : "Select a finding"}
+              </h3>
+              {active ? (
+                <p className="text-body2 m-0 mt-2 text-muted-foreground">
+                  {active.document} · {active.citation} · {active.severity}
+                </p>
+              ) : null}
+              <p className="text-body2 m-0 mt-3 text-muted-foreground">
+                Assign a remediation owner and CAPA notes below.
+              </p>
+            </div>
+            <Input
+              value={owner}
+              onChange={(event) => setOwner(event.target.value)}
+              placeholder="Remediation owner"
+            />
+            <Textarea
+              value={plan}
+              onChange={(event) => setPlan(event.target.value)}
+              placeholder="Corrective action plan"
+              rows={4}
+            />
+            <div className="flex justify-end">
+              <Button
+                type="button"
+                variant="black"
+                className="rounded-full"
+                onClick={logCapa}
+              >
+                Assign owner / log CAPA
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </TooltipProvider>
   );
 }

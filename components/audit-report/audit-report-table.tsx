@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  ActivityStatus,
   activityStatusLabel,
   statusBadgeClass,
 } from "@/components/activity-table/activity-table";
@@ -63,31 +64,6 @@ function HeaderLabel({
 }) {
   return (
     <span className="text-sm font-bold text-foreground">{label}</span>
-  );
-}
-
-function StatusValue({ status }: { status: string }) {
-  if (status === "—") {
-    return <span className={META_VALUE_CLASS}>—</span>;
-  }
-
-  return (
-    <span className="inline-flex min-w-0 items-center gap-2 text-body1 text-foreground">
-      <span
-        className={cn(
-          "size-2.5 shrink-0 rounded-full",
-          status === "Compliant" && "bg-[#22C55E]",
-          status === "Critical" && "bg-[#EF4444]",
-          status === "Partial" && "bg-[#F5C400]",
-          status !== "Compliant" &&
-            status !== "Critical" &&
-            status !== "Partial" &&
-            "bg-[oklch(70%_0_0)]",
-        )}
-        aria-hidden
-      />
-      <span className="truncate">{status}</span>
-    </span>
   );
 }
 
@@ -265,7 +241,7 @@ export function AuditReportTable({
               </div>
               <div className={cn(META_FIELD_CLASS, "ml-12 min-w-0")}>
                 <HeaderLabel label="Status" />
-                <StatusValue status={status} />
+                <ActivityStatus status={status} className="text-body1" />
               </div>
             </div>
           </div>

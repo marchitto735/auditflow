@@ -19,13 +19,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  activityStatusLabel,
-  STATUS_BADGE_CLASS,
-  statusBadgeClass,
+  ActivityStatus,
 } from "@/components/activity-table/activity-table";
-import { Badge } from "@/components/ui/badge";
+import { TruncatedText } from "@/components/ui/truncated-text";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { type AuditLogRow } from "@/lib/dashboard-insights";
-import { cn } from "@/lib/utils";
 
 type TypeFilter = "All" | AuditLogRow["type"];
 
@@ -144,6 +142,7 @@ export default function AuditLogView({
   }
 
   return (
+    <TooltipProvider delayDuration={150}>
     <div className="flex flex-col gap-6">
       <div className="grid gap-4 sm:grid-cols-3">
         <Card className="rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
@@ -228,7 +227,7 @@ export default function AuditLogView({
                   <TableRow className="hover:bg-transparent">
                     <TableCell
                       colSpan={6}
-                      className="px-6 py-10 text-muted-foreground"
+                      className="max-w-none whitespace-normal px-6 py-10 text-muted-foreground"
                     >
                       No stored audits yet. Run an SOP, BPR, or FIR audit to
                       populate this log.
@@ -238,22 +237,22 @@ export default function AuditLogView({
                   rows.map((row) => (
                   <TableRow key={row.id} className="hover:bg-transparent">
                     <TableCell className="px-6 font-medium">
-                      {row.document}
+                      <TruncatedText text={row.document} className="font-medium" />
                     </TableCell>
-                    <TableCell>{row.type}</TableCell>
-                    <TableCell>{row.date}</TableCell>
-                    <TableCell>{row.score}</TableCell>
-                    <TableCell>{row.auditor}</TableCell>
+                    <TableCell>
+                      <TruncatedText text={row.type} />
+                    </TableCell>
+                    <TableCell>
+                      <TruncatedText text={row.date} />
+                    </TableCell>
+                    <TableCell>
+                      <TruncatedText text={row.score} />
+                    </TableCell>
+                    <TableCell>
+                      <TruncatedText text={row.auditor} />
+                    </TableCell>
                     <TableCell className="px-6">
-                      <Badge
-                        variant="secondary"
-                        className={cn(
-                          STATUS_BADGE_CLASS,
-                          statusBadgeClass(row.status),
-                        )}
-                      >
-                        {activityStatusLabel(row.status)}
-                      </Badge>
+                      <ActivityStatus status={row.status} />
                     </TableCell>
                   </TableRow>
                   ))
@@ -264,5 +263,6 @@ export default function AuditLogView({
         </CardContent>
       </Card>
     </div>
+    </TooltipProvider>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { Fragment, useState, type MouseEvent, type ReactNode } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import {
   Table,
@@ -11,6 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { TruncatedText } from "@/components/ui/truncated-text";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 export const ACTIVITY_COLUMNS = [
@@ -57,6 +58,43 @@ export function statusBadgeClass(status: string | null | undefined) {
 
 export const STATUS_BADGE_CLASS =
   "h-auto min-h-0 border-0 px-3 py-1 text-xs font-medium leading-none";
+
+export function statusDotClass(status: string | null | undefined) {
+  const label = activityStatusLabel(status);
+  if (label === "Compliant") return "bg-[#22C55E]";
+  if (label === "Critical") return "bg-[#EF4444]";
+  if (label === "Partial") return "bg-[#F5C400]";
+  if (label === "—") return "";
+  return "bg-[oklch(70%_0_0)]";
+}
+
+export function ActivityStatus({
+  status,
+  className,
+}: {
+  status: string | null | undefined;
+  className?: string;
+}) {
+  const label = activityStatusLabel(status);
+  if (label === "—") {
+    return <span className={className}>—</span>;
+  }
+
+  return (
+    <span
+      className={cn(
+        "inline-flex max-w-full min-w-0 items-center gap-2 text-foreground",
+        className,
+      )}
+    >
+      <span
+        className={cn("size-2.5 shrink-0 rounded-full", statusDotClass(status))}
+        aria-hidden
+      />
+      <span className="min-w-0 truncate">{label}</span>
+    </span>
+  );
+}
 
 function cellKey(rowId: string, column: ActivityColumnKey) {
   return `${rowId}:${column}`;
@@ -120,6 +158,7 @@ export function ActivityTable({
   }
 
   return (
+    <TooltipProvider delayDuration={150}>
     <Table className="table-fixed w-full">
       <colgroup>
         {ACTIVITY_COLUMNS.map((column) => (
@@ -165,55 +204,43 @@ export function ActivityTable({
                 <TableCell
                   className="overflow-hidden px-6 font-medium"
                   style={{ width: ACTIVITY_COLUMNS[0].width }}
-                  title={row.document}
                   onClick={(event) =>
                     handleCellClick(event, row, "document")
                   }
                 >
-                  <span
-                    className={cn(
-                      "block",
-                      isWrapped(row.id, "document")
-                        ? "whitespace-normal break-words"
-                        : "truncate",
-                    )}
-                  >
-                    {row.document}
-                  </span>
+                  {isWrapped(row.id, "document") ? (
+                    <span className="block whitespace-normal break-words">
+                      {row.document}
+                    </span>
+                  ) : (
+                    <TruncatedText text={row.document} className="font-medium" />
+                  )}
                 </TableCell>
                 <TableCell
                   className="overflow-hidden"
                   style={{ width: ACTIVITY_COLUMNS[1].width }}
-                  title={row.type}
                   onClick={(event) => handleCellClick(event, row, "type")}
                 >
-                  <span
-                    className={cn(
-                      "block",
-                      isWrapped(row.id, "type")
-                        ? "whitespace-normal break-words"
-                        : "truncate",
-                    )}
-                  >
-                    {row.type}
-                  </span>
+                  {isWrapped(row.id, "type") ? (
+                    <span className="block whitespace-normal break-words">
+                      {row.type}
+                    </span>
+                  ) : (
+                    <TruncatedText text={row.type} />
+                  )}
                 </TableCell>
                 <TableCell
                   className="overflow-hidden"
                   style={{ width: ACTIVITY_COLUMNS[2].width }}
-                  title={row.date}
                   onClick={(event) => handleCellClick(event, row, "date")}
                 >
-                  <span
-                    className={cn(
-                      "block",
-                      isWrapped(row.id, "date")
-                        ? "whitespace-normal break-words"
-                        : "truncate",
-                    )}
-                  >
-                    {row.date}
-                  </span>
+                  {isWrapped(row.id, "date") ? (
+                    <span className="block whitespace-normal break-words">
+                      {row.date}
+                    </span>
+                  ) : (
+                    <TruncatedText text={row.date} />
+                  )}
                 </TableCell>
                 <TableCell
                   className="overflow-hidden"
@@ -230,15 +257,7 @@ export function ActivityTable({
                   {row.status === "—" ? (
                     "—"
                   ) : (
-                    <Badge
-                      variant="secondary"
-                      className={cn(
-                        STATUS_BADGE_CLASS,
-                        statusBadgeClass(row.status),
-                      )}
-                    >
-                      {activityStatusLabel(row.status)}
-                    </Badge>
+                    <ActivityStatus status={row.status} />
                   )}
                 </TableCell>
               </TableRow>
@@ -246,7 +265,7 @@ export function ActivityTable({
                 <TableRow
                   className={cn("hover:bg-transparent", !open && "hidden")}
                 >
-                  <TableCell colSpan={5} className="p-0">
+                  <TableCell colSpan={5} className="max-w-none overflow-visible whitespace-normal p-0">
                     <Collapsible open={open}>
                       <CollapsibleContent>
                         <div className="px-6 pb-4 pt-1">
@@ -264,5 +283,6 @@ export function ActivityTable({
         })}
       </TableBody>
     </Table>
+    </TooltipProvider>
   );
 }
