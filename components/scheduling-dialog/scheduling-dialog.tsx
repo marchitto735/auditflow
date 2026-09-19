@@ -769,14 +769,16 @@ try {
                         <button
                           type="button"
                           style={{ paddingTop: 8, paddingBottom: 8 }}
-                          className="-ml-2 -mt-[6px] flex items-center gap-2 rounded-lg px-2 leading-normal text-body2 text-foreground transition-colors hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)]"
+                          className="-ml-2 -mt-[6px] flex items-center justify-between gap-2 rounded-lg px-2 leading-normal text-body2 text-foreground transition-colors hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)]"
                         >
-                          <Globe className="h-4 w-4 shrink-0" />
-                          <span className="max-w-[180px] truncate">{formatTimezoneLabel(timeZone)}</span>
+                          <Globe className="h-4 w-4 shrink-0 self-center" />
+                          <span className="max-w-[180px] min-w-0 flex-1 truncate text-left">
+                            {formatTimezoneLabel(timeZone)}
+                          </span>
                           {timezoneOpen ? (
-                            <ChevronUp className="h-4 w-4 shrink-0" />
+                            <ChevronUp className="h-4 w-4 shrink-0 self-center" />
                           ) : (
-                            <ChevronDown className="h-4 w-4 shrink-0" />
+                            <ChevronDown className="h-4 w-4 shrink-0 self-center" />
                           )}
                         </button>
                       </DropdownMenuTrigger>

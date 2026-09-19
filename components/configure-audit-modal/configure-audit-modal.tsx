@@ -48,8 +48,17 @@ const DEFAULT_SELECTED_SHORT_NAMES = ["1.1", "5.5.1"] as const;
 const DEFAULT_FILE = "SOP_Manufacturing_v4.2.pdf";
 const DEFAULT_FRAMEWORK = AUDIT_FRAMEWORKS[0]?.value ?? "iso-9001-2015";
 
-const SECTION_LABEL =
-  "mb-2 text-xs font-semibold uppercase tracking-wider text-black";
+/** Medium 14 section labels — matches dashboard field/table label weight. */
+const SECTION_LABEL = "mb-2 text-sm font-medium text-black";
+
+/** Flat field surface — zinc border, soft lift on hover (aligned with interactive cards). */
+const FIELD_SURFACE_CLASS =
+  "rounded-lg border border-zinc-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
+
+const FIELD_SURFACE_OPEN_CLASS = "border-zinc-300 shadow-sm bg-zinc-50";
+
+const FLOATING_LABEL_CLASS =
+  "pointer-events-none absolute left-3 top-2 text-xs font-medium uppercase tracking-wide text-zinc-500";
 
 function defaultSelectionForFramework(frameworkValue: string) {
   const clauses = getClausesForFramework(frameworkValue);
@@ -270,8 +279,8 @@ export function ConfigureAuditModal({
         overlayClassName="bg-black/60 backdrop-blur-sm"
         className="fixed inset-0 z-50 flex items-center justify-center p-4 md:inset-auto md:left-1/2 md:top-1/2 md:max-h-[min(90vh,840px)] md:w-full md:max-w-2xl md:-translate-x-1/2 md:-translate-y-1/2"
       >
-        <div className="flex max-h-[min(90vh,840px)] w-full flex-col overflow-hidden rounded-xl border border-black/20 bg-white text-black shadow-2xl">
-          <DialogHeader className="shrink-0 gap-1 border-b border-black/10 px-6 py-5 text-left">
+        <div className="flex max-h-[min(90vh,840px)] w-full flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white text-black shadow-lg">
+          <DialogHeader className="shrink-0 gap-1 border-b border-zinc-200 px-6 py-5 text-left">
             <DialogTitle className="m-0 text-xl font-medium tracking-tight text-black">
               Configure Audit Parameters
             </DialogTitle>
@@ -296,17 +305,21 @@ export function ConfigureAuditModal({
                     role="combobox"
                     aria-expanded={frameworkOpen}
                     className={cn(
-                      "relative flex h-14 w-full items-center justify-between rounded-lg border border-black/20 bg-white px-3 pt-4 text-left text-sm font-medium text-black transition-colors hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30",
-                      frameworkOpen && "bg-neutral-50",
+                      "relative flex h-14 w-full items-center justify-between gap-2 px-3 pr-10 text-left",
+                      FIELD_SURFACE_CLASS,
+                      frameworkOpen && FIELD_SURFACE_OPEN_CLASS,
                     )}
                   >
-                    <span className="pointer-events-none absolute left-3 top-2 text-[10px] font-medium uppercase tracking-wide text-black/60">
+                    <span className={FLOATING_LABEL_CLASS}>
                       Select Framework / Version
                     </span>
-                    <span className="min-w-0 flex-1 truncate pr-2">
+                    <span className="min-w-0 flex-1 truncate pt-3 text-body1 text-black">
                       {selectedFramework?.label ?? "Select framework"}
                     </span>
-                    <ChevronDown className="size-4 shrink-0 opacity-70" />
+                    <ChevronDown
+                      aria-hidden
+                      className="pointer-events-none absolute right-3 top-1/2 size-4 shrink-0 -translate-y-1/2 text-zinc-500"
+                    />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent
@@ -316,7 +329,7 @@ export function ConfigureAuditModal({
                   avoidCollisions={false}
                   onWheel={(event) => event.stopPropagation()}
                   onTouchMove={(event) => event.stopPropagation()}
-                  className="z-[300] w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-lg border border-black/20 bg-white p-0 text-black shadow-lg"
+                  className="z-[300] w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-lg border border-zinc-200 bg-white p-0 text-black shadow-sm"
                 >
                   <Command
                     filter={frameworkFilter}
@@ -324,7 +337,7 @@ export function ConfigureAuditModal({
                   >
                     <CommandInput
                       placeholder="Search frameworks (ISO, FDA, NIST…)"
-                      className="text-sm text-black placeholder:text-black/45"
+                      className="text-sm text-black placeholder:text-zinc-400"
                     />
                     <CommandList
                       className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
@@ -342,8 +355,8 @@ export function ConfigureAuditModal({
                               keywords={frameworkSearchKeywords(item)}
                               onSelect={() => selectFramework(item.value)}
                               className={cn(
-                                "cursor-pointer gap-2 text-sm text-black data-[selected=true]:bg-neutral-100 data-[selected=true]:text-black",
-                                isSelected && "bg-neutral-100",
+                                "cursor-pointer gap-2 text-body1 text-black data-[selected=true]:bg-zinc-100 data-[selected=true]:text-black",
+                                isSelected && "bg-zinc-100",
                               )}
                             >
                               <Check
@@ -379,17 +392,19 @@ export function ConfigureAuditModal({
                     role="combobox"
                     aria-expanded={clauseOpen}
                     className={cn(
-                      "relative flex h-14 w-full items-center justify-between rounded-lg border border-black/20 bg-white px-3 pt-4 text-left text-sm font-medium text-black transition-colors hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30",
-                      clauseOpen && "bg-neutral-50",
+                      "relative flex h-14 w-full items-center justify-between gap-2 px-3 pr-10 text-left",
+                      FIELD_SURFACE_CLASS,
+                      clauseOpen && FIELD_SURFACE_OPEN_CLASS,
                     )}
                   >
-                    <span className="pointer-events-none absolute left-3 top-2 text-[10px] font-medium uppercase tracking-wide text-black/60">
-                      Select Clauses
-                    </span>
-                    <span className="min-w-0 flex-1 truncate pr-2">
+                    <span className={FLOATING_LABEL_CLASS}>Select Clauses</span>
+                    <span className="min-w-0 flex-1 truncate pt-3 text-body1 text-black">
                       {selectedClauseSummary}
                     </span>
-                    <ChevronDown className="size-4 shrink-0 opacity-70" />
+                    <ChevronDown
+                      aria-hidden
+                      className="pointer-events-none absolute right-3 top-1/2 size-4 shrink-0 -translate-y-1/2 text-zinc-500"
+                    />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent
@@ -399,7 +414,7 @@ export function ConfigureAuditModal({
                   avoidCollisions={false}
                   onWheel={(event) => event.stopPropagation()}
                   onTouchMove={(event) => event.stopPropagation()}
-                  className="z-[300] w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-lg border border-black/20 bg-white p-0 text-black shadow-lg"
+                  className="z-[300] w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-lg border border-zinc-200 bg-white p-0 text-black shadow-sm"
                 >
                   <Command
                     shouldFilter={false}
@@ -409,7 +424,7 @@ export function ConfigureAuditModal({
                       value={clauseQuery}
                       onValueChange={setClauseQuery}
                       placeholder="Search clauses (e.g., 5.5.1 or 'training')."
-                      className="text-sm text-black placeholder:text-black/45"
+                      className="text-sm text-black placeholder:text-zinc-400"
                     />
                     <CommandList
                       className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
@@ -431,7 +446,7 @@ export function ConfigureAuditModal({
                               onSelect={() =>
                                 toggleClause(clause.id, !checked)
                               }
-                              className="cursor-pointer items-start gap-3 rounded-none px-3 py-2.5 text-sm text-black data-[selected=true]:bg-neutral-50 data-[selected=true]:text-black"
+                              className="cursor-pointer items-start gap-3 rounded-none px-3 py-2.5 text-body1 text-black data-[selected=true]:bg-zinc-50 data-[selected=true]:text-black"
                             >
                               <Checkbox
                                 checked={checked}
@@ -452,14 +467,14 @@ export function ConfigureAuditModal({
                       </CommandGroup>
                     </CommandList>
                   </Command>
-                  <div className="flex items-center justify-between border-t border-black/10 px-3 py-2">
-                    <span className="text-xs text-black">
+                  <div className="flex items-center justify-between border-t border-zinc-200 px-3 py-2">
+                    <span className="text-sm text-zinc-600">
                       {selectedClauses.size} selected
                     </span>
                     <Button
                       type="button"
                       variant="ghost"
-                      className="h-8 px-2 text-xs font-medium text-black hover:bg-neutral-100"
+                      className="h-8 px-2 text-sm font-medium text-black hover:bg-zinc-100"
                       onClick={() => setClauseOpen(false)}
                     >
                       Done
@@ -493,10 +508,13 @@ export function ConfigureAuditModal({
                 }}
                 onDragOver={handleDropZoneDragOver}
                 onDrop={handleDropZoneDrop}
-                className="flex cursor-pointer flex-col gap-3 rounded-lg border border-black/20 bg-white px-4 py-4 transition-colors hover:border-black/40 hover:bg-neutral-50 sm:flex-row sm:items-center"
+                className={cn(
+                  "flex cursor-pointer flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center",
+                  FIELD_SURFACE_CLASS,
+                )}
               >
-                <div className="flex min-w-0 flex-1 items-center gap-3 text-sm text-black">
-                  <Paperclip className="size-4 shrink-0 text-black" aria-hidden />
+                <div className="flex min-w-0 flex-1 items-center gap-3 text-body1 text-black">
+                  <Paperclip className="size-4 shrink-0 text-zinc-500" aria-hidden />
                   <span className="leading-snug">
                     Drag &amp; drop target {assessmentLabel} PDF or browse your
                     computer…
@@ -505,7 +523,7 @@ export function ConfigureAuditModal({
                 <Button
                   type="button"
                   variant="muted"
-                  className="h-9 shrink-0 rounded-lg border border-black/10 bg-neutral-200 px-4 text-sm font-medium text-black hover:bg-neutral-300"
+                  className="h-9 shrink-0 rounded-lg border border-zinc-200 bg-zinc-100 px-4 text-sm font-medium text-black hover:bg-zinc-200"
                   onClick={(event) => {
                     event.stopPropagation();
                     handleBrowseClick();
@@ -516,9 +534,9 @@ export function ConfigureAuditModal({
               </div>
 
               {attachedFileName ? (
-                <div className="mt-3 flex items-center gap-3 rounded-lg border border-black/15 bg-white px-3 py-2.5">
-                  <FileText className="size-4 shrink-0 text-black" aria-hidden />
-                  <span className="min-w-0 flex-1 truncate text-sm font-medium text-black">
+                <div className="mt-3 flex items-center gap-3 rounded-lg border border-zinc-200 bg-white px-3 py-2.5 shadow-none">
+                  <FileText className="size-4 shrink-0 text-zinc-500" aria-hidden />
+                  <span className="text-body1 min-w-0 flex-1 truncate text-black">
                     {attachedFileName}
                     {attachedFile
                       ? ` · ${(attachedFile.size / 1024).toFixed(0)} KB`
@@ -526,7 +544,7 @@ export function ConfigureAuditModal({
                   </span>
                   <button
                     type="button"
-                    className="inline-flex size-8 items-center justify-center rounded-sm text-black transition-colors hover:bg-neutral-100"
+                    className="inline-flex size-8 items-center justify-center rounded-sm text-black transition-colors hover:bg-zinc-100"
                     aria-label="Remove attached document"
                     onClick={() => assignDocument(null)}
                   >
@@ -537,7 +555,7 @@ export function ConfigureAuditModal({
             </section>
           </div>
 
-          <DialogFooter className="shrink-0 flex-col gap-3 border-t border-black/10 px-6 py-4 sm:flex-col">
+          <DialogFooter className="shrink-0 flex-col gap-3 border-t border-zinc-200 px-6 py-4 sm:flex-col">
             {initError ? (
               <p className="m-0 w-full text-sm text-black" role="alert">
                 {initError}
@@ -547,7 +565,7 @@ export function ConfigureAuditModal({
               <Button
                 type="button"
                 variant="outline"
-                className="h-10 rounded-lg border-black bg-transparent px-4 text-sm font-medium text-black hover:bg-neutral-100"
+                className="h-10 rounded-lg border-zinc-800 bg-transparent px-4 text-sm font-medium text-black hover:bg-zinc-100"
                 onClick={() => handleDialogOpenChange(false)}
                 disabled={isInitializing}
               >

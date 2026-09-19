@@ -273,16 +273,16 @@ export default function ProjectCard({
             </Card>
           </div>
 
-          <div className="relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-black bg-neutral-50 px-4 py-4">
+          <div className="relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-zinc-200 bg-white px-4 py-4 shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm">
             <div
               aria-hidden
-              className="absolute inset-y-0 left-0 w-1.5 rounded-l-2xl bg-black"
+              className="absolute inset-y-0 left-0 w-1.5 rounded-l-2xl bg-zinc-800"
             />
             <p className="m-0 text-center text-[14px] leading-5 text-black">
               Resolve findings by uploading a revised version.{" "}
               <button
                 type="button"
-                className="inline text-[14px] leading-5 font-medium text-black underline decoration-solid underline-offset-2 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                className="inline text-[14px] leading-5 font-medium text-black underline decoration-solid underline-offset-2 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800 focus-visible:ring-offset-2"
                 onClick={addCompliantSopToCart}
               >
                 {addedToCart ? "Added to cart" : "Upgrade document"}
@@ -307,18 +307,22 @@ export default function ProjectCard({
                     role="combobox"
                     aria-expanded={clausePickerOpen}
                     className={cn(
-                      "inline-flex h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] w-full items-center justify-between rounded-lg border border-[oklch(0%_0_0)] bg-transparent px-4 py-3 text-button font-medium text-[oklch(0%_0_0)] shadow-none transition-colors hover:bg-[oklch(96%_0_0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0%_0_0)] focus-visible:ring-offset-2",
+                      "inline-flex h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] w-full items-center justify-between gap-2 rounded-lg border border-[oklch(0%_0_0)] bg-transparent px-4 py-3 text-button font-medium text-[oklch(0%_0_0)] shadow-none transition-colors hover:bg-[oklch(96%_0_0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0%_0_0)] focus-visible:ring-offset-2",
                       clausePickerOpen && "bg-[oklch(96%_0_0)]",
                     )}
                   >
                     <span
-                      className={
-                        selectedClause ? undefined : "text-muted-foreground"
-                      }
+                      className={cn(
+                        "min-w-0 flex-1 truncate text-left",
+                        !selectedClause && "text-muted-foreground",
+                      )}
                     >
                       {selectedClause?.label ?? "Select Clause..."}
                     </span>
-                    <ChevronDown className="size-5 shrink-0 opacity-70" />
+                    <ChevronDown
+                      aria-hidden
+                      className="size-5 shrink-0 self-center opacity-70"
+                    />
                   </button>
                 </PopoverTrigger>
                 {clausePickerOpen ? (
