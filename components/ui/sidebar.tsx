@@ -202,10 +202,10 @@ export const SidebarMenuButton = React.forwardRef<
 ) {
   const { collapsed } = useSidebar();
   const baseClasses = cn(
-    "flex w-full items-center gap-2.5 rounded-lg border-0 bg-transparent px-3 py-2 text-sm font-medium text-left no-underline outline-none ring-sidebar-ring transition-colors hover:bg-[var(--sidebar-hover)] color:hover:bg-[oklch(42%_0.035_165)] hover:text-sidebar-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 whitespace-nowrap [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-current hover:[&_svg]:text-sidebar-accent-foreground [&_svg]:transition-colors",
+    "flex w-full items-center gap-2.5 rounded-lg border-0 bg-transparent px-3 py-2 text-sm font-medium text-left no-underline outline-none ring-sidebar-ring transition-colors duration-150 hover:bg-zinc-200/55 hover:text-sidebar-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 whitespace-nowrap [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-current hover:[&_svg]:text-sidebar-accent-foreground [&_svg]:transition-colors dark:hover:bg-zinc-700/40 color:hover:bg-[oklch(100%_0_0_/0.09)]",
     collapsed && "justify-center px-0",
     isActive &&
-      "bg-neutral-200 text-neutral-900 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 color:bg-[oklch(42%_0_0)] color:text-[oklch(96%_0_0)] color:hover:bg-[oklch(42%_0_0)] color:hover:text-[oklch(96%_0_0)]",
+      "border-0 bg-zinc-200/70 text-zinc-900 shadow-none hover:bg-zinc-200/70 hover:text-zinc-900 dark:bg-zinc-700/60 dark:text-zinc-100 dark:hover:bg-zinc-700/60 dark:hover:text-zinc-100 color:bg-[oklch(100%_0_0_/0.14)] color:text-[oklch(96%_0_0)] color:hover:bg-[oklch(100%_0_0_/0.14)] color:hover:text-[oklch(96%_0_0)]",
   );
 
   if (asChild) {
