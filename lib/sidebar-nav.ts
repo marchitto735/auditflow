@@ -35,7 +35,7 @@ export const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
         exact: true,
       },
       {
-        title: "Policy Center (SOP Library)",
+        title: "Policies",
         href: "/policy-center",
         icon: FileText,
       },
@@ -45,7 +45,7 @@ export const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
         icon: Crosshair,
       },
       {
-        title: "Regulations & Frameworks (e.g., FDA, ISO)",
+        title: "Frameworks",
         href: "/regulations",
         icon: BookOpen,
       },

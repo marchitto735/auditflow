@@ -78,7 +78,7 @@ export function AppSidebarNav({
           <div
             className={cn(
               "flex h-full items-center gap-2",
-              compact ? "justify-center" : "justify-between px-2.5",
+              compact ? "justify-center" : "justify-between px-3",
             )}
           >
             {!compact ? (
@@ -136,7 +136,7 @@ export function AppSidebarNav({
             {SIDEBAR_NAV_SECTIONS.map((section) => (
               <SidebarGroup key={section.label} className="gap-1">
                 {!compact ? (
-                  <SidebarGroupLabel className="mb-1 px-2.5 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+                  <SidebarGroupLabel className="mb-1 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     {section.label}
                   </SidebarGroupLabel>
                 ) : null}
@@ -159,7 +159,7 @@ export function AppSidebarNav({
                         >
                           <Icon aria-hidden />
                           {!compact ? (
-                            <span className="min-w-0 flex-1 whitespace-normal text-left leading-snug">
+                            <span className="min-w-0 flex-1 truncate text-left leading-snug">
                               {item.title}
                             </span>
                           ) : (
