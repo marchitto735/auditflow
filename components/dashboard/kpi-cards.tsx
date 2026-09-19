@@ -97,7 +97,7 @@ function TotalAuditsChart() {
             dataKey="audits"
             radius={[2, 2, 0, 0]}
             maxBarSize={14}
-            background={{ fill: CHART.track, radius: [2, 2, 0, 0] }}
+            background={{ fill: CHART.track }}
           >
             {AUDIT_VOLUME.map((entry) => (
               <Cell
