@@ -56,7 +56,7 @@ export default function AuditLauncher() {
               aria-label={`Configure ${workflow.title}`}
             >
               <Card className="h-full w-full border-0 bg-transparent shadow-none">
-                <CardContent className="flex h-full min-h-[220px] w-full flex-col p-5 text-left md:p-6">
+                <CardContent className="flex h-full min-h-[220px] w-full flex-col p-4 text-left">
                   <p className="text-sm font-medium m-0 text-black">
                     {workflow.title}
                   </p>
