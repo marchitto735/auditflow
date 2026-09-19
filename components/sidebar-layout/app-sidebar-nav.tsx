@@ -85,7 +85,7 @@ export function AppSidebarNav({
               <Link
                 href="/"
                 onClick={handleNavigate}
-                  className="m-0 min-w-0 flex-1 truncate text-2xl font-bold tracking-tight text-black no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-lg dark:text-neutral-100 color:text-sidebar-foreground"
+                  className="m-0 min-w-0 flex-1 truncate text-lg font-bold tracking-tight text-black no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-lg dark:text-neutral-100 color:text-sidebar-foreground"
               >
                 AuditFlow
               </Link>
