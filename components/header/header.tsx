@@ -52,13 +52,15 @@ function HeaderBreadcrumbs({ pathname }: { pathname: string }) {
       ? "Reports"
       : pathname === "/help"
         ? "Help"
-        : pathname === "/audit/sop"
-          ? "SOP Audit"
-          : pathname === "/audit/bpr"
-            ? "BPR Audit"
-            : pathname === "/audit/fir"
-              ? "FIR Audit"
-              : "Dashboard");
+        : pathname === "/audit/results"
+          ? "Audit Report"
+          : pathname === "/audit/sop"
+            ? "SOP Audit"
+            : pathname === "/audit/bpr"
+              ? "BPR Audit"
+              : pathname === "/audit/fir"
+                ? "FIR Audit"
+                : "Dashboard");
 
   return (
     <Breadcrumb>
