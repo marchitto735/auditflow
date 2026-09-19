@@ -45,7 +45,7 @@ export default function Dashboard({
                       <h3 className="text-h4 m-0 font-semibold leading-tight text-foreground">
                         {workflow.title}
                       </h3>
-                      <p className="text-body1 m-0 mt-3 text-foreground">
+                      <p className="m-0 mt-3 text-sm text-black">
                         {workflow.description}
                       </p>
                       <p className="text-body2 m-0 mt-4 flex flex-wrap items-center justify-center gap-x-2 text-foreground">

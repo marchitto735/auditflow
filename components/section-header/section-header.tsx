@@ -21,11 +21,11 @@ export default function SectionHeader({
       )}
     >
       <div className="min-w-0">
-        <h2 className="m-0 text-2xl font-bold tracking-tight text-neutral-900">
+        <h2 className="m-0 text-2xl font-bold tracking-tight text-black">
           {title}
         </h2>
         {description ? (
-          <p className="m-0 mt-1 max-w-xl text-sm text-neutral-600">
+          <p className="m-0 mt-1 max-w-xl text-sm text-black">
             {description}
           </p>
         ) : null}

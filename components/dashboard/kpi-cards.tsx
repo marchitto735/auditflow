@@ -21,9 +21,9 @@ const NEUTRAL = "#9ca3af";
 const AUDIT_THRESHOLD = 20;
 const AVG_SCORE = 88;
 const CARD_CLASS =
-  "flex h-full flex-col justify-between rounded-2xl border-0 bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)]";
+  "group flex h-full flex-col justify-between rounded-2xl border border-transparent bg-[oklch(100%_0_0)] shadow-[0_1px_4px_rgba(0,0,0,0.06)] text-inherit no-underline transition-colors hover:border-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30";
 const CTA_CLASS =
-  "group inline-flex items-center gap-0.5 text-xs font-medium text-neutral-900 transition-colors hover:text-neutral-600";
+  "inline-flex items-center gap-0.5 text-sm font-medium text-black transition-colors";
 
 function KpiCard({
   href,
@@ -35,17 +35,19 @@ function KpiCard({
   children: ReactNode;
 }) {
   return (
-    <Card className={CARD_CLASS}>
-      <CardContent className="flex h-full flex-col p-4">
-        <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-        <div className="mt-auto flex w-full justify-end pt-4">
-          <Link href={href} className={CTA_CLASS}>
-            <span className="group-hover:underline">{cta}</span>
-            <ChevronRight className="h-4 w-4" aria-hidden />
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
+    <Link href={href} className={CARD_CLASS}>
+      <Card className="h-full border-0 bg-transparent shadow-none">
+        <CardContent className="flex h-full flex-col p-4">
+          <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+          <div className="mt-auto flex w-full justify-end pt-4">
+            <span className={CTA_CLASS}>
+              <span className="group-hover:underline">{cta}</span>
+              <ChevronRight className="h-4 w-4" aria-hidden />
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
 
@@ -167,34 +169,34 @@ export default function KpiCards() {
   return (
     <div className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-3">
       <KpiCard href="/dashboard/audits" cta="View Audit Log">
-        <p className="text-body2 m-0 text-muted-foreground">Total Audits</p>
+        <p className="text-body2 m-0 text-black">Total Audits</p>
         <p className="text-h4 m-0 mt-2 font-semibold leading-none text-foreground">
           142
         </p>
         <div className="mt-4 flex flex-1 items-center">
           <TotalAuditsChart />
         </div>
-        <p className="text-body2 m-0 mt-3 text-[oklch(38%_0.08_145)]">
+        <p className="text-body2 m-0 mt-3 text-black">
           +4% this week
         </p>
       </KpiCard>
 
       <KpiCard href="/dashboard/findings" cta="Inspect Findings">
-        <p className="text-body2 m-0 text-muted-foreground">Open Findings</p>
+        <p className="text-body2 m-0 text-black">Open Findings</p>
         <div className="mt-3 flex flex-1 items-center justify-center">
           <OpenFindingsChart />
         </div>
-        <p className="text-body2 m-0 mt-3 text-[oklch(38%_0.08_145)]">
+        <p className="text-body2 m-0 mt-3 text-black">
           −2 this week
         </p>
       </KpiCard>
 
       <KpiCard href="/dashboard/score-analysis" cta="Score Breakdown">
-        <p className="text-body2 m-0 text-muted-foreground">Avg Score</p>
+        <p className="text-body2 m-0 text-black">Avg Score</p>
         <div className="mt-3 flex flex-1 items-center justify-center">
           <AvgScoreGauge />
         </div>
-        <p className="text-body2 m-0 mt-3 text-[oklch(38%_0.08_145)]">
+        <p className="text-body2 m-0 mt-3 text-black">
           +1.2 pts this week
         </p>
       </KpiCard>

@@ -85,7 +85,7 @@ export function AppSidebarNav({
               <Link
                 href="/"
                 onClick={handleNavigate}
-                className="m-0 min-w-0 flex-1 truncate text-2xl font-bold tracking-tight text-neutral-900 no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-lg dark:text-neutral-100 color:text-sidebar-foreground"
+                  className="m-0 min-w-0 flex-1 truncate text-2xl font-bold tracking-tight text-black no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-lg dark:text-neutral-100 color:text-sidebar-foreground"
               >
                 AuditFlow
               </Link>
@@ -136,7 +136,7 @@ export function AppSidebarNav({
             {SIDEBAR_NAV_SECTIONS.map((section) => (
               <SidebarGroup key={section.label} className="gap-1">
                 {!compact ? (
-                  <SidebarGroupLabel className="mb-1 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <SidebarGroupLabel className="mb-1 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-black">
                     {section.label}
                   </SidebarGroupLabel>
                 ) : null}
@@ -208,7 +208,7 @@ export function AppSidebarNav({
                   <p className="text-button m-0 truncate font-medium text-sidebar-foreground">
                     {SIDEBAR_PROFILE.name}
                   </p>
-                  <p className="text-caption m-0 truncate text-muted-foreground">
+                  <p className="text-caption m-0 truncate text-black">
                     {SIDEBAR_PROFILE.role}
                   </p>
                 </div>

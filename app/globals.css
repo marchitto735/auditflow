@@ -174,16 +174,17 @@
     --sidebar-crown-outdent: calc(var(--sidebar-menu-text-inset, 0.25rem) - 2px);
     /* Theme icon row: 6px left of menu label text (outdent); clamp so inset can be smaller than 6px. */
     --sidebar-theme-outdent: max(0px, calc(var(--sidebar-menu-text-inset, 0.25rem) - 6px));
-    --text: oklch(0% 0 0);
+    /* GRC high-contrast light theme: pure black type, pure white on black CTAs */
+    --text: #000000;
 
-    --palette-white: oklch(100% 0 0);
+    --palette-white: #ffffff;
     --palette-off-white: oklch(96.6% 0.002 286);
     --palette-yellow: oklch(94.5% 0.199 102);
     --palette-red: oklch(52.5% 0.19 29);
     --palette-blue: oklch(58% 0.09 250);
     --palette-gray: oklch(68.5% 0.015 264);
     --palette-gray-light: oklch(77.5% 0.01 264);
-    --palette-black: oklch(24% 0.02 264);
+    --palette-black: #000000;
 
     --page-texture: url("/images/forest-6.png?v=21");
 
@@ -191,23 +192,23 @@
     --card: oklch(100% 0 0);
     --popover: oklch(100% 0 0);
 
-    --foreground: var(--text);
-    --card-foreground: oklch(0% 0 0);
-    --popover-foreground: oklch(0% 0 0);
-    --secondary-foreground: oklch(0% 0 0);
-    --muted-foreground: oklch(0% 0 0);
-    --accent-foreground: oklch(0% 0 0);
-    --sidebar-foreground: oklch(0% 0 0);
+    --foreground: #000000;
+    --card-foreground: #000000;
+    --popover-foreground: #000000;
+    --secondary-foreground: #000000;
+    --muted-foreground: #000000;
+    --accent-foreground: #000000;
+    --sidebar-foreground: #000000;
 
-    --primary: oklch(20% 0 0);
-    --primary-foreground: oklch(98% 0 0);
+    --primary: #000000;
+    --primary-foreground: #ffffff;
 
     --secondary: oklch(97% 0 0);
     --muted: oklch(97% 0 0);
     --accent: oklch(48% 0 0);
 
     --destructive: oklch(57% 0.245 27.325);
-    --destructive-foreground: oklch(98% 0 0);
+    --destructive-foreground: #ffffff;
 
     --border: oklch(92% 0 0);
     --input: oklch(95% 0 0);
@@ -223,19 +224,19 @@
     --sidebar-background: var(--background);
     --surface-sidebar-sheet: var(--background);
     --scheduling-toggle-track-bg: oklch(96.2% 0.004 264);
-    --sidebar-primary: oklch(20% 0 0);
-    --sidebar-primary-foreground: oklch(98.5% 0 0);
+    --sidebar-primary: #000000;
+    --sidebar-primary-foreground: #ffffff;
     --sidebar-accent: oklch(48% 0 0);
-    --sidebar-accent-foreground: oklch(0% 0 0);
+    --sidebar-accent-foreground: #000000;
     --sidebar-muted: oklch(97% 0 0);
-    --sidebar-muted-foreground: oklch(0% 0 0);
+    --sidebar-muted-foreground: #000000;
     --sidebar-border: oklch(92% 0 0);
     --sidebar-ring: oklch(70% 0 0);
     --sidebar-hover: oklch(92% 0 0);
 
-    --cta-bg: oklch(0% 0 0);
+    --cta-bg: #000000;
     --cta-bg-hover: oklch(28% 0 0);
-    --cta-color: oklch(100% 0 0);
+    --cta-color: #ffffff;
     --cta-height: 48px;
 
     --text-h1-fluid: clamp(2.5rem, 1.253rem + 3.35vw, 4.5rem);
@@ -482,6 +483,61 @@
     --chat-message-assistant-foreground: #000000;
     --chat-message-border-color: #a1a1aa;
     --chat-message-radius: 8px;
+  }
+
+  /*
+   * Light mode GRC contrast: remap intermediate gray text utilities to pure black.
+   * Placeholders stay slightly soft for form affordance.
+   */
+  html.light,
+  html:not(.dark):not(.color),
+  [data-theme="light"] {
+    color: #000000;
+
+    .text-muted-foreground,
+    .text-neutral-400,
+    .text-neutral-500,
+    .text-neutral-600,
+    .text-neutral-700,
+    .text-neutral-800,
+    .text-neutral-900,
+    .text-gray-400,
+    .text-gray-500,
+    .text-gray-600,
+    .text-gray-700,
+    .text-gray-800,
+    .text-gray-900,
+    .text-slate-400,
+    .text-slate-500,
+    .text-slate-600,
+    .text-slate-700,
+    .text-slate-800,
+    .text-slate-900,
+    .text-zinc-400,
+    .text-zinc-500,
+    .text-zinc-600,
+    .text-zinc-700,
+    .text-zinc-800,
+    .text-zinc-900 {
+      color: #000000;
+    }
+
+    .placeholder\:text-muted-foreground::placeholder {
+      color: rgb(0 0 0 / 0.45);
+    }
+
+    /* Pure white type on solid black CTAs / primary badges */
+    .bg-black,
+    .bg-primary,
+    [data-variant="default"].bg-black,
+    [data-slot="badge"][data-variant="default"] {
+      color: #ffffff;
+    }
+
+    .bg-black *,
+    .bg-primary *:not(svg) {
+      color: inherit;
+    }
   }
 
   /* ChatKit bubbles (dark): white text on black / near-black */
