@@ -50,10 +50,10 @@ export default function ScoreAnalysisView() {
                     {category.score}%
                   </p>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-zinc-200">
+                <div className="h-1.5 overflow-hidden rounded-none bg-zinc-200">
                   <div
                     className={cn(
-                      "h-full rounded-full",
+                      "h-full rounded-none",
                       scoreFillClass(category.score),
                     )}
                     style={{ width: `${category.score}%` }}

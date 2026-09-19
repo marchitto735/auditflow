@@ -30,6 +30,21 @@ export const CHART = {
   low: "oklch(58% 0.02 260)",
 } as const;
 
+/**
+ * Shared geometry weight across KPI charts — bars, donuts, and gauges
+ * read at the same engineered density.
+ */
+export const CHART_GEOMETRY = {
+  /** Ring / arc stroke width (px) — matches category breakdown `h-1.5` */
+  stroke: 6,
+  /** Max active bar column width (px) — same optical weight as linear tracks */
+  barMaxSize: 6,
+  /** Horizontal breathing room between bar columns */
+  barCategoryGap: "28%",
+  /** Top corner radius for columns — square tops */
+  barRadius: [0, 0, 0, 0] as [number, number, number, number],
+} as const;
+
 export type ChartSeverity = "Critical" | "High" | "Medium" | "Low";
 
 export type WorkflowStatus = "Active" | "Ready" | "Draft" | "Pending";

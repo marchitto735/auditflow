@@ -14,6 +14,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import {
   CHART,
+  CHART_GEOMETRY,
   scoreSeriesColor,
   severityFill,
 } from "@/lib/chart-tokens";
@@ -22,8 +23,6 @@ import { cn } from "@/lib/utils";
 
 const AUDIT_THRESHOLD = 20;
 const AVG_SCORE = 88;
-/** Thin donut / gauge stroke — architectural, not fitness-tracker thick. */
-const RING_STROKE = 5;
 
 const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
@@ -91,12 +90,12 @@ function TotalAuditsChart() {
         <BarChart
           data={AUDIT_VOLUME}
           margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-          barCategoryGap="22%"
+          barCategoryGap={CHART_GEOMETRY.barCategoryGap}
         >
           <Bar
             dataKey="audits"
-            radius={[2, 2, 0, 0]}
-            maxBarSize={14}
+            radius={CHART_GEOMETRY.barRadius}
+            maxBarSize={CHART_GEOMETRY.barMaxSize}
             background={{ fill: CHART.track }}
           >
             {AUDIT_VOLUME.map((entry) => (
@@ -118,7 +117,7 @@ function TotalAuditsChart() {
 
 function OpenFindingsChart() {
   const outer = 56;
-  const inner = outer - RING_STROKE;
+  const inner = outer - CHART_GEOMETRY.stroke;
 
   return (
     <div className="relative mx-auto h-[120px] w-[120px]">
@@ -156,7 +155,7 @@ function AvgScoreGauge() {
     { name: "rest", value: remainder },
   ];
   const outer = 60;
-  const inner = outer - RING_STROKE;
+  const inner = outer - CHART_GEOMETRY.stroke;
 
   return (
     <div className="relative mx-auto h-[100px] w-[168px]">
