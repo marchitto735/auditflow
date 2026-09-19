@@ -246,7 +246,7 @@ export default function AuditLogView({
                       <TruncatedText text={row.date} />
                     </TableCell>
                     <TableCell>
-                      <TruncatedText text={row.score} />
+                      <TruncatedText text={String(row.score)} />
                     </TableCell>
                     <TableCell>
                       <TruncatedText text={row.auditor} />
