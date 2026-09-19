@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { X } from "lucide-react";
 import SectionHeader from "@/components/section-header/section-header";
 import { AuditReportTable } from "@/components/audit-report/audit-report-table";
+import { useCart } from "@/components/cart/cart-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { getAuditFramework } from "@/lib/audit-frameworks";
@@ -13,6 +14,7 @@ import {
   getAuditWorkflow,
   type AuditWorkflowId,
 } from "@/lib/audit-workflows";
+import { goldStandardCatalogItem } from "@/lib/cart";
 import { getGmpClause } from "@/lib/gmp-clauses";
 import {
   formatSopReportDownload,
@@ -38,7 +40,7 @@ function buildInitializedReport(input: {
     42,
     Math.min(98, Math.round(92 - strictness * 0.18 - (clauseCount - 1) * 2)),
   );
-  const status = score >= 85 ? "pass" : score >= 70 ? "review" : "fail";
+  const status = score >= 85 ? "Pass" : score >= 70 ? "Review" : "Fail";
   const clauseNames = input.clauseIds
     .map((id) => getGmpClause(id))
     .filter(Boolean)
@@ -61,7 +63,7 @@ function buildInitializedReport(input: {
     status,
     summary: `Initialized ${input.workflowLabel} analysis for “${input.documentName}” against ${input.frameworkLabel} across ${clauseCount} selected clause${clauseCount === 1 ? "" : "s"} (strictness ${strictness}%).`,
     recommendation:
-      status === "pass"
+      status === "Pass"
         ? "Proceed with CAPA closure for minor documentation gaps and archive this report for the next certification cycle."
         : "Prioritize remediation on the listed clause gaps, then re-run Initialize Audit Analysis with the updated controlled document.",
     findings,
@@ -72,6 +74,8 @@ function buildInitializedReport(input: {
 export default function AuditResultsView() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { addItem } = useCart();
+  const [addedToCart, setAddedToCart] = React.useState(false);
 
   const workflowId = resolveWorkflowId(searchParams.get("workflow"));
   const workflow = AUDIT_WORKFLOWS[workflowId];
@@ -125,6 +129,12 @@ export default function AuditResultsView() {
     URL.revokeObjectURL(url);
   }
 
+  function upgradeDocument() {
+    addItem(goldStandardCatalogItem(primaryClause, workflow.label));
+    setAddedToCart(true);
+    window.setTimeout(() => setAddedToCart(false), 1600);
+  }
+
   return (
     <div className="w-full min-w-0">
       <SectionHeader
@@ -141,6 +151,7 @@ export default function AuditResultsView() {
           </button>
         }
       />
+
       <div className="rounded-2xl">
         <Card className="relative w-full overflow-hidden rounded-2xl border border-border bg-[oklch(100%_0_0)] p-0 shadow-none gap-0">
           <CardContent className="h-auto bg-[oklch(100%_0_0)] p-0">
@@ -165,6 +176,25 @@ export default function AuditResultsView() {
             </Button>
           </CardFooter>
         </Card>
+      </div>
+
+      <div className="relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-black bg-neutral-50 px-4 py-4">
+        <div
+          aria-hidden
+          className="absolute inset-y-0 left-0 w-1.5 rounded-l-2xl bg-black"
+        />
+        <p className="text-body1 m-0 text-center text-black">
+          Want to fix these issues immediately?{" "}
+          <button
+            type="button"
+            className="text-button inline text-black underline decoration-solid underline-offset-2 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+            onClick={upgradeDocument}
+          >
+            {addedToCart
+              ? "Added to cart"
+              : `Upgrade ${workflow.label} to Resolve Vulnerabilities`}
+          </button>
+        </p>
       </div>
     </div>
   );
