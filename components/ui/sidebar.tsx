@@ -70,7 +70,7 @@ export const Sidebar = React.forwardRef<
       data-sidebar="rail"
       data-collapsed={collapsed ? "" : undefined}
       className={cn(
-        "fixed inset-y-0 left-0 z-50 hidden h-screen shrink-0 flex-col justify-between overflow-hidden border-r border-sidebar-border bg-sidebar-background text-sidebar-foreground transition-[width] duration-200 ease-in-out xl:flex",
+        "fixed inset-y-0 left-0 z-50 hidden h-screen shrink-0 flex-col justify-between overflow-hidden border-r border-zinc-200 bg-zinc-50 text-sidebar-foreground transition-[width] duration-200 ease-in-out dark:border-sidebar-border dark:bg-sidebar-background color:border-sidebar-border color:bg-sidebar-background xl:flex",
         !collapsed && "w-64",
         className,
       )}

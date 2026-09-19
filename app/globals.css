@@ -232,9 +232,10 @@
     --chart-caution: var(--chart-4);
     --chart-track: var(--chart-5);
 
-    --sidebar: oklch(100% 0 0);
-    --sidebar-background: oklch(100% 0 0);
-    --surface-sidebar-sheet: oklch(100% 0 0);
+    /* Canvas layer — matches page zinc-50; cards stay white for elevation */
+    --sidebar: var(--background);
+    --sidebar-background: var(--background);
+    --surface-sidebar-sheet: var(--background);
     --scheduling-toggle-track-bg: oklch(96.2% 0.004 264);
     --sidebar-primary: #000000;
     --sidebar-primary-foreground: #ffffff;
