@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import ProjectCard from "@/components/project-card/project-card";
 import { getAuditWorkflow } from "@/lib/audit-workflows";
-import { PAGE_GUTTER_CLASS, PAGE_INNER_CLASS } from "@/lib/page-layout";
+import { PAGE_CONTENT_TOP_CLASS, PAGE_GUTTER_CLASS, PAGE_INNER_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 type AuditPageProps = {
@@ -15,7 +15,7 @@ export default async function AuditPage({ params }: AuditPageProps) {
 
   return (
     <div className="min-h-0 min-w-0 w-full flex-1 pb-0 md:pb-4">
-      <section className={cn(PAGE_GUTTER_CLASS, "pt-4")}>
+      <section className={cn(PAGE_GUTTER_CLASS, PAGE_CONTENT_TOP_CLASS)}>
         <div className={cn(PAGE_INNER_CLASS, "flex w-full flex-col")}>
           <ProjectCard
             title="Clause Selection"

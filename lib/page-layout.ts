@@ -10,6 +10,18 @@ export const PAGE_INNER_CLASS = "mx-auto w-full max-w-[1400px]";
 export const DASHBOARD_GAP_CLASS = "gap-6";
 
 /**
+ * Vertical gap between major dashboard sections (e.g. Snapshot → Launcher).
+ */
+export const DASHBOARD_SECTION_GAP_CLASS = "gap-8";
+
+/**
+ * Space below the top nav before page content — shared with sidebar nav
+ * so the first content row aligns. Tightened for denser rhythm with the
+ * sidebar’s section spacing (`gap-4` between items and category headers).
+ */
+export const PAGE_CONTENT_TOP_CLASS = "pt-2";
+
+/**
  * App canvas behind cards — light theme maps `--background` to zinc-50.
  * Prefer this (or `bg-background`) over hard-coded whites on page shells.
  */
