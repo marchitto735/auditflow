@@ -518,7 +518,7 @@ export function ConfigureAuditModal({
         <div className="flex max-h-[min(90vh,840px)] w-full flex-col overflow-hidden rounded-xl border border-border/60 bg-white text-black shadow-lg">
           <DialogHeader className="shrink-0 gap-1 border-b border-border/60 px-6 py-5 text-left">
             <DialogTitle className="m-0 text-xl font-medium tracking-tight text-black">
-              Configure Audit Parameters
+              Configure Audit
             </DialogTitle>
             <DialogDescription className="m-0 max-w-xl text-sm font-normal text-muted-foreground">
               Choose audit type, framework(s), select clauses, and link target
