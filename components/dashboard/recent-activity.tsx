@@ -1,62 +1,213 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActivityTable,
   type ActivityRow,
 } from "@/components/activity-table/activity-table";
+import {
+  DashboardToolbar,
+  filterActivityRows,
+  type DashboardToolbarValues,
+} from "@/components/dashboard/dashboard-toolbar";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
 
-const COLLAPSED_ROW_COUNT = 5;
+const PAGE_SIZE_OPTIONS = [5, 10, 25, 50] as const;
+const DEFAULT_PAGE_SIZE = 5;
+/** Demo catalog size for pagination chrome when fewer stored reports exist. */
+const DEMO_TOTAL_RESULTS = 194;
+
+const INITIAL_FILTERS: DashboardToolbarValues = {
+  search: "",
+  type: "all",
+  status: "all",
+  dateRange: "all",
+};
+
+function padActivityRows(rows: ActivityRow[], targetCount: number): ActivityRow[] {
+  if (rows.length >= targetCount) return rows;
+  const padded = [...rows];
+  for (let index = rows.length; index < targetCount; index += 1) {
+    const seed = (index + 1).toString(16).padStart(8, "0");
+    padded.push({
+      id: `demo-activity-${index}`,
+      document: `${seed}${seed}${seed.slice(0, 4)}…`,
+      type: index % 3 === 0 ? "BPR" : index % 5 === 0 ? "FIR" : "SOP",
+      date: new Date(Date.UTC(2026, 8, 19, 5, 50 - (index % 40), 44)).toLocaleString(),
+      score: String(80 + (index % 15)),
+      status: index % 7 === 0 ? "Compliant" : "Partial",
+    });
+  }
+  return padded;
+}
+
+function buildPageItems(currentPage: number, totalPages: number) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  const items: Array<number | "ellipsis"> = [1];
+  const start = Math.max(2, currentPage - 1);
+  const end = Math.min(totalPages - 1, currentPage + 1);
+
+  if (start > 2) items.push("ellipsis");
+  for (let page = start; page <= end; page += 1) items.push(page);
+  if (end < totalPages - 1) items.push("ellipsis");
+  items.push(totalPages);
+  return items;
+}
 
 export default function RecentActivity({
   rows,
+  className,
 }: {
   rows: ActivityRow[];
+  className?: string;
 }) {
-  const [expanded, setExpanded] = useState(false);
-  const visibleRows = expanded
-    ? rows
-    : rows.slice(0, COLLAPSED_ROW_COUNT);
+  const [filters, setFilters] = useState<DashboardToolbarValues>(INITIAL_FILTERS);
+  const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
+  const [page, setPage] = useState(1);
+
+  const catalog = useMemo(() => {
+    const padded = padActivityRows(rows, Math.max(DEMO_TOTAL_RESULTS, pageSize));
+    return filterActivityRows(padded, filters);
+  }, [rows, pageSize, filters]);
+
+  const totalCount = catalog.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const pageStart = (currentPage - 1) * pageSize;
+  const pageRows = catalog.slice(pageStart, pageStart + pageSize);
+  const pageItems = buildPageItems(currentPage, totalPages);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters, pageSize]);
+
+  function handlePageSizeChange(value: string) {
+    const nextSize = Number(value);
+    setPageSize(nextSize);
+    setPage(1);
+  }
 
   return (
-    <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
-      <CardContent className="p-0">
-        {rows.length === 0 ? (
+    <Card
+      className={cn(
+        "flex flex-col overflow-hidden",
+        DASHBOARD_CARD_CLASS,
+        className,
+      )}
+    >
+      <CardContent className="flex flex-col p-0">
+        <div className="shrink-0 border-b border-zinc-200">
+          <DashboardToolbar
+            embedded
+            value={filters}
+            onChange={setFilters}
+          />
+        </div>
+
+        {catalog.length === 0 ? (
           <p className="text-body1 m-0 px-4 py-4 text-muted-foreground">
-            No recent audits yet. Launch an SOP, BPR, or FIR audit to see
-            activity here.
+            No audits match the current search and filters.
           </p>
         ) : (
-          <ActivityTable
-            rows={visibleRows}
-            headerAction={
-              rows.length > COLLAPSED_ROW_COUNT ? (
-                <button
-                  type="button"
-                  className="-mr-2 flex size-9 shrink-0 items-center justify-center rounded-sm bg-transparent text-foreground hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]"
-                  aria-expanded={expanded}
-                  aria-label={
-                    expanded
-                      ? "Show fewer activity rows"
-                      : "Show more activity rows"
-                  }
-                  onClick={() => setExpanded((current) => !current)}
+          <>
+            <div>
+              <ActivityTable rows={pageRows} />
+            </div>
+
+            <div className="flex shrink-0 flex-col gap-3 border-t border-zinc-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="m-0 text-sm text-zinc-600">
+                Showing {pageRows.length} of {totalCount} results
+              </p>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm text-zinc-600">Show</span>
+                <Select
+                  value={String(pageSize)}
+                  onValueChange={handlePageSizeChange}
                 >
-                  <ChevronDown
-                    className={cn(
-                      "size-5 transition-transform",
-                      expanded && "rotate-180",
-                    )}
-                    aria-hidden
-                  />
-                </button>
-              ) : null
-            }
-          />
+                  <SelectTrigger
+                    aria-label="Rows per page"
+                    className="h-8 w-[4.5rem] rounded-md border-zinc-200 px-2 text-sm"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PAGE_SIZE_OPTIONS.map((size) => (
+                      <SelectItem key={size} value={String(size)}>
+                        {size}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <nav
+                className="flex h-8 flex-wrap items-center gap-1"
+                aria-label="Activity table pagination"
+              >
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100"
+                  disabled={currentPage <= 1}
+                  onClick={() => setPage((current) => Math.max(1, current - 1))}
+                >
+                  Prev
+                </Button>
+                {pageItems.map((item, index) =>
+                  item === "ellipsis" ? (
+                    <span
+                      key={`ellipsis-${index}`}
+                      className="inline-flex h-8 items-center px-1 text-sm text-zinc-400"
+                      aria-hidden
+                    >
+                      …
+                    </span>
+                  ) : (
+                    <Button
+                      key={item}
+                      type="button"
+                      variant={item === currentPage ? "black" : "ghost"}
+                      className={cn(
+                        "h-8! min-h-8! w-8! p-0! text-sm font-medium",
+                        item === currentPage
+                          ? "rounded-md"
+                          : "text-zinc-700 hover:bg-zinc-100",
+                      )}
+                      aria-current={item === currentPage ? "page" : undefined}
+                      onClick={() => setPage(item)}
+                    >
+                      {item}
+                    </Button>
+                  ),
+                )}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100"
+                  disabled={currentPage >= totalPages}
+                  onClick={() =>
+                    setPage((current) => Math.min(totalPages, current + 1))
+                  }
+                >
+                  Next
+                </Button>
+              </nav>
+            </div>
+          </>
         )}
       </CardContent>
     </Card>
