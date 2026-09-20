@@ -34,6 +34,26 @@ export const INTERACTIVE_CARD_CLASS =
   "rounded-2xl border border-zinc-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
 
 /**
+ * Card eyebrow / metric label — medium 14px.
+ * Never use abbreviations (write “Average Score”, not “Avg Score”).
+ */
+export const CARD_EYEBROW_CLASS =
+  "text-sm font-medium m-0 text-black";
+
+/**
+ * Muted card eyebrow (secondary metric cards).
+ * Same no-abbreviation rule as CARD_EYEBROW_CLASS.
+ */
+export const CARD_EYEBROW_MUTED_CLASS =
+  "text-sm font-medium m-0 text-muted-foreground";
+
+/**
+ * Mid-scale display type for KPI stats and Audit Launcher card titles (~18–26px).
+ */
+export const CARD_DISPLAY_CLASS =
+  "text-[clamp(1.125rem,0.85rem+1.1vw,1.625rem)] font-semibold";
+
+/**
  * Card footer action link — muted → dark on hover, no underline, arrow nudge.
  * Parent must use `group`.
  */

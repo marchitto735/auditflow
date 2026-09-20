@@ -32,7 +32,7 @@ export default function ScoreAnalysisView() {
     <div className={cn("flex flex-col", DASHBOARD_GAP_CLASS)}>
       <Card className={cn(DASHBOARD_CARD_CLASS)}>
         <CardContent className="p-4">
-          <h3 className="m-0 text-xl font-medium tracking-tight text-foreground">
+          <h3 className="m-0 text-xl font-medium leading-tight tracking-tight text-foreground">
             Category breakdown
           </h3>
           <p className="m-0 mt-1 mb-4 text-sm font-normal text-muted-foreground">
@@ -69,7 +69,7 @@ export default function ScoreAnalysisView() {
         <CardContent className="p-4">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h3 className="m-0 text-xl font-medium tracking-tight text-foreground">
+              <h3 className="m-0 text-xl font-medium leading-tight tracking-tight text-foreground">
                 Compliance trend
               </h3>
               <p className="m-0 mt-1 text-sm font-normal text-muted-foreground">

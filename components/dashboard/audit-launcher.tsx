@@ -11,6 +11,8 @@ import {
 import {
   CARD_CTA_ARROW_CLASS,
   CARD_CTA_CLASS,
+  CARD_DISPLAY_CLASS,
+  CARD_EYEBROW_CLASS,
   DASHBOARD_GAP_CLASS,
   INTERACTIVE_CARD_CLASS,
 } from "@/lib/page-layout";
@@ -22,11 +24,11 @@ const CARD_CLASS = cn(
   "group flex h-full w-full min-w-0 flex-col text-left text-inherit",
 );
 
-/** Prefer natural multi-line breaks (e.g. "Facility Inspection" stays on one line). */
+/** Full name + acronym for card titles. */
 const TITLE_DISPLAY: Record<AuditWorkflowId, string> = {
-  sop: "Standard Operating Procedures",
-  bpr: "Batch Production Records",
-  fir: "Facility\u00A0Inspection Report",
+  sop: "Standard Operating Procedures (SOP)",
+  bpr: "Batch Production Records (BPR)",
+  fir: "Facility\u00A0Inspection Report (FIR)",
 };
 
 export default function AuditLauncher() {
@@ -49,21 +51,25 @@ export default function AuditLauncher() {
       >
         {(["sop", "bpr", "fir"] as const).map((id) => {
           const workflow = AUDIT_WORKFLOWS[id];
+          const title = TITLE_DISPLAY[id];
           return (
             <button
               key={id}
               type="button"
               className={CARD_CLASS}
               onClick={() => openFor(id)}
-              aria-label={`Configure ${workflow.title}`}
+              aria-label={`Configure ${title}`}
             >
               <Card className="h-full w-full border-0 bg-transparent shadow-none">
                 <CardContent className="flex h-full min-h-[220px] w-full flex-col p-4 text-left">
-                  <p className="text-sm font-medium m-0 text-black">
-                    {workflow.title}
-                  </p>
-                  <h3 className="text-h4 m-0 mt-2 max-w-full text-balance font-semibold leading-snug text-black">
-                    {TITLE_DISPLAY[id]}
+                  <p className={CARD_EYEBROW_CLASS}>Audit</p>
+                  <h3
+                    className={cn(
+                      CARD_DISPLAY_CLASS,
+                      "m-0 mt-2 max-w-full text-balance leading-tight text-black",
+                    )}
+                  >
+                    {title}
                   </h3>
 
                   <p className="text-body1 m-0 mt-5 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 text-black">

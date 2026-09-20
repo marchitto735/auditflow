@@ -21,7 +21,7 @@ export default function SectionHeader({
       )}
     >
       <div className="min-w-0">
-        <h2 className="m-0 text-xl font-medium tracking-tight text-black">
+        <h2 className="m-0 text-xl font-medium leading-tight tracking-tight text-black">
           {title}
         </h2>
         {description ? (

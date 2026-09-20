@@ -24,7 +24,7 @@ import {
 import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { type AuditLogRow } from "@/lib/dashboard-insights";
-import { DASHBOARD_CARD_CLASS, DASHBOARD_GAP_CLASS } from "@/lib/page-layout";
+import { DASHBOARD_CARD_CLASS, DASHBOARD_GAP_CLASS, CARD_EYEBROW_MUTED_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 type TypeFilter = "All" | AuditLogRow["type"];
@@ -151,23 +151,23 @@ export default function AuditLogView({
       >
         <Card className={cn(DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-4">
-            <p className="text-sm font-medium m-0 text-muted-foreground">Pass rate</p>
-            <p className="text-h4 m-0 mt-2 font-semibold text-foreground">
+            <p className={CARD_EYEBROW_MUTED_CLASS}>Pass rate</p>
+            <p className="text-h5 m-0 mt-2 font-semibold leading-none text-foreground">
               {passRate}%
             </p>
           </CardContent>
         </Card>
         <Card className={cn(DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-4">
-            <p className="text-sm font-medium m-0 text-muted-foreground">Fail rate</p>
-            <p className="text-h4 m-0 mt-2 font-semibold text-foreground">
+            <p className={CARD_EYEBROW_MUTED_CLASS}>Fail rate</p>
+            <p className="text-h5 m-0 mt-2 font-semibold leading-none text-foreground">
               {failRate}%
             </p>
           </CardContent>
         </Card>
         <Card className={cn(DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-4">
-            <p className="text-sm font-medium m-0 text-muted-foreground">
+            <p className={CARD_EYEBROW_MUTED_CLASS}>
               Volume by type
             </p>
             <p className="text-body1 m-0 mt-2 text-foreground">

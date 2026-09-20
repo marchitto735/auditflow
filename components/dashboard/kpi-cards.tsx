@@ -23,6 +23,8 @@ import {
 import {
   CARD_CTA_ARROW_CLASS,
   CARD_CTA_CLASS,
+  CARD_DISPLAY_CLASS,
+  CARD_EYEBROW_CLASS,
   DASHBOARD_GAP_CLASS,
   INTERACTIVE_CARD_CLASS,
 } from "@/lib/page-layout";
@@ -162,7 +164,12 @@ function OpenFindingsChart() {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-      <p className="text-h4 pointer-events-none absolute inset-0 m-0 flex items-center justify-center font-semibold text-foreground">
+      <p
+        className={cn(
+          CARD_DISPLAY_CLASS,
+          "pointer-events-none absolute inset-0 m-0 flex items-center justify-center leading-none text-foreground",
+        )}
+      >
         {FINDINGS_TOTAL}
       </p>
     </div>
@@ -203,7 +210,12 @@ function AvgScoreGauge() {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-      <p className="text-h4 pointer-events-none absolute inset-x-0 top-[52%] m-0 -translate-y-1/2 text-center font-semibold text-foreground">
+      <p
+        className={cn(
+          CARD_DISPLAY_CLASS,
+          "pointer-events-none absolute inset-x-0 top-[52%] m-0 -translate-y-1/2 text-center leading-none text-foreground",
+        )}
+      >
         {AVG_SCORE}%
       </p>
     </div>
@@ -226,8 +238,13 @@ export default function KpiCards() {
       )}
     >
       <KpiCard href={AUDITS_HREF} cta="View Audit Log">
-        <p className="text-sm font-medium m-0 text-black">Total Audits</p>
-        <p className="text-h4 m-0 mt-2 font-semibold leading-none text-foreground">
+        <p className={CARD_EYEBROW_CLASS}>Total Audits</p>
+        <p
+          className={cn(
+            CARD_DISPLAY_CLASS,
+            "m-0 mt-2 leading-none text-foreground",
+          )}
+        >
           142
         </p>
         <div className="mt-4 flex flex-1 items-center">
@@ -239,7 +256,7 @@ export default function KpiCards() {
       </KpiCard>
 
       <KpiCard href="/dashboard/findings" cta="Inspect Findings">
-        <p className="text-sm font-medium m-0 text-black">Open Findings</p>
+        <p className={CARD_EYEBROW_CLASS}>Open Findings</p>
         <div className="mt-3 flex flex-1 items-center justify-center">
           <OpenFindingsChart />
         </div>
@@ -249,7 +266,7 @@ export default function KpiCards() {
       </KpiCard>
 
       <KpiCard href="/dashboard/score-analysis" cta="Score Breakdown">
-        <p className="text-sm font-medium m-0 text-black">Avg Score</p>
+        <p className={CARD_EYEBROW_CLASS}>Average Score</p>
         <div className="mt-3 flex flex-1 items-center justify-center">
           <AvgScoreGauge />
         </div>

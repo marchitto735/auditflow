@@ -29,7 +29,7 @@ import {
   type FindingSeverity,
   type FindingStatus,
 } from "@/lib/dashboard-insights";
-import { DASHBOARD_CARD_CLASS, DASHBOARD_GAP_CLASS } from "@/lib/page-layout";
+import { DASHBOARD_CARD_CLASS, DASHBOARD_GAP_CLASS, CARD_EYEBROW_MUTED_CLASS } from "@/lib/page-layout";
 import { severityDotClass } from "@/lib/chart-tokens";
 import { cn } from "@/lib/utils";
 
@@ -183,10 +183,10 @@ export default function FindingsView() {
         <Card className={cn(DASHBOARD_CARD_CLASS)}>
           <CardContent className="flex flex-col gap-4 p-4">
             <div>
-              <p className="text-sm font-medium m-0 text-muted-foreground">
+              <p className={CARD_EYEBROW_MUTED_CLASS}>
                 Selected finding
               </p>
-              <h3 className="text-h4 m-0 mt-1 whitespace-normal break-words font-semibold text-foreground">
+              <h3 className="text-h4 m-0 mt-1 whitespace-normal break-words font-semibold leading-[1.15] text-foreground">
                 {active ? active.title : "Select a finding"}
               </h3>
               {active ? (
