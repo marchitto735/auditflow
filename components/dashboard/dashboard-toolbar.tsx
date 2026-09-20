@@ -78,7 +78,7 @@ type DashboardToolbarProps = {
 };
 
 const CONTROL_CLASS =
-  "h-10 w-full min-w-[9.5rem] rounded-lg border-zinc-200 bg-white sm:w-[10.5rem]";
+  "h-10 w-full min-w-[9.5rem] rounded-lg border-zinc-200 bg-white text-sm font-medium sm:w-[10.5rem]";
 
 export function DashboardToolbar({
   value,
@@ -110,7 +110,7 @@ export function DashboardToolbar({
           onChange={(event) => patch({ search: event.target.value })}
           placeholder="Search documents and IDs…"
           aria-label="Search documents and IDs"
-          className="h-10 border-zinc-200 bg-white pl-9"
+          className="h-10 border-zinc-200 bg-white pl-9 text-sm font-medium md:text-sm"
         />
       </div>
 
