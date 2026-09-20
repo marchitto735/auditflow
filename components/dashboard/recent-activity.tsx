@@ -1,10 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActivityTable,
   type ActivityRow,
 } from "@/components/activity-table/activity-table";
+import {
+  filterActivityRows,
+  type DashboardToolbarValues,
+} from "@/components/dashboard/dashboard-toolbar";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
@@ -57,24 +61,31 @@ function buildPageItems(currentPage: number, totalPages: number) {
 
 export default function RecentActivity({
   rows,
+  filters,
   className,
 }: {
   rows: ActivityRow[];
+  filters?: DashboardToolbarValues;
   className?: string;
 }) {
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [page, setPage] = useState(1);
 
-  const catalog = useMemo(
-    () => padActivityRows(rows, Math.max(DEMO_TOTAL_RESULTS, pageSize)),
-    [rows, pageSize],
-  );
+  const catalog = useMemo(() => {
+    const padded = padActivityRows(rows, Math.max(DEMO_TOTAL_RESULTS, pageSize));
+    return filters ? filterActivityRows(padded, filters) : padded;
+  }, [rows, pageSize, filters]);
+
   const totalCount = catalog.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
   const currentPage = Math.min(page, totalPages);
   const pageStart = (currentPage - 1) * pageSize;
   const pageRows = catalog.slice(pageStart, pageStart + pageSize);
   const pageItems = buildPageItems(currentPage, totalPages);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters, pageSize]);
 
   function handlePageSizeChange(value: string) {
     const nextSize = Number(value);
@@ -93,8 +104,7 @@ export default function RecentActivity({
       <CardContent className="flex flex-col p-0">
         {catalog.length === 0 ? (
           <p className="text-body1 m-0 px-4 py-4 text-muted-foreground">
-            No recent audits yet. Launch an SOP, BPR, or FIR audit to see
-            activity here.
+            No audits match the current search and filters.
           </p>
         ) : (
           <>
