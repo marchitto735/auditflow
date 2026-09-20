@@ -32,7 +32,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import type { AuditWorkflowId } from "@/lib/audit-workflows";
-import { AUDIT_WORKFLOWS } from "@/lib/audit-workflows";
+import { AUDIT_TYPE_OPTIONS, AUDIT_WORKFLOWS } from "@/lib/audit-workflows";
 import {
   AUDIT_FRAMEWORKS,
   frameworkSearchKeywords,
@@ -51,28 +51,39 @@ const FIELD_SURFACE_CLASS =
 
 const FIELD_SURFACE_OPEN_CLASS = "border-border bg-zinc-50 shadow-sm";
 
+/** Selected pills scroll inside the field instead of growing the trigger. */
+const PILL_AREA_CLASS =
+  "flex max-h-28 min-w-0 flex-1 flex-wrap content-start items-center gap-1.5 overflow-y-auto overscroll-contain";
+
 /** Inline selection / file pill token. */
 const PILL_CLASS =
-  "inline-flex max-w-full items-center gap-1 rounded-full border border-border/60 bg-zinc-50 py-1 pl-2.5 pr-1 text-sm font-medium text-black";
+  "inline-flex max-w-full items-center gap-1 rounded-full border border-border/60 bg-zinc-50 py-1 pl-2.5 pr-1 text-sm font-medium leading-none text-black";
 
 const PILL_REMOVE_CLASS =
   "inline-flex size-5 shrink-0 items-center justify-center rounded-full text-zinc-500 transition-colors hover:bg-zinc-200 hover:text-black";
 
-const PLACEHOLDER_CLASS = "text-sm text-muted-foreground";
+const PLACEHOLDER_CLASS =
+  "flex items-center text-sm leading-none text-muted-foreground";
 
 const POPOVER_CLASS =
-  "z-[300] w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-lg border border-border/60 bg-white p-0 text-black shadow-sm";
+  "z-[300] flex w-[var(--radix-popover-trigger-width)] max-h-[min(18rem,var(--radix-popover-content-available-height,18rem))] flex-col overflow-hidden rounded-lg border border-border/60 bg-white p-0 text-black shadow-sm";
 
+/** Always drop under the field; height is capped so content scrolls inside the modal. */
+const POPOVER_POSITION_PROPS = {
+  side: "bottom" as const,
+  align: "start" as const,
+  sideOffset: 6,
+  avoidCollisions: false,
+};
 const DROPDOWN_FOOTER_CLASS =
-  "flex items-center justify-between border-t border-border/60 px-3 py-2";
+  "flex shrink-0 items-center justify-between border-t border-border/60 bg-white px-3 py-2";
 
+/** Overrides cmdk `h-full` so the shell respects the popover max-height. */
 const COMMAND_SHELL_CLASS =
-  "flex max-h-[280px] flex-col overflow-hidden rounded-lg bg-white text-black";
+  "flex h-auto max-h-full min-h-0 flex-1 flex-col overflow-hidden bg-white text-black [&_[cmdk-list]]:max-h-60 [&_[cmdk-list]]:min-h-0 [&_[cmdk-list]]:overflow-y-auto [&_[cmdk-list]]:overscroll-contain";
 
 const COMMAND_LIST_CLASS =
-  "min-h-0 flex-1 overflow-y-auto overscroll-contain";
-
-const COMMAND_LIST_MAX_HEIGHT = 220;
+  "max-h-60 min-h-0 overflow-y-auto overscroll-contain";
 
 const COMMAND_ITEM_CLASS =
   "cursor-pointer gap-2 rounded-md text-sm text-black data-[selected=true]:bg-zinc-100 data-[selected=true]:text-black";
@@ -196,18 +207,22 @@ function FieldComboboxTrigger({
   className,
   children,
   onKeyDown,
+  disabled = false,
   ...props
 }: React.ComponentProps<"div"> & {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  disabled?: boolean;
 }) {
   return (
     <div
       role="combobox"
-      tabIndex={0}
+      tabIndex={disabled ? -1 : 0}
       aria-expanded={open}
+      aria-disabled={disabled || undefined}
       {...props}
       onKeyDown={(event) => {
+        if (disabled) return;
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
           onOpenChange(!open);
@@ -218,6 +233,8 @@ function FieldComboboxTrigger({
         FIELD_SURFACE_CLASS,
         "pr-10",
         open && FIELD_SURFACE_OPEN_CLASS,
+        disabled &&
+          "pointer-events-none cursor-not-allowed opacity-60 hover:border-border/60",
         className,
       )}
     >
@@ -227,21 +244,24 @@ function FieldComboboxTrigger({
   );
 }
 
-
 type ConfigureAuditModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  workflowId: AuditWorkflowId;
+  /** Prefill from dashboard card; null when opened blank from New Audit. */
+  initialWorkflowId: AuditWorkflowId | null;
 };
 
 export function ConfigureAuditModal({
   open,
   onOpenChange,
-  workflowId,
+  initialWorkflowId,
 }: ConfigureAuditModalProps) {
   const router = useRouter();
-  const workflow = AUDIT_WORKFLOWS[workflowId];
 
+  const [auditType, setAuditType] = React.useState<AuditWorkflowId | null>(
+    null,
+  );
+  const [auditTypeOpen, setAuditTypeOpen] = React.useState(false);
   const [frameworks, setFrameworks] = React.useState<string[]>([]);
   const [frameworkOpen, setFrameworkOpen] = React.useState(false);
   const [clauseOpen, setClauseOpen] = React.useState(false);
@@ -255,8 +275,12 @@ export function ConfigureAuditModal({
   const [initError, setInitError] = React.useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  React.useEffect(() => {
-    if (!open) return;
+  const hasAuditType = auditType != null;
+  const selectedAuditTypeOption = AUDIT_TYPE_OPTIONS.find(
+    (item) => item.value === auditType,
+  );
+
+  function resetDependentFields() {
     setFrameworks([]);
     setFrameworkOpen(false);
     setClauseOpen(false);
@@ -264,10 +288,28 @@ export function ConfigureAuditModal({
     setAttachedFiles([]);
     setClauseQuery("");
     setSelectedClauses(new Set());
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  React.useEffect(() => {
+    if (!open) return;
+    setAuditType(initialWorkflowId);
+    setAuditTypeOpen(false);
+    resetDependentFields();
     setIsInitializing(false);
     setInitError(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  }, [open, workflowId]);
+  }, [open, initialWorkflowId]);
+
+  function toggleAuditType(value: AuditWorkflowId) {
+    const next = auditType === value ? null : value;
+    setAuditType(next);
+    resetDependentFields();
+  }
+
+  function removeAuditType() {
+    setAuditType(null);
+    resetDependentFields();
+  }
 
   const selectedFrameworkItems = React.useMemo(
     () =>
@@ -351,7 +393,13 @@ export function ConfigureAuditModal({
     });
   }
 
+  function handleFrameworkOpenChange(nextOpen: boolean) {
+    if (nextOpen && !hasAuditType) return;
+    setFrameworkOpen(nextOpen);
+  }
+
   function handleClauseOpenChange(nextOpen: boolean) {
+    if (nextOpen && !hasAuditType) return;
     setClauseOpen(nextOpen);
     if (!nextOpen) setClauseQuery("");
   }
@@ -399,6 +447,10 @@ export function ConfigureAuditModal({
 
   async function handleInitialize() {
     if (isInitializing) return;
+    if (!auditType) {
+      setInitError("Select an audit type before initializing.");
+      return;
+    }
     if (frameworks.length === 0) {
       setInitError("Select at least one framework before initializing.");
       return;
@@ -410,6 +462,7 @@ export function ConfigureAuditModal({
 
     setInitError(null);
     setIsInitializing(true);
+    setAuditTypeOpen(false);
     setFrameworkOpen(false);
     setClauseOpen(false);
     setDocsOpen(false);
@@ -420,7 +473,7 @@ export function ConfigureAuditModal({
       if (frameworks.length > 1) {
         params.set("frameworks", frameworks.join(","));
       }
-      params.set("workflow", workflowId);
+      params.set("workflow", auditType);
       if (attachedFiles.length === 1) {
         params.set("document", attachedFiles[0].name);
       } else if (attachedFiles.length > 1) {
@@ -445,12 +498,9 @@ export function ConfigureAuditModal({
     }
   }
 
-  const assessmentLabel =
-    workflow.id === "sop"
-      ? "SOP"
-      : workflow.id === "bpr"
-        ? "BPR"
-        : "FIR";
+  const assessmentLabel = auditType
+    ? AUDIT_WORKFLOWS[auditType].label
+    : null;
 
   const submitLabel =
     docCount > 1
@@ -471,27 +521,129 @@ export function ConfigureAuditModal({
               Configure Audit Parameters
             </DialogTitle>
             <DialogDescription className="m-0 max-w-xl text-sm font-normal text-muted-foreground">
-              Choose framework(s), select clauses, and link target documentation
-              for the {assessmentLabel} compliance assessment.
+              Choose audit type, framework(s), select clauses, and link target
+              documentation
+              {assessmentLabel
+                ? ` for the ${assessmentLabel} compliance assessment.`
+                : " for the compliance assessment."}
             </DialogDescription>
           </DialogHeader>
 
           <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-6 py-5">
+            {/* Audit Type */}
+            <section>
+              <h3 className={SECTION_LABEL}>Audit Type</h3>
+              <Popover
+                modal
+                open={auditTypeOpen}
+                onOpenChange={setAuditTypeOpen}
+              >
+                <PopoverTrigger asChild>
+                  <FieldComboboxTrigger
+                    open={auditTypeOpen}
+                    onOpenChange={setAuditTypeOpen}
+                  >
+                    <div
+                      className={PILL_AREA_CLASS}
+                      onWheel={(event) => event.stopPropagation()}
+                    >
+                      {!selectedAuditTypeOption ? (
+                        <span className={PLACEHOLDER_CLASS}>
+                          Select audit type…
+                        </span>
+                      ) : (
+                        <SelectionPill
+                          label={selectedAuditTypeOption.label}
+                          removeLabel={`Remove ${selectedAuditTypeOption.label}`}
+                          onRemove={removeAuditType}
+                        />
+                      )}
+                    </div>
+                  </FieldComboboxTrigger>
+                </PopoverTrigger>
+                <PopoverContent
+                  {...POPOVER_POSITION_PROPS}
+                  onWheel={(event) => event.stopPropagation()}
+                  onTouchMove={(event) => event.stopPropagation()}
+                  className={POPOVER_CLASS}
+                >
+                  <Command
+                    filter={frameworkFilter}
+                    className={COMMAND_SHELL_CLASS}
+                  >
+                    <CommandInput
+                      placeholder="Search audit types (SOP, BPR, FIR…)"
+                      className="shrink-0 text-sm text-black placeholder:text-zinc-400"
+                    />
+                    <CommandList
+                      className={COMMAND_LIST_CLASS}
+                      onWheel={(event) => event.stopPropagation()}
+                    >
+                      <CommandEmpty>No audit type found.</CommandEmpty>
+                      <CommandGroup>
+                        {AUDIT_TYPE_OPTIONS.map((item) => {
+                          const isSelected = auditType === item.value;
+                          return (
+                            <CommandItem
+                              key={item.value}
+                              value={item.label}
+                              keywords={item.keywords}
+                              onSelect={() => toggleAuditType(item.value)}
+                              className={cn(
+                                COMMAND_ITEM_CLASS,
+                                isSelected && "bg-zinc-100",
+                              )}
+                            >
+                              <MultiSelectCheck checked={isSelected} />
+                              <span className="min-w-0 flex-1 truncate">
+                                {item.label}
+                              </span>
+                            </CommandItem>
+                          );
+                        })}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                  <div className={DROPDOWN_FOOTER_CLASS}>
+                    <span className="text-sm text-zinc-600">
+                      {auditType ? 1 : 0} selected
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className={DONE_BUTTON_CLASS}
+                      onClick={() => setAuditTypeOpen(false)}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </section>
+
             {/* Framework Selection */}
             <section>
               <h3 className={SECTION_LABEL}>Framework Selection</h3>
               <Popover
                 modal
                 open={frameworkOpen}
-                onOpenChange={setFrameworkOpen}
+                onOpenChange={handleFrameworkOpenChange}
               >
                 <PopoverTrigger asChild>
                   <FieldComboboxTrigger
                     open={frameworkOpen}
-                    onOpenChange={setFrameworkOpen}
+                    onOpenChange={handleFrameworkOpenChange}
+                    disabled={!hasAuditType}
                   >
-                    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
-                      {selectedFrameworkItems.length === 0 ? (
+                    <div
+                      className={PILL_AREA_CLASS}
+                      onWheel={(event) => event.stopPropagation()}
+                    >
+                      {!hasAuditType ? (
+                        <span className={PLACEHOLDER_CLASS}>
+                          Select an audit type first…
+                        </span>
+                      ) : selectedFrameworkItems.length === 0 ? (
                         <span className={PLACEHOLDER_CLASS}>
                           Select frameworks…
                         </span>
@@ -509,10 +661,7 @@ export function ConfigureAuditModal({
                   </FieldComboboxTrigger>
                 </PopoverTrigger>
                 <PopoverContent
-                  align="start"
-                  side="bottom"
-                  sideOffset={6}
-                  avoidCollisions={false}
+                  {...POPOVER_POSITION_PROPS}
                   onWheel={(event) => event.stopPropagation()}
                   onTouchMove={(event) => event.stopPropagation()}
                   className={POPOVER_CLASS}
@@ -523,15 +672,14 @@ export function ConfigureAuditModal({
                   >
                     <CommandInput
                       placeholder="Search frameworks (ISO, FDA, NIST…)"
-                      className="text-sm text-black placeholder:text-zinc-400"
+                      className="shrink-0 text-sm text-black placeholder:text-zinc-400"
                     />
                     <CommandList
                       className={COMMAND_LIST_CLASS}
-                      style={{ maxHeight: COMMAND_LIST_MAX_HEIGHT }}
                       onWheel={(event) => event.stopPropagation()}
                     >
                       <CommandEmpty>No framework found.</CommandEmpty>
-                      <CommandGroup className="overflow-visible">
+                      <CommandGroup>
                         {AUDIT_FRAMEWORKS.map((item) => {
                           const isSelected = frameworks.includes(item.value);
                           return (
@@ -584,9 +732,17 @@ export function ConfigureAuditModal({
                   <FieldComboboxTrigger
                     open={clauseOpen}
                     onOpenChange={handleClauseOpenChange}
+                    disabled={!hasAuditType}
                   >
-                    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
-                      {selectedClauseItems.length === 0 ? (
+                    <div
+                      className={PILL_AREA_CLASS}
+                      onWheel={(event) => event.stopPropagation()}
+                    >
+                      {!hasAuditType ? (
+                        <span className={PLACEHOLDER_CLASS}>
+                          Select an audit type first…
+                        </span>
+                      ) : selectedClauseItems.length === 0 ? (
                         <span className={PLACEHOLDER_CLASS}>
                           Select clauses…
                         </span>
@@ -604,10 +760,7 @@ export function ConfigureAuditModal({
                   </FieldComboboxTrigger>
                 </PopoverTrigger>
                 <PopoverContent
-                  align="start"
-                  side="bottom"
-                  sideOffset={6}
-                  avoidCollisions={false}
+                  {...POPOVER_POSITION_PROPS}
                   onWheel={(event) => event.stopPropagation()}
                   onTouchMove={(event) => event.stopPropagation()}
                   className={POPOVER_CLASS}
@@ -621,11 +774,10 @@ export function ConfigureAuditModal({
                       value={clauseQuery}
                       onValueChange={setClauseQuery}
                       placeholder="Search clauses (e.g., 5.5.1 or 'training')."
-                      className="text-sm text-black placeholder:text-zinc-400"
+                      className="shrink-0 text-sm text-black placeholder:text-zinc-400"
                     />
                     <CommandList
                       className={COMMAND_LIST_CLASS}
-                      style={{ maxHeight: COMMAND_LIST_MAX_HEIGHT }}
                       onWheel={(event) => event.stopPropagation()}
                     >
                       {frameworks.length === 0 ? (
@@ -637,7 +789,7 @@ export function ConfigureAuditModal({
                           No clauses match your search.
                         </p>
                       ) : (
-                        <CommandGroup className="overflow-visible">
+                        <CommandGroup>
                           {filteredClauses.map((clause) => {
                             const isSelected = selectedClauses.has(clause.id);
                             const description = clause.description.replace(
@@ -721,10 +873,13 @@ export function ConfigureAuditModal({
                       docsOpen && FIELD_SURFACE_OPEN_CLASS,
                     )}
                   >
-                    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
+                    <div
+                      className={PILL_AREA_CLASS}
+                      onWheel={(event) => event.stopPropagation()}
+                    >
                       {attachedFiles.length === 0 ? (
                         <span className={PLACEHOLDER_CLASS}>
-                          Drag & drop target {assessmentLabel} PDFs…
+                          Drag & drop target {assessmentLabel ?? "audit"} PDFs…
                         </span>
                       ) : (
                         attachedFiles.map((item) => {
@@ -744,10 +899,7 @@ export function ConfigureAuditModal({
                   </div>
                 </PopoverTrigger>
                 <PopoverContent
-                  align="start"
-                  side="bottom"
-                  sideOffset={6}
-                  avoidCollisions={false}
+                  {...POPOVER_POSITION_PROPS}
                   className={POPOVER_CLASS}
                 >
                   <div className="p-2">
@@ -758,7 +910,7 @@ export function ConfigureAuditModal({
                     >
                       <Upload className="size-4 shrink-0 text-zinc-500" aria-hidden />
                       <span className="min-w-0 flex-1">
-                        Upload {assessmentLabel} PDF or documents…
+                        Upload {assessmentLabel ?? "audit"} PDF or documents…
                       </span>
                     </button>
                     <p className="m-0 px-3 pb-2 pt-1 text-sm text-zinc-500">
@@ -791,7 +943,7 @@ export function ConfigureAuditModal({
                 <p className="m-0 mt-1 text-sm text-zinc-600">
                   {frameworks.length} framework
                   {frameworks.length === 1 ? "" : "s"} × {docCount}{" "}
-                  {assessmentLabel}
+                  {assessmentLabel ?? "doc"}
                   {docCount === 1 ? "" : "s"} →{" "}
                   {frameworks.length * Math.max(docCount, 1)} analysis path
                   {frameworks.length * Math.max(docCount, 1) === 1 ? "" : "s"}
@@ -842,6 +994,7 @@ export function ConfigureAuditModal({
                   void handleInitialize();
                 }}
                 disabled={
+                  !hasAuditType ||
                   selectedClauses.size === 0 ||
                   frameworks.length === 0 ||
                   isInitializing

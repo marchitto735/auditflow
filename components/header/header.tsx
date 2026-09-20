@@ -31,63 +31,39 @@ import {
   PAGE_INNER_CLASS,
   APP_TOPBAR_HEIGHT_CLASS,
 } from "@/lib/page-layout";
+import { resolveBreadcrumbs } from "@/lib/sidebar-nav";
 import { cn } from "@/lib/utils";
 
 /** Persistent sidebar from xl up; drawer for tablet + mobile. */
 const DESKTOP_SIDEBAR_MQ = "(min-width: 1280px)";
 
 function HeaderBreadcrumbs({ pathname }: { pathname: string }) {
-  const drillDown =
-    pathname === "/dashboard/audits"
-      ? "Audit Log"
-      : pathname === "/dashboard/findings"
-        ? "Open Findings"
-        : pathname === "/dashboard/score-analysis"
-          ? "Score Breakdown"
-          : null;
-
-  const current =
-    drillDown ??
-    (pathname === "/reports"
-      ? "Reports"
-      : pathname === "/help"
-        ? "Help"
-        : pathname === "/audit/results"
-          ? "Audit Report"
-          : pathname === "/audit/sop"
-            ? "Standard Operating Procedure Audit"
-            : pathname === "/audit/bpr"
-              ? "Batch Production Record Audit"
-              : pathname === "/audit/fir"
-                ? "Facility Inspection Report Audit"
-                : "Dashboard");
+  const crumbs = resolveBreadcrumbs(pathname);
 
   return (
     <Breadcrumb>
       <BreadcrumbList className="text-body2">
-        <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/">Audits</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator>/</BreadcrumbSeparator>
-        {drillDown ? (
-          <>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator>/</BreadcrumbSeparator>
-            <BreadcrumbItem>
-              <BreadcrumbPage className="font-medium">{drillDown}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </>
-        ) : (
-          <BreadcrumbItem>
-            <BreadcrumbPage className="font-medium">{current}</BreadcrumbPage>
-          </BreadcrumbItem>
-        )}
+        {crumbs.map((crumb, index) => {
+          const isLast = index === crumbs.length - 1;
+          return (
+            <React.Fragment key={`${crumb.label}-${index}`}>
+              {index > 0 ? (
+                <BreadcrumbSeparator>/</BreadcrumbSeparator>
+              ) : null}
+              <BreadcrumbItem>
+                {isLast || !crumb.href ? (
+                  <BreadcrumbPage className="font-medium">
+                    {crumb.label}
+                  </BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink asChild>
+                    <Link href={crumb.href}>{crumb.label}</Link>
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
+            </React.Fragment>
+          );
+        })}
       </BreadcrumbList>
     </Breadcrumb>
   );

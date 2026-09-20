@@ -58,6 +58,20 @@ export const AUDIT_WORKFLOWS: Record<AuditWorkflowId, AuditWorkflow> = {
   },
 };
 
+/** Labels for Configure Audit → Audit Type field. */
+export const AUDIT_TYPE_OPTIONS: {
+  value: AuditWorkflowId;
+  label: string;
+  keywords: string[];
+}[] = AUDIT_WORKFLOW_IDS.map((id) => {
+  const workflow = AUDIT_WORKFLOWS[id];
+  return {
+    value: id,
+    label: `${workflow.description} (${workflow.label})`,
+    keywords: [id, workflow.label, workflow.description, workflow.title],
+  };
+});
+
 export function isAuditWorkflowId(value: string): value is AuditWorkflowId {
   return AUDIT_WORKFLOW_IDS.includes(value as AuditWorkflowId);
 }

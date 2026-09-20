@@ -31,6 +31,7 @@ import {
   SIDEBAR_PROFILE,
   isSidebarNavActive,
 } from "@/lib/sidebar-nav";
+import { useConfigureAudit } from "@/components/configure-audit-modal/configure-audit-context";
 import {
   APP_TOPBAR_HEIGHT_CLASS,
   NAV_UTILITY_BUTTON_CLASS,
@@ -52,6 +53,7 @@ export function AppSidebarNav({
 }: AppSidebarNavProps) {
   const pathname = usePathname();
   const { collapsed, toggleCollapsed } = useSidebar();
+  const { open, openConfigureAudit } = useConfigureAudit();
   const compact = collapsed && !forceExpanded;
   const railPad = compact ? "px-2" : "px-4";
 
@@ -144,9 +146,35 @@ export function AppSidebarNav({
                 ) : null}
                 <SidebarMenu className="gap-0.5">
                   {section.items.map((item) => {
-                    const active = isSidebarNavActive(pathname, item);
+                    const isConfigureAction = Boolean(item.configureAudit);
+                    const active = isConfigureAction
+                      ? open
+                      : isSidebarNavActive(pathname, item);
                     const Icon = item.icon;
-                    const link = (
+
+                    const control = isConfigureAction ? (
+                      <SidebarMenuButton
+                        type="button"
+                        isActive={active}
+                        compact={compact}
+                        className="rounded-[6px]"
+                        aria-current={active ? "true" : undefined}
+                        aria-label={compact ? item.title : undefined}
+                        onClick={() => {
+                          openConfigureAudit(null);
+                          handleNavigate();
+                        }}
+                      >
+                        <Icon className="h-4 w-4 shrink-0" size={16} aria-hidden />
+                        {!compact ? (
+                          <span className="min-w-0 flex-1 truncate text-left leading-snug">
+                            {item.title}
+                          </span>
+                        ) : (
+                          <span className="sr-only">{item.title}</span>
+                        )}
+                      </SidebarMenuButton>
+                    ) : (
                       <SidebarMenuButton
                         asChild
                         isActive={active}
@@ -176,13 +204,13 @@ export function AppSidebarNav({
                       <SidebarMenuItem key={item.href}>
                         {compact ? (
                           <Tooltip>
-                            <TooltipTrigger asChild>{link}</TooltipTrigger>
+                            <TooltipTrigger asChild>{control}</TooltipTrigger>
                             <TooltipContent side="right" sideOffset={8}>
                               {item.title}
                             </TooltipContent>
                           </Tooltip>
                         ) : (
-                          link
+                          control
                         )}
                       </SidebarMenuItem>
                     );

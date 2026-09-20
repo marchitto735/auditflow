@@ -7,6 +7,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { AppSidebarNav } from "@/components/sidebar-layout/app-sidebar-nav";
+import { ConfigureAuditProvider } from "@/components/configure-audit-modal/configure-audit-context";
 import Header from "@/components/header/header";
 import { PAGE_CANVAS_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
@@ -56,7 +57,9 @@ export default function SidebarLayout({
 }) {
   return (
     <SidebarProvider>
-      <SidebarShell>{children}</SidebarShell>
+      <ConfigureAuditProvider>
+        <SidebarShell>{children}</SidebarShell>
+      </ConfigureAuditProvider>
     </SidebarProvider>
   );
 }

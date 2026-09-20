@@ -3,7 +3,7 @@
 import * as React from "react";
 import { ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { ConfigureAuditModal } from "@/components/configure-audit-modal/configure-audit-modal";
+import { useConfigureAudit } from "@/components/configure-audit-modal/configure-audit-context";
 import {
   AUDIT_WORKFLOWS,
   type AuditWorkflowId,
@@ -34,78 +34,63 @@ const TITLE_DISPLAY: Record<AuditWorkflowId, string> = {
 };
 
 export default function AuditLauncher() {
-  const [open, setOpen] = React.useState(false);
-  const [workflowId, setWorkflowId] =
-    React.useState<AuditWorkflowId>("sop");
-
-  function openFor(id: AuditWorkflowId) {
-    setWorkflowId(id);
-    setOpen(true);
-  }
+  const { openConfigureAudit } = useConfigureAudit();
 
   return (
-    <>
-      <div
-        className={cn(
-          "grid w-full grid-cols-1 items-start md:grid-cols-3",
-          DASHBOARD_GAP_CLASS,
-        )}
-      >
-        {(["sop", "bpr", "fir"] as const).map((id) => {
-          const workflow = AUDIT_WORKFLOWS[id];
-          const title = TITLE_DISPLAY[id];
-          return (
-            <button
-              key={id}
-              type="button"
-              className={CARD_CLASS}
-              onClick={() => openFor(id)}
-              aria-label={`Configure ${title}`}
-            >
-              <Card className="h-full w-full border-0 bg-transparent shadow-none">
-                <CardContent className={cn(CARD_CONTENT_CLASS, "w-full text-left")}>
-                  <p className={CARD_EYEBROW_CLASS}>Audit</p>
-                  <h3
+    <div
+      className={cn(
+        "grid w-full grid-cols-1 items-start md:grid-cols-3",
+        DASHBOARD_GAP_CLASS,
+      )}
+    >
+      {(["sop", "bpr", "fir"] as const).map((id) => {
+        const workflow = AUDIT_WORKFLOWS[id];
+        const title = TITLE_DISPLAY[id];
+        return (
+          <button
+            key={id}
+            type="button"
+            className={CARD_CLASS}
+            onClick={() => openConfigureAudit(id)}
+            aria-label={`Configure ${title}`}
+          >
+            <Card className="h-full w-full border-0 bg-transparent shadow-none">
+              <CardContent className={cn(CARD_CONTENT_CLASS, "w-full text-left")}>
+                <p className={CARD_EYEBROW_CLASS}>Audit</p>
+                <h3
+                  className={cn(
+                    CARD_TITLE_CLASS,
+                    "m-0 max-w-full text-balance text-black",
+                  )}
+                >
+                  {title}
+                </h3>
+
+                <p className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 text-black">
+                  <span>Status:</span>
+                  <span
                     className={cn(
-                      CARD_TITLE_CLASS,
-                      "m-0 max-w-full text-balance text-black",
+                      "size-2.5 shrink-0 rounded-full",
+                      workflowStatusDotClass(workflow.status),
                     )}
-                  >
-                    {title}
-                  </h3>
+                    aria-hidden
+                  />
+                  <span>{workflow.status}</span>
+                  <span aria-hidden>•</span>
+                  <span>Last run: {workflow.lastRun}</span>
+                </p>
 
-                  <p className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 text-black">
-                    <span>Status:</span>
-                    <span
-                      className={cn(
-                        "size-2.5 shrink-0 rounded-full",
-                        workflowStatusDotClass(workflow.status),
-                      )}
-                      aria-hidden
-                    />
-                    <span>{workflow.status}</span>
-                    <span aria-hidden>•</span>
-                    <span>Last run: {workflow.lastRun}</span>
-                  </p>
-
-                  <div className={CARD_FOOTER_CLASS}>
-                    <span className={CARD_CTA_CLASS}>
-                      <span>Configure Audit</span>
-                      <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-            </button>
-          );
-        })}
-      </div>
-
-      <ConfigureAuditModal
-        open={open}
-        onOpenChange={setOpen}
-        workflowId={workflowId}
-      />
-    </>
+                <div className={CARD_FOOTER_CLASS}>
+                  <span className={CARD_CTA_CLASS}>
+                    <span>Configure Audit</span>
+                    <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          </button>
+        );
+      })}
+    </div>
   );
 }
