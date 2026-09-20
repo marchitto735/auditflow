@@ -257,14 +257,7 @@ export function ActivityTable({
                 onClick={() => handleHeaderClick(column.key)}
               >
                 {column.key === "status" && headerAction ? (
-                  <div
-                    className={cn(
-                      "flex items-center gap-2",
-                      column.align === "center" && "justify-center",
-                      column.align === "right" && "justify-end",
-                      column.align === "left" && "justify-between",
-                    )}
-                  >
+                  <div className="flex items-center justify-center gap-2">
                     <span>{column.label}</span>
                     {headerAction}
                   </div>
