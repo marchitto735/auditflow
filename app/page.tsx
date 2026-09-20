@@ -3,7 +3,7 @@ import { storedReportToActivityRow } from "@/lib/audit-report-rows";
 import { listStoredAuditReports } from "@/lib/services/list-audit-reports";
 
 export default async function Home() {
-  const reports = await listStoredAuditReports(15);
+  const reports = await listStoredAuditReports(50);
   const activityRows = reports.map(storedReportToActivityRow);
 
   return (

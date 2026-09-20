@@ -61,7 +61,7 @@ function KpiCard({
       onFocus={() => router.prefetch(href)}
     >
       <Card className="h-full border-0 bg-transparent shadow-none">
-        <CardContent className={CARD_CONTENT_CLASS}>
+        <CardContent className={cn(CARD_CONTENT_CLASS, "gap-1.5")}>
           {children}
           <div className={CARD_FOOTER_CLASS}>
             <span className={CARD_CTA_CLASS}>
@@ -244,7 +244,7 @@ export default function KpiCards() {
       <KpiCard href={AUDITS_HREF} cta="View Audit Log">
         <p className={CARD_EYEBROW_CLASS}>Total Audits</p>
         <p className={cn(CARD_TITLE_CLASS, "m-0 text-foreground")}>142</p>
-        <div className="flex min-h-0 flex-1 flex-col justify-center">
+        <div className="flex shrink-0 flex-col">
           <TotalAuditsChart />
         </div>
         <p className="text-body1 m-0 shrink-0 text-black">+4% this week</p>
@@ -252,7 +252,7 @@ export default function KpiCards() {
 
       <KpiCard href="/dashboard/findings" cta="Inspect Findings">
         <p className={CARD_EYEBROW_CLASS}>Open Findings</p>
-        <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
+        <div className="flex shrink-0 flex-col items-center">
           <OpenFindingsChart />
         </div>
         <p className="text-body1 m-0 shrink-0 text-black">−2 this week</p>
@@ -260,7 +260,7 @@ export default function KpiCards() {
 
       <KpiCard href="/dashboard/score-analysis" cta="Score Breakdown">
         <p className={CARD_EYEBROW_CLASS}>Average Score</p>
-        <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
+        <div className="flex shrink-0 flex-col items-center">
           <AvgScoreGauge />
         </div>
         <p className="text-body1 m-0 shrink-0 text-black">+1.2 pts this week</p>

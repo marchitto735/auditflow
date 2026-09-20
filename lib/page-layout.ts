@@ -78,10 +78,10 @@ export const CARD_CONTENT_CLASS =
   "flex h-full flex-col gap-2 p-4";
 
 /**
- * Shared card footer — fixed gap above CTA so bottom spacing stays uniform.
+ * Shared card footer — tight gap above CTA for Swiss density.
  */
 export const CARD_FOOTER_CLASS =
-  "flex w-full shrink-0 justify-end pt-3";
+  "flex w-full shrink-0 justify-end pt-1";
 
 /**
  * Card footer action link — muted → dark on hover, no underline, arrow nudge.

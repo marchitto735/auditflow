@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 
 const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
-  "group flex h-full w-full min-w-0 flex-col text-left text-inherit",
+  "group flex w-full min-w-0 shrink-0 flex-col text-left text-inherit",
 );
 
 /** Full name + acronym for card titles. */
@@ -37,12 +37,7 @@ export default function AuditLauncher() {
   const { openConfigureAudit } = useConfigureAudit();
 
   return (
-    <div
-      className={cn(
-        "grid w-full grid-cols-1 items-start md:grid-cols-3",
-        DASHBOARD_GAP_CLASS,
-      )}
-    >
+    <div className={cn("flex w-full flex-col", DASHBOARD_GAP_CLASS)}>
       {(["sop", "bpr", "fir"] as const).map((id) => {
         const workflow = AUDIT_WORKFLOWS[id];
         const title = TITLE_DISPLAY[id];
@@ -55,30 +50,33 @@ export default function AuditLauncher() {
             aria-label={`Configure ${title}`}
           >
             <Card className="h-full w-full border-0 bg-transparent shadow-none">
-              <CardContent className={cn(CARD_CONTENT_CLASS, "w-full text-left")}>
-                <p className={CARD_EYEBROW_CLASS}>Audit</p>
-                <h3
-                  className={cn(
-                    CARD_TITLE_CLASS,
-                    "m-0 max-w-full text-balance text-black",
-                  )}
-                >
-                  {title}
-                </h3>
-
-                <p className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 text-black">
-                  <span>Status:</span>
-                  <span
+              <CardContent
+                className={cn(CARD_CONTENT_CLASS, "w-full text-left")}
+              >
+                <div className="flex min-w-0 flex-col gap-1.5">
+                  <p className={CARD_EYEBROW_CLASS}>Audit</p>
+                  <h3
                     className={cn(
-                      "size-2.5 shrink-0 rounded-full",
-                      workflowStatusDotClass(workflow.status),
+                      CARD_TITLE_CLASS,
+                      "m-0 max-w-full text-balance text-black",
                     )}
-                    aria-hidden
-                  />
-                  <span>{workflow.status}</span>
-                  <span aria-hidden>•</span>
-                  <span>Last run: {workflow.lastRun}</span>
-                </p>
+                  >
+                    {title}
+                  </h3>
+                  <p className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 text-black">
+                    <span>Status:</span>
+                    <span
+                      className={cn(
+                        "size-2.5 shrink-0 rounded-full",
+                        workflowStatusDotClass(workflow.status),
+                      )}
+                      aria-hidden
+                    />
+                    <span>{workflow.status}</span>
+                    <span aria-hidden>•</span>
+                    <span>Last run: {workflow.lastRun}</span>
+                  </p>
+                </div>
 
                 <div className={CARD_FOOTER_CLASS}>
                   <span className={CARD_CTA_CLASS}>
