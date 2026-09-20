@@ -2,6 +2,7 @@ import KpiCards from "@/components/dashboard/kpi-cards";
 import RecentActivity from "@/components/dashboard/recent-activity";
 import AuditLauncher from "@/components/dashboard/audit-launcher";
 import { AgentFeedCard } from "@/components/dashboard/agent-feed-card";
+import { CompliancePipelineCard } from "@/components/dashboard/compliance-pipeline-card";
 import { DashboardBento } from "@/components/dashboard/dashboard-bento";
 import type { ActivityRow } from "@/components/activity-table/activity-table";
 import {
@@ -32,6 +33,7 @@ export default function Dashboard({
             <>
               <KpiCards />
               <RecentActivity rows={activityRows} />
+              <CompliancePipelineCard />
             </>
           }
         />

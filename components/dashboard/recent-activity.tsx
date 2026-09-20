@@ -17,8 +17,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
 
-const PAGE_SIZE_OPTIONS = [10, 25, 50] as const;
-const DEFAULT_PAGE_SIZE = 10;
+const PAGE_SIZE_OPTIONS = [5, 10, 25, 50] as const;
+const DEFAULT_PAGE_SIZE = 5;
 /** Demo catalog size for pagination chrome when fewer stored reports exist. */
 const DEMO_TOTAL_RESULTS = 194;
 

@@ -14,13 +14,33 @@ import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
+type ColumnAlign = "left" | "center" | "right";
+
+const ALIGN_CLASS: Record<ColumnAlign, string> = {
+  left: "text-left",
+  center: "text-center",
+  right: "text-right",
+};
+
+/** Uniform horizontal inset on every header/cell for a Swiss vertical grid. */
+const CELL_PAD_CLASS = "px-4";
+
+/**
+ * Fixed equal column widths (5 × 20%). `table-fixed` + `<colgroup>` lock the
+ * grid so content length cannot skew horizontal spacing.
+ */
 export const ACTIVITY_COLUMNS = [
-  { key: "document", label: "Document", headerClassName: "px-4 w-[30%]", width: "30%" },
-  { key: "type", label: "Type", width: "15%" },
-  { key: "date", label: "Timestamp", width: "25%" },
-  { key: "score", label: "Score", width: "15%" },
-  { key: "status", label: "Status", headerClassName: "px-4 w-[15%]", width: "15%" },
-] as const;
+  { key: "document", label: "Document", width: "20%", align: "left" },
+  { key: "type", label: "Type", width: "20%", align: "left" },
+  { key: "date", label: "Timestamp", width: "20%", align: "left" },
+  { key: "score", label: "Score", width: "20%", align: "right" },
+  { key: "status", label: "Status", width: "20%", align: "center" },
+] as const satisfies ReadonlyArray<{
+  key: string;
+  label: string;
+  width: string;
+  align: ColumnAlign;
+}>;
 
 export type ActivityColumnKey = (typeof ACTIVITY_COLUMNS)[number]["key"];
 
@@ -122,6 +142,43 @@ function cellKey(rowId: string, column: ActivityColumnKey) {
   return `${rowId}:${column}`;
 }
 
+function renderCellContent(
+  row: ActivityRow,
+  column: ActivityColumnKey,
+  wrapped: boolean,
+) {
+  switch (column) {
+    case "document":
+      return wrapped ? (
+        <span className="block whitespace-normal break-words">
+          {row.document}
+        </span>
+      ) : (
+        <TruncatedText text={row.document} />
+      );
+    case "type":
+      return wrapped ? (
+        <span className="block whitespace-normal break-words">{row.type}</span>
+      ) : (
+        <TruncatedText text={row.type} />
+      );
+    case "date":
+      return wrapped ? (
+        <span className="block whitespace-normal break-words">{row.date}</span>
+      ) : (
+        <TruncatedText text={row.date} />
+      );
+    case "score":
+      return row.score;
+    case "status":
+      return row.status === "—" ? (
+        "—"
+      ) : (
+        <ActivityStatus status={row.status} className="justify-center" />
+      );
+  }
+}
+
 export function ActivityTable({
   rows,
   expandable = false,
@@ -181,130 +238,100 @@ export function ActivityTable({
 
   return (
     <TooltipProvider delayDuration={150}>
-    <Table className="table-fixed w-full">
-      <colgroup>
-        {ACTIVITY_COLUMNS.map((column) => (
-          <col key={column.key} style={{ width: column.width }} />
-        ))}
-      </colgroup>
-      <TableHeader>
-        <TableRow className="hover:bg-transparent">
+      <Table className="w-full table-fixed">
+        <colgroup>
           {ACTIVITY_COLUMNS.map((column) => (
-            <TableHead
-              key={column.key}
-              className={cn(
-                "headerClassName" in column && column.headerClassName,
-                expandable && "cursor-pointer select-none",
-              )}
-              style={{ width: column.width }}
-              onClick={() => handleHeaderClick(column.key)}
-            >
-              {column.key === "status" && headerAction ? (
-                <div className="flex items-center justify-between gap-2">
-                  <span>{column.label}</span>
-                  {headerAction}
-                </div>
-              ) : (
-                column.label
-              )}
-            </TableHead>
+            <col key={column.key} style={{ width: column.width }} />
           ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {rows.map((row) => {
-          const open = openRows.has(row.id);
-          return (
-            <Fragment key={row.id}>
-              <TableRow
+        </colgroup>
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            {ACTIVITY_COLUMNS.map((column) => (
+              <TableHead
+                key={column.key}
                 className={cn(
-                  "hover:bg-transparent",
-                  expandable && "cursor-pointer",
+                  CELL_PAD_CLASS,
+                  ALIGN_CLASS[column.align],
+                  expandable && "cursor-pointer select-none",
                 )}
-                onClick={() => handleRowClick(row)}
+                onClick={() => handleHeaderClick(column.key)}
               >
-                <TableCell
-                  className="overflow-hidden px-4"
-                  style={{ width: ACTIVITY_COLUMNS[0].width }}
-                  onClick={(event) =>
-                    handleCellClick(event, row, "document")
-                  }
-                >
-                  {isWrapped(row.id, "document") ? (
-                    <span className="block whitespace-normal break-words">
-                      {row.document}
-                    </span>
-                  ) : (
-                    <TruncatedText text={row.document} />
-                  )}
-                </TableCell>
-                <TableCell
-                  className="overflow-hidden"
-                  style={{ width: ACTIVITY_COLUMNS[1].width }}
-                  onClick={(event) => handleCellClick(event, row, "type")}
-                >
-                  {isWrapped(row.id, "type") ? (
-                    <span className="block whitespace-normal break-words">
-                      {row.type}
-                    </span>
-                  ) : (
-                    <TruncatedText text={row.type} />
-                  )}
-                </TableCell>
-                <TableCell
-                  className="overflow-hidden"
-                  style={{ width: ACTIVITY_COLUMNS[2].width }}
-                  onClick={(event) => handleCellClick(event, row, "date")}
-                >
-                  {isWrapped(row.id, "date") ? (
-                    <span className="block whitespace-normal break-words">
-                      {row.date}
-                    </span>
-                  ) : (
-                    <TruncatedText text={row.date} />
-                  )}
-                </TableCell>
-                <TableCell
-                  className="overflow-hidden"
-                  style={{ width: ACTIVITY_COLUMNS[3].width }}
-                  onClick={(event) => handleCellClick(event, row, "score")}
-                >
-                  {row.score}
-                </TableCell>
-                <TableCell
-                  className="overflow-hidden px-4"
-                  style={{ width: ACTIVITY_COLUMNS[4].width }}
-                  onClick={(event) => handleCellClick(event, row, "status")}
-                >
-                  {row.status === "—" ? (
-                    "—"
-                  ) : (
-                    <ActivityStatus status={row.status} />
-                  )}
-                </TableCell>
-              </TableRow>
-              {expandable && row.detail ? (
+                {column.key === "status" && headerAction ? (
+                  <div
+                    className={cn(
+                      "flex items-center gap-2",
+                      column.align === "center" && "justify-center",
+                      column.align === "right" && "justify-end",
+                      column.align === "left" && "justify-between",
+                    )}
+                  >
+                    <span>{column.label}</span>
+                    {headerAction}
+                  </div>
+                ) : (
+                  column.label
+                )}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rows.map((row) => {
+            const open = openRows.has(row.id);
+            return (
+              <Fragment key={row.id}>
                 <TableRow
-                  className={cn("hover:bg-transparent", !open && "hidden")}
+                  className={cn(
+                    "hover:bg-transparent",
+                    expandable && "cursor-pointer",
+                  )}
+                  onClick={() => handleRowClick(row)}
                 >
-                  <TableCell colSpan={5} className="max-w-none overflow-visible whitespace-normal p-0">
-                    <Collapsible open={open}>
-                      <CollapsibleContent>
-                        <div className="px-4 pb-4 pt-1">
-                          <p className="text-body1 m-0 w-full max-w-lg whitespace-normal text-foreground break-words [overflow-wrap:anywhere]">
-                            {row.detail}
-                          </p>
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </TableCell>
+                  {ACTIVITY_COLUMNS.map((column) => (
+                    <TableCell
+                      key={column.key}
+                      className={cn(
+                        "overflow-hidden",
+                        CELL_PAD_CLASS,
+                        ALIGN_CLASS[column.align],
+                      )}
+                      onClick={(event) =>
+                        handleCellClick(event, row, column.key)
+                      }
+                    >
+                      {renderCellContent(
+                        row,
+                        column.key,
+                        isWrapped(row.id, column.key),
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              ) : null}
-            </Fragment>
-          );
-        })}
-      </TableBody>
-    </Table>
+                {expandable && row.detail ? (
+                  <TableRow
+                    className={cn("hover:bg-transparent", !open && "hidden")}
+                  >
+                    <TableCell
+                      colSpan={ACTIVITY_COLUMNS.length}
+                      className="max-w-none overflow-visible whitespace-normal p-0"
+                    >
+                      <Collapsible open={open}>
+                        <CollapsibleContent>
+                          <div className="px-4 pb-4 pt-1">
+                            <p className="text-body1 m-0 w-full max-w-lg whitespace-normal break-words text-foreground [overflow-wrap:anywhere]">
+                              {row.detail}
+                            </p>
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </TableCell>
+                  </TableRow>
+                ) : null}
+              </Fragment>
+            );
+          })}
+        </TableBody>
+      </Table>
     </TooltipProvider>
   );
 }
