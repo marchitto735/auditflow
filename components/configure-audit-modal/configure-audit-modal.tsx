@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import {
+  Camera,
   Check,
   ChevronDown,
   Loader2,
@@ -267,6 +268,7 @@ export function ConfigureAuditModal({
   const [clauseOpen, setClauseOpen] = React.useState(false);
   const [docsOpen, setDocsOpen] = React.useState(false);
   const [attachedFiles, setAttachedFiles] = React.useState<StagedFile[]>([]);
+  const [evidenceFiles, setEvidenceFiles] = React.useState<StagedFile[]>([]);
   const [clauseQuery, setClauseQuery] = React.useState("");
   const [selectedClauses, setSelectedClauses] = React.useState<Set<string>>(
     () => new Set(),
@@ -274,8 +276,11 @@ export function ConfigureAuditModal({
   const [isInitializing, setIsInitializing] = React.useState(false);
   const [initError, setInitError] = React.useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const evidenceInputRef = React.useRef<HTMLInputElement>(null);
+  const cameraInputRef = React.useRef<HTMLInputElement>(null);
 
   const hasAuditType = auditType != null;
+  const isFirAudit = auditType === "fir";
   const selectedAuditTypeOption = AUDIT_TYPE_OPTIONS.find(
     (item) => item.value === auditType,
   );
@@ -286,9 +291,12 @@ export function ConfigureAuditModal({
     setClauseOpen(false);
     setDocsOpen(false);
     setAttachedFiles([]);
+    setEvidenceFiles([]);
     setClauseQuery("");
     setSelectedClauses(new Set());
     if (fileInputRef.current) fileInputRef.current.value = "";
+    if (evidenceInputRef.current) evidenceInputRef.current.value = "";
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
   }
 
   React.useEffect(() => {
@@ -438,6 +446,54 @@ export function ConfigureAuditModal({
     event.preventDefault();
     event.stopPropagation();
     addFiles(event.dataTransfer.files);
+  }
+
+  function addEvidenceFiles(files: FileList | File[] | null) {
+    if (!files || files.length === 0) return;
+    const incoming = Array.from(files)
+      .filter((file) => file.type.startsWith("image/") || /\.(png|jpe?g|webp|heic|gif)$/i.test(file.name))
+      .map(createStagedFile);
+    if (incoming.length === 0) return;
+    setEvidenceFiles((prev) => {
+      const names = new Set(prev.map((item) => item.name));
+      const unique = incoming.filter((item) => !names.has(item.name));
+      return [...prev, ...unique];
+    });
+    if (evidenceInputRef.current) evidenceInputRef.current.value = "";
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
+  }
+
+  function removeEvidenceFile(id: string) {
+    setEvidenceFiles((prev) => prev.filter((item) => item.id !== id));
+    if (evidenceInputRef.current) evidenceInputRef.current.value = "";
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
+  }
+
+  function handleEvidenceInputChange(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    addEvidenceFiles(event.target.files);
+  }
+
+  function handleEvidenceDropZoneDragOver(
+    event: React.DragEvent<HTMLDivElement>,
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function handleEvidenceDropZoneDrop(event: React.DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    addEvidenceFiles(event.dataTransfer.files);
+  }
+
+  function handleEvidenceBrowseClick() {
+    evidenceInputRef.current?.click();
+  }
+
+  function handleOpenCameraClick() {
+    cameraInputRef.current?.click();
   }
 
   function handleDialogOpenChange(nextOpen: boolean) {
@@ -934,6 +990,96 @@ export function ConfigureAuditModal({
                 </PopoverContent>
               </Popover>
             </section>
+
+            {isFirAudit ? (
+              <section>
+                <h3 className={SECTION_LABEL}>Field Evidence & Scans</h3>
+                <p className="m-0 mb-3 text-sm text-muted-foreground">
+                  Capture or upload equipment photos, asset tags, and physical
+                  inspection logs.
+                </p>
+                <input
+                  ref={evidenceInputRef}
+                  type="file"
+                  multiple
+                  accept="image/*,.heic,.HEIC"
+                  className="sr-only"
+                  onChange={handleEvidenceInputChange}
+                  aria-hidden
+                  tabIndex={-1}
+                />
+                <input
+                  ref={cameraInputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="sr-only"
+                  onChange={handleEvidenceInputChange}
+                  aria-hidden
+                  tabIndex={-1}
+                />
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Upload field evidence images"
+                    onClick={handleEvidenceBrowseClick}
+                    onDragOver={handleEvidenceDropZoneDragOver}
+                    onDrop={handleEvidenceDropZoneDrop}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        handleEvidenceBrowseClick();
+                      }
+                    }}
+                    className={cn(
+                      FIELD_SURFACE_CLASS,
+                      "min-h-[5.5rem] flex-1 flex-col items-start justify-center gap-1 border-dashed",
+                    )}
+                  >
+                    <span className="inline-flex items-center gap-2 text-sm font-medium text-black">
+                      <Upload
+                        className="size-4 shrink-0 text-zinc-500"
+                        aria-hidden
+                      />
+                      Drop images or scans here
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      PNG, JPG, WEBP, or HEIC — multiple files supported
+                    </span>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-auto min-h-14 shrink-0 gap-2 rounded-lg border-border/60 px-4 py-3 text-sm font-medium text-black sm:w-52"
+                    onClick={handleOpenCameraClick}
+                  >
+                    <Camera className="size-4 shrink-0" aria-hidden />
+                    <span className="text-balance text-left leading-snug">
+                      Open Camera / Scan Asset
+                    </span>
+                  </Button>
+                </div>
+                {evidenceFiles.length > 0 ? (
+                  <div
+                    className={cn(PILL_AREA_CLASS, "mt-3 max-h-32")}
+                    onWheel={(event) => event.stopPropagation()}
+                  >
+                    {evidenceFiles.map((item) => {
+                      const size = formatFileSize(item.sizeBytes);
+                      return (
+                        <SelectionPill
+                          key={item.id}
+                          label={size ? `${item.name} · ${size}` : item.name}
+                          removeLabel={`Remove ${item.name}`}
+                          onRemove={() => removeEvidenceFile(item.id)}
+                        />
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </section>
+            ) : null}
 
             {isBatchMode ? (
               <section className="rounded-lg border border-border/60 bg-zinc-50 px-4 py-3">
