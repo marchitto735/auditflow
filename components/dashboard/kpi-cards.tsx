@@ -21,10 +21,12 @@ import {
   severityFill,
 } from "@/lib/chart-tokens";
 import {
+  CARD_CONTENT_CLASS,
   CARD_CTA_ARROW_CLASS,
   CARD_CTA_CLASS,
-  CARD_DISPLAY_CLASS,
   CARD_EYEBROW_CLASS,
+  CARD_FOOTER_CLASS,
+  CARD_TITLE_CLASS,
   DASHBOARD_GAP_CLASS,
   INTERACTIVE_CARD_CLASS,
 } from "@/lib/page-layout";
@@ -36,7 +38,7 @@ const AUDITS_HREF = "/dashboard/audits";
 
 const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
-  "group flex h-full flex-col justify-between text-inherit no-underline",
+  "group flex h-full flex-col text-inherit no-underline",
 );
 
 function KpiCard({
@@ -59,9 +61,9 @@ function KpiCard({
       onFocus={() => router.prefetch(href)}
     >
       <Card className="h-full border-0 bg-transparent shadow-none">
-        <CardContent className="flex h-full flex-col p-4">
-          <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-          <div className="mt-auto flex w-full justify-end pt-4">
+        <CardContent className={CARD_CONTENT_CLASS}>
+          {children}
+          <div className={CARD_FOOTER_CLASS}>
             <span className={CARD_CTA_CLASS}>
               <span>{cta}</span>
               <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
@@ -101,7 +103,7 @@ const FINDINGS_TOTAL = FINDINGS_BY_SEVERITY.reduce(
 function TotalAuditsChart() {
   return (
     <div
-      className="pointer-events-none h-[72px] w-full outline-none [&_*]:outline-none"
+      className="pointer-events-none h-12 w-full outline-none [&_*]:outline-none"
       aria-hidden
     >
       <ResponsiveContainer width="100%" height="100%">
@@ -136,12 +138,12 @@ function TotalAuditsChart() {
 }
 
 function OpenFindingsChart() {
-  const outer = 56;
+  const outer = 40;
   const inner = outer - CHART_GEOMETRY.stroke;
 
   return (
     <div
-      className="pointer-events-none relative mx-auto h-[120px] w-[120px] outline-none [&_*]:outline-none"
+      className="pointer-events-none relative mx-auto size-[84px] outline-none [&_*]:outline-none"
       aria-hidden
     >
       <ResponsiveContainer width="100%" height="100%">
@@ -166,7 +168,7 @@ function OpenFindingsChart() {
       </ResponsiveContainer>
       <p
         className={cn(
-          CARD_DISPLAY_CLASS,
+          CARD_TITLE_CLASS,
           "pointer-events-none absolute inset-0 m-0 flex items-center justify-center leading-none text-foreground",
         )}
       >
@@ -183,12 +185,12 @@ function AvgScoreGauge() {
     { name: "score", value: AVG_SCORE },
     { name: "rest", value: remainder },
   ];
-  const outer = 60;
+  const outer = 52;
   const inner = outer - CHART_GEOMETRY.stroke;
 
   return (
     <div
-      className="pointer-events-none relative mx-auto h-[100px] w-[168px] outline-none [&_*]:outline-none"
+      className="pointer-events-none relative mx-auto h-[84px] w-[148px] outline-none [&_*]:outline-none"
       aria-hidden
     >
       <ResponsiveContainer width="100%" height="100%">
@@ -202,7 +204,8 @@ function AvgScoreGauge() {
             outerRadius={outer}
             stroke="none"
             paddingAngle={0}
-            cy="78%"
+            cx="50%"
+            cy="94%"
             isAnimationActive={false}
           >
             <Cell fill={fill} />
@@ -210,10 +213,11 @@ function AvgScoreGauge() {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
+      {/* Sit in the open bowl of the semicircle — optically centered in the ring */}
       <p
         className={cn(
-          CARD_DISPLAY_CLASS,
-          "pointer-events-none absolute inset-x-0 top-[52%] m-0 -translate-y-1/2 text-center leading-none text-foreground",
+          CARD_TITLE_CLASS,
+          "pointer-events-none absolute inset-x-0 bottom-[18%] m-0 text-center leading-none text-foreground",
         )}
       >
         {AVG_SCORE}%
@@ -239,40 +243,27 @@ export default function KpiCards() {
     >
       <KpiCard href={AUDITS_HREF} cta="View Audit Log">
         <p className={CARD_EYEBROW_CLASS}>Total Audits</p>
-        <p
-          className={cn(
-            CARD_DISPLAY_CLASS,
-            "m-0 mt-2 leading-none text-foreground",
-          )}
-        >
-          142
-        </p>
-        <div className="mt-4 flex flex-1 items-center">
+        <p className={cn(CARD_TITLE_CLASS, "m-0 text-foreground")}>142</p>
+        <div className="flex min-h-0 flex-1 flex-col justify-center">
           <TotalAuditsChart />
         </div>
-        <p className="text-body1 m-0 mt-3 text-black">
-          +4% this week
-        </p>
+        <p className="text-body1 m-0 shrink-0 text-black">+4% this week</p>
       </KpiCard>
 
       <KpiCard href="/dashboard/findings" cta="Inspect Findings">
         <p className={CARD_EYEBROW_CLASS}>Open Findings</p>
-        <div className="mt-3 flex flex-1 items-center justify-center">
+        <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
           <OpenFindingsChart />
         </div>
-        <p className="text-body1 m-0 mt-3 text-black">
-          −2 this week
-        </p>
+        <p className="text-body1 m-0 shrink-0 text-black">−2 this week</p>
       </KpiCard>
 
       <KpiCard href="/dashboard/score-analysis" cta="Score Breakdown">
         <p className={CARD_EYEBROW_CLASS}>Average Score</p>
-        <div className="mt-3 flex flex-1 items-center justify-center">
+        <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
           <AvgScoreGauge />
         </div>
-        <p className="text-body1 m-0 mt-3 text-black">
-          +1.2 pts this week
-        </p>
+        <p className="text-body1 m-0 shrink-0 text-black">+1.2 pts this week</p>
       </KpiCard>
     </div>
   );

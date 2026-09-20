@@ -9,10 +9,12 @@ import {
   type AuditWorkflowId,
 } from "@/lib/audit-workflows";
 import {
+  CARD_CONTENT_CLASS,
   CARD_CTA_ARROW_CLASS,
   CARD_CTA_CLASS,
-  CARD_DISPLAY_CLASS,
   CARD_EYEBROW_CLASS,
+  CARD_FOOTER_CLASS,
+  CARD_TITLE_CLASS,
   DASHBOARD_GAP_CLASS,
   INTERACTIVE_CARD_CLASS,
 } from "@/lib/page-layout";
@@ -26,8 +28,8 @@ const CARD_CLASS = cn(
 
 /** Full name + acronym for card titles. */
 const TITLE_DISPLAY: Record<AuditWorkflowId, string> = {
-  sop: "Standard Operating Procedures (SOP)",
-  bpr: "Batch Production Records (BPR)",
+  sop: "Standard Operating Procedure (SOP)",
+  bpr: "Batch Production Record (BPR)",
   fir: "Facility\u00A0Inspection Report (FIR)",
 };
 
@@ -45,7 +47,7 @@ export default function AuditLauncher() {
     <>
       <div
         className={cn(
-          "grid w-full grid-cols-1 md:grid-cols-3",
+          "grid w-full grid-cols-1 items-start md:grid-cols-3",
           DASHBOARD_GAP_CLASS,
         )}
       >
@@ -61,18 +63,18 @@ export default function AuditLauncher() {
               aria-label={`Configure ${title}`}
             >
               <Card className="h-full w-full border-0 bg-transparent shadow-none">
-                <CardContent className="flex h-full min-h-[220px] w-full flex-col p-4 text-left">
+                <CardContent className={cn(CARD_CONTENT_CLASS, "w-full text-left")}>
                   <p className={CARD_EYEBROW_CLASS}>Audit</p>
                   <h3
                     className={cn(
-                      CARD_DISPLAY_CLASS,
-                      "m-0 mt-2 max-w-full text-balance leading-tight text-black",
+                      CARD_TITLE_CLASS,
+                      "m-0 max-w-full text-balance text-black",
                     )}
                   >
                     {title}
                   </h3>
 
-                  <p className="text-body1 m-0 mt-5 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 text-black">
+                  <p className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 text-black">
                     <span>Status:</span>
                     <span
                       className={cn(
@@ -86,7 +88,7 @@ export default function AuditLauncher() {
                     <span>Last run: {workflow.lastRun}</span>
                   </p>
 
-                  <div className="mt-auto flex w-full justify-end pt-8">
+                  <div className={CARD_FOOTER_CLASS}>
                     <span className={CARD_CTA_CLASS}>
                       <span>Configure Audit</span>
                       <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />

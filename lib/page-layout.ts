@@ -48,10 +48,28 @@ export const CARD_EYEBROW_MUTED_CLASS =
   "text-sm font-medium m-0 text-muted-foreground";
 
 /**
- * Mid-scale display type for KPI stats and Audit Launcher card titles (~18–26px).
+ * Page section grouping label (18px / medium).
  */
-export const CARD_DISPLAY_CLASS =
-  "text-[clamp(1.125rem,0.85rem+1.1vw,1.625rem)] font-semibold";
+export const SECTION_HEADER_CLASS =
+  "text-lg font-medium leading-tight tracking-tight";
+
+/**
+ * Primary card title / KPI display (20px / medium).
+ */
+export const CARD_TITLE_CLASS =
+  "text-xl font-medium leading-tight tracking-tight";
+
+/**
+ * Shared interactive card body — compact padding, no fixed min-height.
+ */
+export const CARD_CONTENT_CLASS =
+  "flex h-full flex-col gap-2 p-4";
+
+/**
+ * Shared card footer — fixed gap above CTA so bottom spacing stays uniform.
+ */
+export const CARD_FOOTER_CLASS =
+  "flex w-full shrink-0 justify-end pt-3";
 
 /**
  * Card footer action link — muted → dark on hover, no underline, arrow nudge.

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SECTION_HEADER_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 export default function SectionHeader({
@@ -21,7 +22,7 @@ export default function SectionHeader({
       )}
     >
       <div className="min-w-0">
-        <h2 className="m-0 text-xl font-medium leading-tight tracking-tight text-black">
+        <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-black")}>
           {title}
         </h2>
         {description ? (

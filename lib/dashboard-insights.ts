@@ -208,7 +208,7 @@ export const OPEN_FINDINGS: FindingRow[] = [
 ];
 
 export const SCORE_CATEGORIES = [
-  { name: "Standard Operating Procedures", score: 94 },
+  { name: "Standard Operating Procedure", score: 94 },
   { name: "Batch Record Integrity", score: 82 },
   { name: "Facility Sanitation", score: 88 },
   { name: "Data Integrity (Part 11)", score: 79 },
