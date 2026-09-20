@@ -21,6 +21,8 @@ import {
   severityFill,
 } from "@/lib/chart-tokens";
 import {
+  CARD_CTA_ARROW_CLASS,
+  CARD_CTA_CLASS,
   DASHBOARD_GAP_CLASS,
   INTERACTIVE_CARD_CLASS,
 } from "@/lib/page-layout";
@@ -34,9 +36,6 @@ const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
   "group flex h-full flex-col justify-between text-inherit no-underline",
 );
-
-const CTA_CLASS =
-  "inline-flex items-center gap-0.5 text-sm font-medium text-black transition-colors";
 
 function KpiCard({
   href,
@@ -61,9 +60,9 @@ function KpiCard({
         <CardContent className="flex h-full flex-col p-4">
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
           <div className="mt-auto flex w-full justify-end pt-4">
-            <span className={CTA_CLASS}>
-              <span className="group-hover:underline">{cta}</span>
-              <ChevronRight className="h-4 w-4" aria-hidden />
+            <span className={CARD_CTA_CLASS}>
+              <span>{cta}</span>
+              <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
             </span>
           </div>
         </CardContent>

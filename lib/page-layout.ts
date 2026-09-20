@@ -32,3 +32,13 @@ export const DASHBOARD_CARD_CLASS =
  */
 export const INTERACTIVE_CARD_CLASS =
   "rounded-2xl border border-zinc-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
+
+/**
+ * Card footer action link — muted → dark on hover, no underline, arrow nudge.
+ * Parent must use `group`.
+ */
+export const CARD_CTA_CLASS =
+  "inline-flex shrink-0 items-center gap-0.5 text-sm font-medium text-zinc-500 no-underline transition-colors duration-150 group-hover:text-zinc-900";
+
+export const CARD_CTA_ARROW_CLASS =
+  "h-4 w-4 transition-transform duration-150 group-hover:translate-x-1";

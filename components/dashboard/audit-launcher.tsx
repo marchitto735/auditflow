@@ -8,7 +8,12 @@ import {
   AUDIT_WORKFLOWS,
   type AuditWorkflowId,
 } from "@/lib/audit-workflows";
-import { DASHBOARD_GAP_CLASS, INTERACTIVE_CARD_CLASS } from "@/lib/page-layout";
+import {
+  CARD_CTA_ARROW_CLASS,
+  CARD_CTA_CLASS,
+  DASHBOARD_GAP_CLASS,
+  INTERACTIVE_CARD_CLASS,
+} from "@/lib/page-layout";
 import { workflowStatusDotClass } from "@/lib/chart-tokens";
 import { cn } from "@/lib/utils";
 
@@ -16,9 +21,6 @@ const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
   "group flex h-full w-full min-w-0 flex-col text-left text-inherit",
 );
-
-const CTA_CLASS =
-  "inline-flex shrink-0 items-center gap-0.5 text-sm font-medium text-black transition-colors";
 
 /** Prefer natural multi-line breaks (e.g. "Facility Inspection" stays on one line). */
 const TITLE_DISPLAY: Record<AuditWorkflowId, string> = {
@@ -79,11 +81,9 @@ export default function AuditLauncher() {
                   </p>
 
                   <div className="mt-auto flex w-full justify-end pt-8">
-                    <span className={CTA_CLASS}>
-                      <span className="group-hover:underline">
-                        Configure Audit
-                      </span>
-                      <ChevronRight className="h-4 w-4" aria-hidden />
+                    <span className={CARD_CTA_CLASS}>
+                      <span>Configure Audit</span>
+                      <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
                     </span>
                   </div>
                 </CardContent>
