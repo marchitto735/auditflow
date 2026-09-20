@@ -73,6 +73,8 @@ type DashboardToolbarProps = {
   value: DashboardToolbarValues;
   onChange: (next: DashboardToolbarValues) => void;
   className?: string;
+  /** Embed inside another card (no nested card chrome). */
+  embedded?: boolean;
 };
 
 const CONTROL_CLASS =
@@ -82,95 +84,104 @@ export function DashboardToolbar({
   value,
   onChange,
   className,
+  embedded = false,
 }: DashboardToolbarProps) {
   function patch(partial: Partial<DashboardToolbarValues>) {
     onChange({ ...value, ...partial });
   }
 
+  const controls = (
+    <div
+      className={cn(
+        "flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4",
+        embedded && "px-4 py-3",
+      )}
+      role="search"
+      aria-label="Search and filter audits"
+    >
+      <div className="relative min-w-0 w-full sm:max-w-md sm:flex-1">
+        <Search
+          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400"
+          aria-hidden
+        />
+        <Input
+          type="search"
+          value={value.search}
+          onChange={(event) => patch({ search: event.target.value })}
+          placeholder="Search documents and IDs…"
+          aria-label="Search documents and IDs"
+          className="h-10 border-zinc-200 bg-white pl-9"
+        />
+      </div>
+
+      <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end sm:gap-3">
+        <Select
+          value={value.type}
+          onValueChange={(next) =>
+            patch({ type: next as DashboardTypeFilter })
+          }
+        >
+          <SelectTrigger aria-label="Filter by type" className={CONTROL_CLASS}>
+            <SelectValue placeholder="Type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All types</SelectItem>
+            <SelectItem value="SOP">SOP</SelectItem>
+            <SelectItem value="BPR">BPR</SelectItem>
+            <SelectItem value="FIR">FIR</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={value.status}
+          onValueChange={(next) =>
+            patch({ status: next as DashboardStatusFilter })
+          }
+        >
+          <SelectTrigger
+            aria-label="Filter by status"
+            className={CONTROL_CLASS}
+          >
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All statuses</SelectItem>
+            <SelectItem value="Compliant">Compliant</SelectItem>
+            <SelectItem value="Partial">Partial</SelectItem>
+            <SelectItem value="Critical">Critical</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={value.dateRange}
+          onValueChange={(next) =>
+            patch({ dateRange: next as DashboardDateRangeFilter })
+          }
+        >
+          <SelectTrigger
+            aria-label="Filter by date range"
+            className={CONTROL_CLASS}
+          >
+            <SelectValue placeholder="Date range" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All time</SelectItem>
+            <SelectItem value="7d">Last 7 days</SelectItem>
+            <SelectItem value="30d">Last 30 days</SelectItem>
+            <SelectItem value="90d">Last 90 days</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  );
+
+  if (embedded) {
+    return <div className={className}>{controls}</div>;
+  }
+
   return (
     <Card className={cn(DASHBOARD_CARD_CLASS, className)}>
-      <CardContent
-        className="flex w-full flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-        role="search"
-        aria-label="Search and filter audits"
-      >
-        <div className="relative min-w-0 w-full sm:max-w-md sm:flex-1">
-          <Search
-            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400"
-            aria-hidden
-          />
-          <Input
-            type="search"
-            value={value.search}
-            onChange={(event) => patch({ search: event.target.value })}
-            placeholder="Search documents and IDs…"
-            aria-label="Search documents and IDs"
-            className="h-10 border-zinc-200 bg-white pl-9"
-          />
-        </div>
-
-        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end sm:gap-3">
-          <Select
-            value={value.type}
-            onValueChange={(next) =>
-              patch({ type: next as DashboardTypeFilter })
-            }
-          >
-            <SelectTrigger
-              aria-label="Filter by type"
-              className={CONTROL_CLASS}
-            >
-              <SelectValue placeholder="Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All types</SelectItem>
-              <SelectItem value="SOP">SOP</SelectItem>
-              <SelectItem value="BPR">BPR</SelectItem>
-              <SelectItem value="FIR">FIR</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={value.status}
-            onValueChange={(next) =>
-              patch({ status: next as DashboardStatusFilter })
-            }
-          >
-            <SelectTrigger
-              aria-label="Filter by status"
-              className={CONTROL_CLASS}
-            >
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All statuses</SelectItem>
-              <SelectItem value="Compliant">Compliant</SelectItem>
-              <SelectItem value="Partial">Partial</SelectItem>
-              <SelectItem value="Critical">Critical</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={value.dateRange}
-            onValueChange={(next) =>
-              patch({ dateRange: next as DashboardDateRangeFilter })
-            }
-          >
-            <SelectTrigger
-              aria-label="Filter by date range"
-              className={CONTROL_CLASS}
-            >
-              <SelectValue placeholder="Date range" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All time</SelectItem>
-              <SelectItem value="7d">Last 7 days</SelectItem>
-              <SelectItem value="30d">Last 30 days</SelectItem>
-              <SelectItem value="90d">Last 90 days</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </CardContent>
+      <CardContent className="p-4">{controls}</CardContent>
     </Card>
   );
 }

@@ -6,6 +6,7 @@ import {
   type ActivityRow,
 } from "@/components/activity-table/activity-table";
 import {
+  DashboardToolbar,
   filterActivityRows,
   type DashboardToolbarValues,
 } from "@/components/dashboard/dashboard-toolbar";
@@ -25,6 +26,13 @@ const PAGE_SIZE_OPTIONS = [5, 10, 25, 50] as const;
 const DEFAULT_PAGE_SIZE = 5;
 /** Demo catalog size for pagination chrome when fewer stored reports exist. */
 const DEMO_TOTAL_RESULTS = 194;
+
+const INITIAL_FILTERS: DashboardToolbarValues = {
+  search: "",
+  type: "all",
+  status: "all",
+  dateRange: "all",
+};
 
 function padActivityRows(rows: ActivityRow[], targetCount: number): ActivityRow[] {
   if (rows.length >= targetCount) return rows;
@@ -61,19 +69,18 @@ function buildPageItems(currentPage: number, totalPages: number) {
 
 export default function RecentActivity({
   rows,
-  filters,
   className,
 }: {
   rows: ActivityRow[];
-  filters?: DashboardToolbarValues;
   className?: string;
 }) {
+  const [filters, setFilters] = useState<DashboardToolbarValues>(INITIAL_FILTERS);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [page, setPage] = useState(1);
 
   const catalog = useMemo(() => {
     const padded = padActivityRows(rows, Math.max(DEMO_TOTAL_RESULTS, pageSize));
-    return filters ? filterActivityRows(padded, filters) : padded;
+    return filterActivityRows(padded, filters);
   }, [rows, pageSize, filters]);
 
   const totalCount = catalog.length;
@@ -102,6 +109,14 @@ export default function RecentActivity({
       )}
     >
       <CardContent className="flex flex-col p-0">
+        <div className="shrink-0 border-b border-zinc-200">
+          <DashboardToolbar
+            embedded
+            value={filters}
+            onChange={setFilters}
+          />
+        </div>
+
         {catalog.length === 0 ? (
           <p className="text-body1 m-0 px-4 py-4 text-muted-foreground">
             No audits match the current search and filters.
