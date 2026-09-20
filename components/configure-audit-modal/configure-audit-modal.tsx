@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import {
   Check,
   ChevronDown,
-  FileText,
   Loader2,
-  Paperclip,
+  Upload,
   X,
 } from "lucide-react";
 import {
@@ -19,7 +18,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Command,
   CommandEmpty,
@@ -44,33 +42,87 @@ import {
 } from "@/lib/audit-frameworks";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_SELECTED_SHORT_NAMES = ["1.1", "5.5.1"] as const;
-const DEFAULT_FILE = "SOP_Manufacturing_v4.2.pdf";
-const DEFAULT_FRAMEWORK = AUDIT_FRAMEWORKS[0]?.value ?? "iso-9001-2015";
-
-/** Medium 14 section labels — matches dashboard field/table label weight. */
+/** Shared section labels — text-sm, uniform weight. */
 const SECTION_LABEL = "mb-2 text-sm font-medium text-black";
 
-/** Flat field surface — zinc border, soft lift on hover (aligned with interactive cards). */
+/** Shared field shell for Frameworks / Clauses / Docs. */
 const FIELD_SURFACE_CLASS =
-  "rounded-lg border border-zinc-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
+  "relative flex min-h-14 w-full cursor-pointer items-center gap-2 rounded-lg border border-border/60 bg-white px-3 py-2.5 text-left shadow-none transition-all duration-200 ease-in-out hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
 
-const FIELD_SURFACE_OPEN_CLASS = "border-zinc-300 shadow-sm bg-zinc-50";
+const FIELD_SURFACE_OPEN_CLASS = "border-border bg-zinc-50 shadow-sm";
 
-const FLOATING_LABEL_CLASS =
-  "pointer-events-none absolute left-3 top-2 text-xs font-medium uppercase tracking-wide text-zinc-500";
+/** Inline selection / file pill token. */
+const PILL_CLASS =
+  "inline-flex max-w-full items-center gap-1 rounded-full border border-border/60 bg-zinc-50 py-1 pl-2.5 pr-1 text-sm font-medium text-black";
 
-function defaultSelectionForFramework(frameworkValue: string) {
-  const clauses = getClausesForFramework(frameworkValue);
-  const preferred = clauses.filter((clause) =>
-    (DEFAULT_SELECTED_SHORT_NAMES as readonly string[]).includes(
-      clause.shortName,
-    ),
+const PILL_REMOVE_CLASS =
+  "inline-flex size-5 shrink-0 items-center justify-center rounded-full text-zinc-500 transition-colors hover:bg-zinc-200 hover:text-black";
+
+const PLACEHOLDER_CLASS = "text-sm text-muted-foreground";
+
+const POPOVER_CLASS =
+  "z-[300] w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-lg border border-border/60 bg-white p-0 text-black shadow-sm";
+
+const DROPDOWN_FOOTER_CLASS =
+  "flex items-center justify-between border-t border-border/60 px-3 py-2";
+
+const COMMAND_SHELL_CLASS =
+  "flex max-h-[280px] flex-col overflow-hidden rounded-lg bg-white text-black";
+
+const COMMAND_LIST_CLASS =
+  "min-h-0 flex-1 overflow-y-auto overscroll-contain";
+
+const COMMAND_LIST_MAX_HEIGHT = 220;
+
+const COMMAND_ITEM_CLASS =
+  "cursor-pointer gap-2 rounded-md text-sm text-black data-[selected=true]:bg-zinc-100 data-[selected=true]:text-black";
+
+const DONE_BUTTON_CLASS =
+  "h-8 px-2 text-sm font-medium text-black hover:bg-zinc-100";
+
+const DROPDOWN_EMPTY_CLASS =
+  "px-3 py-6 text-center text-sm text-zinc-500";
+
+type StagedFile = {
+  id: string;
+  name: string;
+  sizeBytes: number | null;
+  file: File | null;
+};
+
+function MultiSelectCheck({ checked }: { checked: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-black bg-white text-white transition-colors",
+        checked && "border-black bg-black",
+      )}
+    >
+      <Check
+        className={cn("size-3", checked ? "opacity-100" : "opacity-0")}
+        strokeWidth={3}
+      />
+    </span>
   );
-  if (preferred.length > 0) {
-    return new Set(preferred.map((clause) => clause.id));
+}
+
+function pruneClausesToFrameworks(
+  clauseIds: Set<string>,
+  frameworkValues: string[],
+) {
+  if (frameworkValues.length === 0) return new Set<string>();
+  const allowed = new Set<string>();
+  for (const value of frameworkValues) {
+    for (const clause of getClausesForFramework(value)) {
+      allowed.add(clause.id);
+    }
   }
-  return new Set(clauses.slice(0, 3).map((clause) => clause.id));
+  const next = new Set<string>();
+  for (const id of clauseIds) {
+    if (allowed.has(id)) next.add(id);
+  }
+  return next;
 }
 
 function frameworkFilter(
@@ -84,6 +136,97 @@ function frameworkFilter(
   const words = query.split(/\s+/).filter(Boolean);
   return words.every((word) => haystack.includes(word)) ? 1 : 0;
 }
+
+function formatFileSize(bytes: number | null) {
+  if (bytes == null || Number.isNaN(bytes)) return null;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function createStagedFile(file: File): StagedFile {
+  return {
+    id: `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 8)}`,
+    name: file.name,
+    sizeBytes: file.size,
+    file,
+  };
+}
+
+function SelectionPill({
+  label,
+  onRemove,
+  removeLabel,
+}: {
+  label: string;
+  onRemove: () => void;
+  removeLabel: string;
+}) {
+  return (
+    <span className={PILL_CLASS}>
+      <span className="min-w-0 truncate">{label}</span>
+      <button
+        type="button"
+        className={PILL_REMOVE_CLASS}
+        aria-label={removeLabel}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          onRemove();
+        }}
+      >
+        <X className="size-3" aria-hidden />
+      </button>
+    </span>
+  );
+}
+
+function FieldChevron() {
+  return (
+    <ChevronDown
+      aria-hidden
+      className="pointer-events-none absolute right-3 top-1/2 size-4 shrink-0 -translate-y-1/2 text-zinc-500"
+    />
+  );
+}
+
+/** Non-button combobox shell so SelectionPill remove controls stay valid nested buttons. */
+function FieldComboboxTrigger({
+  open,
+  onOpenChange,
+  className,
+  children,
+  onKeyDown,
+  ...props
+}: React.ComponentProps<"div"> & {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  return (
+    <div
+      role="combobox"
+      tabIndex={0}
+      aria-expanded={open}
+      {...props}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onOpenChange(!open);
+        }
+        onKeyDown?.(event);
+      }}
+      className={cn(
+        FIELD_SURFACE_CLASS,
+        "pr-10",
+        open && FIELD_SURFACE_OPEN_CLASS,
+        className,
+      )}
+    >
+      {children}
+      <FieldChevron />
+    </div>
+  );
+}
+
 
 type ConfigureAuditModalProps = {
   open: boolean;
@@ -99,16 +242,14 @@ export function ConfigureAuditModal({
   const router = useRouter();
   const workflow = AUDIT_WORKFLOWS[workflowId];
 
-  const [framework, setFramework] = React.useState(DEFAULT_FRAMEWORK);
+  const [frameworks, setFrameworks] = React.useState<string[]>([]);
   const [frameworkOpen, setFrameworkOpen] = React.useState(false);
   const [clauseOpen, setClauseOpen] = React.useState(false);
-  const [attachedFile, setAttachedFile] = React.useState<File | null>(null);
-  const [attachedFileName, setAttachedFileName] = React.useState<string | null>(
-    DEFAULT_FILE,
-  );
+  const [docsOpen, setDocsOpen] = React.useState(false);
+  const [attachedFiles, setAttachedFiles] = React.useState<StagedFile[]>([]);
   const [clauseQuery, setClauseQuery] = React.useState("");
   const [selectedClauses, setSelectedClauses] = React.useState<Set<string>>(
-    () => defaultSelectionForFramework(DEFAULT_FRAMEWORK),
+    () => new Set(),
   );
   const [isInitializing, setIsInitializing] = React.useState(false);
   const [initError, setInitError] = React.useState<string | null>(null);
@@ -116,22 +257,43 @@ export function ConfigureAuditModal({
 
   React.useEffect(() => {
     if (!open) return;
-    setFramework(DEFAULT_FRAMEWORK);
+    setFrameworks([]);
     setFrameworkOpen(false);
     setClauseOpen(false);
-    setAttachedFile(null);
-    setAttachedFileName(DEFAULT_FILE);
+    setDocsOpen(false);
+    setAttachedFiles([]);
     setClauseQuery("");
-    setSelectedClauses(defaultSelectionForFramework(DEFAULT_FRAMEWORK));
+    setSelectedClauses(new Set());
     setIsInitializing(false);
     setInitError(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   }, [open, workflowId]);
 
-  const selectedFramework = getAuditFramework(framework);
-  const frameworkClauses = React.useMemo(
-    () => getClausesForFramework(framework),
-    [framework],
+  const selectedFrameworkItems = React.useMemo(
+    () =>
+      frameworks
+        .map((value) => getAuditFramework(value))
+        .filter((item): item is NonNullable<typeof item> => Boolean(item)),
+    [frameworks],
+  );
+
+  const frameworkClauses = React.useMemo(() => {
+    const seen = new Set<string>();
+    const merged = [];
+    for (const value of frameworks) {
+      for (const clause of getClausesForFramework(value)) {
+        if (seen.has(clause.id)) continue;
+        seen.add(clause.id);
+        merged.push(clause);
+      }
+    }
+    return merged;
+  }, [frameworks]);
+
+  const selectedClauseItems = React.useMemo(
+    () =>
+      frameworkClauses.filter((clause) => selectedClauses.has(clause.id)),
+    [frameworkClauses, selectedClauses],
   );
 
   const filteredClauses = React.useMemo(() => {
@@ -153,26 +315,31 @@ export function ConfigureAuditModal({
     });
   }, [clauseQuery, frameworkClauses]);
 
-  const selectedClauseSummary = React.useMemo(() => {
-    if (selectedClauses.size === 0) return "Select clauses…";
-    const selected = frameworkClauses.filter((clause) =>
-      selectedClauses.has(clause.id),
-    );
-    if (selected.length === 0) {
-      return `${selectedClauses.size} clauses selected`;
-    }
-    if (selected.length === 1) {
-      return `Clause ${selected[0].shortName} · ${selected[0].description.replace(/\.$/, "")}`;
-    }
-    return `${selected.length} clauses selected`;
-  }, [frameworkClauses, selectedClauses]);
+  const isBatchMode =
+    frameworks.length > 1 || attachedFiles.length > 1;
+  const docCount = attachedFiles.length;
 
-  function selectFramework(value: string) {
-    setFramework(value);
-    setFrameworkOpen(false);
-    setClauseOpen(false);
+  function toggleFramework(value: string) {
+    setFrameworks((prev) => {
+      const next = prev.includes(value)
+        ? prev.filter((item) => item !== value)
+        : [...prev, value];
+      setSelectedClauses((prevClauses) =>
+        pruneClausesToFrameworks(prevClauses, next),
+      );
+      return next;
+    });
     setClauseQuery("");
-    setSelectedClauses(defaultSelectionForFramework(value));
+  }
+
+  function removeFramework(value: string) {
+    setFrameworks((prev) => {
+      const next = prev.filter((item) => item !== value);
+      setSelectedClauses((prevClauses) =>
+        pruneClausesToFrameworks(prevClauses, next),
+      );
+      return next;
+    });
   }
 
   function toggleClause(id: string, checked: boolean) {
@@ -189,15 +356,21 @@ export function ConfigureAuditModal({
     if (!nextOpen) setClauseQuery("");
   }
 
-  function assignDocument(file: File | null) {
-    if (!file) {
-      setAttachedFile(null);
-      setAttachedFileName(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      return;
-    }
-    setAttachedFile(file);
-    setAttachedFileName(file.name);
+  function addFiles(files: FileList | File[] | null) {
+    if (!files || files.length === 0) return;
+    const incoming = Array.from(files).map(createStagedFile);
+    setAttachedFiles((prev) => {
+      const names = new Set(prev.map((item) => item.name));
+      const unique = incoming.filter((item) => !names.has(item.name));
+      return [...prev, ...unique];
+    });
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setDocsOpen(false);
+  }
+
+  function removeFile(id: string) {
+    setAttachedFiles((prev) => prev.filter((item) => item.id !== id));
+    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   function handleBrowseClick() {
@@ -205,8 +378,7 @@ export function ConfigureAuditModal({
   }
 
   function handleFileInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0] ?? null;
-    assignDocument(file);
+    addFiles(event.target.files);
   }
 
   function handleDropZoneDragOver(event: React.DragEvent<HTMLDivElement>) {
@@ -217,19 +389,20 @@ export function ConfigureAuditModal({
   function handleDropZoneDrop(event: React.DragEvent<HTMLDivElement>) {
     event.preventDefault();
     event.stopPropagation();
-    const file = event.dataTransfer.files?.[0] ?? null;
-    if (!file) return;
-    assignDocument(file);
+    addFiles(event.dataTransfer.files);
   }
 
   function handleDialogOpenChange(nextOpen: boolean) {
-    // Block dismiss / accidental resets while Initialize is in flight.
     if (isInitializing && !nextOpen) return;
     onOpenChange(nextOpen);
   }
 
   async function handleInitialize() {
     if (isInitializing) return;
+    if (frameworks.length === 0) {
+      setInitError("Select at least one framework before initializing.");
+      return;
+    }
     if (selectedClauses.size === 0) {
       setInitError("Select at least one clause before initializing.");
       return;
@@ -239,17 +412,25 @@ export function ConfigureAuditModal({
     setIsInitializing(true);
     setFrameworkOpen(false);
     setClauseOpen(false);
+    setDocsOpen(false);
 
     try {
       const params = new URLSearchParams();
-      params.set("framework", framework);
+      params.set("framework", frameworks[0]);
+      if (frameworks.length > 1) {
+        params.set("frameworks", frameworks.join(","));
+      }
       params.set("workflow", workflowId);
-      if (attachedFileName) {
-        params.set("document", attachedFileName);
+      if (attachedFiles.length === 1) {
+        params.set("document", attachedFiles[0].name);
+      } else if (attachedFiles.length > 1) {
+        params.set(
+          "documents",
+          attachedFiles.map((item) => item.name).join("|"),
+        );
       }
       params.set("clauses", Array.from(selectedClauses).join(","));
 
-      // Final audit results report (skips clause-selection workspace).
       const destination = `/audit/results?${params.toString()}`;
 
       await Promise.resolve(router.push(destination));
@@ -271,6 +452,11 @@ export function ConfigureAuditModal({
         ? "BPR"
         : "FIR";
 
+  const submitLabel =
+    docCount > 1
+      ? `Initialize Batch Audit Analysis (${docCount} Docs)`
+      : "Initialize Audit Analysis";
+
   return (
     <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogContent
@@ -279,19 +465,19 @@ export function ConfigureAuditModal({
         overlayClassName="bg-black/60 backdrop-blur-sm"
         className="fixed inset-0 z-50 flex items-center justify-center p-4 md:inset-auto md:left-1/2 md:top-1/2 md:max-h-[min(90vh,840px)] md:w-full md:max-w-2xl md:-translate-x-1/2 md:-translate-y-1/2"
       >
-        <div className="flex max-h-[min(90vh,840px)] w-full flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white text-black shadow-lg">
-          <DialogHeader className="shrink-0 gap-1 border-b border-zinc-200 px-6 py-5 text-left">
+        <div className="flex max-h-[min(90vh,840px)] w-full flex-col overflow-hidden rounded-xl border border-border/60 bg-white text-black shadow-lg">
+          <DialogHeader className="shrink-0 gap-1 border-b border-border/60 px-6 py-5 text-left">
             <DialogTitle className="m-0 text-xl font-medium tracking-tight text-black">
               Configure Audit Parameters
             </DialogTitle>
             <DialogDescription className="m-0 max-w-xl text-sm font-normal text-muted-foreground">
-              Choose a framework, select clauses, and link target documentation
+              Choose framework(s), select clauses, and link target documentation
               for the {assessmentLabel} compliance assessment.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-6 py-5">
-            {/* Framework Selection — searchable combobox */}
+          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-6 py-5">
+            {/* Framework Selection */}
             <section>
               <h3 className={SECTION_LABEL}>Framework Selection</h3>
               <Popover
@@ -300,27 +486,27 @@ export function ConfigureAuditModal({
                 onOpenChange={setFrameworkOpen}
               >
                 <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    role="combobox"
-                    aria-expanded={frameworkOpen}
-                    className={cn(
-                      "relative flex h-14 w-full items-center justify-between gap-2 px-3 pr-10 text-left",
-                      FIELD_SURFACE_CLASS,
-                      frameworkOpen && FIELD_SURFACE_OPEN_CLASS,
-                    )}
+                  <FieldComboboxTrigger
+                    open={frameworkOpen}
+                    onOpenChange={setFrameworkOpen}
                   >
-                    <span className={FLOATING_LABEL_CLASS}>
-                      Select Framework / Version
-                    </span>
-                    <span className="min-w-0 flex-1 truncate pt-3 text-body1 text-black">
-                      {selectedFramework?.label ?? "Select framework"}
-                    </span>
-                    <ChevronDown
-                      aria-hidden
-                      className="pointer-events-none absolute right-3 top-1/2 size-4 shrink-0 -translate-y-1/2 text-zinc-500"
-                    />
-                  </button>
+                    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
+                      {selectedFrameworkItems.length === 0 ? (
+                        <span className={PLACEHOLDER_CLASS}>
+                          Select frameworks…
+                        </span>
+                      ) : (
+                        selectedFrameworkItems.map((item) => (
+                          <SelectionPill
+                            key={item.value}
+                            label={item.label}
+                            removeLabel={`Remove ${item.label}`}
+                            onRemove={() => removeFramework(item.value)}
+                          />
+                        ))
+                      )}
+                    </div>
+                  </FieldComboboxTrigger>
                 </PopoverTrigger>
                 <PopoverContent
                   align="start"
@@ -329,42 +515,37 @@ export function ConfigureAuditModal({
                   avoidCollisions={false}
                   onWheel={(event) => event.stopPropagation()}
                   onTouchMove={(event) => event.stopPropagation()}
-                  className="z-[300] w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-lg border border-zinc-200 bg-white p-0 text-black shadow-sm"
+                  className={POPOVER_CLASS}
                 >
                   <Command
                     filter={frameworkFilter}
-                    className="flex max-h-[280px] flex-col overflow-hidden rounded-lg bg-white text-black"
+                    className={COMMAND_SHELL_CLASS}
                   >
                     <CommandInput
                       placeholder="Search frameworks (ISO, FDA, NIST…)"
                       className="text-sm text-black placeholder:text-zinc-400"
                     />
                     <CommandList
-                      className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
-                      style={{ maxHeight: 220 }}
+                      className={COMMAND_LIST_CLASS}
+                      style={{ maxHeight: COMMAND_LIST_MAX_HEIGHT }}
                       onWheel={(event) => event.stopPropagation()}
                     >
                       <CommandEmpty>No framework found.</CommandEmpty>
                       <CommandGroup className="overflow-visible">
                         {AUDIT_FRAMEWORKS.map((item) => {
-                          const isSelected = item.value === framework;
+                          const isSelected = frameworks.includes(item.value);
                           return (
                             <CommandItem
                               key={item.value}
                               value={frameworkSearchValue(item)}
                               keywords={frameworkSearchKeywords(item)}
-                              onSelect={() => selectFramework(item.value)}
+                              onSelect={() => toggleFramework(item.value)}
                               className={cn(
-                                "cursor-pointer gap-2 text-body1 text-black data-[selected=true]:bg-zinc-100 data-[selected=true]:text-black",
+                                COMMAND_ITEM_CLASS,
                                 isSelected && "bg-zinc-100",
                               )}
                             >
-                              <Check
-                                className={cn(
-                                  "size-4 shrink-0",
-                                  isSelected ? "opacity-100" : "opacity-0",
-                                )}
-                              />
+                              <MultiSelectCheck checked={isSelected} />
                               <span className="min-w-0 flex-1 truncate">
                                 {item.label}
                               </span>
@@ -374,11 +555,24 @@ export function ConfigureAuditModal({
                       </CommandGroup>
                     </CommandList>
                   </Command>
+                  <div className={DROPDOWN_FOOTER_CLASS}>
+                    <span className="text-sm text-zinc-600">
+                      {frameworks.length} selected
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className={DONE_BUTTON_CLASS}
+                      onClick={() => setFrameworkOpen(false)}
+                    >
+                      Done
+                    </Button>
+                  </div>
                 </PopoverContent>
               </Popover>
             </section>
 
-            {/* Clause Selection — searchable multi-select combobox */}
+            {/* Clause Selection */}
             <section>
               <h3 className={SECTION_LABEL}>Clause Selection</h3>
               <Popover
@@ -387,25 +581,27 @@ export function ConfigureAuditModal({
                 onOpenChange={handleClauseOpenChange}
               >
                 <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    role="combobox"
-                    aria-expanded={clauseOpen}
-                    className={cn(
-                      "relative flex h-14 w-full items-center justify-between gap-2 px-3 pr-10 text-left",
-                      FIELD_SURFACE_CLASS,
-                      clauseOpen && FIELD_SURFACE_OPEN_CLASS,
-                    )}
+                  <FieldComboboxTrigger
+                    open={clauseOpen}
+                    onOpenChange={handleClauseOpenChange}
                   >
-                    <span className={FLOATING_LABEL_CLASS}>Select Clauses</span>
-                    <span className="min-w-0 flex-1 truncate pt-3 text-body1 text-black">
-                      {selectedClauseSummary}
-                    </span>
-                    <ChevronDown
-                      aria-hidden
-                      className="pointer-events-none absolute right-3 top-1/2 size-4 shrink-0 -translate-y-1/2 text-zinc-500"
-                    />
-                  </button>
+                    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
+                      {selectedClauseItems.length === 0 ? (
+                        <span className={PLACEHOLDER_CLASS}>
+                          Select clauses…
+                        </span>
+                      ) : (
+                        selectedClauseItems.map((clause) => (
+                          <SelectionPill
+                            key={clause.id}
+                            label={`Clause ${clause.shortName}`}
+                            removeLabel={`Remove clause ${clause.shortName}`}
+                            onRemove={() => toggleClause(clause.id, false)}
+                          />
+                        ))
+                      )}
+                    </div>
+                  </FieldComboboxTrigger>
                 </PopoverTrigger>
                 <PopoverContent
                   align="start"
@@ -414,11 +610,12 @@ export function ConfigureAuditModal({
                   avoidCollisions={false}
                   onWheel={(event) => event.stopPropagation()}
                   onTouchMove={(event) => event.stopPropagation()}
-                  className="z-[300] w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-lg border border-zinc-200 bg-white p-0 text-black shadow-sm"
+                  className={POPOVER_CLASS}
                 >
                   <Command
+                    key={frameworks.join("|") || "no-framework"}
                     shouldFilter={false}
-                    className="flex max-h-[320px] flex-col overflow-hidden rounded-lg bg-white text-black"
+                    className={COMMAND_SHELL_CLASS}
                   >
                     <CommandInput
                       value={clauseQuery}
@@ -427,54 +624,61 @@ export function ConfigureAuditModal({
                       className="text-sm text-black placeholder:text-zinc-400"
                     />
                     <CommandList
-                      className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
-                      style={{ maxHeight: 240 }}
+                      className={COMMAND_LIST_CLASS}
+                      style={{ maxHeight: COMMAND_LIST_MAX_HEIGHT }}
                       onWheel={(event) => event.stopPropagation()}
                     >
-                      <CommandEmpty>No clauses match your search.</CommandEmpty>
-                      <CommandGroup className="overflow-visible p-0">
-                        {filteredClauses.map((clause) => {
-                          const checked = selectedClauses.has(clause.id);
-                          const description = clause.description.replace(
-                            /\.$/,
-                            "",
-                          );
-                          return (
-                            <CommandItem
-                              key={clause.id}
-                              value={`${clause.shortName} ${clause.description}`}
-                              onSelect={() =>
-                                toggleClause(clause.id, !checked)
-                              }
-                              className="cursor-pointer items-start gap-3 rounded-none px-3 py-2.5 text-body1 text-black data-[selected=true]:bg-zinc-50 data-[selected=true]:text-black"
-                            >
-                              <Checkbox
-                                checked={checked}
-                                tabIndex={-1}
-                                className="mt-0.5 pointer-events-none"
-                                aria-hidden
-                              />
-                              <span className="min-w-0 flex-1 leading-snug text-black">
-                                <span className="font-medium text-black">
-                                  Clause {clause.shortName}
+                      {frameworks.length === 0 ? (
+                        <p className={DROPDOWN_EMPTY_CLASS}>
+                          Select a framework to see available clauses.
+                        </p>
+                      ) : filteredClauses.length === 0 ? (
+                        <p className={DROPDOWN_EMPTY_CLASS}>
+                          No clauses match your search.
+                        </p>
+                      ) : (
+                        <CommandGroup className="overflow-visible">
+                          {filteredClauses.map((clause) => {
+                            const isSelected = selectedClauses.has(clause.id);
+                            const description = clause.description.replace(
+                              /\.$/,
+                              "",
+                            );
+                            return (
+                              <CommandItem
+                                key={clause.id}
+                                value={`${clause.id} ${clause.shortName} ${clause.description}`}
+                                onSelect={() =>
+                                  toggleClause(clause.id, !isSelected)
+                                }
+                                className={cn(
+                                  COMMAND_ITEM_CLASS,
+                                  isSelected && "bg-zinc-100",
+                                )}
+                              >
+                                <MultiSelectCheck checked={isSelected} />
+                                <span className="min-w-0 flex-1 truncate">
+                                  <span className="font-medium">
+                                    Clause {clause.shortName}
+                                  </span>
+                                  <span> · </span>
+                                  <span>{description}</span>
                                 </span>
-                                <span className="text-black"> · </span>
-                                <span className="text-black">{description}</span>
-                              </span>
-                            </CommandItem>
-                          );
-                        })}
-                      </CommandGroup>
+                              </CommandItem>
+                            );
+                          })}
+                        </CommandGroup>
+                      )}
                     </CommandList>
                   </Command>
-                  <div className="flex items-center justify-between border-t border-zinc-200 px-3 py-2">
+                  <div className={DROPDOWN_FOOTER_CLASS}>
                     <span className="text-sm text-zinc-600">
-                      {selectedClauses.size} selected
+                      {selectedClauseItems.length} selected
                     </span>
                     <Button
                       type="button"
                       variant="ghost"
-                      className="h-8 px-2 text-sm font-medium text-black hover:bg-zinc-100"
+                      className={DONE_BUTTON_CLASS}
                       onClick={() => setClauseOpen(false)}
                     >
                       Done
@@ -490,72 +694,131 @@ export function ConfigureAuditModal({
               <input
                 ref={fileInputRef}
                 type="file"
+                multiple
                 accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
                 className="sr-only"
                 onChange={handleFileInputChange}
                 aria-hidden
                 tabIndex={-1}
               />
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={handleBrowseClick}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    handleBrowseClick();
-                  }
-                }}
-                onDragOver={handleDropZoneDragOver}
-                onDrop={handleDropZoneDrop}
-                className={cn(
-                  "flex cursor-pointer flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center",
-                  FIELD_SURFACE_CLASS,
-                )}
-              >
-                <div className="flex min-w-0 flex-1 items-center gap-3 text-body1 text-black">
-                  <Paperclip className="size-4 shrink-0 text-zinc-500" aria-hidden />
-                  <span className="leading-snug">
-                    Drag &amp; drop target {assessmentLabel} PDF or browse your
-                    computer…
-                  </span>
-                </div>
-                <Button
-                  type="button"
-                  variant="muted"
-                  className="h-9 shrink-0 rounded-lg border border-zinc-200 bg-zinc-100 px-4 text-sm font-medium text-black hover:bg-zinc-200"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleBrowseClick();
-                  }}
-                >
-                  Browse
-                </Button>
-              </div>
-
-              {attachedFileName ? (
-                <div className="mt-3 flex items-center gap-3 rounded-lg border border-zinc-200 bg-white px-3 py-2.5 shadow-none">
-                  <FileText className="size-4 shrink-0 text-zinc-500" aria-hidden />
-                  <span className="text-body1 min-w-0 flex-1 truncate text-black">
-                    {attachedFileName}
-                    {attachedFile
-                      ? ` · ${(attachedFile.size / 1024).toFixed(0)} KB`
-                      : null}
-                  </span>
-                  <button
-                    type="button"
-                    className="inline-flex size-8 items-center justify-center rounded-sm text-black transition-colors hover:bg-zinc-100"
-                    aria-label="Remove attached document"
-                    onClick={() => assignDocument(null)}
+              <Popover modal open={docsOpen} onOpenChange={setDocsOpen}>
+                <PopoverTrigger asChild>
+                  <div
+                    role="combobox"
+                    tabIndex={0}
+                    aria-expanded={docsOpen}
+                    onDragOver={handleDropZoneDragOver}
+                    onDrop={handleDropZoneDrop}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setDocsOpen(true);
+                      }
+                    }}
+                    className={cn(
+                      FIELD_SURFACE_CLASS,
+                      "pr-10",
+                      docsOpen && FIELD_SURFACE_OPEN_CLASS,
+                    )}
                   >
-                    <X className="size-4" />
-                  </button>
-                </div>
-              ) : null}
+                    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
+                      {attachedFiles.length === 0 ? (
+                        <span className={PLACEHOLDER_CLASS}>
+                          Drag & drop target {assessmentLabel} PDFs…
+                        </span>
+                      ) : (
+                        attachedFiles.map((item) => {
+                          const size = formatFileSize(item.sizeBytes);
+                          return (
+                            <SelectionPill
+                              key={item.id}
+                              label={size ? `${item.name} · ${size}` : item.name}
+                              removeLabel={`Remove ${item.name}`}
+                              onRemove={() => removeFile(item.id)}
+                            />
+                          );
+                        })
+                      )}
+                    </div>
+                    <FieldChevron />
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent
+                  align="start"
+                  side="bottom"
+                  sideOffset={6}
+                  avoidCollisions={false}
+                  className={POPOVER_CLASS}
+                >
+                  <div className="p-2">
+                    <button
+                      type="button"
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-black transition-colors hover:bg-zinc-100"
+                      onClick={handleBrowseClick}
+                    >
+                      <Upload className="size-4 shrink-0 text-zinc-500" aria-hidden />
+                      <span className="min-w-0 flex-1">
+                        Upload {assessmentLabel} PDF or documents…
+                      </span>
+                    </button>
+                    <p className="m-0 px-3 pb-2 pt-1 text-sm text-zinc-500">
+                      Or drag files onto the field above. Multiple files
+                      supported.
+                    </p>
+                  </div>
+                  <div className={DROPDOWN_FOOTER_CLASS}>
+                    <span className="text-sm text-zinc-600">
+                      {docCount} selected
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="h-8 px-2 text-sm font-medium text-black hover:bg-zinc-100"
+                      onClick={() => setDocsOpen(false)}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </section>
+
+            {isBatchMode ? (
+              <section className="rounded-lg border border-border/60 bg-zinc-50 px-4 py-3">
+                <h3 className="m-0 text-sm font-medium text-black">
+                  Batch Mapping Summary
+                </h3>
+                <p className="m-0 mt-1 text-sm text-zinc-600">
+                  {frameworks.length} framework
+                  {frameworks.length === 1 ? "" : "s"} × {docCount}{" "}
+                  {assessmentLabel}
+                  {docCount === 1 ? "" : "s"} →{" "}
+                  {frameworks.length * Math.max(docCount, 1)} analysis path
+                  {frameworks.length * Math.max(docCount, 1) === 1 ? "" : "s"}
+                </p>
+                <ul className="m-0 mt-2 space-y-1 p-0 text-sm text-zinc-700">
+                  {selectedFrameworkItems.map((item) => (
+                    <li key={item.value} className="flex gap-2">
+                      <span className="shrink-0 text-zinc-400">•</span>
+                      <span className="min-w-0">
+                        <span className="font-medium text-black">
+                          {item.label}
+                        </span>
+                        {" → "}
+                        {docCount === 0
+                          ? "no documents staged"
+                          : docCount === 1
+                            ? attachedFiles[0].name
+                            : `${docCount} documents`}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
           </div>
 
-          <DialogFooter className="shrink-0 flex-col gap-3 border-t border-zinc-200 px-6 py-4 sm:flex-col">
+          <DialogFooter className="shrink-0 flex-col gap-3 border-t border-border/60 px-6 py-4 sm:flex-col">
             {initError ? (
               <p className="m-0 w-full text-sm text-black" role="alert">
                 {initError}
@@ -578,7 +841,11 @@ export function ConfigureAuditModal({
                 onClick={() => {
                   void handleInitialize();
                 }}
-                disabled={selectedClauses.size === 0 || isInitializing}
+                disabled={
+                  selectedClauses.size === 0 ||
+                  frameworks.length === 0 ||
+                  isInitializing
+                }
                 aria-busy={isInitializing}
               >
                 {isInitializing ? (
@@ -587,7 +854,7 @@ export function ConfigureAuditModal({
                     Initializing…
                   </>
                 ) : (
-                  "Initialize Audit Analysis"
+                  submitLabel
                 )}
               </Button>
             </div>
