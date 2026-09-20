@@ -67,7 +67,6 @@ export default function AuditLauncher() {
                 </h3>
 
                 <p className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 text-black">
-                  <span>Status:</span>
                   <span
                     className={cn(
                       "size-2.5 shrink-0 rounded-full",
@@ -77,7 +76,7 @@ export default function AuditLauncher() {
                   />
                   <span>{workflow.status}</span>
                   <span aria-hidden>•</span>
-                  <span>Last run: {workflow.lastRun}</span>
+                  <span>Last Run {workflow.lastRun}</span>
                 </p>
 
                 <div className={CARD_FOOTER_CLASS}>
