@@ -97,7 +97,7 @@ export function AppSidebarNav({
                 variant="ghost"
                 className={cn(
                   NAV_UTILITY_BUTTON_CLASS,
-                  "text-sidebar-foreground [&_svg]:size-4",
+                  "text-sidebar-foreground [&_svg]:size-4 hover:bg-[#F7F7F7]!",
                   !compact && "-mr-1",
                 )}
                 aria-label="Close menu"
@@ -111,7 +111,7 @@ export function AppSidebarNav({
                 variant="ghost"
                 className={cn(
                   NAV_UTILITY_BUTTON_CLASS,
-                  "text-sidebar-foreground [&_svg]:size-4",
+                  "text-sidebar-foreground [&_svg]:size-4 hover:bg-[#F7F7F7]!",
                   !compact && "-mr-1",
                 )}
                 aria-label={compact ? "Expand sidebar" : "Collapse sidebar"}
@@ -150,7 +150,8 @@ export function AppSidebarNav({
                       <SidebarMenuButton
                         asChild
                         isActive={active}
-                        className="rounded-lg"
+                        compact={compact}
+                        className="rounded-[6px]"
                       >
                         <Link
                           href={item.href}

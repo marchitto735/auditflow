@@ -22,17 +22,17 @@ export const DASHBOARD_SECTION_GAP_CLASS = "gap-8";
 export const PAGE_CONTENT_TOP_CLASS = "pt-2";
 
 /**
- * App canvas behind cards — light theme maps `--background` to zinc-50.
+ * App canvas behind cards — neutral light grey (greyscale).
  * Prefer this (or `bg-background`) over hard-coded whites on page shells.
  */
-export const PAGE_CANVAS_CLASS = "bg-zinc-50 dark:bg-background color:bg-background";
+export const PAGE_CANVAS_CLASS = "bg-[#F7F7F7] dark:bg-background color:bg-background";
 
 /** Shared height for sidebar brand bar + main sticky navbar. */
 export const APP_TOPBAR_HEIGHT_CLASS = "h-16";
 
-/** Icon utility buttons: 4px radius hover target */
+/** Icon utility buttons — same radius as sidebar nav; hover visible on canvas + white. */
 export const NAV_UTILITY_BUTTON_CLASS =
-  "nav-button flex h-9 w-9 min-h-9 min-w-9 items-center justify-center rounded-sm p-0! bg-transparent border-0 shadow-none transition-colors hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)] [&_svg]:size-5 [&_svg]:shrink-0";
+  "nav-button flex h-9 w-9 min-h-9 min-w-9 items-center justify-center rounded-[6px] p-0! bg-transparent border-0 shadow-none transition-colors hover:bg-[#EDEDED] dark:hover:bg-zinc-700/40 color:hover:bg-[oklch(100%_0_0_/0.09)] [&_svg]:size-5 [&_svg]:shrink-0";
 
 /** Static dashboard card chrome — flat white surface, subtle zinc border, no shadow. */
 export const DASHBOARD_CARD_CLASS =

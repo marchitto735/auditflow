@@ -156,7 +156,7 @@ export default function Header() {
         className={cn(
           APP_TOPBAR_HEIGHT_CLASS,
           // `fixed` — sticky is broken by html/body overflow-x:hidden in globals.css
-          "fixed top-0 right-0 left-0 z-30 flex w-auto items-center bg-zinc-50/95 backdrop-blur dark:bg-background/95 color:bg-background/95 xl:left-[var(--sidebar-width,16rem)]",
+          "fixed top-0 right-0 left-0 z-30 flex w-auto items-center bg-[#F7F7F7]/95 backdrop-blur dark:bg-background/95 color:bg-background/95 xl:left-[var(--sidebar-width,16rem)]",
         )}
       >
         <div className={cn(PAGE_GUTTER_CLASS, "flex h-full w-full items-center")}>
@@ -213,7 +213,7 @@ export default function Header() {
           id="mobile-menu-sheet"
           side="left"
           showCloseButton={false}
-          className="mobile-menu-sheet flex h-full w-[min(100%,280px)] max-w-[280px] flex-col border-border border-r-0 bg-zinc-50 p-0 text-sidebar-foreground dark:bg-sidebar color:bg-sidebar xl:hidden"
+          className="mobile-menu-sheet flex h-full w-[min(100%,280px)] max-w-[280px] flex-col border-border border-r-0 bg-white p-0 text-sidebar-foreground dark:bg-sidebar color:bg-sidebar xl:hidden"
         >
           <SheetTitle className="sr-only">Menu</SheetTitle>
           <AppSidebarNav

@@ -193,8 +193,8 @@
 
     --page-texture: url("/images/forest-6.png?v=21");
 
-    /* Canvas = Tailwind zinc-50; cards/popovers stay pure white for layered Swiss grid */
-    --background: oklch(98.5% 0 0);
+    /* Canvas = neutral greyscale #F7F7F7; cards/popovers stay pure white */
+    --background: #f7f7f7;
     --card: oklch(100% 0 0);
     --popover: oklch(100% 0 0);
 
@@ -232,7 +232,7 @@
     --chart-caution: var(--chart-4);
     --chart-track: var(--chart-5);
 
-    /* Canvas layer — matches page zinc-50; cards stay white for elevation */
+    /* Canvas layer — matches page #F7F7F7; cards stay white for elevation */
     --sidebar: var(--background);
     --sidebar-background: var(--background);
     --surface-sidebar-sheet: var(--background);

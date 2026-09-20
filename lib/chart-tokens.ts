@@ -35,10 +35,10 @@ export const CHART = {
  * read at the same engineered density.
  */
 export const CHART_GEOMETRY = {
-  /** Ring / arc stroke width (px) — matches category breakdown `h-1.5` */
-  stroke: 6,
+  /** Ring / arc stroke width (px) */
+  stroke: 8,
   /** Max active bar column width (px) — same optical weight as linear tracks */
-  barMaxSize: 6,
+  barMaxSize: 8,
   /** Horizontal breathing room between bar columns */
   barCategoryGap: "28%",
   /** Top corner radius for columns — square tops */
