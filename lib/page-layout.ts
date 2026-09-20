@@ -32,7 +32,7 @@ export const APP_TOPBAR_HEIGHT_CLASS = "h-16";
 
 /** Icon utility buttons: 4px radius hover target */
 export const NAV_UTILITY_BUTTON_CLASS =
-  "nav-button flex h-9 w-9 min-h-9 min-w-9 items-center justify-center rounded-sm p-0! bg-transparent border-0 shadow-none transition-colors hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]";
+  "nav-button flex h-9 w-9 min-h-9 min-w-9 items-center justify-center rounded-sm p-0! bg-transparent border-0 shadow-none transition-colors hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)] [&_svg]:size-5 [&_svg]:shrink-0";
 
 /** Static dashboard card chrome — flat white surface, subtle zinc border, no shadow. */
 export const DASHBOARD_CARD_CLASS =

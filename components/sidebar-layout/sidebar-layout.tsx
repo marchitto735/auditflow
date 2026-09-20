@@ -23,10 +23,9 @@ function SidebarShell({ children }: { children: React.ReactNode }) {
       <Sidebar>
         <AppSidebarNav />
       </Sidebar>
-      {/* Reserves horizontal space for the fixed rail */}
+      {/* Reserves the same box-border width as the fixed rail */}
       <div
-        className="hidden shrink-0 xl:block"
-        style={{ width }}
+        className="hidden w-[var(--sidebar-width,16rem)] shrink-0 xl:block"
         aria-hidden
       />
 

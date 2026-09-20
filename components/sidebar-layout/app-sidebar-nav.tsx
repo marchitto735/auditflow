@@ -77,15 +77,15 @@ export function AppSidebarNav({
         >
           <div
             className={cn(
-              "flex h-full items-center gap-2",
-              compact ? "justify-center" : "justify-between px-3",
+              "flex h-full w-full items-center gap-2",
+              compact ? "justify-center" : "justify-between",
             )}
           >
             {!compact ? (
               <Link
                 href="/"
                 onClick={handleNavigate}
-                  className="m-0 min-w-0 flex-1 truncate text-xl font-bold tracking-tight text-black no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-lg dark:text-neutral-100 color:text-sidebar-foreground"
+                  className="m-0 min-w-0 flex-1 truncate pl-3 text-xl font-bold tracking-tight text-black no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-lg dark:text-neutral-100 color:text-sidebar-foreground"
               >
                 AuditFlow
               </Link>
@@ -97,12 +97,13 @@ export function AppSidebarNav({
                 variant="ghost"
                 className={cn(
                   NAV_UTILITY_BUTTON_CLASS,
-                  "text-sidebar-foreground",
+                  "text-sidebar-foreground [&_svg]:size-4",
+                  !compact && "-mr-1",
                 )}
                 aria-label="Close menu"
                 onClick={onNavigate}
               >
-                <X className="size-5" />
+                <X className="size-4" />
               </Button>
             ) : (
               <Button
@@ -110,16 +111,17 @@ export function AppSidebarNav({
                 variant="ghost"
                 className={cn(
                   NAV_UTILITY_BUTTON_CLASS,
-                  "text-sidebar-foreground",
+                  "text-sidebar-foreground [&_svg]:size-4",
+                  !compact && "-mr-1",
                 )}
                 aria-label={compact ? "Expand sidebar" : "Collapse sidebar"}
                 aria-pressed={compact}
                 onClick={toggleCollapsed}
               >
                 {compact ? (
-                  <PanelLeft className="size-5" />
+                  <PanelLeft className="size-4" />
                 ) : (
-                  <PanelLeftClose className="size-5" />
+                  <PanelLeftClose className="size-4" />
                 )}
               </Button>
             )}
@@ -128,7 +130,7 @@ export function AppSidebarNav({
 
         <div
           className={cn(
-            "flex min-h-0 flex-1 flex-col justify-between pb-4",
+            "flex min-h-0 w-full min-w-0 flex-1 flex-col justify-between pb-4",
             railPad,
           )}
         >
@@ -157,7 +159,7 @@ export function AppSidebarNav({
                           aria-current={active ? "page" : undefined}
                           aria-label={compact ? item.title : undefined}
                         >
-                          <Icon aria-hidden />
+                          <Icon className="h-4 w-4 shrink-0" size={16} aria-hidden />
                           {!compact ? (
                             <span className="min-w-0 flex-1 truncate text-left leading-snug">
                               {item.title}

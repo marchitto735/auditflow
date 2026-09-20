@@ -62,7 +62,7 @@ export const Sidebar = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(function Sidebar({ className, children, ...props }, ref) {
-  const { collapsed, width } = useSidebar();
+  const { collapsed } = useSidebar();
 
   return (
     <aside
@@ -70,11 +70,9 @@ export const Sidebar = React.forwardRef<
       data-sidebar="rail"
       data-collapsed={collapsed ? "" : undefined}
       className={cn(
-        "fixed inset-y-0 left-0 z-50 hidden h-screen shrink-0 flex-col justify-between overflow-hidden border-r border-zinc-200 bg-zinc-50 text-sidebar-foreground transition-[width] duration-200 ease-in-out dark:border-sidebar-border dark:bg-sidebar-background color:border-sidebar-border color:bg-sidebar-background xl:flex",
-        !collapsed && "w-64",
+        "fixed inset-y-0 left-0 z-50 box-border hidden h-screen w-[var(--sidebar-width,16rem)] shrink-0 flex-col justify-between overflow-hidden border-r border-zinc-200 bg-zinc-50 text-sidebar-foreground transition-[width] duration-200 ease-in-out dark:border-sidebar-border dark:bg-sidebar-background color:border-sidebar-border color:bg-sidebar-background xl:flex",
         className,
       )}
-      style={{ width }}
       {...props}
     >
       <div className="flex h-full min-h-0 w-full flex-col justify-between overflow-hidden">
@@ -202,7 +200,7 @@ export const SidebarMenuButton = React.forwardRef<
 ) {
   const { collapsed } = useSidebar();
   const baseClasses = cn(
-    "flex w-full items-center gap-2.5 rounded-lg border-0 bg-transparent px-3 py-2 text-sm font-medium text-left no-underline outline-none ring-sidebar-ring transition-colors duration-150 hover:bg-zinc-200/55 hover:text-sidebar-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 whitespace-nowrap [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-current hover:[&_svg]:text-sidebar-accent-foreground [&_svg]:transition-colors dark:hover:bg-zinc-700/40 color:hover:bg-[oklch(100%_0_0_/0.09)]",
+    "flex w-full items-center gap-2.5 rounded-lg border-0 bg-transparent px-3 py-2 text-sm font-medium text-left no-underline outline-none ring-sidebar-ring transition-colors duration-150 hover:bg-zinc-200/55 hover:text-sidebar-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 whitespace-nowrap [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0 [&_svg]:text-current hover:[&_svg]:text-sidebar-accent-foreground [&_svg]:transition-colors dark:hover:bg-zinc-700/40 color:hover:bg-[oklch(100%_0_0_/0.09)]",
     collapsed && "justify-center px-0",
     isActive &&
       "border-0 bg-zinc-200/70 text-zinc-900 shadow-none hover:bg-zinc-200/70 hover:text-zinc-900 dark:bg-zinc-700/60 dark:text-zinc-100 dark:hover:bg-zinc-700/60 dark:hover:text-zinc-100 color:bg-[oklch(100%_0_0_/0.14)] color:text-[oklch(96%_0_0)] color:hover:bg-[oklch(100%_0_0_/0.14)] color:hover:text-[oklch(96%_0_0)]",
