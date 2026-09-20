@@ -19,7 +19,7 @@ export default function CartTrigger() {
         itemCount > 0 ? `Open cart, ${itemCount} items` : "Open cart"
       }
     >
-      <ShoppingBag className="size-5" />
+      <ShoppingBag className="size-[18px]" />
       {itemCount > 0 ? (
         <Badge
           variant="default"

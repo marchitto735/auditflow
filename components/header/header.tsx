@@ -85,7 +85,7 @@ function ProfileMenu() {
         className={NAV_UTILITY_BUTTON_CLASS}
         aria-label="Open profile menu"
       >
-        <CircleUser className="size-5" />
+        <CircleUser className="size-[18px]" />
       </Button>
     );
   }
@@ -99,7 +99,7 @@ function ProfileMenu() {
           className={NAV_UTILITY_BUTTON_CLASS}
           aria-label="Open profile menu"
         >
-          <CircleUser className="size-5" />
+          <CircleUser className="size-[18px]" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
@@ -151,7 +151,7 @@ export default function Header() {
                 onClick={() => setMobileOpen(true)}
                 aria-label="Open menu"
               >
-                <Menu className="size-5 shrink-0 text-foreground" />
+                <Menu className="size-[18px] shrink-0 text-foreground" />
               </Button>
               <div className="min-w-0">
                 <HeaderBreadcrumbs pathname={pathname} />
@@ -165,14 +165,14 @@ export default function Header() {
                 className={NAV_UTILITY_BUTTON_CLASS}
                 aria-label="Notifications"
               >
-                <Bell className="size-5" />
+                <Bell className="size-[18px]" />
               </Button>
               <Link
                 href="/help"
                 className={cn(NAV_UTILITY_BUTTON_CLASS, "text-foreground")}
                 aria-label="Help"
               >
-                <CircleHelp className="size-5" />
+                <CircleHelp className="size-[18px]" />
               </Link>
               <CartTrigger />
               <ProfileMenu />
