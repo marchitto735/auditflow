@@ -184,13 +184,13 @@ export default function AuditResultsView() {
           className="absolute inset-y-0 left-0 w-1.5 rounded-l-2xl bg-zinc-800"
         />
         <p className="m-0 text-center text-[14px] leading-5 text-black">
-          Resolve findings by uploading a revised version.{" "}
+          Resolve findings by uploading revised documentation.{" "}
           <button
             type="button"
             className="inline text-[14px] leading-5 font-medium text-black underline decoration-solid underline-offset-2 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800 focus-visible:ring-offset-2"
             onClick={upgradeDocument}
           >
-            {addedToCart ? "Added to cart" : "Upgrade document"}
+            {addedToCart ? "Added to cart" : "Upgrade documentation"}
           </button>
         </p>
       </div>
