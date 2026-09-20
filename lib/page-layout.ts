@@ -46,30 +46,37 @@ export const INTERACTIVE_CARD_CLASS =
   "rounded-2xl border border-zinc-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
 
 /**
- * Card eyebrow / metric label — medium 14px.
+ * Card eyebrow / metric label — 12px medium, muted, sentence case.
  * Never use abbreviations (write “Average Score”, not “Avg Score”).
+ * Do not apply uppercase or tracking-wider.
  */
 export const CARD_EYEBROW_CLASS =
-  "text-sm font-medium m-0 text-black";
+  "m-0 text-xs font-medium text-muted-foreground";
 
 /**
  * Muted card eyebrow (secondary metric cards).
  * Same no-abbreviation rule as CARD_EYEBROW_CLASS.
  */
 export const CARD_EYEBROW_MUTED_CLASS =
-  "text-sm font-medium m-0 text-muted-foreground";
+  "m-0 text-xs font-medium text-muted-foreground";
 
 /**
  * Page section grouping label (18px / medium).
  */
 export const SECTION_HEADER_CLASS =
-  "text-lg font-medium leading-tight tracking-tight";
+  "text-lg font-medium tracking-tight text-foreground";
 
 /**
- * Primary card title / KPI display (20px / medium).
+ * Primary card title (20px / semibold), sentence case.
  */
 export const CARD_TITLE_CLASS =
-  "text-xl font-medium leading-tight tracking-tight";
+  "text-xl font-semibold leading-tight tracking-tight text-foreground";
+
+/**
+ * KPI tile metric value (22px / semibold).
+ */
+export const KPI_VALUE_CLASS =
+  "text-[22px] font-semibold leading-tight tracking-tight text-foreground";
 
 /**
  * Shared interactive card body — compact padding, no fixed min-height.

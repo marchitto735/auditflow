@@ -60,7 +60,7 @@ export default function AuditLauncher() {
                 <h3
                   className={cn(
                     CARD_TITLE_CLASS,
-                    "m-0 max-w-full text-balance text-black",
+                    "m-0 max-w-full text-balance",
                   )}
                 >
                   {title}

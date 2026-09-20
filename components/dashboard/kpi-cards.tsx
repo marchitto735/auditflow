@@ -26,9 +26,9 @@ import {
   CARD_CTA_CLASS,
   CARD_EYEBROW_CLASS,
   CARD_FOOTER_CLASS,
-  CARD_TITLE_CLASS,
   DASHBOARD_GAP_CLASS,
   INTERACTIVE_CARD_CLASS,
+  KPI_VALUE_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -168,8 +168,8 @@ function OpenFindingsChart() {
       </ResponsiveContainer>
       <p
         className={cn(
-          CARD_TITLE_CLASS,
-          "pointer-events-none absolute inset-0 m-0 flex items-center justify-center leading-none text-foreground",
+          KPI_VALUE_CLASS,
+          "pointer-events-none absolute inset-0 m-0 flex items-center justify-center leading-none",
         )}
       >
         {FINDINGS_TOTAL}
@@ -216,8 +216,8 @@ function AvgScoreGauge() {
       {/* Sit in the open bowl of the semicircle — optically centered in the ring */}
       <p
         className={cn(
-          CARD_TITLE_CLASS,
-          "pointer-events-none absolute inset-x-0 bottom-[18%] m-0 text-center leading-none text-foreground",
+          KPI_VALUE_CLASS,
+          "pointer-events-none absolute inset-x-0 bottom-[18%] m-0 text-center leading-none",
         )}
       >
         {AVG_SCORE}%
@@ -243,7 +243,7 @@ export default function KpiCards() {
     >
       <KpiCard href={AUDITS_HREF} cta="View Audit Log">
         <p className={CARD_EYEBROW_CLASS}>Total Audits</p>
-        <p className={cn(CARD_TITLE_CLASS, "m-0 text-foreground")}>142</p>
+        <p className={cn(KPI_VALUE_CLASS, "m-0")}>142</p>
         <div className="flex min-h-0 flex-1 flex-col justify-center">
           <TotalAuditsChart />
         </div>
