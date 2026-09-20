@@ -14,32 +14,58 @@ import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-type ColumnAlign = "left" | "center" | "right";
-
-const ALIGN_CLASS: Record<ColumnAlign, string> = {
-  left: "text-left",
-  center: "text-center",
-  right: "text-right",
-};
-
 /** Uniform horizontal inset on every header/cell for a Swiss vertical grid. */
-const CELL_PAD_CLASS = "px-4";
+const CELL_PAD_CLASS = "px-4 py-2";
+
+type CellOverflow = "truncate" | "nowrap";
 
 /**
- * Fixed equal column widths (5 × 20%). `table-fixed` + `<colgroup>` lock the
- * grid so content length cannot skew horizontal spacing.
+ * Percentage budgets sum to exactly 100%. `table-fixed` + `<colgroup>` lock
+ * the grid so content cannot expand columns past these shares.
+ * Headers and cells are all `text-left` so titles sit flush above values.
  */
 export const ACTIVITY_COLUMNS = [
-  { key: "document", label: "Document", width: "20%", align: "left" },
-  { key: "type", label: "Type", width: "20%", align: "left" },
-  { key: "date", label: "Timestamp", width: "20%", align: "left" },
-  { key: "score", label: "Score", width: "20%", align: "right" },
-  { key: "status", label: "Status", width: "20%", align: "center" },
+  {
+    key: "document",
+    label: "Document",
+    width: "30%",
+    widthClass: "w-[30%]",
+    overflow: "truncate",
+  },
+  {
+    key: "type",
+    label: "Type",
+    width: "12%",
+    widthClass: "w-[12%]",
+    overflow: "truncate",
+  },
+  {
+    key: "date",
+    label: "Timestamp",
+    width: "28%",
+    widthClass: "w-[28%]",
+    overflow: "nowrap",
+  },
+  {
+    key: "score",
+    label: "Score",
+    width: "12%",
+    widthClass: "w-[12%]",
+    overflow: "truncate",
+  },
+  {
+    key: "status",
+    label: "Status",
+    width: "18%",
+    widthClass: "w-[18%]",
+    overflow: "truncate",
+  },
 ] as const satisfies ReadonlyArray<{
   key: string;
   label: string;
   width: string;
-  align: ColumnAlign;
+  widthClass: string;
+  overflow: CellOverflow;
 }>;
 
 export type ActivityColumnKey = (typeof ACTIVITY_COLUMNS)[number]["key"];
@@ -154,7 +180,9 @@ function renderCellContent(
           {row.document}
         </span>
       ) : (
-        <TruncatedText text={row.document} />
+        <span className="block w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+          {row.document}
+        </span>
       );
     case "type":
       return wrapped ? (
@@ -163,20 +191,24 @@ function renderCellContent(
         <TruncatedText text={row.type} />
       );
     case "date":
-      return wrapped ? (
-        <span className="block whitespace-normal break-words">{row.date}</span>
-      ) : (
-        <TruncatedText text={row.date} />
-      );
+      return <span className="block whitespace-nowrap">{row.date}</span>;
     case "score":
-      return row.score;
+      return <span className="tabular-nums">{row.score}</span>;
     case "status":
       return row.status === "—" ? (
         "—"
       ) : (
-        <ActivityStatus status={row.status} className="justify-center" />
+        <ActivityStatus status={row.status} />
       );
   }
+}
+
+function cellOverflowClass(overflow: CellOverflow) {
+  if (overflow === "nowrap") {
+    return "max-w-none overflow-visible whitespace-nowrap text-clip";
+  }
+  // Constrain the cell so an inner `truncate` wrapper can ellipsize long hashes.
+  return "max-w-0 overflow-hidden";
 }
 
 export function ActivityTable({
@@ -241,7 +273,7 @@ export function ActivityTable({
       <Table className="w-full table-fixed">
         <colgroup>
           {ACTIVITY_COLUMNS.map((column) => (
-            <col key={column.key} style={{ width: column.width }} />
+            <col key={column.key} className={column.widthClass} style={{ width: column.width }} />
           ))}
         </colgroup>
         <TableHeader>
@@ -251,13 +283,15 @@ export function ActivityTable({
                 key={column.key}
                 className={cn(
                   CELL_PAD_CLASS,
-                  ALIGN_CLASS[column.align],
+                  column.widthClass,
+                  "text-left",
+                  cellOverflowClass(column.overflow),
                   expandable && "cursor-pointer select-none",
                 )}
                 onClick={() => handleHeaderClick(column.key)}
               >
                 {column.key === "status" && headerAction ? (
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center justify-between gap-2">
                     <span>{column.label}</span>
                     {headerAction}
                   </div>
@@ -284,9 +318,10 @@ export function ActivityTable({
                     <TableCell
                       key={column.key}
                       className={cn(
-                        "overflow-hidden",
                         CELL_PAD_CLASS,
-                        ALIGN_CLASS[column.align],
+                        column.widthClass,
+                        "text-left",
+                        cellOverflowClass(column.overflow),
                       )}
                       onClick={(event) =>
                         handleCellClick(event, row, column.key)
