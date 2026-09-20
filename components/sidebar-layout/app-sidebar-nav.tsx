@@ -71,7 +71,7 @@ export function AppSidebarNav({
         <SidebarHeader
           className={cn(
             APP_TOPBAR_HEIGHT_CLASS,
-            "shrink-0 border-b border-border",
+            "shrink-0",
             railPad,
           )}
         >
