@@ -80,6 +80,13 @@ type DashboardToolbarProps = {
 const CONTROL_CLASS =
   "h-10 w-full min-w-[9.5rem] rounded-lg border-zinc-200 bg-white text-sm font-medium sm:w-[10.5rem]";
 
+function filterTriggerClass(isDefault: boolean) {
+  return cn(
+    CONTROL_CLASS,
+    isDefault ? "text-zinc-500" : "text-zinc-900",
+  );
+}
+
 export function DashboardToolbar({
   value,
   onChange,
@@ -101,16 +108,16 @@ export function DashboardToolbar({
     >
       <div className="relative min-w-0 w-full sm:max-w-md sm:flex-1">
         <Search
-          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400"
+          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-500"
           aria-hidden
         />
         <Input
           type="search"
           value={value.search}
           onChange={(event) => patch({ search: event.target.value })}
-          placeholder="Search documents and IDs…"
-          aria-label="Search documents and IDs"
-          className="h-10 border-zinc-200 bg-white pl-9 text-sm font-medium md:text-sm"
+          placeholder="Search documents"
+          aria-label="Search documents"
+          className="h-10 border-zinc-200 bg-white pl-9 text-sm font-medium text-zinc-900 placeholder:text-zinc-500 md:text-sm"
         />
       </div>
 
@@ -121,7 +128,10 @@ export function DashboardToolbar({
             patch({ type: next as DashboardTypeFilter })
           }
         >
-          <SelectTrigger aria-label="Filter by type" className={CONTROL_CLASS}>
+          <SelectTrigger
+            aria-label="Filter by type"
+            className={filterTriggerClass(value.type === "all")}
+          >
             <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
@@ -140,7 +150,7 @@ export function DashboardToolbar({
         >
           <SelectTrigger
             aria-label="Filter by status"
-            className={CONTROL_CLASS}
+            className={filterTriggerClass(value.status === "all")}
           >
             <SelectValue placeholder="Status" />
           </SelectTrigger>
@@ -160,7 +170,7 @@ export function DashboardToolbar({
         >
           <SelectTrigger
             aria-label="Filter by date range"
-            className={CONTROL_CLASS}
+            className={filterTriggerClass(value.dateRange === "all")}
           >
             <SelectValue placeholder="Date range" />
           </SelectTrigger>
