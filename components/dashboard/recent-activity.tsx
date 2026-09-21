@@ -213,12 +213,13 @@ export default function RecentActivity({
                 <Button
                   type="button"
                   variant="ghost"
-                  className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
+                  className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-500 shadow-none transition-colors duration-150 hover:bg-transparent hover:text-zinc-900"
                   disabled={currentPage <= 1}
                   onClick={() => setPage((current) => Math.max(1, current - 1))}
                 >
                   Previous
-                </Button>                {pageItems.map((item, index) =>
+                </Button>
+                {pageItems.map((item, index) =>
                   item === "ellipsis" ? (
                     <span
                       key={`ellipsis-${index}`}
@@ -248,7 +249,7 @@ export default function RecentActivity({
                 <Button
                   type="button"
                   variant="ghost"
-                  className="h-8! min-h-8! px-2 text-sm font-medium text-black hover:bg-zinc-100"
+                  className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-500 shadow-none transition-colors duration-150 hover:bg-transparent hover:text-zinc-900"
                   disabled={currentPage >= totalPages}
                   onClick={() =>
                     setPage((current) => Math.min(totalPages, current + 1))
