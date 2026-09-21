@@ -27,6 +27,7 @@ import {
   CARD_FOOTER_CLASS,
   CARD_TITLE_CLASS,
   DASHBOARD_GAP_CLASS,
+  DASHBOARD_TRACK_CARD_HEIGHT_CLASS,
   INTERACTIVE_CARD_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
@@ -37,7 +38,7 @@ const AUDITS_HREF = "/dashboard/audits";
 
 const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
-  "group flex h-full cursor-pointer flex-col text-inherit no-underline",
+  "group flex h-full min-h-0 cursor-pointer flex-col text-inherit no-underline",
 );
 
 function KpiCard({
@@ -245,7 +246,14 @@ function AvgScoreGauge() {
   );
 }
 
-export default function KpiCards() {
+export default function KpiCards({
+  className,
+  height,
+}: {
+  className?: string;
+  /** Match Audit SOP / BPR track height when provided. */
+  height?: number | null;
+}) {
   const router = useRouter();
 
   useEffect(() => {
@@ -255,9 +263,16 @@ export default function KpiCards() {
   return (
     <div
       className={cn(
-        "grid grid-cols-1 items-stretch md:grid-cols-3",
+        "grid h-full grid-cols-1 items-stretch md:grid-cols-3",
         DASHBOARD_GAP_CLASS,
+        !(height && height > 0) && DASHBOARD_TRACK_CARD_HEIGHT_CLASS,
+        className,
       )}
+      style={
+        height && height > 0
+          ? { height, minHeight: height }
+          : undefined
+      }
     >
       <KpiCard
         href={AUDITS_HREF}

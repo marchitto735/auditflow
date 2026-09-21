@@ -40,7 +40,7 @@ export function CardActionsMenu({
         <button
           type="button"
           className={cn(
-            "inline-flex size-6 shrink-0 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30",
+            "inline-flex size-6 shrink-0 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30",
             className,
           )}
           aria-label={`${label} actions`}

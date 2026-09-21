@@ -37,6 +37,12 @@ export const NAV_UTILITY_BUTTON_CLASS =
 export const DASHBOARD_CARD_CLASS =
   "rounded-2xl border border-zinc-200 bg-white shadow-none";
 
+/** Shared top-track height — Audit SOP tile and KPI snapshot row. */
+export const DASHBOARD_TRACK_CARD_HEIGHT_CLASS = "h-[210px]";
+
+/** Fixed height for Audit Launcher tiles (SOP / BPR / FIR when not fill-stretched). */
+export const AUDIT_LAUNCHER_CARD_HEIGHT_CLASS = DASHBOARD_TRACK_CARD_HEIGHT_CLASS;
+
 /**
  * Interactive card chrome — flat at rest; soft border + shadow lift on hover.
  * Compose with layout utilities (flex, group, etc.) as needed.

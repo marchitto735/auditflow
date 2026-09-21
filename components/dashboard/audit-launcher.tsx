@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useConfigureAudit } from "@/components/configure-audit-modal/configure-audit-context";
@@ -9,6 +8,7 @@ import {
   type AuditWorkflowId,
 } from "@/lib/audit-workflows";
 import {
+  AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
   CARD_CONTENT_CLASS,
   CARD_CTA_ARROW_CLASS,
   CARD_CTA_CLASS,
@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 
 const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
-  "group flex w-full min-w-0 cursor-pointer flex-col text-left text-inherit",
+  "group flex w-full min-w-0 shrink-0 cursor-pointer flex-col text-left text-inherit",
 );
 
 /** Full name + acronym for card titles. */
@@ -137,16 +137,21 @@ function TrendSparkline({
 export function AuditLauncherCard({
   id,
   className,
-  style,
+  /** Fill parent track height (BPR/FIR in the synced bottom band). */
+  fill = false,
+  /** Explicit pixel height — overrides the default fixed tile token. */
+  height,
 }: {
   id: AuditWorkflowId;
   className?: string;
-  style?: React.CSSProperties;
+  fill?: boolean;
+  height?: number | null;
 }) {
   const { openConfigureAudit } = useConfigureAudit();
   const workflow = AUDIT_WORKFLOWS[id];
   const title = TITLE_DISPLAY[id];
   const metrics = LAUNCHER_METRICS[id];
+  const lockedHeight = height && height > 0 ? height : null;
 
   function handleActivate() {
     openConfigureAudit(id);
@@ -156,8 +161,18 @@ export function AuditLauncherCard({
     <div
       role="button"
       tabIndex={0}
-      className={cn(CARD_CLASS, className)}
-      style={style}
+      data-audit-launcher-card={id}
+      className={cn(
+        CARD_CLASS,
+        fill && !lockedHeight && "h-full min-h-0",
+        !fill && !lockedHeight && AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
+        className,
+      )}
+      style={
+        lockedHeight
+          ? { height: lockedHeight, minHeight: lockedHeight }
+          : undefined
+      }
       onClick={handleActivate}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -217,7 +232,7 @@ export function AuditLauncherCard({
 
           <div className="mt-auto flex min-w-0 flex-col gap-2">
             <div
-              className="flex min-w-0 flex-row items-center gap-2 overflow-hidden whitespace-nowrap text-[11px] leading-none text-zinc-500"
+              className="-translate-y-2 flex min-w-0 flex-row items-center gap-2 overflow-hidden whitespace-nowrap text-[11px] leading-none text-zinc-500"
               aria-label={`${workflow.label} operational metrics`}
             >
               <span className="shrink-0">
@@ -260,45 +275,18 @@ export function AuditLauncherCard({
 }
 
 /**
- * Split launcher stack:
- * - Row 1: SOP locked to KPI row height
- * - Row 2: BPR + FIR share remaining height (flush with Recent Activity)
+ * Audit launcher stack — three identical fixed-height tiles.
  */
 export default function AuditLauncher({
-  topCardHeight,
   className,
 }: {
-  /** Height of the top (SOP) card — matches the KPI row. */
-  topCardHeight?: number | null;
   className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "flex h-full min-h-0 w-full flex-col",
-        DASHBOARD_GAP_CLASS,
-        className,
-      )}
-    >
-      <AuditLauncherCard
-        id="sop"
-        className="shrink-0"
-        style={
-          topCardHeight && topCardHeight > 0
-            ? { height: topCardHeight, minHeight: topCardHeight }
-            : undefined
-        }
-      />
-
-      <div
-        className={cn(
-          "grid min-h-0 flex-1 grid-rows-2",
-          DASHBOARD_GAP_CLASS,
-        )}
-      >
-        <AuditLauncherCard id="bpr" className="h-full min-h-0" />
-        <AuditLauncherCard id="fir" className="h-full min-h-0" />
-      </div>
+    <div className={cn("flex w-full flex-col", DASHBOARD_GAP_CLASS, className)}>
+      <AuditLauncherCard id="sop" />
+      <AuditLauncherCard id="bpr" />
+      <AuditLauncherCard id="fir" />
     </div>
   );
 }

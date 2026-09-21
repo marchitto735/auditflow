@@ -3,8 +3,13 @@
 import * as React from "react";
 import KpiCards from "@/components/dashboard/kpi-cards";
 import RecentActivity from "@/components/dashboard/recent-activity";
-import AuditLauncher from "@/components/dashboard/audit-launcher";
-import { DashboardSection } from "@/components/dashboard/dashboard-section";
+import AuditLauncher, {
+  AuditLauncherCard,
+} from "@/components/dashboard/audit-launcher";
+import {
+  DashboardSection,
+  DashboardSectionHeader,
+} from "@/components/dashboard/dashboard-section";
 import { SystemTelemetrySection } from "@/components/dashboard/SystemTelemetrySection";
 import type { ActivityRow } from "@/components/activity-table/activity-table";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,34 +21,39 @@ type DashboardGridProps = {
 };
 
 /**
- * Swiss bento geometry:
- * - Col 1 / Row 1: SOP audit card ≡ KPI row height
- * - Col 1 / Row 2: BPR + FIR stretch to Recent Activity bottom
- * - Flush bottom edges across both columns
+ * Desktop tracks:
+ * - BPR / FIR / Recent Activity keep their natural synced band (unchanged)
+ * - SOP + KPI row lock to the measured BPR card height
  */
 export default function DashboardGrid({
   activityRows = [],
 }: DashboardGridProps) {
-  const kpiSectionRef = React.useRef<HTMLDivElement>(null);
-  const [kpiCardHeight, setKpiCardHeight] = React.useState<number | null>(null);
+  const bprRef = React.useRef<HTMLDivElement>(null);
+  const [bprHeight, setBprHeight] = React.useState<number | null>(null);
 
   React.useLayoutEffect(() => {
-    const kpiRoot = kpiSectionRef.current;
-    if (!kpiRoot) return;
+    const el = bprRef.current;
+    if (!el) return;
 
     const measure = () => {
-      const card = kpiRoot.querySelector<HTMLElement>("[data-kpi-card]");
+      if (window.matchMedia("(max-width: 1023px)").matches) {
+        setBprHeight((current) => (current === null ? current : null));
+        return;
+      }
+      const card = el.querySelector<HTMLElement>(
+        '[data-audit-launcher-card="bpr"]',
+      );
       if (!card) return;
-      const height = card.getBoundingClientRect().height;
-      if (height > 0) {
-        setKpiCardHeight((current) => (current === height ? current : height));
+      const next = Math.round(card.getBoundingClientRect().height);
+      if (next > 0) {
+        setBprHeight((current) => (current === next ? current : next));
       }
     };
 
     measure();
 
     const observer = new ResizeObserver(measure);
-    observer.observe(kpiRoot);
+    observer.observe(el);
     window.addEventListener("resize", measure);
 
     return () => {
@@ -55,41 +65,68 @@ export default function DashboardGrid({
   return (
     <TooltipProvider delayDuration={200}>
       <div className={cn("flex flex-col", DASHBOARD_GAP_CLASS)}>
-        <div
-          className={cn(
-            "grid grid-cols-1 items-stretch",
-            "lg:grid-cols-[minmax(260px,380px)_minmax(0,1fr)]",
-            DASHBOARD_GAP_CLASS,
-          )}
-        >
-          {/* Left: Audit stack — stretches to match full right column height */}
+        <div className={cn("flex flex-col lg:hidden", DASHBOARD_GAP_CLASS)}>
           <DashboardSection
             title="Audit Launcher"
             description="Launch an SOP, BPR, or FIR audit, choose a regulatory clause, get your report."
-            className="min-h-0 lg:h-full"
           >
-            <AuditLauncher topCardHeight={kpiCardHeight} className="min-h-0" />
+            <AuditLauncher />
           </DashboardSection>
+          <DashboardSection
+            title="Compliance Snapshot"
+            description="Performance metrics across active audits, findings, and compliance scores."
+          >
+            <KpiCards />
+          </DashboardSection>
+          <DashboardSection
+            title="Recent Activity"
+            description="Review recent SOP, BPR, and FIR audits, scores, and compliance status."
+          >
+            <RecentActivity rows={activityRows} />
+          </DashboardSection>
+        </div>
 
-          {/* Right: KPI row + Recent Activity — defines the column height */}
-          <div className={cn("flex min-h-0 min-w-0 flex-col", DASHBOARD_GAP_CLASS)}>
-            <div ref={kpiSectionRef}>
-              <DashboardSection
-                title="Compliance Snapshot"
-                description="Performance metrics across active audits, findings, and compliance scores."
-              >
-                <KpiCards />
-              </DashboardSection>
-            </div>
-
-            <DashboardSection
-              title="Recent Activity"
-              description="Review recent SOP, BPR, and FIR audits, scores, and compliance status."
-              className="min-h-0"
-            >
-              <RecentActivity rows={activityRows} />
-            </DashboardSection>
+        <div
+          className={cn(
+            "hidden lg:grid lg:items-stretch",
+            "lg:grid-cols-[minmax(260px,380px)_minmax(0,1fr)]",
+            "lg:grid-rows-[auto_auto]",
+            DASHBOARD_GAP_CLASS,
+          )}
+        >
+          <div className="col-start-1 row-start-1 flex flex-col gap-3 self-start">
+            <DashboardSectionHeader
+              title="Audit Launcher"
+              description="Launch an SOP, BPR, or FIR audit, choose a regulatory clause, get your report."
+            />
+            <AuditLauncherCard id="sop" height={bprHeight} />
           </div>
+          <div className="col-start-2 row-start-1 flex flex-col gap-3 self-start">
+            <DashboardSectionHeader
+              title="Compliance Snapshot"
+              description="Performance metrics across active audits, findings, and compliance scores."
+            />
+            <KpiCards height={bprHeight} />
+          </div>
+
+          <div
+            ref={bprRef}
+            className={cn(
+              "col-start-1 row-start-2 grid min-h-0 grid-rows-2 self-stretch",
+              DASHBOARD_GAP_CLASS,
+            )}
+          >
+            <AuditLauncherCard id="bpr" fill className="min-h-0" />
+            <AuditLauncherCard id="fir" fill className="min-h-0" />
+          </div>
+
+          <DashboardSection
+            title="Recent Activity"
+            description="Review recent SOP, BPR, and FIR audits, scores, and compliance status."
+            className="col-start-2 row-start-2 min-h-0 self-stretch"
+          >
+            <RecentActivity rows={activityRows} />
+          </DashboardSection>
         </div>
 
         <SystemTelemetrySection />
