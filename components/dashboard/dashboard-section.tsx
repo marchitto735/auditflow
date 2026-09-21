@@ -41,7 +41,7 @@ export function DashboardSectionHeader({
             <TooltipTrigger asChild>
               <button
                 type="button"
-                className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-slate-500 transition-colors hover:bg-zinc-100 hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30"
+                className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:bg-zinc-100 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30"
                 aria-label={`About ${title}`}
               >
                 <CircleHelp
@@ -88,7 +88,9 @@ export function DashboardSection({
   return (
     <section className={cn("flex min-w-0 flex-col gap-3", className)}>
       <DashboardSectionHeader title={title} description={description} />
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col">{children}</div>
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        {children}
+      </div>
     </section>
   );
 }

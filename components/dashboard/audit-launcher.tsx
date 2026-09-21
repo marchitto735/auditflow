@@ -137,21 +137,14 @@ function TrendSparkline({
 export function AuditLauncherCard({
   id,
   className,
-  /** Fill parent track height (BPR/FIR in the synced bottom band). */
-  fill = false,
-  /** Explicit pixel height — overrides the default fixed tile token. */
-  height,
 }: {
   id: AuditWorkflowId;
   className?: string;
-  fill?: boolean;
-  height?: number | null;
 }) {
   const { openConfigureAudit } = useConfigureAudit();
   const workflow = AUDIT_WORKFLOWS[id];
   const title = TITLE_DISPLAY[id];
   const metrics = LAUNCHER_METRICS[id];
-  const lockedHeight = height && height > 0 ? height : null;
 
   function handleActivate() {
     openConfigureAudit(id);
@@ -162,17 +155,7 @@ export function AuditLauncherCard({
       role="button"
       tabIndex={0}
       data-audit-launcher-card={id}
-      className={cn(
-        CARD_CLASS,
-        fill && !lockedHeight && "h-full min-h-0",
-        !fill && !lockedHeight && AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
-        className,
-      )}
-      style={
-        lockedHeight
-          ? { height: lockedHeight, minHeight: lockedHeight }
-          : undefined
-      }
+      className={cn(CARD_CLASS, AUDIT_LAUNCHER_CARD_HEIGHT_CLASS, className)}
       onClick={handleActivate}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {

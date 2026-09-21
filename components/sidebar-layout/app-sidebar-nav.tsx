@@ -99,7 +99,7 @@ export function AppSidebarNav({
                 variant="ghost"
                 className={cn(
                   NAV_UTILITY_BUTTON_CLASS,
-                  "text-sidebar-foreground [&_svg]:size-4 hover:bg-[#F7F7F7]!",
+                  "h-8! w-8! min-h-8! min-w-8! text-sidebar-foreground [&_svg]:size-4 hover:bg-[#F7F7F7]!",
                   !compact && "-mr-1",
                 )}
                 aria-label="Close menu"
@@ -113,7 +113,7 @@ export function AppSidebarNav({
                 variant="ghost"
                 className={cn(
                   NAV_UTILITY_BUTTON_CLASS,
-                  "text-sidebar-foreground [&_svg]:size-4 hover:bg-[#F7F7F7]!",
+                  "h-8! w-8! min-h-8! min-w-8! text-sidebar-foreground [&_svg]:size-4 hover:bg-[#F7F7F7]!",
                   !compact && "-mr-1",
                 )}
                 aria-label={compact ? "Expand sidebar" : "Collapse sidebar"}
@@ -132,7 +132,7 @@ export function AppSidebarNav({
 
         <div
           className={cn(
-            "flex min-h-0 w-full min-w-0 flex-1 flex-col justify-between pb-9",
+            "flex min-h-0 w-full min-w-0 flex-1 flex-col justify-between pb-7",
             railPad,
           )}
         >

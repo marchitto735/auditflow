@@ -37,10 +37,10 @@ export const NAV_UTILITY_BUTTON_CLASS =
 export const DASHBOARD_CARD_CLASS =
   "rounded-2xl border border-zinc-200 bg-white shadow-none";
 
-/** Shared top-track height — Audit SOP tile and KPI snapshot row. */
-export const DASHBOARD_TRACK_CARD_HEIGHT_CLASS = "h-[210px]";
+/** Shared fixed height for SOP, BPR, FIR, and each KPI card. */
+export const DASHBOARD_TRACK_CARD_HEIGHT_CLASS = "h-[214px]";
 
-/** Fixed height for Audit Launcher tiles (SOP / BPR / FIR when not fill-stretched). */
+/** Fixed height for Audit Launcher tiles (SOP / BPR / FIR). */
 export const AUDIT_LAUNCHER_CARD_HEIGHT_CLASS = DASHBOARD_TRACK_CARD_HEIGHT_CLASS;
 
 /**

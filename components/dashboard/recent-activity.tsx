@@ -1,10 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import {
   ActivityTable,
   type ActivityRow,
 } from "@/components/activity-table/activity-table";
+import {
+  DASHBOARD_MENU_CONTENT_CLASS,
+  DASHBOARD_MENU_ITEM_CLASS,
+  DASHBOARD_MENU_ITEM_SELECTED_CLASS,
+} from "@/components/dashboard/card-actions-menu";
 import {
   DashboardToolbar,
   filterActivityRows,
@@ -12,12 +18,11 @@ import {
 } from "@/components/dashboard/dashboard-toolbar";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
@@ -26,6 +31,13 @@ const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
 const DEFAULT_PAGE_SIZE = 5;
 /** Demo catalog size for pagination chrome when fewer stored reports exist. */
 const DEMO_TOTAL_RESULTS = 194;
+
+/** Stable SSR/CSR date string — avoid `toLocaleString()` hydration drift. */
+function formatDemoDate(utcMinutesOffset: number) {
+  const minutes = 50 - utcMinutesOffset;
+  const mm = String(Math.max(0, minutes)).padStart(2, "0");
+  return `9/19/2026, 1:${mm}:44 AM`;
+}
 
 const INITIAL_FILTERS: DashboardToolbarValues = {
   search: "",
@@ -40,7 +52,7 @@ const SEED_ACTIVITY_ROWS: ActivityRow[] = [
     id: "demo-activity-0",
     document: "d4463c58-f981-45cf-ac12…",
     type: "SOP",
-    date: new Date(Date.UTC(2026, 8, 19, 5, 50, 44)).toLocaleString(),
+    date: formatDemoDate(0),
     score: "85",
     status: "Partial",
   },
@@ -48,7 +60,7 @@ const SEED_ACTIVITY_ROWS: ActivityRow[] = [
     id: "demo-activity-1",
     document: "a91e2b07-3c44-4d1a-9f08…",
     type: "SOP",
-    date: new Date(Date.UTC(2026, 8, 19, 5, 49, 44)).toLocaleString(),
+    date: formatDemoDate(1),
     score: "85",
     status: "Partial",
   },
@@ -56,7 +68,7 @@ const SEED_ACTIVITY_ROWS: ActivityRow[] = [
     id: "demo-activity-2",
     document: "7c0f18e2-bb5a-4e91-82d3…",
     type: "SOP",
-    date: new Date(Date.UTC(2026, 8, 19, 5, 48, 44)).toLocaleString(),
+    date: formatDemoDate(2),
     score: "85",
     status: "Partial",
   },
@@ -64,7 +76,7 @@ const SEED_ACTIVITY_ROWS: ActivityRow[] = [
     id: "demo-activity-3",
     document: "e2b4d901-6a17-48c0-b5fe…",
     type: "SOP",
-    date: new Date(Date.UTC(2026, 8, 19, 5, 47, 44)).toLocaleString(),
+    date: formatDemoDate(3),
     score: "85",
     status: "Partial",
   },
@@ -72,7 +84,7 @@ const SEED_ACTIVITY_ROWS: ActivityRow[] = [
     id: "demo-activity-4",
     document: "5f83a1c0-29de-4b6f-91aa…",
     type: "SOP",
-    date: new Date(Date.UTC(2026, 8, 19, 5, 46, 44)).toLocaleString(),
+    date: formatDemoDate(4),
     score: "85",
     status: "Partial",
   },
@@ -94,9 +106,7 @@ function padActivityRows(rows: ActivityRow[], targetCount: number): ActivityRow[
       id: `demo-activity-${index}`,
       document: `${seed}${seed}${seed.slice(0, 4)}…`,
       type: index % 3 === 0 ? "BPR" : index % 5 === 0 ? "FIR" : "SOP",
-      date: new Date(
-        Date.UTC(2026, 8, 19, 5, 50 - (index % 40), 44),
-      ).toLocaleString(),
+      date: formatDemoDate(index % 40),
       score: String(80 + (index % 15)),
       status: index % 7 === 0 ? "Compliant" : "Partial",
     });
@@ -130,6 +140,11 @@ export default function RecentActivity({
   const [filters, setFilters] = useState<DashboardToolbarValues>(INITIAL_FILTERS);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [page, setPage] = useState(1);
+  const [menusMounted, setMenusMounted] = useState(false);
+
+  useEffect(() => {
+    setMenusMounted(true);
+  }, []);
 
   const catalog = useMemo(() => {
     const padded = padActivityRows(rows, Math.max(DEMO_TOTAL_RESULTS, pageSize));
@@ -155,12 +170,12 @@ export default function RecentActivity({
   return (
     <Card
       className={cn(
-        "flex flex-col overflow-hidden",
+        "flex h-full min-h-0 flex-col overflow-hidden",
         DASHBOARD_CARD_CLASS,
         className,
       )}
     >
-      <CardContent className="flex flex-col p-0">
+      <CardContent className="flex h-full min-h-0 flex-col p-0">
         <div className="shrink-0 border-b border-zinc-200">
           <DashboardToolbar
             embedded
@@ -175,7 +190,7 @@ export default function RecentActivity({
           </p>
         ) : (
           <>
-            <div className="shrink-0">
+            <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
               <ActivityTable rows={pageRows} />
             </div>
 
@@ -186,24 +201,58 @@ export default function RecentActivity({
 
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm text-black">Show</span>
-                <Select
-                  value={String(pageSize)}
-                  onValueChange={handlePageSizeChange}
-                >
-                  <SelectTrigger
+                {menusMounted ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label="Rows per page"
+                        className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-white px-2 text-sm font-medium text-black"
+                      >
+                        <span>{pageSize}</span>
+                        <ChevronDown
+                          className="h-4 w-4 shrink-0 text-black"
+                          aria-hidden
+                        />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      sideOffset={6}
+                      className={DASHBOARD_MENU_CONTENT_CLASS}
+                    >
+                      {PAGE_SIZE_OPTIONS.map((size) => {
+                        const isSelected = size === pageSize;
+                        return (
+                          <DropdownMenuItem
+                            key={size}
+                            className={cn(
+                              DASHBOARD_MENU_ITEM_CLASS,
+                              isSelected && DASHBOARD_MENU_ITEM_SELECTED_CLASS,
+                            )}
+                            onSelect={() => {
+                              handlePageSizeChange(String(size));
+                            }}
+                          >
+                            {size}
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <button
+                    type="button"
                     aria-label="Rows per page"
-                    className="h-8 w-[4.5rem] rounded-md border-zinc-200 px-2 text-sm text-black"
+                    className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-white px-2 text-sm font-medium text-black"
                   >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAGE_SIZE_OPTIONS.map((size) => (
-                      <SelectItem key={size} value={String(size)}>
-                        {size}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                    <span>{pageSize}</span>
+                    <ChevronDown
+                      className="h-4 w-4 shrink-0 text-black"
+                      aria-hidden
+                    />
+                  </button>
+                )}
               </div>
 
               <nav
@@ -236,7 +285,7 @@ export default function RecentActivity({
                       className={cn(
                         "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
                         item === currentPage
-                          ? "bg-zinc-800 text-white hover:bg-zinc-700 hover:text-white"
+                          ? "bg-zinc-500 text-white hover:bg-zinc-400 hover:text-white"
                           : "text-black hover:bg-zinc-100",
                       )}
                       aria-current={item === currentPage ? "page" : undefined}

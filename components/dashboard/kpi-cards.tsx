@@ -246,14 +246,7 @@ function AvgScoreGauge() {
   );
 }
 
-export default function KpiCards({
-  className,
-  height,
-}: {
-  className?: string;
-  /** Match Audit SOP / BPR track height when provided. */
-  height?: number | null;
-}) {
+export default function KpiCards({ className }: { className?: string }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -263,16 +256,11 @@ export default function KpiCards({
   return (
     <div
       className={cn(
-        "grid h-full grid-cols-1 items-stretch md:grid-cols-3",
+        "grid grid-cols-1 items-stretch md:grid-cols-3",
         DASHBOARD_GAP_CLASS,
-        !(height && height > 0) && DASHBOARD_TRACK_CARD_HEIGHT_CLASS,
+        DASHBOARD_TRACK_CARD_HEIGHT_CLASS,
         className,
       )}
-      style={
-        height && height > 0
-          ? { height, minHeight: height }
-          : undefined
-      }
     >
       <KpiCard
         href={AUDITS_HREF}

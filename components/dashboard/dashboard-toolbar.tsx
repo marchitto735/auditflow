@@ -1,19 +1,24 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
+import * as React from "react";
 import {
   activityStatusLabel,
   type ActivityRow,
 } from "@/components/activity-table/activity-table";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DASHBOARD_MENU_CONTENT_CLASS,
+  DASHBOARD_MENU_ITEM_CLASS,
+  DASHBOARD_MENU_ITEM_SELECTED_CLASS,
+} from "@/components/dashboard/card-actions-menu";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -78,14 +83,96 @@ type DashboardToolbarProps = {
 };
 
 const CONTROL_CLASS =
-  "h-10 w-full min-w-[9.5rem] rounded-lg border-zinc-200 bg-white text-sm font-medium sm:w-[10.5rem]";
+  "inline-flex h-10 w-full min-w-[9.5rem] items-center justify-between gap-2 rounded-lg border border-zinc-200 bg-white px-3 text-sm font-medium sm:w-[10.5rem]";
 
-function filterTriggerClass(isDefault: boolean) {
-  return cn(
-    CONTROL_CLASS,
-    isDefault ? "text-zinc-500" : "text-zinc-900",
+function filterTriggerClass() {
+  return cn(CONTROL_CLASS, "text-black");
+}
+
+type FilterOption<T extends string> = {
+  value: T;
+  label: string;
+};
+
+function FilterDropdown<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: T;
+  options: readonly FilterOption<T>[];
+  onChange: (next: T) => void;
+}) {
+  const [mounted, setMounted] = React.useState(false);
+  const selected = options.find((option) => option.value === value);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const trigger = (
+    <button type="button" aria-label={label} className={filterTriggerClass()}>
+      <span className="min-w-0 flex-1 truncate text-left">
+        {selected?.label ?? label}
+      </span>
+      <ChevronDown className="h-4 w-4 shrink-0 text-black" aria-hidden />
+    </button>
+  );
+
+  if (!mounted) return trigger;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        sideOffset={6}
+        className={DASHBOARD_MENU_CONTENT_CLASS}
+      >
+        {options.map((option) => {
+          const isSelected = option.value === value;
+          return (
+            <DropdownMenuItem
+              key={option.value}
+              className={cn(
+                DASHBOARD_MENU_ITEM_CLASS,
+                isSelected && DASHBOARD_MENU_ITEM_SELECTED_CLASS,
+              )}
+              onSelect={() => {
+                onChange(option.value);
+              }}
+            >
+              {option.label}
+            </DropdownMenuItem>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
+
+const TYPE_OPTIONS = [
+  { value: "all", label: "All types" },
+  { value: "SOP", label: "SOP" },
+  { value: "BPR", label: "BPR" },
+  { value: "FIR", label: "FIR" },
+] as const satisfies readonly FilterOption<DashboardTypeFilter>[];
+
+const STATUS_OPTIONS = [
+  { value: "all", label: "All status" },
+  { value: "Compliant", label: "Compliant" },
+  { value: "Partial", label: "Partial" },
+  { value: "Critical", label: "Critical" },
+] as const satisfies readonly FilterOption<DashboardStatusFilter>[];
+
+const DATE_OPTIONS = [
+  { value: "all", label: "All time" },
+  { value: "7d", label: "Last 7 days" },
+  { value: "30d", label: "Last 30 days" },
+  { value: "90d", label: "Last 90 days" },
+] as const satisfies readonly FilterOption<DashboardDateRangeFilter>[];
 
 export function DashboardToolbar({
   value,
@@ -108,7 +195,7 @@ export function DashboardToolbar({
     >
       <div className="relative min-w-0 w-full sm:max-w-md sm:flex-1">
         <Search
-          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-500"
+          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-black"
           aria-hidden
         />
         <Input
@@ -117,70 +204,29 @@ export function DashboardToolbar({
           onChange={(event) => patch({ search: event.target.value })}
           placeholder="Search documents"
           aria-label="Search documents"
-          className="h-10 border-zinc-200 bg-white pl-9 text-sm font-medium text-zinc-900 placeholder:text-zinc-500 md:text-sm"
+          className="h-10 border-zinc-200 bg-white pl-9 text-sm font-medium text-black placeholder:text-black md:text-sm"
         />
       </div>
 
       <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end sm:gap-3">
-        <Select
+        <FilterDropdown
+          label="Filter by type"
           value={value.type}
-          onValueChange={(next) =>
-            patch({ type: next as DashboardTypeFilter })
-          }
-        >
-          <SelectTrigger
-            aria-label="Filter by type"
-            className={filterTriggerClass(value.type === "all")}
-          >
-            <SelectValue placeholder="Type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All types</SelectItem>
-            <SelectItem value="SOP">SOP</SelectItem>
-            <SelectItem value="BPR">BPR</SelectItem>
-            <SelectItem value="FIR">FIR</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select
+          options={TYPE_OPTIONS}
+          onChange={(type) => patch({ type })}
+        />
+        <FilterDropdown
+          label="Filter by status"
           value={value.status}
-          onValueChange={(next) =>
-            patch({ status: next as DashboardStatusFilter })
-          }
-        >
-          <SelectTrigger
-            aria-label="Filter by status"
-            className={filterTriggerClass(value.status === "all")}
-          >
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All status</SelectItem>
-            <SelectItem value="Compliant">Compliant</SelectItem>
-            <SelectItem value="Partial">Partial</SelectItem>
-            <SelectItem value="Critical">Critical</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select
+          options={STATUS_OPTIONS}
+          onChange={(status) => patch({ status })}
+        />
+        <FilterDropdown
+          label="Filter by date range"
           value={value.dateRange}
-          onValueChange={(next) =>
-            patch({ dateRange: next as DashboardDateRangeFilter })
-          }
-        >
-          <SelectTrigger
-            aria-label="Filter by date range"
-            className={filterTriggerClass(value.dateRange === "all")}
-          >
-            <SelectValue placeholder="Date range" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All time</SelectItem>
-            <SelectItem value="7d">Last 7 days</SelectItem>
-            <SelectItem value="30d">Last 30 days</SelectItem>
-            <SelectItem value="90d">Last 90 days</SelectItem>
-          </SelectContent>
-        </Select>
+          options={DATE_OPTIONS}
+          onChange={(dateRange) => patch({ dateRange })}
+        />
       </div>
     </div>
   );
