@@ -59,19 +59,8 @@ const ACTIVE_JOBS: PipelineJob[] = [
 
 export function CompliancePipelineCard({ className }: { className?: string }) {
   return (
-    <Card
-      className={cn(
-        DASHBOARD_CARD_CLASS,
-        "flex h-full min-h-0 flex-col",
-        className,
-      )}
-    >
-      <CardContent
-        className={cn(
-          CARD_CONTENT_CLASS,
-          "h-full min-h-0 flex-1 flex-col justify-between gap-0",
-        )}
-      >
+    <Card className={cn(DASHBOARD_CARD_CLASS, className)}>
+      <CardContent className={cn(CARD_CONTENT_CLASS, "gap-3")}>
         <div className="flex min-w-0 flex-col gap-1.5">
           <p className={CARD_EYEBROW_CLASS}>Pipeline</p>
           <h3
@@ -85,7 +74,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
         </div>
 
         <ol
-          className="m-0 flex list-none flex-wrap items-stretch gap-2 p-0 py-4"
+          className="m-0 flex list-none flex-wrap items-stretch gap-2 p-0"
           aria-label="Compliance pipeline stages"
         >
           {STAGES.map((stage, index) => (
@@ -131,7 +120,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
           ))}
         </ul>
 
-        <div className={cn(CARD_FOOTER_CLASS, "group mt-auto pt-3")}>
+        <div className={cn(CARD_FOOTER_CLASS, "group")}>
           <Link href="/dashboard/audits" className={CARD_CTA_CLASS}>
             <span>View Audit Log</span>
             <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />

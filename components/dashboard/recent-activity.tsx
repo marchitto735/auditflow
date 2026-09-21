@@ -289,11 +289,11 @@ export default function RecentActivity({
                     <Button
                       key={item}
                       type="button"
-                      variant={item === currentPage ? "black" : "ghost"}
+                      variant="ghost"
                       className={cn(
-                        "h-8! min-h-8! w-8! p-0! text-sm font-medium",
+                        "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
                         item === currentPage
-                          ? "rounded-md"
+                          ? "bg-zinc-800 text-white hover:bg-zinc-700 hover:text-white"
                           : "text-black hover:bg-zinc-100",
                       )}
                       aria-current={item === currentPage ? "page" : undefined}

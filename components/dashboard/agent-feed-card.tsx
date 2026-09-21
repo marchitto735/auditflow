@@ -177,14 +177,14 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
     <Card
       className={cn(
         INTERACTIVE_CARD_CLASS,
-        "flex h-full min-h-0 flex-col justify-between overflow-hidden shadow-none hover:shadow-none",
+        "flex h-full min-h-0 flex-col overflow-hidden shadow-none hover:shadow-none",
         className,
       )}
     >
       <CardContent
         className={cn(
           CARD_CONTENT_CLASS,
-          "flex h-full min-h-0 flex-1 flex-col justify-between gap-4 overflow-hidden",
+          "flex h-full min-h-0 flex-1 flex-col gap-3 overflow-hidden",
         )}
       >
         <div className="relative flex shrink-0 min-w-0 flex-col gap-1.5">
@@ -211,7 +211,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
 
         <ul
           className={cn(
-            "m-0 flex min-h-0 flex-1 list-none flex-col gap-4 overflow-y-auto p-0 pr-1",
+            "m-0 flex min-h-0 flex-1 list-none flex-col gap-3 overflow-y-auto p-0 pr-1",
             FEED_SCROLLBAR_CLASS,
           )}
           aria-label="AI agent activity feed"

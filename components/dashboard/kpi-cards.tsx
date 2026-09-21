@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import {
@@ -38,28 +37,42 @@ const AUDITS_HREF = "/dashboard/audits";
 
 const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
-  "group flex h-full flex-col text-inherit no-underline",
+  "group flex h-full cursor-pointer flex-col text-inherit no-underline",
 );
 
 function KpiCard({
   href,
   cta,
+  eyebrow,
   children,
 }: {
   href: string;
   cta: string;
+  eyebrow: string;
   children: ReactNode;
 }) {
   const router = useRouter();
 
+  function handleActivate() {
+    router.push(href);
+  }
+
   return (
-    <Link
-      href={href}
-      prefetch
+    <div
+      role="link"
+      tabIndex={0}
       data-kpi-card
       className={CARD_CLASS}
+      onClick={handleActivate}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          handleActivate();
+        }
+      }}
       onMouseEnter={() => router.prefetch(href)}
       onFocus={() => router.prefetch(href)}
+      aria-label={cta}
     >
       <Card className="flex h-full min-h-0 w-full flex-col border-0 bg-transparent shadow-none">
         <CardContent
@@ -68,8 +81,8 @@ function KpiCard({
             "h-full min-h-0 w-full flex-col gap-1.5 text-left",
           )}
         >
+          <p className={CARD_EYEBROW_CLASS}>{eyebrow}</p>
           <div className="flex min-w-0 flex-col gap-1.5">{children}</div>
-          {/* Match Audit Launch: pin CTA to bottom-right inside the shared p-4 inset. */}
           <div className={cn(CARD_FOOTER_CLASS, "mt-auto")}>
             <span className={CARD_CTA_CLASS}>
               <span>{cta}</span>
@@ -78,7 +91,7 @@ function KpiCard({
           </div>
         </CardContent>
       </Card>
-    </Link>
+    </div>
   );
 }
 
@@ -220,7 +233,6 @@ function AvgScoreGauge() {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-      {/* Sit in the open bowl of the semicircle — optically centered in the ring */}
       <p
         className={cn(
           CARD_TITLE_CLASS,
@@ -236,7 +248,6 @@ function AvgScoreGauge() {
 export default function KpiCards() {
   const router = useRouter();
 
-  // Warm the Audit Log route as soon as the dashboard paints so click lands ready.
   useEffect(() => {
     router.prefetch(AUDITS_HREF);
   }, [router]);
@@ -248,8 +259,11 @@ export default function KpiCards() {
         DASHBOARD_GAP_CLASS,
       )}
     >
-      <KpiCard href={AUDITS_HREF} cta="View Audit Log">
-        <p className={CARD_EYEBROW_CLASS}>Total Audits</p>
+      <KpiCard
+        href={AUDITS_HREF}
+        cta="View Audit Log"
+        eyebrow="Total Audits"
+      >
         <p className={cn(CARD_TITLE_CLASS, "m-0 text-foreground")}>142</p>
         <div className="flex shrink-0 flex-col">
           <TotalAuditsChart />
@@ -257,16 +271,22 @@ export default function KpiCards() {
         <p className="text-body1 m-0 shrink-0 text-black">+4% this week</p>
       </KpiCard>
 
-      <KpiCard href="/dashboard/findings" cta="Inspect Findings">
-        <p className={CARD_EYEBROW_CLASS}>Open Findings</p>
+      <KpiCard
+        href="/dashboard/findings"
+        cta="Inspect Findings"
+        eyebrow="Open Findings"
+      >
         <div className="flex shrink-0 flex-col items-center">
           <OpenFindingsChart />
         </div>
         <p className="text-body1 m-0 shrink-0 text-black">−2 this week</p>
       </KpiCard>
 
-      <KpiCard href="/dashboard/score-analysis" cta="Score Breakdown">
-        <p className={CARD_EYEBROW_CLASS}>Average Score</p>
+      <KpiCard
+        href="/dashboard/score-analysis"
+        cta="Score Breakdown"
+        eyebrow="Average Score"
+      >
         <div className="flex shrink-0 flex-col items-center">
           <AvgScoreGauge />
         </div>

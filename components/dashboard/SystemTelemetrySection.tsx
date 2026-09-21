@@ -8,8 +8,8 @@ import { DASHBOARD_GAP_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 /**
- * System Telemetry macro section — pipeline (~60%) + agent feed (~40%).
- * Feed card height locks to the pipeline card; the log scrolls internally.
+ * System Telemetry — pipeline (~60%) + agent feed (~40%).
+ * Feed card height matches the pipeline card; the log scrolls internally.
  */
 export function SystemTelemetrySection({ className }: { className?: string }) {
   const pipelineRef = React.useRef<HTMLDivElement>(null);
@@ -21,7 +21,6 @@ export function SystemTelemetrySection({ className }: { className?: string }) {
     if (!pipelineEl || !feedEl) return;
 
     const syncHeight = () => {
-      // Stacked layout on small screens — let each card size naturally.
       if (window.matchMedia("(max-width: 1023px)").matches) {
         feedEl.style.height = "";
         feedEl.style.maxHeight = "";
@@ -54,18 +53,18 @@ export function SystemTelemetrySection({ className }: { className?: string }) {
     >
       <div
         className={cn(
-          "grid grid-cols-1 items-stretch lg:grid-cols-12",
+          "grid grid-cols-1 items-start lg:grid-cols-12",
           DASHBOARD_GAP_CLASS,
         )}
       >
-        <div ref={pipelineRef} className="flex min-h-0 min-w-0 lg:col-span-7">
-          <CompliancePipelineCard className="h-full w-full" />
+        <div ref={pipelineRef} className="min-w-0 lg:col-span-7">
+          <CompliancePipelineCard />
         </div>
         <div
           ref={feedRef}
           className="flex min-h-0 min-w-0 flex-col lg:col-span-5"
         >
-          <AgentFeedCard className="h-full min-h-0 w-full" />
+          <AgentFeedCard className="h-full min-h-0" />
         </div>
       </div>
     </DashboardSection>

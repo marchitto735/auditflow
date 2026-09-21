@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 
 const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
-  "group flex w-full min-w-0 flex-col text-left text-inherit",
+  "group flex w-full min-w-0 cursor-pointer flex-col text-left text-inherit",
 );
 
 /** Full name + acronym for card titles. */
@@ -148,12 +148,23 @@ export function AuditLauncherCard({
   const title = TITLE_DISPLAY[id];
   const metrics = LAUNCHER_METRICS[id];
 
+  function handleActivate() {
+    openConfigureAudit(id);
+  }
+
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       className={cn(CARD_CLASS, className)}
       style={style}
-      onClick={() => openConfigureAudit(id)}
+      onClick={handleActivate}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          handleActivate();
+        }
+      }}
       aria-label={`Launch ${title}`}
     >
       <Card className="flex h-full w-full min-h-0 flex-col border-0 bg-transparent shadow-none">
@@ -244,7 +255,7 @@ export function AuditLauncherCard({
           </div>
         </CardContent>
       </Card>
-    </button>
+    </div>
   );
 }
 
