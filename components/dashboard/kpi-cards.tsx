@@ -56,14 +56,21 @@ function KpiCard({
     <Link
       href={href}
       prefetch
+      data-kpi-card
       className={CARD_CLASS}
       onMouseEnter={() => router.prefetch(href)}
       onFocus={() => router.prefetch(href)}
     >
-      <Card className="h-full border-0 bg-transparent shadow-none">
-        <CardContent className={cn(CARD_CONTENT_CLASS, "gap-1.5")}>
-          {children}
-          <div className={CARD_FOOTER_CLASS}>
+      <Card className="flex h-full min-h-0 w-full flex-col border-0 bg-transparent shadow-none">
+        <CardContent
+          className={cn(
+            CARD_CONTENT_CLASS,
+            "h-full min-h-0 w-full flex-col gap-1.5 text-left",
+          )}
+        >
+          <div className="flex min-w-0 flex-col gap-1.5">{children}</div>
+          {/* Match Audit Launch: pin CTA to bottom-right inside the shared p-4 inset. */}
+          <div className={cn(CARD_FOOTER_CLASS, "mt-auto")}>
             <span className={CARD_CTA_CLASS}>
               <span>{cta}</span>
               <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />

@@ -145,7 +145,7 @@ export function DashboardToolbar({
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
+            <SelectItem value="all">All status</SelectItem>
             <SelectItem value="Compliant">Compliant</SelectItem>
             <SelectItem value="Partial">Partial</SelectItem>
             <SelectItem value="Critical">Critical</SelectItem>

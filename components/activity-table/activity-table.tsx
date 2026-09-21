@@ -15,7 +15,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 /** Uniform horizontal inset on every header/cell for a Swiss vertical grid. */
-const CELL_PAD_CLASS = "px-4 py-2";
+const CELL_PAD_CLASS = "px-4 py-3";
 
 type CellOverflow = "truncate" | "nowrap";
 

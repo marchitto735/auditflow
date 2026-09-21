@@ -150,7 +150,7 @@ function FeedStatusIcon({ status }: { status: FeedStatus }) {
   if (status === "warn") {
     return (
       <AlertTriangle
-        className="mt-0.5 size-3.5 shrink-0 text-amber-500"
+        className="mt-0.5 size-3.5 shrink-0 text-amber-800"
         aria-label="Warning"
         strokeWidth={2}
       />
@@ -159,7 +159,7 @@ function FeedStatusIcon({ status }: { status: FeedStatus }) {
   if (status === "error") {
     return (
       <CircleAlert
-        className="mt-0.5 size-3.5 shrink-0 text-red-600"
+        className="mt-0.5 size-3.5 shrink-0 text-red-700"
         aria-label="Error"
         strokeWidth={2}
       />
@@ -177,18 +177,18 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
     <Card
       className={cn(
         INTERACTIVE_CARD_CLASS,
-        "flex h-full min-h-0 flex-1 flex-col overflow-hidden shadow-none hover:shadow-none",
+        "flex h-full min-h-0 flex-col overflow-hidden shadow-none hover:shadow-none",
         className,
       )}
     >
       <CardContent
         className={cn(
           CARD_CONTENT_CLASS,
-          "flex h-full min-h-0 flex-1 flex-col gap-2 overflow-hidden",
+          "flex h-full min-h-0 flex-1 flex-col gap-4 overflow-hidden",
         )}
       >
         <div className="relative flex shrink-0 min-w-0 flex-col gap-1.5">
-          <p className={CARD_EYEBROW_CLASS}>System Telemetry</p>
+          <p className={CARD_EYEBROW_CLASS}>Runtime Stream</p>
           <p className="absolute right-0 top-0 m-0 flex items-center gap-2 text-sm font-medium leading-none text-black">
             <span
               className="relative flex size-2.5 shrink-0 items-center justify-center"
@@ -211,39 +211,61 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
 
         <ul
           className={cn(
-            "m-0 flex min-h-0 flex-1 list-none flex-col gap-2.5 p-0 pr-1",
+            "m-0 flex min-h-0 flex-1 list-none flex-col gap-4 overflow-y-auto p-0 pr-1",
             FEED_SCROLLBAR_CLASS,
           )}
           aria-label="AI agent activity feed"
         >
           {FEED_EVENTS.map((event) => {
             const status = event.status ?? "info";
+            const isWarn = status === "warn";
+            const isError = status === "error";
+            const metaTone = isError
+              ? "text-red-700"
+              : isWarn
+                ? "text-amber-800"
+                : "text-black";
+            const pillTone = isError
+              ? "border-red-200 bg-red-50 text-red-700"
+              : isWarn
+                ? "border-amber-200 bg-amber-50 text-amber-800"
+                : "border-zinc-200 bg-zinc-50 text-black";
+            const messageTone = isError
+              ? "text-red-700"
+              : isWarn
+                ? "text-amber-800"
+                : "text-black";
+
             return (
               <li
                 key={`${event.time}-${event.subsystem}-${event.message}`}
                 className="m-0 flex shrink-0 items-start gap-2"
               >
                 {status !== "info" ? <FeedStatusIcon status={status} /> : null}
-                <div className="min-w-0 flex-1">
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <time
-                      className="font-mono text-xs tabular-nums text-zinc-500"
+                      className={cn(
+                        "font-mono text-xs tabular-nums",
+                        metaTone,
+                      )}
                       dateTime={event.time}
                     >
                       {event.time}
                     </time>
-                    <span className="inline-flex max-w-full items-center rounded-md border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 font-mono text-[11px] font-medium leading-none text-zinc-600">
-                      [{event.subsystem}]
+                    <span
+                      className={cn(
+                        "inline-flex max-w-full items-center rounded-md border px-1.5 py-0.5 font-mono text-[11px] font-medium leading-none",
+                        pillTone,
+                      )}
+                    >
+                      {event.subsystem}
                     </span>
                   </div>
                   <p
                     className={cn(
-                      "text-body1 m-0 mt-1 leading-snug",
-                      status === "error"
-                        ? "text-red-700"
-                        : status === "warn"
-                          ? "text-amber-800"
-                          : "text-zinc-600",
+                      "text-body1 m-0 leading-snug",
+                      messageTone,
                     )}
                   >
                     {event.message}

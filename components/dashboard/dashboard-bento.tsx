@@ -8,24 +8,30 @@ type DashboardBentoProps = {
   left: React.ReactNode;
   right: React.ReactNode;
   className?: string;
+  /** When true, locks left column height to the right column (legacy fill layout). */
+  lockLeftHeight?: boolean;
 };
 
 /**
- * Asymmetric dashboard grid that locks the left column height to the right
- * column (metrics + table), so the AI Agent Feed can fill leftover space and
- * scroll internally without pushing the bento out of alignment.
+ * Asymmetric dashboard grid. Optionally locks left column height to the right
+ * column when a fill module (e.g. scrollable feed) needs leftover space.
  */
-export function DashboardBento({ left, right, className }: DashboardBentoProps) {
+export function DashboardBento({
+  left,
+  right,
+  className,
+  lockLeftHeight = false,
+}: DashboardBentoProps) {
   const leftRef = React.useRef<HTMLDivElement>(null);
   const rightRef = React.useRef<HTMLDivElement>(null);
 
   React.useLayoutEffect(() => {
+    if (!lockLeftHeight) return;
     const leftEl = leftRef.current;
     const rightEl = rightRef.current;
     if (!leftEl || !rightEl) return;
 
     const syncHeight = () => {
-      // Mobile: stack naturally — clear any locked height.
       if (window.matchMedia("(max-width: 1023px)").matches) {
         leftEl.style.height = "";
         return;
@@ -42,8 +48,9 @@ export function DashboardBento({ left, right, className }: DashboardBentoProps) 
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", syncHeight);
+      leftEl.style.height = "";
     };
-  }, []);
+  }, [lockLeftHeight]);
 
   return (
     <div
