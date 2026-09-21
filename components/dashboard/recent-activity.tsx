@@ -217,7 +217,7 @@ export default function RecentActivity({
                   disabled={currentPage <= 1}
                   onClick={() => setPage((current) => Math.max(1, current - 1))}
                 >
-                  Prev
+                  Previous
                 </Button>
                 {pageItems.map((item, index) =>
                   item === "ellipsis" ? (

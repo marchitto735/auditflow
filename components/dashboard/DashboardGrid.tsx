@@ -10,7 +10,6 @@ import {
   DashboardSection,
   DashboardSectionHeader,
 } from "@/components/dashboard/dashboard-section";
-import { SystemTelemetrySection } from "@/components/dashboard/SystemTelemetrySection";
 import type { ActivityRow } from "@/components/activity-table/activity-table";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DASHBOARD_GAP_CLASS } from "@/lib/page-layout";
@@ -128,8 +127,6 @@ export default function DashboardGrid({
             <RecentActivity rows={activityRows} />
           </DashboardSection>
         </div>
-
-        <SystemTelemetrySection />
       </div>
     </TooltipProvider>
   );

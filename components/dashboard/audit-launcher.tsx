@@ -196,14 +196,14 @@ export function AuditLauncherCard({
                 <h3
                   className={cn(
                     CARD_TITLE_CLASS,
-                    "m-0 mt-1 max-w-full text-balance text-zinc-950",
+                    "m-0 mt-1 max-w-full text-balance text-black",
                   )}
                 >
                   {title}
                 </h3>
               </div>
               <div className="mr-1 flex shrink-0 flex-col items-end gap-1 pt-0.5">
-                <span className="text-[11px] font-medium tracking-wide text-zinc-500 uppercase">
+                <span className="text-[11px] font-medium tracking-wide text-black uppercase">
                   Score
                 </span>
                 <TrendSparkline
@@ -214,7 +214,7 @@ export function AuditLauncherCard({
               </div>
             </div>
 
-            <p className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 text-zinc-950">
+            <p className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 text-black">
               <span
                 className={cn(
                   "size-2.5 shrink-0 rounded-full",
@@ -223,39 +223,39 @@ export function AuditLauncherCard({
                 aria-hidden
               />
               <span>{workflow.status}</span>
-              <span className="text-zinc-500" aria-hidden>
+              <span className="text-black" aria-hidden>
                 •
               </span>
-              <span className="text-zinc-500">Last Run {workflow.lastRun}</span>
+              <span className="text-black">Last Run {workflow.lastRun}</span>
             </p>
           </div>
 
           <div className="mt-auto flex min-w-0 flex-col gap-2">
             <div
-              className="-translate-y-2 flex min-w-0 flex-row items-center gap-2 overflow-hidden whitespace-nowrap text-[11px] leading-none text-zinc-500"
+              className="-translate-y-2 flex min-w-0 flex-row items-center gap-2 overflow-hidden whitespace-nowrap text-[12px] leading-none text-black"
               aria-label={`${workflow.label} operational metrics`}
             >
               <span className="shrink-0">
-                <span className="text-zinc-500">Chunks</span>{" "}
-                <span className="font-medium text-zinc-950">
+                <span className="text-black">Chunks</span>{" "}
+                <span className="font-medium text-black">
                   {metrics.chunks}
                 </span>
               </span>
-              <span className="shrink-0 text-zinc-300" aria-hidden>
+              <span className="shrink-0 text-black" aria-hidden>
                 ·
               </span>
               <span className="shrink-0">
-                <span className="text-zinc-500">Latency</span>{" "}
-                <span className="font-medium text-zinc-950">
+                <span className="text-black">Latency</span>{" "}
+                <span className="font-medium text-black">
                   {metrics.latency}
                 </span>
               </span>
-              <span className="shrink-0 text-zinc-300" aria-hidden>
+              <span className="shrink-0 text-black" aria-hidden>
                 ·
               </span>
               <span className="min-w-0 truncate">
-                <span className="text-zinc-500">Success</span>{" "}
-                <span className="font-medium text-zinc-950">
+                <span className="text-black">Success</span>{" "}
+                <span className="font-medium text-black">
                   {metrics.success}
                 </span>
               </span>
