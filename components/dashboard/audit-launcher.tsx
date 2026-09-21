@@ -47,7 +47,7 @@ export default function AuditLauncher() {
             type="button"
             className={CARD_CLASS}
             onClick={() => openConfigureAudit(id)}
-            aria-label={`Configure ${title}`}
+            aria-label={`Launch ${title}`}
           >
             <Card className="h-full w-full border-0 bg-transparent shadow-none">
               <CardContent
@@ -80,7 +80,7 @@ export default function AuditLauncher() {
 
                 <div className={CARD_FOOTER_CLASS}>
                   <span className={CARD_CTA_CLASS}>
-                    <span>Configure Audit</span>
+                    <span>Launch</span>
                     <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
                   </span>
                 </div>
