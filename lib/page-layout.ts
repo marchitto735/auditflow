@@ -16,10 +16,9 @@ export const DASHBOARD_SECTION_GAP_CLASS = "gap-8";
 
 /**
  * Space below the top nav before page content — shared with sidebar nav
- * so the first content row aligns. Tightened for denser rhythm with the
- * sidebar’s section spacing (`gap-4` between items and category headers).
+ * so the first content row aligns. Kept flush for denser Swiss rhythm.
  */
-export const PAGE_CONTENT_TOP_CLASS = "pt-2";
+export const PAGE_CONTENT_TOP_CLASS = "pt-0";
 
 /**
  * App canvas behind cards — neutral light grey (greyscale).

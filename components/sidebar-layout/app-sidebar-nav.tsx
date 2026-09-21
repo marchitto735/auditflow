@@ -136,11 +136,11 @@ export function AppSidebarNav({
             railPad,
           )}
         >
-          <SidebarContent className="min-h-0 flex-1 gap-4 overflow-y-auto overflow-x-hidden pt-1 pb-1">
+          <SidebarContent className="min-h-0 flex-1 gap-4 overflow-y-auto overflow-x-hidden pt-0 pb-1">
             {SIDEBAR_NAV_SECTIONS.map((section) => (
               <SidebarGroup key={section.label} className="gap-1">
                 {!compact ? (
-                  <SidebarGroupLabel className="mb-1 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-black">
+                  <SidebarGroupLabel className="mb-1 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-black">
                     {section.label}
                   </SidebarGroupLabel>
                 ) : null}
