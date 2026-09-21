@@ -17,7 +17,10 @@ function SidebarShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={cn("flex min-h-svh w-full min-w-0", PAGE_CANVAS_CLASS)}
+      className={cn(
+        "flex h-[100dvh] w-full min-w-0 overflow-hidden",
+        PAGE_CANVAS_CLASS,
+      )}
       style={{ "--sidebar-width": `${width}px` } as React.CSSProperties}
     >
       {/* Persistent desktop rail (xl+) — fixed flush to viewport top */}
@@ -32,14 +35,14 @@ function SidebarShell({ children }: { children: React.ReactNode }) {
 
       <div
         className={cn(
-          "flex min-h-svh min-w-0 flex-1 flex-col",
+          "flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
           PAGE_CANVAS_CLASS,
         )}
       >
         <Header />
         <div
           className={cn(
-            "flex min-w-0 w-full flex-1 flex-col overflow-x-clip",
+            "flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-x-clip overflow-y-auto",
             PAGE_CANVAS_CLASS,
           )}
         >

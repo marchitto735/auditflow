@@ -86,7 +86,7 @@ export function DashboardSection({
   className,
 }: DashboardSectionProps) {
   return (
-    <section className={cn("flex min-w-0 flex-col gap-3", className)}>
+    <section className={cn("flex min-w-0 flex-col gap-2", className)}>
       <DashboardSectionHeader title={title} description={description} />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         {children}

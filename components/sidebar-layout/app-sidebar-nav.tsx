@@ -132,11 +132,11 @@ export function AppSidebarNav({
 
         <div
           className={cn(
-            "flex min-h-0 w-full min-w-0 flex-1 flex-col justify-between pb-[25px]",
+            "flex min-h-0 w-full min-w-0 flex-1 flex-col justify-between pb-[35px]",
             railPad,
           )}
         >
-          <SidebarContent className="min-h-0 flex-1 gap-4 overflow-y-auto overflow-x-hidden pt-0 pb-1">
+          <SidebarContent className="min-h-0 flex-1 gap-4 overflow-y-auto overflow-x-hidden pt-0 pb-1 mt-0.5">
             {SIDEBAR_NAV_SECTIONS.map((section) => (
               <SidebarGroup key={section.label} className="gap-1">
                 {!compact ? (

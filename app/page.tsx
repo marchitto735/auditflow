@@ -7,7 +7,7 @@ export default async function Home() {
   const activityRows = reports.map(storedReportToActivityRow);
 
   return (
-    <div className="min-h-0 min-w-0 w-full flex-1 pb-0 md:pb-4">
+    <div className="flex h-full min-h-0 min-w-0 w-full flex-1 flex-col overflow-hidden pb-0">
       <Dashboard activityRows={activityRows} />
     </div>
   );

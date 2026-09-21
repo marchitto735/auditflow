@@ -25,7 +25,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
+import {
+  DASHBOARD_CARD_CLASS,
+  RECENT_ACTIVITY_CARD_HEIGHT_CLASS,
+} from "@/lib/page-layout";
 
 const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
 const DEFAULT_PAGE_SIZE = 5;
@@ -170,7 +173,8 @@ export default function RecentActivity({
   return (
     <Card
       className={cn(
-        "flex h-full min-h-0 flex-col overflow-hidden",
+        "flex shrink-0 flex-col overflow-hidden",
+        RECENT_ACTIVITY_CARD_HEIGHT_CLASS,
         DASHBOARD_CARD_CLASS,
         className,
       )}

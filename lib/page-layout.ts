@@ -38,10 +38,16 @@ export const DASHBOARD_CARD_CLASS =
   "rounded-2xl border border-zinc-200 bg-white shadow-none";
 
 /** Shared fixed height for SOP, BPR, FIR, and each KPI card. */
-export const DASHBOARD_TRACK_CARD_HEIGHT_CLASS = "h-[214px]";
+export const DASHBOARD_TRACK_CARD_HEIGHT_CLASS = "h-[212px]";
 
 /** Fixed height for Audit Launcher tiles (SOP / BPR / FIR). */
 export const AUDIT_LAUNCHER_CARD_HEIGHT_CLASS = DASHBOARD_TRACK_CARD_HEIGHT_CLASS;
+
+/**
+ * Recent Activity card — filter bar + table header + 5 body rows + pagination.
+ * Locked so the footer and row 5 never clip when the grid flexes.
+ */
+export const RECENT_ACTIVITY_CARD_HEIGHT_CLASS = "h-[416px]";
 
 /**
  * Interactive card chrome — flat at rest; soft border + shadow lift on hover.
