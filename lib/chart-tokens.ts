@@ -1,19 +1,20 @@
 /**
- * Swiss SaaS chart + status palette — saturated mineral / jewel tones
- * with quiet zinc tracks. CSS mirrors live in `:root` as `--chart-*`.
+ * Swiss SaaS chart + status palette — high-contrast jewel tones
+ * matched to Active/Ready status indicators (emerald-500 / amber-500).
+ * CSS mirrors live in `:root` as `--chart-*`.
  */
 
 export const CHART = {
-  /** Luminous cobalt-teal — bar series / trend lines */
-  primary: "oklch(52% 0.12 215)",
-  /** Active bar fill (slightly deeper cobalt) */
-  structural: "oklch(48% 0.13 220)",
-  /** Softer cobalt for below-threshold bars */
-  structuralMuted: "oklch(68% 0.06 220)",
-  /** Polished forest emerald — healthy gauge / high scores */
-  gauge: "oklch(52% 0.14 155)",
-  /** Inactive tracks / background bars — zinc-200 */
-  track: "oklch(92% 0.004 286)",
+  /** Bright cobalt — bar series / trend lines */
+  primary: "oklch(58% 0.18 230)",
+  /** Punchy active bar fill */
+  structural: "oklch(55% 0.2 235)",
+  /** Softened but still vivid below-threshold bars */
+  structuralMuted: "oklch(72% 0.1 230)",
+  /** Vivid emerald-500 — matches Active sparkline / status pip */
+  gauge: "oklch(70% 0.17 162)",
+  /** Inactive tracks / background bars — slightly cooler zinc */
+  track: "oklch(90% 0.01 250)",
   /** Quieter track — zinc-100 */
   trackSoft: "oklch(96.5% 0.002 286)",
   /** Grid lines */
@@ -21,13 +22,13 @@ export const CHART = {
   /** Reference / baseline dashed lines */
   reference: "oklch(70% 0.01 286)",
   /** Donut / severity — rich crimson */
-  critical: "oklch(52% 0.18 25)",
-  /** Burnt orange */
-  high: "oklch(62% 0.16 45)",
-  /** Warm ochre / amber */
-  medium: "oklch(72% 0.14 75)",
-  /** Slate — low / quiet */
-  low: "oklch(58% 0.02 260)",
+  critical: "oklch(55% 0.22 25)",
+  /** Vivid orange-500 — high severity ring segment */
+  high: "oklch(70% 0.19 45)",
+  /** Vivid amber-500 — medium severity / Ready status */
+  medium: "oklch(76% 0.17 75)",
+  /** Soft slate — low / secondary ring segment (inactive track) */
+  low: "oklch(70% 0.015 260)",
 } as const;
 
 /**

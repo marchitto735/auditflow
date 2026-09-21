@@ -59,8 +59,19 @@ const ACTIVE_JOBS: PipelineJob[] = [
 
 export function CompliancePipelineCard({ className }: { className?: string }) {
   return (
-    <Card className={cn(DASHBOARD_CARD_CLASS, className)}>
-      <CardContent className={cn(CARD_CONTENT_CLASS, "gap-1.5")}>
+    <Card
+      className={cn(
+        DASHBOARD_CARD_CLASS,
+        "flex h-full min-h-0 flex-col",
+        className,
+      )}
+    >
+      <CardContent
+        className={cn(
+          CARD_CONTENT_CLASS,
+          "h-full min-h-0 flex-1 flex-col justify-between gap-0",
+        )}
+      >
         <div className="flex min-w-0 flex-col gap-1.5">
           <p className={CARD_EYEBROW_CLASS}>Pipeline</p>
           <h3
@@ -74,7 +85,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
         </div>
 
         <ol
-          className="m-0 flex list-none flex-wrap items-stretch gap-2 p-0 pt-1"
+          className="m-0 flex list-none flex-wrap items-stretch gap-2 p-0 py-4"
           aria-label="Compliance pipeline stages"
         >
           {STAGES.map((stage, index) => (
@@ -99,13 +110,13 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
         </ol>
 
         <ul
-          className="m-0 flex list-none flex-col gap-2 p-0 pt-1"
+          className="m-0 flex list-none flex-col gap-2 p-0"
           aria-label="Active pipeline jobs"
         >
           {ACTIVE_JOBS.map((job) => (
             <li
               key={job.id}
-              className="flex min-w-0 items-baseline justify-between gap-3 border-b border-zinc-100 pb-2 last:border-b-0 last:pb-0"
+              className="flex min-w-0 items-baseline justify-between gap-3"
             >
               <div className="min-w-0">
                 <p className="text-body1 m-0 truncate font-medium text-black">
@@ -120,7 +131,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
           ))}
         </ul>
 
-        <div className={cn(CARD_FOOTER_CLASS, "group")}>
+        <div className={cn(CARD_FOOTER_CLASS, "group mt-auto pt-3")}>
           <Link href="/dashboard/audits" className={CARD_CTA_CLASS}>
             <span>View Audit Log</span>
             <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />

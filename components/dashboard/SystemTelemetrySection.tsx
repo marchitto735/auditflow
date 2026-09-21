@@ -54,15 +54,18 @@ export function SystemTelemetrySection({ className }: { className?: string }) {
     >
       <div
         className={cn(
-          "grid grid-cols-1 items-start lg:grid-cols-12",
+          "grid grid-cols-1 items-stretch lg:grid-cols-12",
           DASHBOARD_GAP_CLASS,
         )}
       >
-        <div ref={pipelineRef} className="min-w-0 lg:col-span-7">
-          <CompliancePipelineCard />
+        <div ref={pipelineRef} className="flex min-h-0 min-w-0 lg:col-span-7">
+          <CompliancePipelineCard className="h-full w-full" />
         </div>
-        <div ref={feedRef} className="flex min-h-0 min-w-0 flex-col lg:col-span-5">
-          <AgentFeedCard className="h-full min-h-0" />
+        <div
+          ref={feedRef}
+          className="flex min-h-0 min-w-0 flex-col lg:col-span-5"
+        >
+          <AgentFeedCard className="h-full min-h-0 w-full" />
         </div>
       </div>
     </DashboardSection>

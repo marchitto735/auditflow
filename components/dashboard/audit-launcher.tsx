@@ -206,7 +206,7 @@ export function AuditLauncherCard({
 
           <div className="mt-auto flex min-w-0 flex-col gap-2">
             <div
-              className="flex min-w-0 flex-row items-center gap-2 overflow-hidden whitespace-nowrap border-t border-zinc-100 pt-2.5 text-[11px] leading-none text-zinc-500"
+              className="flex min-w-0 flex-row items-center gap-2 overflow-hidden whitespace-nowrap text-[11px] leading-none text-zinc-500"
               aria-label={`${workflow.label} operational metrics`}
             >
               <span className="shrink-0">
