@@ -198,7 +198,7 @@ export function AuditLauncherCard({
                 <h3
                   className={cn(
                     CARD_TITLE_CLASS,
-                    "m-0 mt-0.5 max-w-full hyphens-auto break-words text-pretty leading-snug text-black",
+                    "m-0 mt-2 max-w-full hyphens-auto break-words text-pretty leading-snug text-black",
                   )}
                 >
                   {title}

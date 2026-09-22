@@ -117,3 +117,27 @@ export const CARD_CTA_CLASS =
 
 export const CARD_CTA_ARROW_CLASS =
   "h-4 w-4 transition-transform duration-150 group-hover:translate-x-1";
+
+/**
+ * Shared right-hand metadata for telemetry cards (pipeline ETAs, feed timestamps).
+ */
+export const TELEMETRY_META_CLASS =
+  "shrink-0 text-sm font-normal tabular-nums text-black whitespace-nowrap";
+
+/**
+ * Shared agent/stage badge pill for telemetry rows.
+ */
+export const TELEMETRY_PILL_CLASS =
+  "inline-flex shrink-0 items-center rounded-md border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 font-mono text-[11px] font-medium leading-none whitespace-nowrap text-zinc-700";
+
+/**
+ * Shared telemetry list stack (pipeline jobs + activity feed).
+ */
+export const TELEMETRY_LIST_CLASS =
+  "m-0 flex list-none flex-col gap-3 p-0";
+
+/**
+ * Shared telemetry list row: message/primary left, metadata right.
+ */
+export const TELEMETRY_ROW_CLASS =
+  "m-0 flex min-w-0 shrink-0 items-center justify-between gap-4";

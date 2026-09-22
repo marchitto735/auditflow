@@ -12,6 +12,10 @@ import {
   CARD_FOOTER_CLASS,
   CARD_TITLE_CLASS,
   DASHBOARD_CARD_CLASS,
+  TELEMETRY_LIST_CLASS,
+  TELEMETRY_META_CLASS,
+  TELEMETRY_PILL_CLASS,
+  TELEMETRY_ROW_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -86,7 +90,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
       )}
     >
       <CardContent className={cn(CARD_CONTENT_CLASS, "h-auto gap-3")}>
-        <div className="flex min-w-0 flex-col gap-1.5">
+        <div className="flex min-w-0 flex-col gap-2">
           <p className={cn(CARD_EYEBROW_CLASS, "text-black")}>Pipeline</p>
           <h3
             className={cn(
@@ -119,13 +123,13 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
                       : "border-zinc-200 bg-white",
                   )}
                 >
-                  <span className="text-xs font-semibold uppercase tracking-wider text-black">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-black tabular-nums">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span className="text-sm font-medium text-black">
                     {stage.label}
                   </span>
-                  <span className="text-body1 m-0 text-black">
+                  <span className="text-body1 m-0 text-black tabular-nums">
                     {stage.count} active
                   </span>
                 </button>
@@ -135,7 +139,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
         </ol>
 
         <ul
-          className="m-0 flex list-none flex-col gap-2 p-0"
+          className={cn(TELEMETRY_LIST_CLASS, "mt-2")}
           aria-label={
             selectedStage
               ? `Active pipeline jobs in ${STAGES.find((s) => s.id === selectedStage)?.label}`
@@ -144,19 +148,14 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
         >
           {filteredJobs.length > 0 ? (
             filteredJobs.map((job) => (
-              <li
-                key={job.id}
-                className="flex min-w-0 items-baseline justify-between gap-3"
-              >
-                <div className="min-w-0">
-                  <p className="text-body1 m-0 truncate font-medium text-black">
-                    {job.document}
-                  </p>
-                  <p className="text-body1 m-0 text-black">{job.stage}</p>
+              <li key={job.id} className={TELEMETRY_ROW_CLASS}>
+                <p className="text-base m-0 min-w-0 max-w-[65%] flex-1 truncate leading-snug text-black">
+                  {job.document}
+                </p>
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className={TELEMETRY_META_CLASS}>ETA {job.eta}</span>
+                  <span className={TELEMETRY_PILL_CLASS}>{job.stage}</span>
                 </div>
-                <span className="shrink-0 text-sm font-medium tabular-nums text-black">
-                  ETA {job.eta}
-                </span>
               </li>
             ))
           ) : (

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { AlertTriangle, CircleAlert } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -7,6 +8,10 @@ import {
   CARD_EYEBROW_CLASS,
   CARD_TITLE_CLASS,
   INTERACTIVE_CARD_CLASS,
+  TELEMETRY_LIST_CLASS,
+  TELEMETRY_META_CLASS,
+  TELEMETRY_PILL_CLASS,
+  TELEMETRY_ROW_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -17,9 +22,21 @@ type FeedEvent = {
   subsystem: string;
   message: string;
   status?: FeedStatus;
+  /** Destination for the row click — audit log, findings, or score analysis. */
+  href: string;
 };
 
-const FEED_EVENTS: FeedEvent[] = [
+function feedHrefFor(event: Omit<FeedEvent, "href">): string {
+  if (event.status === "warn" || event.status === "error") {
+    return "/dashboard/findings";
+  }
+  if (event.subsystem === "Scorer") {
+    return "/dashboard/score-analysis";
+  }
+  return "/dashboard/audits";
+}
+
+const FEED_EVENT_SEED: Omit<FeedEvent, "href">[] = [
   {
     time: "10:12 AM",
     subsystem: "Agent",
@@ -134,9 +151,14 @@ const FEED_EVENTS: FeedEvent[] = [
   },
 ];
 
+const FEED_EVENTS: FeedEvent[] = FEED_EVENT_SEED.map((event) => ({
+  ...event,
+  href: feedHrefFor(event),
+}));
+
 /** Subtle thin scrollbar for the agent feed log. */
 const FEED_SCROLLBAR_CLASS = cn(
-  "overflow-y-auto overscroll-contain",
+  "overflow-x-hidden overflow-y-auto overscroll-y-contain overscroll-x-none",
   "[scrollbar-width:thin]",
   "[scrollbar-color:#d4d4d8_transparent]",
   "[&::-webkit-scrollbar]:w-1.5",
@@ -189,7 +211,8 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
 
         <ul
           className={cn(
-            "m-0 flex max-h-[350px] min-h-0 flex-1 list-none flex-col gap-3 overflow-y-auto p-0 pr-1",
+            TELEMETRY_LIST_CLASS,
+            "max-h-[350px] min-h-0 flex-1 overflow-x-hidden overflow-y-auto pr-1",
             FEED_SCROLLBAR_CLASS,
           )}
           aria-label="AI agent activity feed"
@@ -198,16 +221,6 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
             const status = event.status ?? "info";
             const isWarn = status === "warn";
             const isError = status === "error";
-            const metaTone = isError
-              ? "text-red-700"
-              : isWarn
-                ? "text-amber-700"
-                : "text-zinc-500";
-            const pillTone = isError
-              ? "border-red-200 bg-red-50 text-red-700"
-              : isWarn
-                ? "border-amber-200 bg-amber-50 text-amber-700"
-                : "border-zinc-200 bg-zinc-50 text-zinc-700";
             const messageTone = isError
               ? "text-red-700"
               : isWarn
@@ -217,49 +230,55 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
             return (
               <li
                 key={`${event.time}-${event.subsystem}-${event.message}`}
-                className="m-0 flex shrink-0 items-center justify-between gap-3"
+                className="m-0 min-w-0 list-none"
               >
-                <p
+                <Link
+                  href={event.href}
                   className={cn(
-                    "text-base m-0 min-w-0 flex-1 leading-snug text-pretty",
-                    messageTone,
+                    TELEMETRY_ROW_CLASS,
+                    "min-w-0 cursor-pointer rounded-lg no-underline transition-colors",
+                    "hover:bg-slate-50/60",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   )}
+                  aria-label={`${event.message} — open related view`}
                 >
-                  {event.message}
-                </p>
-                <div className="flex shrink-0 items-center gap-2 self-center">
-                  {isWarn ? (
-                    <AlertTriangle
-                      className="size-3.5 shrink-0 text-amber-700"
-                      aria-label="Warning"
-                      strokeWidth={2}
-                    />
-                  ) : null}
-                  {isError ? (
-                    <CircleAlert
-                      className="size-3.5 shrink-0 text-red-700"
-                      aria-label="Error"
-                      strokeWidth={2}
-                    />
-                  ) : null}
-                  <time
+                  <p
                     className={cn(
-                      "font-mono text-xs tabular-nums whitespace-nowrap",
-                      metaTone,
-                    )}
-                    dateTime={event.time}
-                  >
-                    {event.time}
-                  </time>
-                  <span
-                    className={cn(
-                      "inline-flex items-center rounded-md border px-1.5 py-0.5 font-mono text-[11px] font-medium leading-none whitespace-nowrap",
-                      pillTone,
+                      "text-base m-0 min-w-0 max-w-[65%] flex-1 overflow-hidden leading-snug text-pretty",
+                      messageTone,
                     )}
                   >
-                    {event.subsystem}
-                  </span>
-                </div>
+                    {event.message}
+                  </p>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {isWarn ? (
+                      <AlertTriangle
+                        className="size-3.5 shrink-0 text-amber-700"
+                        aria-hidden
+                        strokeWidth={2}
+                      />
+                    ) : null}
+                    {isError ? (
+                      <CircleAlert
+                        className="size-3.5 shrink-0 text-red-700"
+                        aria-hidden
+                        strokeWidth={2}
+                      />
+                    ) : null}
+                    <time className={TELEMETRY_META_CLASS} dateTime={event.time}>
+                      {event.time}
+                    </time>
+                    <span
+                      className={cn(
+                        TELEMETRY_PILL_CLASS,
+                        isError && "border-red-200 bg-red-50 text-red-700",
+                        isWarn && "border-amber-200 bg-amber-50 text-amber-700",
+                      )}
+                    >
+                      {event.subsystem}
+                    </span>
+                  </div>
+                </Link>
               </li>
             );
           })}

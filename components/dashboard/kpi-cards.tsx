@@ -83,7 +83,7 @@ function KpiCard({
             "flex h-full w-full min-h-0 flex-col justify-between gap-3 overflow-visible p-4 text-left",
           )}
         >
-          <div className="flex min-w-0 flex-col gap-2.5">
+          <div className="flex min-w-0 flex-col gap-2">
             <p className={CARD_EYEBROW_CLASS}>{eyebrow}</p>
             <div className="flex min-w-0 flex-col gap-2">{children}</div>
           </div>
