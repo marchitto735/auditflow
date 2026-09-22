@@ -10,6 +10,7 @@ import {
   CARD_CTA_CLASS,
   CARD_EYEBROW_CLASS,
   CARD_FOOTER_CLASS,
+  CARD_HEADER_STACK_CLASS,
   CARD_TITLE_CLASS,
   DASHBOARD_CARD_CLASS,
   TELEMETRY_LIST_CLASS,
@@ -90,7 +91,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
       )}
     >
       <CardContent className={cn(CARD_CONTENT_CLASS, "h-auto gap-3")}>
-        <div className="flex min-w-0 flex-col gap-2">
+        <div className={CARD_HEADER_STACK_CLASS}>
           <p className={cn(CARD_EYEBROW_CLASS, "text-black")}>Pipeline</p>
           <h3
             className={cn(
@@ -116,7 +117,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
                   onClick={() => handleStageClick(stage.id)}
                   className={cn(
                     "flex w-full min-w-0 cursor-pointer flex-col gap-1 rounded-lg border px-3 py-2 text-left transition-colors",
-                    "hover:border-slate-400 hover:bg-slate-50/50",
+                    "hover:border-zinc-400 hover:bg-zinc-50/50",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                     isSelected
                       ? "border-zinc-900 bg-zinc-50"

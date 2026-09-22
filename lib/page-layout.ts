@@ -78,6 +78,11 @@ export const CARD_EYEBROW_CLASS =
   "text-sm font-medium m-0 text-black";
 
 /**
+ * Eyebrow → title stack — 8px gap on every dashboard card header.
+ */
+export const CARD_HEADER_STACK_CLASS = "flex min-w-0 flex-col gap-2";
+
+/**
  * Muted card eyebrow (secondary metric cards).
  * Same no-abbreviation rule as CARD_EYEBROW_CLASS.
  */

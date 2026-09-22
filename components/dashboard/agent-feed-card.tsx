@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   CARD_CONTENT_CLASS,
   CARD_EYEBROW_CLASS,
+  CARD_HEADER_STACK_CLASS,
   CARD_TITLE_CLASS,
   INTERACTIVE_CARD_CLASS,
   TELEMETRY_LIST_CLASS,
@@ -187,7 +188,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
           "flex h-full min-h-0 flex-1 flex-col gap-3 overflow-hidden",
         )}
       >
-        <div className="relative flex shrink-0 min-w-0 flex-col gap-1.5">
+        <div className={cn(CARD_HEADER_STACK_CLASS, "relative shrink-0")}>
           <p className={CARD_EYEBROW_CLASS}>Runtime Stream</p>
           <p className="absolute right-0 top-0 m-0 flex items-center gap-2 text-sm font-medium leading-none text-black">
             <span
@@ -237,7 +238,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
                   className={cn(
                     TELEMETRY_ROW_CLASS,
                     "min-w-0 cursor-pointer rounded-lg no-underline transition-colors",
-                    "hover:bg-slate-50/60",
+                    "hover:bg-zinc-50/60",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   )}
                   aria-label={`${event.message} — open related view`}

@@ -25,6 +25,7 @@ import {
   CARD_CTA_CLASS,
   CARD_EYEBROW_CLASS,
   CARD_FOOTER_CLASS,
+  CARD_HEADER_STACK_CLASS,
   CARD_TITLE_CLASS,
   DASHBOARD_TRACK_CARD_HEIGHT_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
@@ -46,11 +47,14 @@ function KpiCard({
   href,
   cta,
   eyebrow,
+  metric,
   children,
 }: {
   href: string;
   cta: string;
   eyebrow: string;
+  /** Primary value under the eyebrow (same stack as Pipeline / Audit titles). */
+  metric?: ReactNode;
   children: ReactNode;
 }) {
   const router = useRouter();
@@ -84,8 +88,11 @@ function KpiCard({
           )}
         >
           <div className="flex min-w-0 flex-col gap-2">
-            <p className={CARD_EYEBROW_CLASS}>{eyebrow}</p>
-            <div className="flex min-w-0 flex-col gap-2">{children}</div>
+            <div className={CARD_HEADER_STACK_CLASS}>
+              <p className={CARD_EYEBROW_CLASS}>{eyebrow}</p>
+              {metric}
+            </div>
+            {children}
           </div>
           <div className={cn(CARD_FOOTER_CLASS, "pt-1")}>
             <span className={CARD_CTA_CLASS}>
@@ -266,10 +273,17 @@ export default function KpiCards({ className }: { className?: string }) {
         href={AUDITS_HREF}
         cta="View Audit Log"
         eyebrow="Total Audits"
+        metric={
+          <p
+            className={cn(
+              CARD_TITLE_CLASS,
+              "m-0 self-start pt-1 leading-none text-foreground",
+            )}
+          >
+            142
+          </p>
+        }
       >
-        <p className={cn(CARD_TITLE_CLASS, "m-0 self-start text-foreground")}>
-          142
-        </p>
         <div className="flex w-full shrink-0 flex-col items-center">
           <TotalAuditsChart />
         </div>

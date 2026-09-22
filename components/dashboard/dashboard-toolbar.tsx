@@ -89,7 +89,7 @@ type DashboardToolbarProps = {
 };
 
 const CONTROL_CLASS =
-  "inline-flex h-10 w-full min-w-[9.5rem] items-center justify-between gap-2 rounded-lg border border-zinc-200 bg-white px-3 text-sm font-medium transition-colors duration-200 hover:border-slate-400 hover:bg-slate-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background md:w-[10.5rem]";
+  "inline-flex h-10 w-full min-w-[9.5rem] items-center justify-between gap-2 rounded-lg border border-zinc-200 bg-white px-3 text-sm font-medium transition-colors duration-200 hover:border-zinc-400 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background md:w-[10.5rem]";
 
 function filterTriggerClass(extra?: string) {
   return cn(CONTROL_CLASS, "text-black", extra);
@@ -360,7 +360,7 @@ export function DashboardToolbar({
             onChange={(event) => patch({ search: event.target.value })}
             placeholder="Search documents"
             aria-label="Search documents"
-            className="h-10 border-zinc-200 bg-white pl-9 text-sm font-medium text-black transition-colors duration-200 placeholder:text-black hover:border-slate-400 hover:bg-slate-50/50 md:text-sm"
+            className="h-10 border-zinc-200 bg-white pl-9 text-sm font-medium text-black transition-colors duration-200 placeholder:text-black hover:border-zinc-400 hover:bg-zinc-50/50 md:text-sm"
           />
         </div>
         <MobileFiltersSheet value={value} onChange={patch} />

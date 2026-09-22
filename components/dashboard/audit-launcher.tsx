@@ -14,6 +14,7 @@ import {
   CARD_CTA_CLASS,
   CARD_EYEBROW_CLASS,
   CARD_FOOTER_CLASS,
+  CARD_HEADER_STACK_CLASS,
   CARD_TITLE_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
   INTERACTIVE_CARD_CLASS,
@@ -190,7 +191,7 @@ export function AuditLauncherCard({
             >
               <div
                 className={cn(
-                  "min-w-0",
+                  CARD_HEADER_STACK_CLASS,
                   SHOW_AUDIT_SCORE_TREND && "max-w-[70%] sm:max-w-none",
                 )}
               >
@@ -198,7 +199,7 @@ export function AuditLauncherCard({
                 <h3
                   className={cn(
                     CARD_TITLE_CLASS,
-                    "m-0 mt-2 max-w-full hyphens-auto break-words text-pretty leading-snug text-black",
+                    "m-0 max-w-full hyphens-auto break-words text-pretty leading-snug text-black",
                   )}
                 >
                   {title}
