@@ -26,8 +26,8 @@ import {
   CARD_EYEBROW_CLASS,
   CARD_FOOTER_CLASS,
   CARD_TITLE_CLASS,
-  DASHBOARD_GAP_CLASS,
   DASHBOARD_TRACK_CARD_HEIGHT_CLASS,
+  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
   INTERACTIVE_CARD_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
@@ -38,7 +38,8 @@ const AUDITS_HREF = "/dashboard/audits";
 
 const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
-  "group flex h-full min-h-0 cursor-pointer flex-col text-inherit no-underline",
+  DASHBOARD_TRACK_CARD_HEIGHT_CLASS,
+  "group flex w-full min-w-0 shrink-0 cursor-pointer flex-col text-inherit no-underline",
 );
 
 function KpiCard({
@@ -79,12 +80,14 @@ function KpiCard({
         <CardContent
           className={cn(
             CARD_CONTENT_CLASS,
-            "h-full min-h-0 w-full flex-col gap-1.5 text-left",
+            "flex h-full w-full min-h-0 flex-col justify-between gap-3 overflow-visible p-4 text-left",
           )}
         >
-          <p className={CARD_EYEBROW_CLASS}>{eyebrow}</p>
-          <div className="flex min-w-0 flex-col gap-1.5">{children}</div>
-          <div className={cn(CARD_FOOTER_CLASS, "mt-auto")}>
+          <div className="flex min-w-0 flex-col gap-2.5">
+            <p className={CARD_EYEBROW_CLASS}>{eyebrow}</p>
+            <div className="flex min-w-0 flex-col gap-2">{children}</div>
+          </div>
+          <div className={cn(CARD_FOOTER_CLASS, "pt-1")}>
             <span className={CARD_CTA_CLASS}>
               <span>{cta}</span>
               <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
@@ -124,20 +127,20 @@ const FINDINGS_TOTAL = FINDINGS_BY_SEVERITY.reduce(
 function TotalAuditsChart() {
   return (
     <div
-      className="pointer-events-none h-12 w-full outline-none [&_*]:outline-none"
+      className="pointer-events-none mx-auto h-[72px] w-[10.5rem] max-w-full shrink-0 overflow-hidden outline-none [&_*]:outline-none"
       aria-hidden
     >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={AUDIT_VOLUME}
-          margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-          barCategoryGap={CHART_GEOMETRY.barCategoryGap}
+          margin={{ top: 2, right: 0, left: 0, bottom: 0 }}
+          barCategoryGap="16%"
           style={{ outline: "none" }}
         >
           <Bar
             dataKey="audits"
             radius={CHART_GEOMETRY.barRadius}
-            maxBarSize={CHART_GEOMETRY.barMaxSize}
+            maxBarSize={14}
             background={{ fill: CHART.track }}
             isAnimationActive={false}
           >
@@ -159,12 +162,13 @@ function TotalAuditsChart() {
 }
 
 function OpenFindingsChart() {
-  const outer = 40;
-  const inner = outer - CHART_GEOMETRY.stroke;
+  const stroke = 10;
+  const outer = 48;
+  const inner = outer - stroke;
 
   return (
     <div
-      className="pointer-events-none relative mx-auto size-[84px] outline-none [&_*]:outline-none"
+      className="pointer-events-none relative mx-auto size-[104px] max-h-[104px] max-w-full shrink-0 overflow-hidden outline-none [&_*]:outline-none"
       aria-hidden
     >
       <ResponsiveContainer width="100%" height="100%">
@@ -206,12 +210,13 @@ function AvgScoreGauge() {
     { name: "score", value: AVG_SCORE },
     { name: "rest", value: remainder },
   ];
-  const outer = 52;
-  const inner = outer - CHART_GEOMETRY.stroke;
+  const stroke = 10;
+  const outer = 58;
+  const inner = outer - stroke;
 
   return (
     <div
-      className="pointer-events-none relative mx-auto h-[84px] w-[148px] outline-none [&_*]:outline-none"
+      className="pointer-events-none relative mx-auto h-[96px] w-full max-w-[168px] shrink-0 overflow-hidden outline-none [&_*]:outline-none"
       aria-hidden
     >
       <ResponsiveContainer width="100%" height="100%">
@@ -237,7 +242,7 @@ function AvgScoreGauge() {
       <p
         className={cn(
           CARD_TITLE_CLASS,
-          "pointer-events-none absolute inset-x-0 bottom-[18%] m-0 text-center leading-none text-foreground",
+          "pointer-events-none absolute inset-x-0 bottom-[16%] m-0 text-center leading-none text-foreground",
         )}
       >
         {AVG_SCORE}%
@@ -255,23 +260,22 @@ export default function KpiCards({ className }: { className?: string }) {
 
   return (
     <div
-      className={cn(
-        "grid grid-cols-1 items-stretch md:grid-cols-3",
-        DASHBOARD_GAP_CLASS,
-        DASHBOARD_TRACK_CARD_HEIGHT_CLASS,
-        className,
-      )}
+      className={cn(DASHBOARD_TRIPLE_CARD_GRID_CLASS, "items-stretch", className)}
     >
       <KpiCard
         href={AUDITS_HREF}
         cta="View Audit Log"
         eyebrow="Total Audits"
       >
-        <p className={cn(CARD_TITLE_CLASS, "m-0 text-foreground")}>142</p>
-        <div className="flex shrink-0 flex-col">
+        <p className={cn(CARD_TITLE_CLASS, "m-0 self-start text-foreground")}>
+          142
+        </p>
+        <div className="flex w-full shrink-0 flex-col items-center">
           <TotalAuditsChart />
         </div>
-        <p className="text-body1 m-0 shrink-0 text-black">+4% this week</p>
+        <p className="text-body1 m-0 shrink-0 self-start leading-snug text-black">
+          +4% this week
+        </p>
       </KpiCard>
 
       <KpiCard
@@ -279,10 +283,12 @@ export default function KpiCards({ className }: { className?: string }) {
         cta="Inspect Findings"
         eyebrow="Open Findings"
       >
-        <div className="flex shrink-0 flex-col items-center">
+        <div className="flex min-w-0 shrink-0 flex-col items-center">
           <OpenFindingsChart />
         </div>
-        <p className="text-body1 m-0 shrink-0 text-black">−2 this week</p>
+        <p className="text-body1 m-0 shrink-0 leading-snug text-black">
+          −2 this week
+        </p>
       </KpiCard>
 
       <KpiCard
@@ -290,10 +296,12 @@ export default function KpiCards({ className }: { className?: string }) {
         cta="Score Breakdown"
         eyebrow="Average Score"
       >
-        <div className="flex shrink-0 flex-col items-center">
+        <div className="flex min-w-0 shrink-0 flex-col items-center">
           <AvgScoreGauge />
         </div>
-        <p className="text-body1 m-0 shrink-0 text-black">+1.2 pts this week</p>
+        <p className="text-body1 m-0 shrink-0 leading-snug text-black">
+          +1.2 pts this week
+        </p>
       </KpiCard>
     </div>
   );

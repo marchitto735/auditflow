@@ -211,7 +211,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
 
         <ul
           className={cn(
-            "m-0 flex min-h-0 flex-1 list-none flex-col gap-3 overflow-y-auto p-0 pr-1",
+            "m-0 flex max-h-[350px] min-h-0 flex-1 list-none flex-col gap-3 overflow-y-auto p-0 pr-1",
             FEED_SCROLLBAR_CLASS,
           )}
           aria-label="AI agent activity feed"

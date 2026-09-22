@@ -31,7 +31,7 @@ import {
 } from "@/lib/page-layout";
 
 const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
-const DEFAULT_PAGE_SIZE = 5;
+const DEFAULT_PAGE_SIZE = 3;
 /** Demo catalog size for pagination chrome when fewer stored reports exist. */
 const DEMO_TOTAL_RESULTS = 194;
 
@@ -133,6 +133,133 @@ function buildPageItems(currentPage: number, totalPages: number) {
   return items;
 }
 
+function PageSizeSelector({
+  pageSize,
+  menusMounted,
+  onChange,
+  menuAlign = "end",
+}: {
+  pageSize: number;
+  menusMounted: boolean;
+  onChange: (value: string) => void;
+  menuAlign?: "start" | "center" | "end";
+}) {
+  const trigger = (
+    <button
+      type="button"
+      aria-label="Rows per page"
+      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-white px-2 text-sm font-medium text-black transition-colors duration-200 hover:border-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-ring"
+    >
+      <span>{pageSize}</span>
+      <ChevronDown className="h-4 w-4 shrink-0 text-black" aria-hidden />
+    </button>
+  );
+
+  return (
+    <div className="flex shrink-0 items-center gap-2">
+      <span className="text-sm text-muted-foreground">Show</span>
+      {menusMounted ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+          <DropdownMenuContent
+            align={menuAlign}
+            sideOffset={6}
+            className={DASHBOARD_MENU_CONTENT_CLASS}
+          >
+            {PAGE_SIZE_OPTIONS.map((size) => {
+              const isSelected = size === pageSize;
+              return (
+                <DropdownMenuItem
+                  key={size}
+                  className={cn(
+                    DASHBOARD_MENU_ITEM_CLASS,
+                    isSelected && DASHBOARD_MENU_ITEM_SELECTED_CLASS,
+                  )}
+                  onSelect={() => onChange(String(size))}
+                >
+                  {size}
+                </DropdownMenuItem>
+              );
+            })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        trigger
+      )}
+    </div>
+  );
+}
+
+function ActivityPaginationNav({
+  pageItems,
+  currentPage,
+  totalPages,
+  onPageChange,
+  className,
+}: {
+  pageItems: Array<number | "ellipsis">;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  className?: string;
+}) {
+  return (
+    <nav
+      className={cn(
+        "flex min-w-0 flex-wrap items-center gap-2",
+        className,
+      )}
+      aria-label="Activity table pagination"
+    >
+      <Button
+        type="button"
+        variant="ghost"
+        className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-500 shadow-none transition-colors duration-150 hover:bg-transparent hover:text-zinc-900"
+        disabled={currentPage <= 1}
+        onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+      >
+        Previous
+      </Button>
+      {pageItems.map((item, index) =>
+        item === "ellipsis" ? (
+          <span
+            key={`ellipsis-${index}`}
+            className="inline-flex h-8 items-center px-1 text-sm text-black"
+            aria-hidden
+          >
+            …
+          </span>
+        ) : (
+          <Button
+            key={item}
+            type="button"
+            variant="ghost"
+            className={cn(
+              "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
+              item === currentPage
+                ? "bg-zinc-500 text-white hover:bg-zinc-400 hover:text-white"
+                : "text-black hover:bg-zinc-100",
+            )}
+            aria-current={item === currentPage ? "page" : undefined}
+            onClick={() => onPageChange(item)}
+          >
+            {item}
+          </Button>
+        ),
+      )}
+      <Button
+        type="button"
+        variant="ghost"
+        className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-500 shadow-none transition-colors duration-150 hover:bg-transparent hover:text-zinc-900"
+        disabled={currentPage >= totalPages}
+        onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+      >
+        Next
+      </Button>
+    </nav>
+  );
+}
+
 export default function RecentActivity({
   rows,
   className,
@@ -194,123 +321,54 @@ export default function RecentActivity({
           </p>
         ) : (
           <>
-            <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
-              <ActivityTable rows={pageRows} />
+            <div className="min-h-0 flex-1 overflow-y-auto">
+              <div className="overflow-x-auto">
+                <ActivityTable rows={pageRows} />
+              </div>
             </div>
 
-            <div className="flex shrink-0 flex-col gap-3 border-t border-zinc-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="m-0 text-sm text-black">
-                Showing {pageRows.length} of {totalCount} results
-              </p>
-
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-sm text-black">Show</span>
-                {menusMounted ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        aria-label="Rows per page"
-                        className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-white px-2 text-sm font-medium text-black"
-                      >
-                        <span>{pageSize}</span>
-                        <ChevronDown
-                          className="h-4 w-4 shrink-0 text-black"
-                          aria-hidden
-                        />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      align="end"
-                      sideOffset={6}
-                      className={DASHBOARD_MENU_CONTENT_CLASS}
-                    >
-                      {PAGE_SIZE_OPTIONS.map((size) => {
-                        const isSelected = size === pageSize;
-                        return (
-                          <DropdownMenuItem
-                            key={size}
-                            className={cn(
-                              DASHBOARD_MENU_ITEM_CLASS,
-                              isSelected && DASHBOARD_MENU_ITEM_SELECTED_CLASS,
-                            )}
-                            onSelect={() => {
-                              handlePageSizeChange(String(size));
-                            }}
-                          >
-                            {size}
-                          </DropdownMenuItem>
-                        );
-                      })}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : (
-                  <button
-                    type="button"
-                    aria-label="Rows per page"
-                    className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-white px-2 text-sm font-medium text-black"
-                  >
-                    <span>{pageSize}</span>
-                    <ChevronDown
-                      className="h-4 w-4 shrink-0 text-black"
-                      aria-hidden
-                    />
-                  </button>
-                )}
+            <div className="shrink-0 border-t border-zinc-200 px-4 py-3">
+              {/* Mobile: metadata + Show on top, pagination below */}
+              <div className="flex flex-col gap-3 md:hidden">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="m-0 min-w-0 text-sm text-muted-foreground">
+                    Showing {pageRows.length} of {totalCount} results
+                  </p>
+                  <PageSizeSelector
+                    pageSize={pageSize}
+                    menusMounted={menusMounted}
+                    onChange={handlePageSizeChange}
+                    menuAlign="end"
+                  />
+                </div>
+                <ActivityPaginationNav
+                  pageItems={pageItems}
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                  className="justify-center"
+                />
               </div>
 
-              <nav
-                className="flex h-8 flex-wrap items-center gap-1"
-                aria-label="Activity table pagination"
-              >
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-500 shadow-none transition-colors duration-150 hover:bg-transparent hover:text-zinc-900"
-                  disabled={currentPage <= 1}
-                  onClick={() => setPage((current) => Math.max(1, current - 1))}
-                >
-                  Previous
-                </Button>
-                {pageItems.map((item, index) =>
-                  item === "ellipsis" ? (
-                    <span
-                      key={`ellipsis-${index}`}
-                      className="inline-flex h-8 items-center px-1 text-sm text-black"
-                      aria-hidden
-                    >
-                      …
-                    </span>
-                  ) : (
-                    <Button
-                      key={item}
-                      type="button"
-                      variant="ghost"
-                      className={cn(
-                        "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
-                        item === currentPage
-                          ? "bg-zinc-500 text-white hover:bg-zinc-400 hover:text-white"
-                          : "text-black hover:bg-zinc-100",
-                      )}
-                      aria-current={item === currentPage ? "page" : undefined}
-                      onClick={() => setPage(item)}
-                    >
-                      {item}
-                    </Button>
-                  ),
-                )}
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-500 shadow-none transition-colors duration-150 hover:bg-transparent hover:text-zinc-900"
-                  disabled={currentPage >= totalPages}
-                  onClick={() =>
-                    setPage((current) => Math.min(totalPages, current + 1))
-                  }
-                >
-                  Next
-                </Button>
-              </nav>
+              {/* Desktop: metadata | Show | pagination */}
+              <div className="hidden items-center justify-between gap-4 md:flex">
+                <p className="m-0 min-w-0 shrink-0 text-sm text-muted-foreground">
+                  Showing {pageRows.length} of {totalCount} results
+                </p>
+                <PageSizeSelector
+                  pageSize={pageSize}
+                  menusMounted={menusMounted}
+                  onChange={handlePageSizeChange}
+                  menuAlign="center"
+                />
+                <ActivityPaginationNav
+                  pageItems={pageItems}
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                  className="shrink-0 justify-end"
+                />
+              </div>
             </div>
           </>
         )}

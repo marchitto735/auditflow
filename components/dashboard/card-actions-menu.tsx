@@ -39,7 +39,7 @@ type CardActionsMenuProps = {
 };
 
 const TRIGGER_CLASS =
-  "inline-flex size-8 shrink-0 items-center justify-center rounded-md text-foreground transition-colors hover:bg-[#EDEDED] hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
+  "inline-flex size-8 shrink-0 items-center justify-center rounded-md text-foreground transition-colors hover:bg-[#EDEDED] hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30";
 
 /**
  * Shared Swiss bento card meatball menu — subtle trigger, slate hover items.

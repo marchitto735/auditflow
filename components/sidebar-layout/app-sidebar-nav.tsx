@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { PanelLeftClose, PanelLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +10,13 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
@@ -33,6 +41,10 @@ import {
 } from "@/lib/sidebar-nav";
 import { useConfigureAudit } from "@/components/configure-audit-modal/configure-audit-context";
 import {
+  DASHBOARD_MENU_CONTENT_CLASS,
+  DASHBOARD_MENU_ITEM_CLASS,
+} from "@/components/dashboard/card-actions-menu";
+import {
   APP_TOPBAR_HEIGHT_CLASS,
   NAV_UTILITY_BUTTON_CLASS,
 } from "@/lib/page-layout";
@@ -45,6 +57,70 @@ type AppSidebarNavProps = {
   forceExpanded?: boolean;
   className?: string;
 };
+
+/** Radix menu IDs differ across SSR/CSR — mount after hydrate with a matching placeholder. */
+function SidebarProfileCard({ compact }: { compact: boolean }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const trigger = (
+    <button
+      type="button"
+      aria-label="Open profile menu"
+      className={cn(
+        "flex w-full items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-muted/40 px-2.5 py-2 text-left transition-colors duration-200 hover:border-zinc-300 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-sidebar-ring data-[state=open]:border-zinc-300 data-[state=open]:bg-zinc-50/50",
+        compact &&
+          "justify-center border-0 bg-transparent px-0 hover:border-transparent hover:bg-zinc-100/80 data-[state=open]:border-transparent data-[state=open]:bg-zinc-100/80",
+      )}
+    >
+      <Avatar className="size-9 shrink-0">
+        <AvatarImage
+          src={SIDEBAR_PROFILE.imageSrc}
+          alt={SIDEBAR_PROFILE.name}
+        />
+        <AvatarFallback>{SIDEBAR_PROFILE.initials}</AvatarFallback>
+      </Avatar>
+      {!compact ? (
+        <div className="min-w-0 flex-1">
+          <p className="text-button m-0 truncate font-medium text-sidebar-foreground">
+            {SIDEBAR_PROFILE.name}
+          </p>
+          <p className="text-caption m-0 truncate text-black">
+            {SIDEBAR_PROFILE.role}
+          </p>
+        </div>
+      ) : null}
+    </button>
+  );
+
+  if (!mounted) return trigger;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuContent
+        side={compact ? "right" : "top"}
+        align={compact ? "end" : "start"}
+        sideOffset={8}
+        className={cn(DASHBOARD_MENU_CONTENT_CLASS, "w-52")}
+      >
+        <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
+          Account Settings
+        </DropdownMenuItem>
+        <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
+          Preferences
+        </DropdownMenuItem>
+        <DropdownMenuSeparator className="mx-1 bg-zinc-200" />
+        <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
+          Log out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export function AppSidebarNav({
   onNavigate,
@@ -221,30 +297,7 @@ export function AppSidebarNav({
           </SidebarContent>
 
           <SidebarFooter className="mt-auto shrink-0 pt-3">
-            <div
-              className={cn(
-                "flex items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-muted/40 px-2.5 py-2",
-                compact && "justify-center border-0 bg-transparent px-0",
-              )}
-            >
-              <Avatar className="size-9 shrink-0">
-                <AvatarImage
-                  src={SIDEBAR_PROFILE.imageSrc}
-                  alt={SIDEBAR_PROFILE.name}
-                />
-                <AvatarFallback>{SIDEBAR_PROFILE.initials}</AvatarFallback>
-              </Avatar>
-              {!compact ? (
-                <div className="min-w-0 flex-1">
-                  <p className="text-button m-0 truncate font-medium text-sidebar-foreground">
-                    {SIDEBAR_PROFILE.name}
-                  </p>
-                  <p className="text-caption m-0 truncate text-black">
-                    {SIDEBAR_PROFILE.role}
-                  </p>
-                </div>
-              ) : null}
-            </div>
+            <SidebarProfileCard compact={compact} />
           </SidebarFooter>
         </div>
       </div>

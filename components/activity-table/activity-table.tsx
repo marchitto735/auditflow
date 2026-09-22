@@ -29,41 +29,47 @@ export const ACTIVITY_COLUMNS = [
     key: "document",
     label: "Document",
     width: "30%",
-    widthClass: "w-[30%]",
+    minWidth: "10rem",
+    widthClass: "w-[30%] min-w-[10rem]",
     overflow: "truncate",
   },
   {
     key: "type",
     label: "Type",
     width: "12%",
-    widthClass: "w-[12%]",
+    minWidth: "4.5rem",
+    widthClass: "w-[12%] min-w-[4.5rem]",
     overflow: "truncate",
   },
   {
     key: "date",
     label: "Timestamp",
     width: "28%",
-    widthClass: "w-[28%]",
+    minWidth: "11rem",
+    widthClass: "w-[28%] min-w-[11rem]",
     overflow: "nowrap",
   },
   {
     key: "score",
     label: "Score",
     width: "12%",
-    widthClass: "w-[12%]",
+    minWidth: "4rem",
+    widthClass: "w-[12%] min-w-[4rem]",
     overflow: "truncate",
   },
   {
     key: "status",
     label: "Status",
     width: "18%",
-    widthClass: "w-[18%]",
+    minWidth: "6.5rem",
+    widthClass: "w-[18%] min-w-[6.5rem]",
     overflow: "truncate",
   },
 ] as const satisfies ReadonlyArray<{
   key: string;
   label: string;
   width: string;
+  minWidth: string;
   widthClass: string;
   overflow: CellOverflow;
 }>;
@@ -270,10 +276,14 @@ export function ActivityTable({
 
   return (
     <TooltipProvider delayDuration={150}>
-      <Table className="w-full table-fixed">
+      <Table className="w-full min-w-[42rem] table-fixed">
         <colgroup>
           {ACTIVITY_COLUMNS.map((column) => (
-            <col key={column.key} className={column.widthClass} style={{ width: column.width }} />
+            <col
+              key={column.key}
+              className={column.widthClass}
+              style={{ width: column.width, minWidth: column.minWidth }}
+            />
           ))}
         </colgroup>
         <TableHeader>
@@ -302,7 +312,7 @@ export function ActivityTable({
             ))}
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody className="[&_tr:last-child]:border-b">
           {rows.map((row) => {
             const open = openRows.has(row.id);
             return (

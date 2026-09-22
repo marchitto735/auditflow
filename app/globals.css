@@ -169,6 +169,16 @@
    Theme blocks: :root (light default), :root.dark, :root.color
 ------------------------------------------------------- */
 @layer base {
+  /*
+   * Default Tailwind focus/box-shadow rings to inset so indicators draw
+   * inside the element and aren't clipped by overflow:hidden ancestors
+   * (cards, tables, sidebars, scroll regions). Opt out per-element with
+   * `--tw-ring-inset: ;` if an outset ring is required.
+   */
+  :root {
+    --tw-ring-inset: inset;
+  }
+
   :root,
   :root.light {
     --radius: 8px;

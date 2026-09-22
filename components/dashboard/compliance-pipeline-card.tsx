@@ -59,8 +59,14 @@ const ACTIVE_JOBS: PipelineJob[] = [
 
 export function CompliancePipelineCard({ className }: { className?: string }) {
   return (
-    <Card className={cn(DASHBOARD_CARD_CLASS, className)}>
-      <CardContent className={cn(CARD_CONTENT_CLASS, "gap-3")}>
+    <Card
+      className={cn(
+        DASHBOARD_CARD_CLASS,
+        "h-auto w-full shrink-0 self-start",
+        className,
+      )}
+    >
+      <CardContent className={cn(CARD_CONTENT_CLASS, "h-auto gap-3")}>
         <div className="flex min-w-0 flex-col gap-1.5">
           <p className={CARD_EYEBROW_CLASS}>Pipeline</p>
           <h3

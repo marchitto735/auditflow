@@ -4,12 +4,11 @@ import * as React from "react";
 import { AgentFeedCard } from "@/components/dashboard/agent-feed-card";
 import { CompliancePipelineCard } from "@/components/dashboard/compliance-pipeline-card";
 import { DashboardSection } from "@/components/dashboard/dashboard-section";
-import { DASHBOARD_GAP_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 /**
- * System Telemetry — pipeline (~60%) + agent feed (~40%).
- * Feed card height matches the pipeline card; the log scrolls internally.
+ * System Telemetry — equal 2-col desktop grid.
+ * Pipeline hugs content; feed matches that height and scrolls internally.
  */
 export function SystemTelemetrySection({ className }: { className?: string }) {
   const pipelineRef = React.useRef<HTMLDivElement>(null);
@@ -51,18 +50,13 @@ export function SystemTelemetrySection({ className }: { className?: string }) {
       description="Real-time AI agent execution pulse, background cache status, and queue telemetry."
       className={className}
     >
-      <div
-        className={cn(
-          "grid grid-cols-1 items-start lg:grid-cols-12",
-          DASHBOARD_GAP_CLASS,
-        )}
-      >
-        <div ref={pipelineRef} className="min-w-0 lg:col-span-7">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+        <div ref={pipelineRef} className="min-w-0">
           <CompliancePipelineCard />
         </div>
         <div
           ref={feedRef}
-          className="flex min-h-0 min-w-0 flex-col lg:col-span-5"
+          className="flex min-h-0 min-w-0 flex-col overflow-hidden"
         >
           <AgentFeedCard className="h-full min-h-0" />
         </div>

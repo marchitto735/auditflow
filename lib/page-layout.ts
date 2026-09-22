@@ -12,7 +12,7 @@ export const DASHBOARD_GAP_CLASS = "gap-6";
 /**
  * Vertical gap between major dashboard sections (e.g. Snapshot → Launcher).
  */
-export const DASHBOARD_SECTION_GAP_CLASS = "gap-8";
+export const DASHBOARD_SECTION_GAP_CLASS = "gap-4";
 
 /**
  * Space below the top nav before page content — shared with sidebar nav
@@ -37,24 +37,38 @@ export const NAV_UTILITY_BUTTON_CLASS =
 export const DASHBOARD_CARD_CLASS =
   "rounded-2xl border border-zinc-200 bg-white shadow-none";
 
-/** Shared fixed height for SOP, BPR, FIR, and each KPI card. */
-export const DASHBOARD_TRACK_CARD_HEIGHT_CLASS = "h-[212px]";
-
-/** Fixed height for Audit Launcher tiles (SOP / BPR / FIR). */
-export const AUDIT_LAUNCHER_CARD_HEIGHT_CLASS = DASHBOARD_TRACK_CARD_HEIGHT_CLASS;
+/**
+ * KPI cards — flexible height so larger charts + trend copy never clip.
+ * `min-h` keeps row rhythm; `h-full` stretches siblings evenly in the grid.
+ */
+export const DASHBOARD_TRACK_CARD_HEIGHT_CLASS = "min-h-[220px] h-full";
 
 /**
- * Recent Activity card — filter bar + table header + 5 body rows + pagination.
- * Locked so the footer and row 5 never clip when the grid flexes.
+ * Audit Launcher tiles — flexible height so wrapped titles never clip.
+ * Compact `min-h` keeps desktop rhythm with KPI cards.
  */
-export const RECENT_ACTIVITY_CARD_HEIGHT_CLASS = "h-[416px]";
+export const AUDIT_LAUNCHER_CARD_HEIGHT_CLASS = "min-h-[148px] h-full";
+
+/**
+ * Shared responsive grid for Audit Launcher + Compliance Snapshot (3 cards each).
+ * Stack only on small mobile; lock 3-up from `md` so bento stays side-by-side
+ * across tablet / split-screen / desktop (avoids early single-column collapse).
+ */
+export const DASHBOARD_TRIPLE_CARD_GRID_CLASS =
+  "grid grid-cols-1 items-stretch gap-6 md:grid-cols-3";
+
+/**
+ * Recent Activity card — filter bar + table header + 3 body rows + pagination.
+ * Locked so the footer never clips when the grid flexes.
+ */
+export const RECENT_ACTIVITY_CARD_HEIGHT_CLASS = "h-[360px]";
 
 /**
  * Interactive card chrome — flat at rest; soft border + shadow lift on hover.
  * Compose with layout utilities (flex, group, etc.) as needed.
  */
 export const INTERACTIVE_CARD_CLASS =
-  "rounded-2xl border border-zinc-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
+  "rounded-2xl border border-zinc-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30";
 
 /**
  * Card eyebrow / metric label — medium 14px.

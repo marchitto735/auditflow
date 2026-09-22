@@ -204,7 +204,7 @@ export const SidebarMenuButton = React.forwardRef<
   const { collapsed } = useSidebar();
   const compact = compactProp ?? collapsed;
   const baseClasses = cn(
-    "flex h-9 min-h-9 w-full items-center gap-2.5 rounded-[6px] border-0 bg-transparent px-3 py-0 text-sm font-medium text-left no-underline outline-none ring-sidebar-ring transition-colors duration-150 hover:bg-[#F7F7F7] hover:text-sidebar-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 whitespace-nowrap [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0 [&_svg]:text-current hover:[&_svg]:text-sidebar-accent-foreground [&_svg]:transition-colors dark:hover:bg-zinc-700/40 color:hover:bg-[oklch(100%_0_0_/0.09)]",
+    "flex h-9 min-h-9 w-full items-center gap-2.5 rounded-[6px] border-0 bg-transparent px-3 py-0 text-sm font-medium text-left no-underline outline-none ring-sidebar-ring transition-colors duration-150 hover:bg-[#F7F7F7] hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 whitespace-nowrap [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0 [&_svg]:text-current hover:[&_svg]:text-sidebar-accent-foreground [&_svg]:transition-colors dark:hover:bg-zinc-700/40 color:hover:bg-[oklch(100%_0_0_/0.09)]",
     compact &&
       "mx-auto size-9 w-9 min-w-9 max-w-9 shrink-0 justify-center gap-0 p-0",
     isActive &&
