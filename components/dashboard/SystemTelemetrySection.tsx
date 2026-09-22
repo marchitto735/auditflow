@@ -46,7 +46,7 @@ export function SystemTelemetrySection({ className }: { className?: string }) {
 
   return (
     <DashboardSection
-      title="System Telemetry"
+      title="Metrics"
       description="Real-time AI agent execution pulse, background cache status, and queue telemetry."
       className={className}
     >

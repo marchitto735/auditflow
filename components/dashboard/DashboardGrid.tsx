@@ -30,19 +30,19 @@ export default function DashboardGrid({
         )}
       >
         <DashboardSection
-          title="Audit Runner"
+          title="Flows"
           description="Run an SOP, BPR, or FIR audit, choose a regulatory clause, get your report."
         >
           <AuditLauncher />
         </DashboardSection>
         <DashboardSection
-          title="Compliance Snapshot"
+          title="Status"
           description="Performance metrics across active audits, findings, and compliance scores."
         >
           <KpiCards />
         </DashboardSection>
         <DashboardSection
-          title="Recent Activity"
+          title="History"
           description="Review recent SOP, BPR, and FIR audits, scores, and compliance status."
         >
           <RecentActivity rows={activityRows} />
