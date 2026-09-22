@@ -227,10 +227,10 @@ export function AuditLauncherCard({
                 aria-hidden
               />
               <span>{workflow.status}</span>
-              <span className="text-zinc-500" aria-hidden>
+              <span className="text-black" aria-hidden>
                 •
               </span>
-              <span className="text-zinc-500">Last Run {workflow.lastRun}</span>
+              <span className="text-black">Last Run {workflow.lastRun}</span>
             </p>
           </div>
 
