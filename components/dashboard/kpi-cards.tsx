@@ -132,6 +132,9 @@ const FINDINGS_TOTAL = FINDINGS_BY_SEVERITY.reduce(
 );
 
 function TotalAuditsChart() {
+  /** Toggle gray background track columns without removing the wiring. */
+  const showTrack = false;
+
   return (
     <div
       className="pointer-events-none mx-auto h-[72px] w-[10.5rem] max-w-full shrink-0 overflow-hidden outline-none [&_*]:outline-none"
@@ -148,7 +151,9 @@ function TotalAuditsChart() {
             dataKey="audits"
             radius={CHART_GEOMETRY.barRadius}
             maxBarSize={14}
-            background={{ fill: CHART.track }}
+            {...(showTrack
+              ? { background: { fill: CHART.track } }
+              : { background: { fill: "transparent" } })}
             isAnimationActive={false}
           >
             {AUDIT_VOLUME.map((entry) => (
@@ -284,7 +289,7 @@ export default function KpiCards({ className }: { className?: string }) {
           </p>
         }
       >
-        <div className="flex w-full shrink-0 flex-col items-center">
+        <div className="-mt-[18px] flex w-full shrink-0 flex-col items-center">
           <TotalAuditsChart />
         </div>
         <p className="text-body1 m-0 shrink-0 self-start leading-snug text-black">
