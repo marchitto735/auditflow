@@ -171,7 +171,7 @@ export function AuditLauncherCard({
           handleActivate();
         }
       }}
-      aria-label={`Launch ${title}`}
+      aria-label={`Run Audit ${title}`}
     >
       <Card className="flex h-full w-full min-h-0 flex-col border-0 bg-transparent shadow-none">
         <CardContent
@@ -264,7 +264,7 @@ export function AuditLauncherCard({
 
             <div className={cn(CARD_FOOTER_CLASS, "pt-0")}>
               <span className={CARD_CTA_CLASS}>
-                <span>Launch</span>
+                <span>Run Audit</span>
                 <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
               </span>
             </div>

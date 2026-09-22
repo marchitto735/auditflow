@@ -48,14 +48,17 @@ function KpiCard({
   cta,
   eyebrow,
   metric,
-  children,
+  chart,
+  helper,
 }: {
   href: string;
   cta: string;
   eyebrow: string;
   /** Primary value under the eyebrow (same stack as Pipeline / Audit titles). */
   metric?: ReactNode;
-  children: ReactNode;
+  chart: ReactNode;
+  /** Trend copy — pinned above the CTA so all KPI cards share the same slot. */
+  helper: string;
 }) {
   const router = useRouter();
 
@@ -84,21 +87,32 @@ function KpiCard({
         <CardContent
           className={cn(
             CARD_CONTENT_CLASS,
-            "flex h-full w-full min-h-0 flex-col justify-between gap-3 overflow-visible p-4 text-left",
+            "relative flex h-full w-full min-h-0 flex-col justify-between gap-3 overflow-visible p-4 text-left",
           )}
         >
-          <div className="flex min-w-0 flex-col gap-2">
-            <div className={CARD_HEADER_STACK_CLASS}>
-              <p className={CARD_EYEBROW_CLASS}>{eyebrow}</p>
-              {metric}
-            </div>
-            {children}
+          {/* Graph stays geometrically centered; text layers never reflow around it. */}
+          <div
+            className="pointer-events-none absolute inset-0 z-0 flex -translate-y-[14px] items-center justify-center"
+            aria-hidden
+          >
+            {chart}
           </div>
-          <div className={cn(CARD_FOOTER_CLASS, "pt-1")}>
-            <span className={CARD_CTA_CLASS}>
-              <span>{cta}</span>
-              <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
-            </span>
+
+          <div className={cn(CARD_HEADER_STACK_CLASS, "relative z-10 shrink-0")}>
+            <p className={CARD_EYEBROW_CLASS}>{eyebrow}</p>
+            {metric}
+          </div>
+
+          <div className="relative z-10 mt-auto flex shrink-0 flex-col gap-2">
+            <p className="text-body1 m-0 w-full self-start text-left leading-snug text-black">
+              {helper}
+            </p>
+            <div className={cn(CARD_FOOTER_CLASS, "pt-0")}>
+              <span className={CARD_CTA_CLASS}>
+                <span>{cta}</span>
+                <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
+              </span>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -228,7 +242,7 @@ function AvgScoreGauge() {
 
   return (
     <div
-      className="pointer-events-none relative mx-auto h-[96px] w-full max-w-[168px] shrink-0 overflow-hidden outline-none [&_*]:outline-none"
+      className="pointer-events-none relative mx-auto h-[96px] w-[168px] max-w-full shrink-0 overflow-hidden outline-none [&_*]:outline-none"
       aria-hidden
     >
       <ResponsiveContainer width="100%" height="100%">
@@ -288,40 +302,25 @@ export default function KpiCards({ className }: { className?: string }) {
             142
           </p>
         }
-      >
-        <div className="-mt-[18px] flex w-full shrink-0 flex-col items-center">
-          <TotalAuditsChart />
-        </div>
-        <p className="text-body1 m-0 shrink-0 self-start leading-snug text-black">
-          +4% this week
-        </p>
-      </KpiCard>
+        chart={<TotalAuditsChart />}
+        helper="+4% this week"
+      />
 
       <KpiCard
         href="/dashboard/findings"
         cta="Inspect Findings"
         eyebrow="Open Findings"
-      >
-        <div className="flex min-w-0 shrink-0 flex-col items-center">
-          <OpenFindingsChart />
-        </div>
-        <p className="text-body1 m-0 shrink-0 leading-snug text-black">
-          −2 this week
-        </p>
-      </KpiCard>
+        chart={<OpenFindingsChart />}
+        helper="−2 this week"
+      />
 
       <KpiCard
         href="/dashboard/score-analysis"
         cta="Score Breakdown"
         eyebrow="Average Score"
-      >
-        <div className="flex min-w-0 shrink-0 flex-col items-center">
-          <AvgScoreGauge />
-        </div>
-        <p className="text-body1 m-0 shrink-0 leading-snug text-black">
-          +1.2 pts this week
-        </p>
-      </KpiCard>
+        chart={<AvgScoreGauge />}
+        helper="+1.2 pts this week"
+      />
     </div>
   );
 }
