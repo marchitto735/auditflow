@@ -328,10 +328,8 @@ export default function RecentActivity({
           </p>
         ) : (
           <>
-            <div className="min-h-0 flex-1 overflow-y-auto">
-              <div className="overflow-x-auto">
-                <ActivityTable rows={pageRows} />
-              </div>
+            <div className="min-h-0 flex-1 overflow-auto">
+              <ActivityTable rows={pageRows} />
             </div>
 
             <div className="shrink-0 border-t border-zinc-200 py-3">

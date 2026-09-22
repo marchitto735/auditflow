@@ -276,7 +276,10 @@ export function ActivityTable({
 
   return (
     <TooltipProvider delayDuration={150}>
-      <Table className="w-full min-w-[42rem] table-fixed">
+      <Table
+        className="w-full min-w-[42rem] table-fixed"
+        containerClassName="overflow-visible"
+      >
         <colgroup>
           {ACTIVITY_COLUMNS.map((column) => (
             <col
@@ -286,15 +289,15 @@ export function ActivityTable({
             />
           ))}
         </colgroup>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
+        <TableHeader className="[&_tr]:border-b-0">
+          <TableRow className="border-b-0 hover:bg-transparent">
             {ACTIVITY_COLUMNS.map((column) => (
               <TableHead
                 key={column.key}
                 className={cn(
                   CELL_PAD_CLASS,
                   column.widthClass,
-                  "text-left",
+                  "sticky top-0 z-20 border-b bg-white text-left",
                   cellOverflowClass(column.overflow),
                   expandable && "cursor-pointer select-none",
                 )}
