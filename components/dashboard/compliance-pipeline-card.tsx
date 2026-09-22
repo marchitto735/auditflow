@@ -86,7 +86,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
     <Card
       className={cn(
         DASHBOARD_CARD_CLASS,
-        "h-auto w-full shrink-0 self-start",
+        "group h-auto w-full shrink-0 self-start",
         className,
       )}
     >
@@ -173,10 +173,10 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
           )}
         </ul>
 
-        <div className={cn(CARD_FOOTER_CLASS, "group")}>
-          <Link href="/dashboard/audits" className={cn(CARD_CTA_CLASS, "text-black")}>
+        <div className={CARD_FOOTER_CLASS}>
+          <Link href="/dashboard/audits" className={CARD_CTA_CLASS}>
             <span>View Audit Log</span>
-            <ChevronRight className={cn(CARD_CTA_ARROW_CLASS, "text-black")} aria-hidden />
+            <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
           </Link>
         </div>
       </CardContent>
