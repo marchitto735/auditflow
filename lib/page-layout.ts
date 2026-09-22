@@ -12,7 +12,7 @@ export const DASHBOARD_GAP_CLASS = "gap-6";
 /**
  * Vertical gap between major dashboard sections (e.g. Snapshot → Launcher).
  */
-export const DASHBOARD_SECTION_GAP_CLASS = "gap-4";
+export const DASHBOARD_SECTION_GAP_CLASS = "gap-6";
 
 /**
  * Space below the top nav before page content — shared with sidebar nav
