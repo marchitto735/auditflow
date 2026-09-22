@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { ChevronDown } from "lucide-react";
 import {
   ACTIVITY_COLUMNS,
+  ACTIVITY_TABLE_HEADER_HEIGHT,
+  ACTIVITY_TABLE_ROW_HEIGHT,
+  ACTIVITY_TABLE_VISIBLE_ROWS,
   ActivityTable,
   type ActivityRow,
 } from "@/components/activity-table/activity-table";
@@ -32,9 +35,28 @@ import {
 } from "@/lib/page-layout";
 
 const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
-const DEFAULT_PAGE_SIZE = 3;
+/** Match `ACTIVITY_TABLE_VISIBLE_ROWS` so the default page fills the viewport exactly. */
+const DEFAULT_PAGE_SIZE = 5;
 /** Demo catalog size for pagination chrome when fewer stored reports exist. */
 const DEMO_TOTAL_RESULTS = 194;
+
+/**
+ * Scrollport = sticky header + N full data rows (no partial row clip).
+ * `snap-y` + row `snap-start` keep wheel/trackpad scrolls on row boundaries;
+ * `scroll-pt` offsets snaps so rows align under the sticky header.
+ * `overscroll-behavior-y: none` seals the bottom boundary so rubber-band
+ * cannot open a gap or pull the last row past the pagination footer.
+ */
+function historyTableScrollStyle(visibleRows: number): CSSProperties {
+  return {
+    ["--activity-table-header-height" as string]: ACTIVITY_TABLE_HEADER_HEIGHT,
+    ["--activity-table-row-height" as string]: ACTIVITY_TABLE_ROW_HEIGHT,
+    height: `calc(var(--activity-table-header-height) + ${visibleRows} * var(--activity-table-row-height))`,
+    scrollPaddingTop: ACTIVITY_TABLE_HEADER_HEIGHT,
+    scrollPaddingBottom: 0,
+    overscrollBehaviorY: "none",
+  };
+}
 
 /** Match ActivityTable `table-fixed` + colgroup so footer locks to the same grid. */
 const ACTIVITY_TABLE_MIN_WIDTH_CLASS = "min-w-[42rem]";
@@ -294,6 +316,7 @@ export default function RecentActivity({
   const pageStart = (currentPage - 1) * pageSize;
   const pageRows = catalog.slice(pageStart, pageStart + pageSize);
   const pageItems = buildPageItems(currentPage, totalPages);
+  const visibleRowSlots = Math.min(pageSize, ACTIVITY_TABLE_VISIBLE_ROWS);
 
   useEffect(() => {
     setPage(1);
@@ -328,46 +351,35 @@ export default function RecentActivity({
           </p>
         ) : (
           <>
-            <div className="min-h-0 flex-1 overflow-auto">
-              <ActivityTable rows={pageRows} />
-            </div>
-
-            <div className="shrink-0 border-t border-zinc-200 py-3">
-              {/* Mobile: status + rows selector on top, pagination below */}
-              <div className="flex flex-col gap-3 px-4 md:hidden">
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                  <p className="m-0 min-w-0 text-sm text-muted-foreground">
-                    Showing {pageRows.length} of {totalCount} results
-                  </p>
-                  <PageSizeSelector
-                    pageSize={pageSize}
-                    menusMounted={menusMounted}
-                    onChange={handlePageSizeChange}
-                    menuAlign="start"
-                  />
-                </div>
-                <ActivityPaginationNav
-                  pageItems={pageItems}
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setPage}
-                  className="justify-center"
+            {/*
+              Sealed History module: scrollport + footer as siblings.
+              Header/footer dividers are 1px box-shadows (not border-b/border-t)
+              so they never stack with row separators while scrolling.
+              overscroll-behavior-y: none locks the bottom boundary.
+            */}
+            <div className="relative flex shrink-0 flex-col overflow-clip isolate">
+              <div
+                className="relative z-0 min-h-0 snap-y snap-mandatory overflow-auto overscroll-y-none"
+                style={historyTableScrollStyle(visibleRowSlots)}
+              >
+                <ActivityTable rows={pageRows} />
+                {/*
+                  Sticky bottom seal — mirrors sticky thead containment.
+                  Pins the scrollport’s bottom edge to the footer.
+                */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none sticky bottom-0 z-20 h-0 bg-white"
                 />
               </div>
 
-              {/* Desktop: status + rows selector left, pagination right */}
-              <div
-                className={cn(
-                  "hidden w-full items-center md:grid",
-                  ACTIVITY_TABLE_MIN_WIDTH_CLASS,
-                )}
-                style={{ gridTemplateColumns: FOOTER_GRID_TEMPLATE }}
-              >
-                <p className="m-0 px-4 text-sm text-muted-foreground">
-                  Showing {pageRows.length} of {totalCount} results
-                </p>
-                <div className="flex min-w-0 items-center justify-between gap-4 px-4">
-                  <div className="-ml-[111px]">
+              <div className="relative z-20 shrink-0 border-t-0 bg-white py-3 shadow-[0_-1px_0_0_var(--border)]">
+                {/* Mobile: status + rows selector on top, pagination below */}
+                <div className="flex flex-col gap-3 px-4 md:hidden">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <p className="m-0 min-w-0 text-sm text-muted-foreground">
+                      Showing {pageRows.length} of {totalCount} results
+                    </p>
                     <PageSizeSelector
                       pageSize={pageSize}
                       menusMounted={menusMounted}
@@ -380,8 +392,38 @@ export default function RecentActivity({
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={setPage}
-                    className="shrink-0 justify-end"
+                    className="justify-center"
                   />
+                </div>
+
+                {/* Desktop: status + rows selector left, pagination right */}
+                <div
+                  className={cn(
+                    "hidden w-full items-center md:grid",
+                    ACTIVITY_TABLE_MIN_WIDTH_CLASS,
+                  )}
+                  style={{ gridTemplateColumns: FOOTER_GRID_TEMPLATE }}
+                >
+                  <p className="m-0 px-4 text-sm text-muted-foreground">
+                    Showing {pageRows.length} of {totalCount} results
+                  </p>
+                  <div className="flex min-w-0 items-center justify-between gap-4 px-4">
+                    <div className="-ml-[111px]">
+                      <PageSizeSelector
+                        pageSize={pageSize}
+                        menusMounted={menusMounted}
+                        onChange={handlePageSizeChange}
+                        menuAlign="start"
+                      />
+                    </div>
+                    <ActivityPaginationNav
+                      pageItems={pageItems}
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={setPage}
+                      className="shrink-0 justify-end"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

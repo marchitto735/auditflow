@@ -61,7 +61,11 @@ export const DASHBOARD_TRIPLE_CARD_GRID_CLASS =
  * Recent Activity card — filter bar + table header + 3 body rows + pagination.
  * Locked so the footer never clips when the grid flexes.
  */
-export const RECENT_ACTIVITY_CARD_HEIGHT_CLASS = "h-[360px]";
+/**
+ * Recent Activity / History card — height follows toolbar + table viewport + footer.
+ * Table body viewport (header bottom → footer top) is fixed in RecentActivity.
+ */
+export const RECENT_ACTIVITY_CARD_HEIGHT_CLASS = "h-auto";
 
 /**
  * Interactive card chrome — flat at rest; soft border + shadow lift on hover.
