@@ -71,7 +71,7 @@ function SidebarProfileCard({ compact }: { compact: boolean }) {
       type="button"
       aria-label="Open profile menu"
       className={cn(
-        "flex w-full items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-muted/40 px-2.5 py-2 text-left transition-colors duration-200 hover:border-zinc-300 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-sidebar-ring data-[state=open]:border-zinc-300 data-[state=open]:bg-zinc-50/50",
+        "flex w-full items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-muted/40 px-2.5 py-2 text-left transition-colors duration-200 hover:border-zinc-400 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-sidebar-ring data-[state=open]:border-zinc-400 data-[state=open]:bg-zinc-50/50",
         compact &&
           "justify-center border-0 bg-transparent px-0 hover:border-transparent hover:bg-zinc-100/80 data-[state=open]:border-transparent data-[state=open]:bg-zinc-100/80",
       )}

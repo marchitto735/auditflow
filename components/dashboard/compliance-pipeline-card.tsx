@@ -121,7 +121,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                     isSelected
                       ? "border-zinc-900 bg-zinc-50"
-                      : "border-zinc-200 bg-white",
+                      : "border-zinc-200 bg-sidebar-muted/40",
                   )}
                 >
                   <span className="text-xs font-semibold uppercase tracking-wider text-black tabular-nums">
