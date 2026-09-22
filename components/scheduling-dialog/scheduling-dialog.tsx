@@ -673,7 +673,7 @@ try {
 
         {/* Close button: fixed top-right of viewport, above overlay */}
         <DialogClose
-          className="fixed right-4 top-4 z-[100] flex size-12 min-h-12 min-w-12 items-center justify-center rounded-sm border-0 bg-transparent text-foreground dark:text-white color:text-white opacity-90 transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-offset-0 ring-0 ring-offset-0 scheduling-dialog-close lg:text-white"
+          className="fixed right-4 top-4 z-[100] flex size-12 min-h-12 min-w-12 items-center justify-center rounded-sm border-0 bg-transparent text-foreground dark:text-white color:text-white opacity-90 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 ring-0 ring-offset-0 scheduling-dialog-close lg:text-white"
           aria-label="Close"
         >
           <XIcon className="size-6 shrink-0 text-foreground dark:text-white color:text-white lg:text-white" />

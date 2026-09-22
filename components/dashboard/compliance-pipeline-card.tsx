@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,23 +15,25 @@ import {
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
+type PipelineStageId = "ingest" | "validate" | "score" | "review" | "export";
+
 type PipelineStage = {
-  id: string;
+  id: PipelineStageId;
   label: string;
   count: number;
-  active?: boolean;
 };
 
 type PipelineJob = {
   id: string;
   document: string;
+  stageId: PipelineStageId;
   stage: string;
   eta: string;
 };
 
 const STAGES: PipelineStage[] = [
   { id: "ingest", label: "Ingest", count: 2 },
-  { id: "validate", label: "Validate", count: 1, active: true },
+  { id: "validate", label: "Validate", count: 1 },
   { id: "score", label: "Score", count: 3 },
   { id: "review", label: "Review", count: 1 },
   { id: "export", label: "Export", count: 0 },
@@ -40,24 +43,40 @@ const ACTIVE_JOBS: PipelineJob[] = [
   {
     id: "job-1",
     document: "SOP Manufacturing v4.2",
+    stageId: "validate",
     stage: "Validate",
     eta: "2m",
   },
   {
     id: "job-2",
     document: "BPR-204 Batch Record",
+    stageId: "score",
     stage: "Score",
     eta: "6m",
   },
   {
     id: "job-3",
     document: "FIR Facility Walkthrough",
+    stageId: "review",
     stage: "Review",
     eta: "12m",
   },
 ];
 
 export function CompliancePipelineCard({ className }: { className?: string }) {
+  const [selectedStage, setSelectedStage] = useState<PipelineStageId | null>(
+    null,
+  );
+
+  const filteredJobs = useMemo(() => {
+    if (!selectedStage) return ACTIVE_JOBS;
+    return ACTIVE_JOBS.filter((job) => job.stageId === selectedStage);
+  }, [selectedStage]);
+
+  function handleStageClick(stageId: PipelineStageId) {
+    setSelectedStage((current) => (current === stageId ? null : stageId));
+  }
+
   return (
     <Card
       className={cn(
@@ -68,14 +87,14 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
     >
       <CardContent className={cn(CARD_CONTENT_CLASS, "h-auto gap-3")}>
         <div className="flex min-w-0 flex-col gap-1.5">
-          <p className={CARD_EYEBROW_CLASS}>Pipeline</p>
+          <p className={cn(CARD_EYEBROW_CLASS, "text-black")}>Pipeline</p>
           <h3
             className={cn(
               CARD_TITLE_CLASS,
               "m-0 max-w-full text-balance text-black",
             )}
           >
-            Active Compliance Pipeline
+            Compliance Pipeline
           </h3>
         </div>
 
@@ -83,53 +102,81 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
           className="m-0 flex list-none flex-wrap items-stretch gap-2 p-0"
           aria-label="Compliance pipeline stages"
         >
-          {STAGES.map((stage, index) => (
-            <li
-              key={stage.id}
-              className={cn(
-                "flex min-w-0 flex-1 flex-col gap-1 rounded-lg border px-3 py-2",
-                stage.active
-                  ? "border-zinc-900 bg-zinc-50"
-                  : "border-zinc-200 bg-white",
-              )}
-            >
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <span className="text-sm font-medium text-black">{stage.label}</span>
-              <span className="text-body1 m-0 text-zinc-600">
-                {stage.count} active
-              </span>
-            </li>
-          ))}
+          {STAGES.map((stage, index) => {
+            const isSelected = selectedStage === stage.id;
+            return (
+              <li key={stage.id} className="flex min-w-0 flex-1">
+                <button
+                  type="button"
+                  aria-pressed={isSelected}
+                  onClick={() => handleStageClick(stage.id)}
+                  className={cn(
+                    "flex w-full min-w-0 cursor-pointer flex-col gap-1 rounded-lg border px-3 py-2 text-left transition-colors",
+                    "hover:border-slate-400 hover:bg-slate-50/50",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                    isSelected
+                      ? "border-zinc-900 bg-zinc-50"
+                      : "border-zinc-200 bg-white",
+                  )}
+                >
+                  <span className="text-xs font-semibold uppercase tracking-wider text-black">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-sm font-medium text-black">
+                    {stage.label}
+                  </span>
+                  <span className="text-body1 m-0 text-black">
+                    {stage.count} active
+                  </span>
+                </button>
+              </li>
+            );
+          })}
         </ol>
 
         <ul
           className="m-0 flex list-none flex-col gap-2 p-0"
-          aria-label="Active pipeline jobs"
+          aria-label={
+            selectedStage
+              ? `Active pipeline jobs in ${STAGES.find((s) => s.id === selectedStage)?.label}`
+              : "Active pipeline jobs"
+          }
         >
-          {ACTIVE_JOBS.map((job) => (
-            <li
-              key={job.id}
-              className="flex min-w-0 items-baseline justify-between gap-3"
-            >
-              <div className="min-w-0">
-                <p className="text-body1 m-0 truncate font-medium text-black">
-                  {job.document}
-                </p>
-                <p className="text-body1 m-0 text-zinc-600">{job.stage}</p>
-              </div>
-              <span className="shrink-0 text-sm font-medium tabular-nums text-zinc-500">
-                ETA {job.eta}
-              </span>
+          {filteredJobs.length > 0 ? (
+            filteredJobs.map((job) => (
+              <li
+                key={job.id}
+                className="flex min-w-0 items-baseline justify-between gap-3"
+              >
+                <div className="min-w-0">
+                  <p className="text-body1 m-0 truncate font-medium text-black">
+                    {job.document}
+                  </p>
+                  <p className="text-body1 m-0 text-black">{job.stage}</p>
+                </div>
+                <span className="shrink-0 text-sm font-medium tabular-nums text-black">
+                  ETA {job.eta}
+                </span>
+              </li>
+            ))
+          ) : (
+            <li className="text-body1 m-0 text-black">
+              No active jobs in this stage.
+              <button
+                type="button"
+                onClick={() => setSelectedStage(null)}
+                className="ml-2 font-medium text-black underline underline-offset-2 transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                Show all
+              </button>
             </li>
-          ))}
+          )}
         </ul>
 
         <div className={cn(CARD_FOOTER_CLASS, "group")}>
-          <Link href="/dashboard/audits" className={CARD_CTA_CLASS}>
+          <Link href="/dashboard/audits" className={cn(CARD_CTA_CLASS, "text-black")}>
             <span>View Audit Log</span>
-            <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
+            <ChevronRight className={cn(CARD_CTA_ARROW_CLASS, "text-black")} aria-hidden />
           </Link>
         </div>
       </CardContent>

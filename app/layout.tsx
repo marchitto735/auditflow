@@ -12,6 +12,7 @@ import {
 import "./globals.css";
 import { ThemeProvider } from "@/hooks/use-theme";
 import { CartProvider } from "@/components/cart/cart-context";
+import { FocusModality } from "@/components/focus-modality";
 import { Toaster } from "@/components/ui/sonner";
 import ErrorBoundary from "./error-boundary";
 import SidebarLayout from "@/components/sidebar-layout/sidebar-layout";
@@ -107,6 +108,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ThemeProvider>
+          <FocusModality />
           <CartProvider>
             <ErrorBoundary>
               <SidebarLayout>{children}</SidebarLayout>

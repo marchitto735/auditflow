@@ -146,28 +146,6 @@ const FEED_SCROLLBAR_CLASS = cn(
   "[&::-webkit-scrollbar-thumb:hover]:bg-zinc-400",
 );
 
-function FeedStatusIcon({ status }: { status: FeedStatus }) {
-  if (status === "warn") {
-    return (
-      <AlertTriangle
-        className="mt-0.5 size-3.5 shrink-0 text-amber-800"
-        aria-label="Warning"
-        strokeWidth={2}
-      />
-    );
-  }
-  if (status === "error") {
-    return (
-      <CircleAlert
-        className="mt-0.5 size-3.5 shrink-0 text-red-700"
-        aria-label="Error"
-        strokeWidth={2}
-      />
-    );
-  }
-  return null;
-}
-
 type AgentFeedCardProps = {
   className?: string;
 };
@@ -205,7 +183,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
               "m-0 max-w-full text-balance text-black",
             )}
           >
-            Agent Activity Feed
+            Activity Feed
           </h3>
         </div>
 
@@ -223,53 +201,64 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
             const metaTone = isError
               ? "text-red-700"
               : isWarn
-                ? "text-amber-800"
-                : "text-black";
+                ? "text-amber-700"
+                : "text-zinc-500";
             const pillTone = isError
               ? "border-red-200 bg-red-50 text-red-700"
               : isWarn
-                ? "border-amber-200 bg-amber-50 text-amber-800"
-                : "border-zinc-200 bg-zinc-50 text-black";
+                ? "border-amber-200 bg-amber-50 text-amber-700"
+                : "border-zinc-200 bg-zinc-50 text-zinc-700";
             const messageTone = isError
               ? "text-red-700"
               : isWarn
-                ? "text-amber-800"
+                ? "text-amber-700"
                 : "text-black";
 
             return (
               <li
                 key={`${event.time}-${event.subsystem}-${event.message}`}
-                className="m-0 flex shrink-0 items-start gap-2"
+                className="m-0 flex shrink-0 items-center justify-between gap-3"
               >
-                {status !== "info" ? <FeedStatusIcon status={status} /> : null}
-                <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <time
-                      className={cn(
-                        "font-mono text-xs tabular-nums",
-                        metaTone,
-                      )}
-                      dateTime={event.time}
-                    >
-                      {event.time}
-                    </time>
-                    <span
-                      className={cn(
-                        "inline-flex max-w-full items-center rounded-md border px-1.5 py-0.5 font-mono text-[11px] font-medium leading-none",
-                        pillTone,
-                      )}
-                    >
-                      {event.subsystem}
-                    </span>
-                  </div>
-                  <p
+                <p
+                  className={cn(
+                    "text-base m-0 min-w-0 flex-1 leading-snug text-pretty",
+                    messageTone,
+                  )}
+                >
+                  {event.message}
+                </p>
+                <div className="flex shrink-0 items-center gap-2 self-center">
+                  {isWarn ? (
+                    <AlertTriangle
+                      className="size-3.5 shrink-0 text-amber-700"
+                      aria-label="Warning"
+                      strokeWidth={2}
+                    />
+                  ) : null}
+                  {isError ? (
+                    <CircleAlert
+                      className="size-3.5 shrink-0 text-red-700"
+                      aria-label="Error"
+                      strokeWidth={2}
+                    />
+                  ) : null}
+                  <time
                     className={cn(
-                      "text-body1 m-0 leading-snug",
-                      messageTone,
+                      "font-mono text-xs tabular-nums whitespace-nowrap",
+                      metaTone,
+                    )}
+                    dateTime={event.time}
+                  >
+                    {event.time}
+                  </time>
+                  <span
+                    className={cn(
+                      "inline-flex items-center rounded-md border px-1.5 py-0.5 font-mono text-[11px] font-medium leading-none whitespace-nowrap",
+                      pillTone,
                     )}
                   >
-                    {event.message}
-                  </p>
+                    {event.subsystem}
+                  </span>
                 </div>
               </li>
             );

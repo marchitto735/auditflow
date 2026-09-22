@@ -80,7 +80,7 @@ function SheetContent({
         {showCloseButton && (
           <SheetPrimitive.Close
             className={cn(
-              "ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-sm transition-colors text-foreground hover:text-muted-foreground [&_svg]:text-current focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none",
+              "ring-offset-background focus-visible:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-sm transition-colors text-foreground hover:text-muted-foreground [&_svg]:text-current focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none",
               closeButtonClassName
             )}
           >

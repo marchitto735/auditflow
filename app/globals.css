@@ -1079,6 +1079,21 @@
   .audit-cta-dash {
     animation: audit-cta-dash 1.6s linear infinite;
   }
+
+  /*
+   * Text fields match :focus-visible on mouse click (browser heuristic).
+   * Suppress rings unless the last interaction was Tab (FocusModality).
+   */
+  html[data-focus-modality="pointer"]
+    :is(input, textarea, select, [role="combobox"], [data-slot="input"], [data-slot="textarea"]):is(
+      :focus,
+      :focus-visible
+    ) {
+    outline: none !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+    --tw-ring-offset-shadow: 0 0 #0000 !important;
+    box-shadow: var(--tw-shadow, 0 0 #0000) !important;
+  }
 }
 
 /* ChatKit host (`openai-chatkit`): transparent shell so sheet / sidebar background shows through.

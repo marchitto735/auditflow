@@ -148,7 +148,7 @@ function PageSizeSelector({
     <button
       type="button"
       aria-label="Rows per page"
-      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-white px-2 text-sm font-medium text-black transition-colors duration-200 hover:border-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-ring"
+      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-white px-2 text-sm font-medium text-black transition-colors duration-200 hover:border-slate-400 hover:bg-slate-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <span>{pageSize}</span>
       <ChevronDown className="h-4 w-4 shrink-0 text-black" aria-hidden />
