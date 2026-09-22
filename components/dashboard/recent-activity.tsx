@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import {
+  ACTIVITY_COLUMNS,
   ActivityTable,
   type ActivityRow,
 } from "@/components/activity-table/activity-table";
@@ -34,6 +35,12 @@ const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
 const DEFAULT_PAGE_SIZE = 3;
 /** Demo catalog size for pagination chrome when fewer stored reports exist. */
 const DEMO_TOTAL_RESULTS = 194;
+
+/** Match ActivityTable `table-fixed` + colgroup so footer locks to the same grid. */
+const ACTIVITY_TABLE_MIN_WIDTH_CLASS = "min-w-[42rem]";
+/** Document column share — Type (and rows selector) begin immediately after. */
+const FOOTER_DOCUMENT_COL_WIDTH = ACTIVITY_COLUMNS[0].width; // 30%
+const FOOTER_GRID_TEMPLATE = `${FOOTER_DOCUMENT_COL_WIDTH} minmax(0,1fr)`;
 
 /** Stable SSR/CSR date string — avoid `toLocaleString()` hydration drift. */
 function formatDemoDate(utcMinutesOffset: number) {
@@ -157,7 +164,7 @@ function PageSizeSelector({
 
   return (
     <div className="flex shrink-0 items-center gap-2">
-      <span className="text-sm text-muted-foreground">Show</span>
+      <span className="text-sm text-muted-foreground">Rows per page:</span>
       {menusMounted ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
@@ -327,10 +334,10 @@ export default function RecentActivity({
               </div>
             </div>
 
-            <div className="shrink-0 border-t border-zinc-200 px-4 py-3">
-              {/* Mobile: metadata + Show on top, pagination below */}
-              <div className="flex flex-col gap-3 md:hidden">
-                <div className="flex items-center justify-between gap-3">
+            <div className="shrink-0 border-t border-zinc-200 py-3">
+              {/* Mobile: status + rows selector on top, pagination below */}
+              <div className="flex flex-col gap-3 px-4 md:hidden">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                   <p className="m-0 min-w-0 text-sm text-muted-foreground">
                     Showing {pageRows.length} of {totalCount} results
                   </p>
@@ -338,7 +345,7 @@ export default function RecentActivity({
                     pageSize={pageSize}
                     menusMounted={menusMounted}
                     onChange={handlePageSizeChange}
-                    menuAlign="end"
+                    menuAlign="start"
                   />
                 </div>
                 <ActivityPaginationNav
@@ -350,24 +357,34 @@ export default function RecentActivity({
                 />
               </div>
 
-              {/* Desktop: metadata | Show | pagination */}
-              <div className="hidden items-center justify-between gap-4 md:flex">
-                <p className="m-0 min-w-0 shrink-0 text-sm text-muted-foreground">
+              {/* Desktop: status + rows selector left, pagination right */}
+              <div
+                className={cn(
+                  "hidden w-full items-center md:grid",
+                  ACTIVITY_TABLE_MIN_WIDTH_CLASS,
+                )}
+                style={{ gridTemplateColumns: FOOTER_GRID_TEMPLATE }}
+              >
+                <p className="m-0 px-4 text-sm text-muted-foreground">
                   Showing {pageRows.length} of {totalCount} results
                 </p>
-                <PageSizeSelector
-                  pageSize={pageSize}
-                  menusMounted={menusMounted}
-                  onChange={handlePageSizeChange}
-                  menuAlign="center"
-                />
-                <ActivityPaginationNav
-                  pageItems={pageItems}
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setPage}
-                  className="shrink-0 justify-end"
-                />
+                <div className="flex min-w-0 items-center justify-between gap-4 px-4">
+                  <div className="-ml-[111px]">
+                    <PageSizeSelector
+                      pageSize={pageSize}
+                      menusMounted={menusMounted}
+                      onChange={handlePageSizeChange}
+                      menuAlign="start"
+                    />
+                  </div>
+                  <ActivityPaginationNav
+                    pageItems={pageItems}
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setPage}
+                    className="shrink-0 justify-end"
+                  />
+                </div>
               </div>
             </div>
           </>
