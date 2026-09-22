@@ -18,7 +18,7 @@ type DashboardSectionHeaderProps = {
 };
 
 /**
- * Section title row — help on the left, meatball menu on the right.
+ * Section title row — title, help tooltip, and meatball menu grouped inline.
  */
 export function DashboardSectionHeader({
   title,
@@ -28,44 +28,42 @@ export function DashboardSectionHeader({
   return (
     <div
       className={cn(
-        "flex shrink-0 items-center justify-between gap-3",
+        "flex shrink-0 items-center gap-1.5",
         className,
       )}
     >
-      <div className="flex min-w-0 items-center gap-1.5">
-        <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-foreground")}>
-          {title}
-        </h2>
-        {description ? (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:bg-zinc-100 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30"
-                aria-label={`About ${title}`}
-              >
-                <CircleHelp
-                  className="size-3.5"
-                  strokeWidth={1.75}
-                  aria-hidden
-                />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent
-              side="bottom"
-              align="start"
-              sideOffset={6}
-              avoidCollisions={false}
-              className="max-w-[16rem] rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-left text-zinc-50 shadow-none"
+      <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-foreground")}>
+        {title}
+      </h2>
+      {description ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:bg-zinc-100 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30"
+              aria-label={`About ${title}`}
             >
-              <p className="m-0 text-xs font-medium tracking-tight">{title}</p>
-              <p className="m-0 mt-1 text-xs leading-snug text-zinc-300">
-                {description}
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        ) : null}
-      </div>
+              <CircleHelp
+                className="size-3.5"
+                strokeWidth={1.75}
+                aria-hidden
+              />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent
+            side="bottom"
+            align="start"
+            sideOffset={6}
+            avoidCollisions={false}
+            className="max-w-[16rem] rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-left text-zinc-50 shadow-none"
+          >
+            <p className="m-0 text-xs font-medium tracking-tight">{title}</p>
+            <p className="m-0 mt-1 text-xs leading-snug text-zinc-300">
+              {description}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      ) : null}
       <CardActionsMenu label={title} />
     </div>
   );
@@ -79,7 +77,7 @@ type DashboardSectionProps = {
 };
 
 /**
- * Section chrome — title + help on the left, one meatball menu on the right.
+ * Section chrome — title, help, and meatball menu grouped in the header row.
  */
 export function DashboardSection({
   title,
