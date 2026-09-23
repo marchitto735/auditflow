@@ -2,16 +2,47 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { extractText } from "unpdf";
+import { parseDocumentChunks } from "@/lib/document-chunks";
 import { EMBEDDING_MODEL } from "@/lib/rag/model-constants";
 import { openaiClient } from "@/lib/services/openai";
 import { createSupabaseAdmin, readSupabaseServerConfig } from "@/lib/supabase/admin";
 import { formatSupabaseReachError } from "@/lib/supabase/url";
 
 const DEFAULT_CLAUSE_ID = 27;
-const CHUNK_MODEL = "gpt-4o-mini";
 const EMBEDDING_DIMENSIONS = 1536;
 
-const SECTION_PARSER_SYSTEM = `You are an SOP document parser. Extract every distinct section from the SOP document text (e.g., Purpose, Scope, Reference Documents, Definitions, Responsibility, Equipment/Materials, Precautions, Procedure - General Requirements, Procedure - Correcting Errors, Retention, Revision History, Biannual Review, Document Header/Meta). Do not skip sections marked as 'NA' and do not combine sections. For each section, extract 3 to 7 key technical terms, equipment names, role titles, or GDP concepts present in that specific section text. Return ONLY a valid raw JSON array of objects without markdown formatting or backticks using this schema: [{"section_number": 1, "title": "Section Title", "content": "Full text of this section", "keywords": ["term1", "term2", "term3"]}]`;
+const STOP_WORDS = new Set([
+  "the",
+  "and",
+  "for",
+  "with",
+  "that",
+  "this",
+  "from",
+  "are",
+  "was",
+  "were",
+  "not",
+  "may",
+  "when",
+  "into",
+  "each",
+  "then",
+]);
+
+function keywordsFrom(text: string) {
+  const words = text.match(/[A-Za-z][A-Za-z0-9/-]{2,}/g) ?? [];
+  const keywords: string[] = [];
+  for (const word of words) {
+    const key = word.toLowerCase();
+    if (STOP_WORDS.has(key) || keywords.some((item) => item.toLowerCase() === key)) {
+      continue;
+    }
+    keywords.push(word);
+    if (keywords.length === 7) break;
+  }
+  return keywords;
+}
 
 export type IngestKind = "sop" | "bpr";
 
@@ -58,84 +89,44 @@ export function parseClauseId(raw: string | number | null | undefined) {
   return text;
 }
 
+/** Keep every line. Do not collapse whitespace or drop blank lines. */
+export function preserveDocumentText(raw: string) {
+  return String(raw).replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+}
+
 export function sanitizeSopText(raw: string) {
-  return String(raw)
-    .replace(/"/g, "'")
-    .replace(/\\/g, "/")
-    .replace(/[\r\n]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+  return preserveDocumentText(raw);
 }
 
 export async function extractPdfText(bytes: Uint8Array) {
-  const { text } = await extractText(bytes, { mergePages: true });
-  const combined = Array.isArray(text) ? text.join(" ") : String(text ?? "");
-  const sanitized = sanitizeSopText(combined);
-  if (!sanitized) {
+  const { text } = await extractText(bytes, { mergePages: false });
+  const pages = Array.isArray(text)
+    ? text.map((page) => String(page ?? ""))
+    : [String(text ?? "")];
+  const preserved = preserveDocumentText(pages.join("\n"));
+  if (!preserved.trim()) {
     throw new Error("No text could be extracted from the PDF.");
   }
-  return sanitized;
+  return preserved;
 }
 
-function parseSectionsPayload(rawContent: string): SopSection[] {
-  const cleaned = rawContent
-    .replace(/```json/gi, "")
-    .replace(/```/g, "")
-    .trim();
-  const parsed: unknown = JSON.parse(cleaned);
-  const sectionsArray = Array.isArray(parsed)
-    ? parsed
-    : parsed &&
-        typeof parsed === "object" &&
-        Array.isArray((parsed as { sections?: unknown }).sections)
-      ? (parsed as { sections: unknown[] }).sections
-      : parsed && typeof parsed === "object"
-        ? Object.values(parsed as Record<string, unknown>)[0]
-        : [];
-
-  if (!Array.isArray(sectionsArray) || sectionsArray.length === 0) {
-    throw new Error("OpenAI did not return any SOP sections.");
-  }
-
-  return sectionsArray.map((section, index) => {
-    const row = (section ?? {}) as Record<string, unknown>;
-    const keywords = Array.isArray(row.keywords)
-      ? row.keywords.map((keyword) => String(keyword))
-      : [];
-    return {
-      section_number:
-        typeof row.section_number === "number"
-          ? row.section_number
-          : index + 1,
-      title: String(row.title ?? "Untitled"),
-      content: String(row.content ?? ""),
-      keywords,
-    };
-  });
-}
-
+/**
+ * Deterministic section split. Every non-blank source line is one section,
+ * in order. Empty line breaks are omitted. The model parser is not used here
+ * because it can drop or merge content.
+ */
 export async function parseSopSections(text: string): Promise<SopSection[]> {
-  const openai = openaiClient();
-  const completion = await openai.chat.completions.create({
-    model: CHUNK_MODEL,
-    max_tokens: 4000,
-    messages: [
-      { role: "system", content: SECTION_PARSER_SYSTEM },
-      { role: "user", content: text },
-    ],
-  });
-
-  const content = completion.choices[0]?.message?.content;
-  if (!content) {
-    throw new Error("OpenAI chunk parser returned an empty response.");
+  const { chunks } = parseDocumentChunks(text);
+  if (chunks.length === 0) {
+    throw new Error("No SOP sections could be parsed from the document.");
   }
 
-  try {
-    return parseSectionsPayload(content);
-  } catch (error) {
-    const reason = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to parse SOP sections: ${reason}`);
-  }
+  return chunks.map((chunk, index) => ({
+    section_number: index + 1,
+    title: chunk.title,
+    content: chunk.lines.map((line) => line.text).join("\n"),
+    keywords: keywordsFrom(chunk.text),
+  }));
 }
 
 export async function embedSopSections(

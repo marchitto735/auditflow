@@ -13,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Bell, CircleHelp, CircleUser, Menu } from "lucide-react";
-import CartTrigger from "@/components/cart/cart-trigger";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import {
   Breadcrumb,
@@ -174,7 +173,6 @@ export default function Header() {
               >
                 <CircleHelp className="size-5" />
               </Link>
-              <CartTrigger />
               <ProfileMenu />
             </div>
           </div>

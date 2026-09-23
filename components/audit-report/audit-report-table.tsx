@@ -42,7 +42,7 @@ type AuditReportTableProps = {
   fileName: string;
   documentType: string;
   clauseLabel: string;
-  timestamp: Date;
+  timestamp: Date | null;
   onDownloadReport?: () => void;
   onRerunAudit?: () => void;
 };
@@ -181,7 +181,7 @@ export function AuditReportTable({
 }: AuditReportTableProps) {
   const [detailsOpen, setDetailsOpen] = useState(false);
 
-  const date = timestamp.toLocaleString();
+  const date = timestamp ? timestamp.toLocaleString() : "—";
   const score = report?.score != null ? String(report.score) : "—";
   const status = activityStatusLabel(report?.status);
   const auditId = report?.clause_id
@@ -197,7 +197,7 @@ export function AuditReportTable({
   return (
     <TooltipProvider delayDuration={0}>
       <div className="min-w-0 w-full">
-        <div className="relative border-b border-border bg-muted px-4 pt-4 pb-4">
+        <div className="relative border-b border-border bg-white px-4 pt-4 pb-4">
           <div className="absolute top-4 right-4 z-10">
             <AuditReportActionsMenu
               auditId={auditId}

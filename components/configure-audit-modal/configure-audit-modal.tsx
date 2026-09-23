@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   Check,
   ChevronDown,
+  CircleHelp,
   Loader2,
   Upload,
   X,
@@ -41,13 +42,20 @@ import {
   getClausesForFramework,
 } from "@/lib/audit-frameworks";
 import { cn } from "@/lib/utils";
+import { SECTION_HEADER_CLASS } from "@/lib/page-layout";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 /** Shared section labels — text-sm, uniform weight. */
 const SECTION_LABEL = "mb-2 text-sm font-medium text-black";
 
 /** Shared field shell for Frameworks / Clauses / Docs. */
 const FIELD_SURFACE_CLASS =
-  "relative flex min-h-14 w-full cursor-pointer items-center gap-2 rounded-lg border border-border/60 bg-white px-3 py-3 text-left shadow-none transition-all duration-200 ease-in-out hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
+  "relative flex min-h-14 w-full cursor-pointer items-center gap-2 rounded-lg border border-zinc-200 bg-sidebar-muted/40 px-3 py-3 text-left shadow-none transition-colors duration-200 ease-in-out hover:border-zinc-400 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
 
 const FIELD_SURFACE_OPEN_CLASS = "border-border bg-zinc-50 shadow-sm";
 
@@ -234,7 +242,7 @@ function FieldComboboxTrigger({
         "pr-10",
         open && FIELD_SURFACE_OPEN_CLASS,
         disabled &&
-          "pointer-events-none cursor-not-allowed opacity-60 hover:border-border/60",
+          "pointer-events-none cursor-not-allowed opacity-60 hover:border-zinc-200 hover:bg-sidebar-muted/40",
         className,
       )}
     >
@@ -266,6 +274,7 @@ export function ConfigureAuditModal({
   const [frameworkOpen, setFrameworkOpen] = React.useState(false);
   const [clauseOpen, setClauseOpen] = React.useState(false);
   const [docsOpen, setDocsOpen] = React.useState(false);
+  const [helpOpen, setHelpOpen] = React.useState(false);
   const [attachedFiles, setAttachedFiles] = React.useState<StagedFile[]>([]);
   const [clauseQuery, setClauseQuery] = React.useState("");
   const [selectedClauses, setSelectedClauses] = React.useState<Set<string>>(
@@ -442,6 +451,7 @@ export function ConfigureAuditModal({
 
   function handleDialogOpenChange(nextOpen: boolean) {
     if (isInitializing && !nextOpen) return;
+    if (!nextOpen) setHelpOpen(false);
     onOpenChange(nextOpen);
   }
 
@@ -501,6 +511,11 @@ export function ConfigureAuditModal({
   const assessmentLabel = auditType
     ? AUDIT_WORKFLOWS[auditType].label
     : null;
+  const helperText = `Choose audit type, framework(s), select clauses, and link target documentation${
+    assessmentLabel
+      ? ` for the ${assessmentLabel} compliance assessment.`
+      : " for the compliance assessment."
+  }`;
 
   const submitLabel =
     docCount > 1
@@ -513,23 +528,51 @@ export function ConfigureAuditModal({
         showCloseButton={false}
         centerInViewport
         overlayClassName="bg-black/60 backdrop-blur-sm"
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 md:inset-auto md:left-1/2 md:top-1/2 md:max-h-[min(90vh,840px)] md:w-full md:max-w-2xl md:-translate-x-1/2 md:-translate-y-1/2"
+        onOpenAutoFocus={(event) => event.preventDefault()}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 md:inset-auto md:left-1/2 md:top-1/2 md:max-h-[min(90vh,840px)] md:w-full md:max-w-xl md:p-0 md:-translate-x-1/2 md:-translate-y-1/2"
       >
         <div className="flex max-h-[min(90vh,840px)] w-full flex-col overflow-hidden rounded-xl border border-border/60 bg-white text-black shadow-lg">
-          <DialogHeader className="shrink-0 gap-1 border-b border-border/60 px-6 py-5 text-left">
-            <DialogTitle className="m-0 text-xl font-medium tracking-tight text-black">
+          <DialogHeader className="shrink-0 flex-row items-center gap-1.5 border-b border-border/60 p-4 text-left">
+            <DialogTitle className={cn(SECTION_HEADER_CLASS, "m-0 text-black")}>
               New Audit
             </DialogTitle>
-            <DialogDescription className="m-0 max-w-xl text-sm font-normal text-muted-foreground">
-              Choose audit type, framework(s), select clauses, and link target
-              documentation
-              {assessmentLabel
-                ? ` for the ${assessmentLabel} compliance assessment.`
-                : " for the compliance assessment."}
-            </DialogDescription>
+            <TooltipProvider delayDuration={200}>
+              <Tooltip open={helpOpen} onOpenChange={setHelpOpen}>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:bg-zinc-100 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30"
+                    aria-label="About New Audit"
+                    aria-expanded={helpOpen}
+                    onClick={() => setHelpOpen(true)}
+                  >
+                    <CircleHelp
+                      className="size-3.5"
+                      strokeWidth={1.75}
+                      aria-hidden
+                    />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="bottom"
+                  align="start"
+                  sideOffset={6}
+                  avoidCollisions={false}
+                  className="z-[80] max-w-[16rem] rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-left text-zinc-50 shadow-none"
+                >
+                  <p className="m-0 text-xs font-medium tracking-tight">
+                    New Audit
+                  </p>
+                  <p className="m-0 mt-1 text-xs leading-snug text-zinc-300">
+                    {helperText}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <DialogDescription className="sr-only">{helperText}</DialogDescription>
           </DialogHeader>
 
-          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-6 py-5">
+          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-4">
             {/* Audit Type */}
             <section>
               <h3 className={SECTION_LABEL}>Audit Type</h3>
@@ -970,7 +1013,7 @@ export function ConfigureAuditModal({
             ) : null}
           </div>
 
-          <DialogFooter className="shrink-0 flex-col gap-3 border-t border-border/60 px-6 py-4 sm:flex-col">
+          <DialogFooter className="shrink-0 flex-col gap-3 border-t border-border/60 p-4 sm:flex-col">
             {initError ? (
               <p className="m-0 w-full text-sm text-black" role="alert">
                 {initError}

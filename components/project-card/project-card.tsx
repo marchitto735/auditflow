@@ -2,10 +2,10 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { FileText, ChevronDown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { useCart } from "@/components/cart/cart-context";
 import SectionHeader from "@/components/section-header/section-header";
 import {
   Command,
@@ -39,7 +39,6 @@ import {
   type AuditWorkflowId,
   type DocumentType,
 } from "@/lib/audit-workflows";
-import { goldStandardCatalogItem } from "@/lib/cart";
 import {
   AuditReportTable,
 } from "@/components/audit-report/audit-report-table";
@@ -85,6 +84,7 @@ export default function ProjectCard({
   layout = "horizontal",
 }: ProjectCardProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
   const pendingDocTypeRef = useRef<DocumentType | null>(null);
   const documentTypes = documentTypesForWorkflow(auditWorkflow);
   const [auditStatus, setAuditStatus] = useState<
@@ -100,10 +100,8 @@ export default function ProjectCard({
 
   const [processedAt, setProcessedAt] = useState<Date | null>(null);
   const [sopReport, setSopReport] = useState<SopAuditReport | null>(null);
-  const [addedToCart, setAddedToCart] = useState(false);
   const selectedClause = getGmpClause(selectedClauseId);
   const canRunAudit = Boolean(selectedClause && selectedFile);
-  const { addItem } = useCart();
   const runWorkflow: AuditWorkflowId =
     workflowFromDocumentType(selectedDocType) ?? auditWorkflow;
   const runLabel = AUDIT_WORKFLOWS[runWorkflow].label;
@@ -132,16 +130,6 @@ export default function ProjectCard({
     link.download = `audit-report-clause-${selectedClause?.id ?? AUDIT_CLAUSE_ID}.txt`;
     link.click();
     URL.revokeObjectURL(url);
-  }
-
-  function addCompliantSopToCart() {
-    const clause =
-      selectedClause ??
-      getGmpClause(sopReport?.clause_id) ??
-      getGmpClause(AUDIT_CLAUSE_ID);
-    addItem(goldStandardCatalogItem(clause, selectedDocType));
-    setAddedToCart(true);
-    window.setTimeout(() => setAddedToCart(false), 1600);
   }
 
   async function handleRunAudit() {
@@ -255,7 +243,7 @@ export default function ProjectCard({
                   fileName={fileName}
                   documentType={selectedDocType ?? runLabel}
                   clauseLabel={clauseLabel}
-                  timestamp={processedAt ?? new Date()}
+                  timestamp={processedAt}
                   onDownloadReport={downloadReport}
                   onRerunAudit={resetAudit}
                 />
@@ -283,9 +271,9 @@ export default function ProjectCard({
               <button
                 type="button"
                 className="inline text-[14px] leading-5 font-medium text-black underline decoration-solid underline-offset-2 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800 focus-visible:ring-offset-2"
-                onClick={addCompliantSopToCart}
+                onClick={() => router.push("/audit/remediate")}
               >
-                {addedToCart ? "Added to cart" : "Upgrade documentation"}
+                Upgrade documentation
               </button>
             </p>
           </div>

@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { X } from "lucide-react";
 import SectionHeader from "@/components/section-header/section-header";
 import { AuditReportTable } from "@/components/audit-report/audit-report-table";
-import { useCart } from "@/components/cart/cart-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { getAuditFramework } from "@/lib/audit-frameworks";
@@ -14,7 +13,6 @@ import {
   getAuditWorkflow,
   type AuditWorkflowId,
 } from "@/lib/audit-workflows";
-import { goldStandardCatalogItem } from "@/lib/cart";
 import { getGmpClause } from "@/lib/gmp-clauses";
 import {
   formatSopReportDownload,
@@ -32,6 +30,7 @@ function buildInitializedReport(input: {
   workflowLabel: string;
   documentName: string;
   strictness: number;
+  createdAt: string | null;
 }): SopAuditReport {
   const primary = getGmpClause(input.clauseIds[0]);
   const clauseCount = Math.max(input.clauseIds.length, 1);
@@ -67,15 +66,18 @@ function buildInitializedReport(input: {
         ? "Proceed with CAPA closure for minor documentation gaps and archive this report for the next certification cycle."
         : "Prioritize remediation on the listed clause gaps, then re-run Initialize Audit Analysis with the updated controlled document.",
     findings,
-    created_at: new Date().toISOString(),
+    created_at: input.createdAt,
   };
 }
 
 export default function AuditResultsView() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { addItem } = useCart();
-  const [addedToCart, setAddedToCart] = React.useState(false);
+  const [createdAt, setCreatedAt] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    setCreatedAt(new Date().toISOString());
+  }, []);
 
   const workflowId = resolveWorkflowId(searchParams.get("workflow"));
   const workflow = AUDIT_WORKFLOWS[workflowId];
@@ -102,8 +104,9 @@ export default function AuditResultsView() {
         workflowLabel: workflow.label,
         documentName,
         strictness: Number.isFinite(strictness) ? strictness : 50,
+        createdAt,
       }),
-    [clauseIds, documentName, framework?.label, strictness, workflow.label],
+    [clauseIds, createdAt, documentName, framework?.label, strictness, workflow.label],
   );
 
   const primaryClause = getGmpClause(report.clause_id);
@@ -114,9 +117,7 @@ export default function AuditResultsView() {
         ? `${primaryClause.label} (${primaryClause.shortName})`
         : `Clause ${report.clause_id}`;
 
-  const timestamp = report.created_at
-    ? new Date(report.created_at)
-    : new Date();
+  const timestamp = createdAt ? new Date(createdAt) : null;
 
   function downloadReport() {
     const body = formatSopReportDownload(report, documentName);
@@ -127,12 +128,6 @@ export default function AuditResultsView() {
     link.download = `audit-report-${workflowId}.txt`;
     link.click();
     URL.revokeObjectURL(url);
-  }
-
-  function upgradeDocument() {
-    addItem(goldStandardCatalogItem(primaryClause, workflow.label));
-    setAddedToCart(true);
-    window.setTimeout(() => setAddedToCart(false), 1600);
   }
 
   return (
@@ -188,9 +183,9 @@ export default function AuditResultsView() {
           <button
             type="button"
             className="inline text-[14px] leading-5 font-medium text-black underline decoration-solid underline-offset-2 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800 focus-visible:ring-offset-2"
-            onClick={upgradeDocument}
+            onClick={() => router.push("/audit/remediate")}
           >
-            {addedToCart ? "Added to cart" : "Upgrade documentation"}
+            Upgrade documentation
           </button>
         </p>
       </div>
