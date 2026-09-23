@@ -1,12 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import {
   ACTIVITY_COLUMNS,
-  ACTIVITY_TABLE_HEADER_HEIGHT,
-  ACTIVITY_TABLE_ROW_HEIGHT,
-  ACTIVITY_TABLE_VISIBLE_ROWS,
   ActivityTable,
   type ActivityRow,
 } from "@/components/activity-table/activity-table";
@@ -35,28 +32,9 @@ import {
 } from "@/lib/page-layout";
 
 const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
-/** Match `ACTIVITY_TABLE_VISIBLE_ROWS` so the default page fills the viewport exactly. */
 const DEFAULT_PAGE_SIZE = 5;
 /** Demo catalog size for pagination chrome when fewer stored reports exist. */
 const DEMO_TOTAL_RESULTS = 194;
-
-/**
- * Scrollport = sticky header + N full data rows (no partial row clip).
- * `snap-y` + row `snap-start` keep wheel/trackpad scrolls on row boundaries;
- * `scroll-pt` offsets snaps so rows align under the sticky header.
- * `overscroll-behavior-y: none` seals the bottom boundary so rubber-band
- * cannot open a gap or pull the last row past the pagination footer.
- */
-function historyTableScrollStyle(visibleRows: number): CSSProperties {
-  return {
-    ["--activity-table-header-height" as string]: ACTIVITY_TABLE_HEADER_HEIGHT,
-    ["--activity-table-row-height" as string]: ACTIVITY_TABLE_ROW_HEIGHT,
-    height: `calc(var(--activity-table-header-height) + ${visibleRows} * var(--activity-table-row-height))`,
-    scrollPaddingTop: ACTIVITY_TABLE_HEADER_HEIGHT,
-    scrollPaddingBottom: 0,
-    overscrollBehaviorY: "none",
-  };
-}
 
 /** Match ActivityTable `table-fixed` + colgroup so footer locks to the same grid. */
 const ACTIVITY_TABLE_MIN_WIDTH_CLASS = "min-w-[42rem]";
@@ -78,7 +56,7 @@ const INITIAL_FILTERS: DashboardToolbarValues = {
   dateRange: "all",
 };
 
-/** Seeded first-page demos for the default 5-row viewport. */
+/** Seeded first-page demos for the default page size. */
 const SEED_ACTIVITY_ROWS: ActivityRow[] = [
   {
     id: "demo-activity-0",
@@ -173,8 +151,18 @@ function PageSizeSelector({
   onChange: (value: string) => void;
   menuAlign?: "start" | "center" | "end";
 }) {
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  function releaseTriggerFocus() {
+    triggerRef.current?.blur();
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }
+
   const trigger = (
     <button
+      ref={triggerRef}
       type="button"
       aria-label="Rows per page"
       className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-sidebar-muted/40 px-2 text-sm font-medium text-black transition-colors duration-200 hover:border-zinc-400 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -194,6 +182,10 @@ function PageSizeSelector({
             align={menuAlign}
             sideOffset={6}
             className={DASHBOARD_MENU_CONTENT_CLASS}
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              releaseTriggerFocus();
+            }}
           >
             {PAGE_SIZE_OPTIONS.map((size) => {
               const isSelected = size === pageSize;
@@ -204,7 +196,10 @@ function PageSizeSelector({
                     DASHBOARD_MENU_ITEM_CLASS,
                     isSelected && DASHBOARD_MENU_ITEM_SELECTED_CLASS,
                   )}
-                  onSelect={() => onChange(String(size))}
+                  onSelect={() => {
+                    releaseTriggerFocus();
+                    onChange(String(size));
+                  }}
                 >
                   {size}
                 </DropdownMenuItem>
@@ -316,15 +311,22 @@ export default function RecentActivity({
   const pageStart = (currentPage - 1) * pageSize;
   const pageRows = catalog.slice(pageStart, pageStart + pageSize);
   const pageItems = buildPageItems(currentPage, totalPages);
-  const visibleRowSlots = Math.min(pageSize, ACTIVITY_TABLE_VISIBLE_ROWS);
 
   useEffect(() => {
     setPage(1);
   }, [filters, pageSize]);
 
   function handlePageSizeChange(value: string) {
+    const scrollY = window.scrollY;
     setPageSize(Number(value));
     setPage(1);
+    // React commits the taller table after this frame; restore the window
+    // so growth below the fold does not yank the viewport.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo(0, scrollY);
+      });
+    });
   }
 
   return (
@@ -336,7 +338,7 @@ export default function RecentActivity({
         className,
       )}
     >
-      <CardContent className="flex h-full min-h-0 flex-col p-0">
+      <CardContent className="flex flex-col p-0">
         <div className="shrink-0 border-b border-zinc-200">
           <DashboardToolbar
             embedded
@@ -352,26 +354,15 @@ export default function RecentActivity({
         ) : (
           <>
             {/*
-              Sealed History module: scrollport + footer as siblings.
-              Header/footer dividers are 1px box-shadows (not border-b/border-t)
-              so they never stack with row separators while scrolling.
-              overscroll-behavior-y: none locks the bottom boundary.
+              Height follows pageSize (3–50). No nested overflow — the main
+              window scrolls so the wheel is never trapped over the table.
+              Header/footer dividers are 1px box-shadows (not layout borders).
             */}
-            <div className="relative flex shrink-0 flex-col overflow-clip isolate">
-              <div
-                className="relative z-0 min-h-0 snap-y snap-mandatory overflow-auto overscroll-y-none"
-                style={historyTableScrollStyle(visibleRowSlots)}
-              >
-                <ActivityTable rows={pageRows} />
-                {/*
-                  Sticky bottom seal — mirrors sticky thead containment.
-                  Pins the scrollport’s bottom edge to the footer.
-                */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none sticky bottom-0 z-20 h-0 bg-white"
-                />
-              </div>
+            <div
+              className="flex shrink-0 flex-col"
+              style={{ overflowAnchor: "none" }}
+            >
+              <ActivityTable rows={pageRows} />
 
               <div className="relative z-20 shrink-0 border-t-0 bg-white py-3 shadow-[0_-1px_0_0_var(--border)]">
                 {/* Mobile: status + rows selector on top, pagination below */}

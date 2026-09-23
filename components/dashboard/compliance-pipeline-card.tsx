@@ -124,13 +124,13 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
                       : "border-zinc-200 bg-sidebar-muted/40",
                   )}
                 >
-                  <span className="text-xs font-semibold uppercase tracking-wider text-black tabular-nums">
+                  <span className="font-mono text-xs font-semibold uppercase tracking-wider text-black tabular-nums">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span className="text-sm font-medium text-black">
                     {stage.label}
                   </span>
-                  <span className="text-body1 m-0 text-black tabular-nums">
+                  <span className="text-body1 m-0 font-mono tabular-nums text-black">
                     {stage.count} active
                   </span>
                 </button>

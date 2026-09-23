@@ -1,12 +1,11 @@
 import "./runtime-debug";
 import type { Metadata } from "next";
 import {
-  Inter,
   IBM_Plex_Sans,
   Work_Sans,
-  Plus_Jakarta_Sans,
   Public_Sans,
   Source_Sans_3,
+  Geist,
   Geist_Mono,
 } from "next/font/google";
 import "./globals.css";
@@ -17,12 +16,6 @@ import { Toaster } from "@/components/ui/sonner";
 import ErrorBoundary from "./error-boundary";
 import SidebarLayout from "@/components/sidebar-layout/sidebar-layout";
 import { Analytics } from "@vercel/analytics/react"; // ⭐ ADDED
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
 
 const ibmPlexSans = IBM_Plex_Sans({
   subsets: ["latin"],
@@ -37,13 +30,6 @@ const workSans = Work_Sans({
   variable: "--font-work-sans",
 });
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-jakarta",
-  weight: ["300", "400", "500", "600", "700"],
-});
-
 const publicSans = Public_Sans({
   subsets: ["latin"],
   display: "swap",
@@ -54,6 +40,12 @@ const sourceSans = Source_Sans_3({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-source-sans",
+});
+
+const geistSans = Geist({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-geist",
 });
 
 const geistMono = Geist_Mono({
@@ -97,14 +89,14 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${geistMono.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
 
       <body
-        className={`${inter.variable} font-sans antialiased h-full overflow-hidden bg-[#F7F7F7] dark:bg-background color:bg-background`}
+        className={`${geistSans.variable} font-sans antialiased h-full overflow-hidden bg-[#F7F7F7] dark:bg-background color:bg-background`}
         suppressHydrationWarning
       >
         <ThemeProvider>

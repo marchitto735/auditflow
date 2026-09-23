@@ -131,13 +131,13 @@ export const CARD_CTA_ARROW_CLASS =
  * Shared right-hand metadata for telemetry cards (pipeline ETAs, feed timestamps).
  */
 export const TELEMETRY_META_CLASS =
-  "shrink-0 text-sm font-normal tabular-nums text-black whitespace-nowrap";
+  "shrink-0 font-mono text-sm font-normal tabular-nums text-black whitespace-nowrap";
 
 /**
  * Shared agent/stage badge pill for telemetry rows.
  */
 export const TELEMETRY_PILL_CLASS =
-  "inline-flex shrink-0 items-center rounded-md border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 font-mono text-[11px] font-medium leading-none whitespace-nowrap text-zinc-700";
+  "inline-flex shrink-0 items-center rounded-md border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 text-[11px] font-medium leading-none whitespace-nowrap text-zinc-700";
 
 /**
  * Shared telemetry list stack (pipeline jobs + activity feed).

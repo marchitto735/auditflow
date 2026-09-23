@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/table";
 import {
   ActivityStatus,
+  isTechnicalId,
+  TECHNICAL_VALUE_CLASS,
 } from "@/components/activity-table/activity-table";
 import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -239,16 +241,27 @@ export default function AuditLogView({
                   rows.map((row) => (
                   <TableRow key={row.id} className="hover:bg-transparent">
                     <TableCell className="px-4">
-                      <TruncatedText text={row.document} />
+                      <TruncatedText
+                        className={cn(
+                          isTechnicalId(row.document) && TECHNICAL_VALUE_CLASS,
+                        )}
+                        text={row.document}
+                      />
                     </TableCell>
                     <TableCell>
                       <TruncatedText text={row.type} />
                     </TableCell>
                     <TableCell>
-                      <TruncatedText text={row.date} />
+                      <TruncatedText
+                        className={TECHNICAL_VALUE_CLASS}
+                        text={row.date}
+                      />
                     </TableCell>
                     <TableCell>
-                      <TruncatedText text={String(row.score)} />
+                      <TruncatedText
+                        className={TECHNICAL_VALUE_CLASS}
+                        text={String(row.score)}
+                      />
                     </TableCell>
                     <TableCell>
                       <TruncatedText text={row.auditor} />

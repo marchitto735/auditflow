@@ -37,6 +37,8 @@ const AUDIT_THRESHOLD = 20;
 const AVG_SCORE = 88;
 const AUDITS_HREF = "/dashboard/audits";
 
+const METRIC_VALUE_CLASS = "font-mono tabular-nums";
+
 const CARD_CLASS = cn(
   INTERACTIVE_CARD_CLASS,
   DASHBOARD_TRACK_CARD_HEIGHT_CLASS,
@@ -104,7 +106,7 @@ function KpiCard({
           </div>
 
           <div className="relative z-10 mt-auto flex shrink-0 flex-col gap-2">
-            <p className="text-body1 m-0 w-full self-start text-left leading-snug text-black">
+            <p className="text-body1 m-0 w-full self-start text-left font-sans leading-snug text-black">
               {helper}
             </p>
             <div className={cn(CARD_FOOTER_CLASS, "pt-0")}>
@@ -220,6 +222,7 @@ function OpenFindingsChart() {
       <p
         className={cn(
           CARD_TITLE_CLASS,
+          METRIC_VALUE_CLASS,
           "pointer-events-none absolute inset-0 m-0 flex items-center justify-center leading-none text-foreground",
         )}
       >
@@ -268,6 +271,7 @@ function AvgScoreGauge() {
       <p
         className={cn(
           CARD_TITLE_CLASS,
+          METRIC_VALUE_CLASS,
           "pointer-events-none absolute inset-x-0 bottom-[16%] m-0 text-center leading-none text-foreground",
         )}
       >
@@ -296,6 +300,7 @@ export default function KpiCards({ className }: { className?: string }) {
           <p
             className={cn(
               CARD_TITLE_CLASS,
+              METRIC_VALUE_CLASS,
               "m-0 self-start pt-1 leading-none text-foreground",
             )}
           >

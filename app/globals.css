@@ -10,6 +10,16 @@
 
 /* -------------------------------------------------------
    THEME TOKEN MAPPING
+
+   Active sans: Geist. Tailwind reads commented declarations
+   inside @theme, so alternate faces stay in this note only.
+   To switch: set --font-sans below to one of these and put
+   that font's .variable class on <html> and <body> in layout.tsx.
+     geist       var(--font-geist)
+     ibm-plex    var(--font-ibm-plex)
+     work-sans   var(--font-work-sans)
+     public-sans var(--font-public-sans)
+     source-sans var(--font-source-sans)
 ------------------------------------------------------- */
 @theme inline {
   --color-palette-white: var(--palette-white);
@@ -23,13 +33,7 @@
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* font-sans: switch by changing to one of the variables below (and use same variable on <body> in layout.tsx) */
-  --font-sans: var(--font-inter);
-  /* --font-sans: var(--font-ibm-plex); */
-  /* --font-sans: var(--font-jakarta); */
-  /* --font-sans: var(--font-work-sans); */
-  /* --font-sans: var(--font-public-sans); */
-  /* --font-sans: var(--font-source-sans); */
+  --font-sans: var(--font-geist);
   --font-mono: var(--font-geist-mono);
 
   --color-sidebar-ring: var(--sidebar-ring);

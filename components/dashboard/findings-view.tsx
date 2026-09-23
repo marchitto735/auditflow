@@ -138,7 +138,10 @@ export default function FindingsView() {
                         <SeverityStatus severity={row.severity} />
                       </TableCell>
                       <TableCell>
-                        <TruncatedText text={row.citation} />
+                        <TruncatedText
+                          className="font-mono tabular-nums"
+                          text={row.citation}
+                        />
                       </TableCell>
                       <TableCell>
                         <TruncatedText text={row.owner} />

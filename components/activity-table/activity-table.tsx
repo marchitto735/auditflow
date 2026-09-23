@@ -18,19 +18,15 @@ import { cn } from "@/lib/utils";
 const CELL_X_PAD_CLASS = "px-4";
 
 /**
- * Locked row metrics for History viewport sizing + scroll-snap.
- * Body rows are border-box `h-12` (3rem). Internal separators use `divide-y`
- * on `tbody` (not per-row `border-b`) so the last row has no bottom frame
- * that can stack with the pagination footer during scroll.
+ * Locked row metrics for consistent History row sizing.
+ * Internal separators use `divide-y` on `tbody` (not per-row `border-b`).
  */
 export const ACTIVITY_TABLE_HEADER_HEIGHT = "2.5rem"; // h-10
 export const ACTIVITY_TABLE_ROW_HEIGHT = "3rem"; // h-12
-/** Max data rows visible between sticky header and footer (no partial rows). */
-export const ACTIVITY_TABLE_VISIBLE_ROWS = 5;
 
 const HEADER_CELL_CLASS = cn(CELL_X_PAD_CLASS, "h-10");
 const BODY_CELL_CLASS = cn(CELL_X_PAD_CLASS, "h-12 py-0");
-const BODY_ROW_CLASS = "h-12 snap-start snap-always border-0";
+const BODY_ROW_CLASS = "h-12 border-0";
 /** 1px bottom hairline — shadow avoids stacking with row/footer borders while sticky. */
 const STICKY_HEADER_DIVIDER_CLASS =
   "border-b-0 shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0";
@@ -187,6 +183,15 @@ export function ActivityStatus({
   );
 }
 
+export const TECHNICAL_VALUE_CLASS = "font-mono tabular-nums";
+
+/** UUID / hash cells — names with spaces stay in Geist Sans. */
+export function isTechnicalId(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed || trimmed === "—" || /\s/.test(trimmed)) return false;
+  return /[0-9a-f]{4,}/i.test(trimmed);
+}
+
 function cellKey(rowId: string, column: ActivityColumnKey) {
   return `${rowId}:${column}`;
 }
@@ -199,11 +204,21 @@ function renderCellContent(
   switch (column) {
     case "document":
       return wrapped ? (
-        <span className="block whitespace-normal break-words">
+        <span
+          className={cn(
+            "block whitespace-normal break-words",
+            isTechnicalId(row.document) && TECHNICAL_VALUE_CLASS,
+          )}
+        >
           {row.document}
         </span>
       ) : (
-        <span className="block w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+        <span
+          className={cn(
+            "block w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap",
+            isTechnicalId(row.document) && TECHNICAL_VALUE_CLASS,
+          )}
+        >
           {row.document}
         </span>
       );
@@ -214,9 +229,13 @@ function renderCellContent(
         <TruncatedText text={row.type} />
       );
     case "date":
-      return <span className="block whitespace-nowrap">{row.date}</span>;
+      return (
+        <span className={cn("block whitespace-nowrap", TECHNICAL_VALUE_CLASS)}>
+          {row.date}
+        </span>
+      );
     case "score":
-      return <span className="tabular-nums">{row.score}</span>;
+      return <span className={TECHNICAL_VALUE_CLASS}>{row.score}</span>;
     case "status":
       return row.status === "—" ? (
         "—"
