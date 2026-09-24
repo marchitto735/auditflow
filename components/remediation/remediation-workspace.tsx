@@ -225,14 +225,14 @@ export default function RemediationWorkspace() {
 
   return (
     <div className={cn("flex h-full min-h-0 flex-1 flex-col overflow-hidden", PAGE_CANVAS_CLASS)}>
-      <header className={cn("mb-[-20px] flex h-11 shrink-0 items-start pt-1", BREADCRUMB_ALIGN_CLASS)}>
+      <header className={cn("mb-[-16px] flex h-11 shrink-0 items-start pt-1", BREADCRUMB_ALIGN_CLASS)}>
         <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-foreground")}>
-          Remediation Editor
+          Compliance Validation
         </h2>
       </header>
       <div className="grid min-h-0 flex-1 grid-cols-1 overflow-y-auto pb-24 lg:grid-cols-2 lg:overflow-hidden lg:pb-0">
         <Card className={cn("flex h-auto min-w-0 flex-col gap-0 overflow-visible rounded-none border-0 border-b border-border py-0 shadow-none lg:h-full lg:min-h-0 lg:overflow-hidden lg:border-b-0", PAGE_CANVAS_CLASS)}>
-          <CardHeader className={cn("flex h-14 shrink-0 flex-row items-center gap-3 py-0 pr-4", BREADCRUMB_ALIGN_CLASS)}>
+          <CardHeader className={cn("flex h-14 shrink-0 flex-row items-center gap-6 py-0 pr-4", BREADCRUMB_ALIGN_CLASS)}>
             <span className="shrink-0 text-base font-medium leading-6 text-foreground">
               Source Document
             </span>
@@ -282,7 +282,7 @@ export default function RemediationWorkspace() {
         </Card>
 
         <Card className={cn("flex h-auto min-w-0 flex-col gap-0 overflow-visible rounded-none border-0 py-0 shadow-none lg:h-full lg:min-h-0 lg:overflow-hidden", PAGE_CANVAS_CLASS)}>
-          <CardHeader className="flex h-14 shrink-0 flex-row items-center gap-3 py-0 pr-6 pl-4 md:pr-8">
+          <CardHeader className="flex h-14 shrink-0 flex-row items-center gap-6 py-0 pr-6 pl-4 md:pr-8">
             <span className="shrink-0 text-base font-medium leading-6 text-foreground">
               Edit Document
             </span>
@@ -432,7 +432,7 @@ export default function RemediationWorkspace() {
       </div>
 
       <footer className={cn("relative z-10 flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border py-8 pr-6 md:pr-8", BREADCRUMB_ALIGN_CLASS, PAGE_CANVAS_CLASS)}>
-        <p className="m-0 text-base font-normal leading-6 text-foreground">
+        <p className="m-0 text-base font-normal leading-6 text-red-600">
           {flaggedCount}{" "}
           {flaggedCount === 1 ? "Finding" : "Findings"} Flagged for Remediation
         </p>
