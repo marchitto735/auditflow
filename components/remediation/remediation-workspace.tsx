@@ -1,18 +1,26 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DASHBOARD_MENU_CONTENT_CLASS,
+  DASHBOARD_MENU_ITEM_CLASS,
+} from "@/components/dashboard/card-actions-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import {
   assessChunk,
@@ -23,11 +31,13 @@ import {
   type ChunkReview,
   type DocumentChunk,
 } from "@/lib/document-chunks";
-import { CARD_EYEBROW_MUTED_CLASS, PAGE_CANVAS_CLASS } from "@/lib/page-layout";
+import { CARD_EYEBROW_MUTED_CLASS, DASHBOARD_CARD_CLASS, PAGE_CANVAS_CLASS, SECTION_HEADER_CLASS } from "@/lib/page-layout";
 import { textToPdfBlob } from "@/lib/text-pdf";
 import { cn } from "@/lib/utils";
 
 const SOURCE_DOCUMENT = "sop-non-compliant.txt";
+/** Breadcrumb origin: page gutter, plus the mobile menu button until the desktop rail. */
+const BREADCRUMB_ALIGN_CLASS = "pl-[4.5rem] md:pl-20 xl:pl-8";
 const ACTION_BUTTON_CLASS =
   "h-9 min-h-9 rounded-sm px-3 py-0 text-sm font-medium shadow-none";
 
@@ -40,19 +50,81 @@ if (
   throw new Error("Remediation parser dropped source document lines.");
 }
 
-function statusBadgeClass(status: "compliant" | "non-compliant") {
-  if (status === "compliant") {
-    return "border-emerald-200 bg-emerald-50 text-emerald-700";
-  }
-  return "border-rose-200 bg-rose-50 text-rose-700";
+type FindingStatusValue = "compliant" | "non-compliant" | "partial";
+
+function statusDotClass(status: FindingStatusValue) {
+  if (status === "compliant") return "bg-emerald-500";
+  if (status === "partial") return "bg-amber-500";
+  return "bg-red-600";
+}
+
+function statusLabel(status: FindingStatusValue) {
+  if (status === "compliant") return "Compliant";
+  if (status === "partial") return "Partial";
+  return "Non-Compliant";
+}
+
+function FindingStatus({ status }: { status: FindingStatusValue }) {
+  return (
+    <span className="inline-flex items-center gap-2 text-base font-normal leading-6 text-foreground">
+      <span
+        className={cn("size-2.5 shrink-0 rounded-full", statusDotClass(status))}
+        aria-hidden
+      />
+      {statusLabel(status)}
+    </span>
+  );
+}
+
+const DOCUMENT_ACTIONS_TRIGGER_CLASS =
+  "inline-flex h-6 shrink-0 items-center gap-1 rounded-sm border border-zinc-200 bg-white px-2 text-sm font-medium leading-none text-foreground shadow-none transition-colors hover:border-zinc-400 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+
+function DocumentActionsMenu({
+  items,
+}: {
+  items: { label: string; onSelect: () => void }[];
+}) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const trigger = (
+    <button type="button" className={DOCUMENT_ACTIONS_TRIGGER_CLASS}>
+      Actions
+      <ChevronDown className="size-4 shrink-0" aria-hidden />
+    </button>
+  );
+
+  if (!mounted) return trigger;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuContent align="end" sideOffset={6} className={DASHBOARD_MENU_CONTENT_CLASS}>
+        {items.map((item) => (
+          <DropdownMenuItem
+            key={item.label}
+            className={DASHBOARD_MENU_ITEM_CLASS}
+            onSelect={item.onSelect}
+          >
+            {item.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 }
 
 function formatIndex(number: number) {
   return String(number).padStart(2, "0");
 }
 
-const FINDING_CARD_CLASS =
-  "grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-3 rounded-sm border border-border bg-white p-4 shadow-none";
+const FINDING_CARD_CLASS = cn(
+  DASHBOARD_CARD_CLASS,
+  "grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-3 p-4",
+);
 
 function FindingIndex({ number }: { number: number }) {
   return (
@@ -86,6 +158,15 @@ export default function RemediationWorkspace() {
 
   const reviewedCount = useMemo(
     () => chunks.filter((chunk) => chunkIsReviewed(chunk, reviews[chunk.id])).length,
+    [chunks, reviews],
+  );
+
+  const flaggedCount = useMemo(
+    () =>
+      chunks.filter((chunk) => {
+        if (assessChunk(chunk).status === "compliant") return false;
+        return reviews[chunk.id]?.decision !== "accepted";
+      }).length,
     [chunks, reviews],
   );
 
@@ -144,53 +225,90 @@ export default function RemediationWorkspace() {
 
   return (
     <div className={cn("flex h-full min-h-0 flex-1 flex-col overflow-hidden", PAGE_CANVAS_CLASS)}>
-      <div className="grid min-h-0 flex-1 grid-cols-1 border-t border-border lg:grid-cols-2">
-        <Card className={cn("flex h-full min-h-[420px] min-w-0 flex-col gap-0 overflow-hidden rounded-none border-0 border-b border-border py-0 shadow-none lg:min-h-0 lg:border-r lg:border-b-0", PAGE_CANVAS_CLASS)}>
-          <CardHeader className="flex h-14 shrink-0 flex-row items-center justify-between gap-3 px-4 py-0">
-            <CardTitle className="text-sm font-medium tracking-tight">
+      <header className={cn("mb-[-20px] flex h-11 shrink-0 items-start pt-1", BREADCRUMB_ALIGN_CLASS)}>
+        <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-foreground")}>
+          Remediation Editor
+        </h2>
+      </header>
+      <div className="grid min-h-0 flex-1 grid-cols-1 overflow-y-auto pb-24 lg:grid-cols-2 lg:overflow-hidden lg:pb-0">
+        <Card className={cn("flex h-auto min-w-0 flex-col gap-0 overflow-visible rounded-none border-0 border-b border-border py-0 shadow-none lg:h-full lg:min-h-0 lg:overflow-hidden lg:border-b-0", PAGE_CANVAS_CLASS)}>
+          <CardHeader className={cn("flex h-14 shrink-0 flex-row items-center gap-3 py-0 pr-4", BREADCRUMB_ALIGN_CLASS)}>
+            <span className="shrink-0 text-base font-medium leading-6 text-foreground">
               Source Document
-            </CardTitle>
-            <p className="m-0 shrink-0 text-sm leading-5">
-              <span className="text-muted-foreground">Document:</span>{" "}
-              <span className="font-mono tabular-nums">{SOURCE_DOCUMENT}</span>
-            </p>
+            </span>
+            <span className="ml-auto min-w-0 truncate font-mono text-sm leading-5 tabular-nums">
+              {SOURCE_DOCUMENT}
+            </span>
+            <DocumentActionsMenu
+                items={[
+                  {
+                    label: "Copy filename",
+                    onSelect: () => {
+                      void navigator.clipboard.writeText(SOURCE_DOCUMENT);
+                      toast.success("Filename copied.");
+                    },
+                  },
+                  {
+                    label: "Download source",
+                    onSelect: () => {
+                      const blob = new Blob([SOURCE_SOP_TEXT], { type: "text/plain" });
+                      const url = URL.createObjectURL(blob);
+                      const link = window.document.createElement("a");
+                      link.href = url;
+                      link.download = SOURCE_DOCUMENT;
+                      link.click();
+                      URL.revokeObjectURL(url);
+                    },
+                  },
+                ]}
+              />
           </CardHeader>
-          <Separator />
-          <ScrollArea className="min-h-0 flex-1">
-            <div className="p-4">
-              <Card className="gap-0 rounded-sm border border-border bg-white p-4 shadow-none">
-                <CardContent className="p-0">
-                  <ol className="m-0 flex list-none flex-col gap-4 p-0">
-                    {lines.map((line) => (
-                      <li key={line.number} className="m-0 flex items-baseline gap-3 p-0 text-base font-normal leading-6">
-                        <span className="shrink-0 font-mono text-base font-normal tabular-nums leading-6 text-muted-foreground">
-                          {formatIndex(line.number)}
-                        </span>
-                        <span className="font-normal text-foreground">{line.text}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </CardContent>
+          <ScrollArea className="h-auto flex-none max-lg:[&_[data-slot=scroll-area-viewport]]:!h-auto lg:min-h-0 lg:flex-1">
+            <div className={cn("pt-2 pr-4 pb-4", BREADCRUMB_ALIGN_CLASS)}>
+              <Card className={cn(DASHBOARD_CARD_CLASS, "w-full gap-0 p-4")}>
+                <ol className="m-0 flex list-none flex-col gap-4 p-0">
+                  {lines.map((line) => (
+                    <li key={line.number} className="m-0 flex items-baseline gap-3 p-0 text-base font-normal leading-6">
+                      <span className="shrink-0 font-mono text-base font-normal tabular-nums leading-6 text-muted-foreground">
+                        {formatIndex(line.number)}
+                      </span>
+                      <span className="font-normal text-foreground">{line.text}</span>
+                    </li>
+                  ))}
+                </ol>
               </Card>
             </div>
           </ScrollArea>
         </Card>
 
-        <Card className={cn("flex h-full min-h-[420px] min-w-0 flex-col gap-0 overflow-hidden rounded-none border-0 py-0 shadow-none lg:min-h-0", PAGE_CANVAS_CLASS)}>
-          <CardHeader className="flex h-14 shrink-0 flex-row items-center justify-between gap-3 px-4 py-0">
-            <CardTitle className="text-sm font-medium tracking-tight">
-              Audit Analysis & Remediation
-            </CardTitle>
-            <p className="m-0 shrink-0 text-sm leading-5 text-foreground">
-              <span>Compliance Score:</span>{" "}
+        <Card className={cn("flex h-auto min-w-0 flex-col gap-0 overflow-visible rounded-none border-0 py-0 shadow-none lg:h-full lg:min-h-0 lg:overflow-hidden", PAGE_CANVAS_CLASS)}>
+          <CardHeader className="flex h-14 shrink-0 flex-row items-center gap-3 py-0 pr-6 pl-4 md:pr-8">
+            <span className="shrink-0 text-base font-medium leading-6 text-foreground">
+              Edit Document
+            </span>
+            <p className="m-0 ml-auto text-sm font-normal leading-5 text-foreground">
               <span className="font-mono tabular-nums">{complianceScore}</span>
               {" / "}
               <span className="font-mono tabular-nums">100</span>
             </p>
+            <DocumentActionsMenu
+              items={[
+                {
+                  label: "Copy score",
+                  onSelect: () => {
+                    void navigator.clipboard.writeText(`${complianceScore} / 100`);
+                    toast.success("Score copied.");
+                  },
+                },
+                {
+                  label: "Export certified SOP",
+                  onSelect: finalize,
+                },
+              ]}
+            />
           </CardHeader>
-          <Separator />
-          <ScrollArea className="min-h-0 flex-1">
-            <div className="flex flex-col gap-3 p-4">
+          <ScrollArea className="h-auto flex-none max-lg:[&_[data-slot=scroll-area-viewport]]:!h-auto lg:min-h-0 lg:flex-1">
+            <div className="flex flex-col gap-3 pt-2 pr-6 pb-4 pl-4 md:pr-8">
               {chunks.map((chunk) => {
                 const assessment = assessChunk(chunk);
                 const review = reviews[chunk.id];
@@ -208,15 +326,7 @@ export default function RemediationWorkspace() {
                       <CardHeader className="contents">
                         <FindingIndex number={blockNumber} />
                         <FindingTitle title={chunk.title} />
-                        <Badge
-                          variant="outline"
-                          className={cn(
-                            "rounded-sm font-sans",
-                            statusBadgeClass("compliant"),
-                          )}
-                        >
-                          Compliant
-                        </Badge>
+                        <FindingStatus status="compliant" />
                       </CardHeader>
                     </Card>
                   );
@@ -227,12 +337,7 @@ export default function RemediationWorkspace() {
                     <CardHeader className="contents">
                       <FindingIndex number={blockNumber} />
                       <FindingTitle title={chunk.title} />
-                      <Badge
-                        variant="outline"
-                        className={cn("rounded-sm font-sans", statusBadgeClass(status))}
-                      >
-                        {status === "compliant" ? "Compliant" : "Non-Compliant"}
-                      </Badge>
+                      <FindingStatus status={status} />
                     </CardHeader>
                     <CardContent className="col-span-2 col-start-2 p-0 pt-3">
                       {editing ? (
@@ -266,7 +371,7 @@ export default function RemediationWorkspace() {
                         <div className="flex flex-col gap-3">
                           <div className="flex flex-col gap-1">
                             <p className={CARD_EYEBROW_MUTED_CLASS}>
-                              Suggested Change
+                              Suggested Revision
                             </p>
                             <p className="m-0 text-base font-normal leading-6 text-foreground">
                               {review?.decision === "accepted"
@@ -300,12 +405,12 @@ export default function RemediationWorkspace() {
                               </Button>
                             </div>
                           ) : (
-                            <div className="flex items-center justify-between gap-3">
-                              <p className="m-0 text-base font-normal text-muted-foreground">
-                                {review.decision === "accepted"
-                                  ? "Revision accepted"
-                                  : "Revision declined"}
-                              </p>
+                            <div className="flex items-center justify-end gap-3">
+                              {review.decision === "declined" ? (
+                                <p className="m-0 mr-auto text-base font-normal text-muted-foreground">
+                                  Revision declined
+                                </p>
+                              ) : null}
                               <button
                                 type="button"
                                 className="rounded-sm text-sm font-medium text-foreground underline-offset-2 hover:underline"
@@ -326,20 +431,18 @@ export default function RemediationWorkspace() {
         </Card>
       </div>
 
-      <footer className={cn("flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-3", PAGE_CANVAS_CLASS)}>
-        <p className="m-0 text-sm text-foreground">
-          <span className="font-mono tabular-nums">
-            {reviewedCount} of {chunks.length}
-          </span>{" "}
-          Findings Reviewed
+      <footer className={cn("relative z-10 flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border py-8 pr-6 md:pr-8", BREADCRUMB_ALIGN_CLASS, PAGE_CANVAS_CLASS)}>
+        <p className="m-0 text-base font-normal leading-6 text-foreground">
+          {flaggedCount}{" "}
+          {flaggedCount === 1 ? "Finding" : "Findings"} Flagged for Remediation
         </p>
         <Button
           type="button"
           variant="black"
-          className="h-10 min-h-10 rounded-sm px-4 py-0 text-sm"
+          className="h-10 min-h-10 rounded-sm px-4 py-0 text-sm font-medium"
           onClick={finalize}
         >
-          Finalize & Download Gold Standard SOP (PDF)
+          Export Certified SOP
         </Button>
       </footer>
     </div>
