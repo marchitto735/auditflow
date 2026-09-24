@@ -17,10 +17,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Card,
-  CardContent,
   CardHeader,
 } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import {
   assessChunk,
@@ -36,8 +34,10 @@ import { textToPdfBlob } from "@/lib/text-pdf";
 import { cn } from "@/lib/utils";
 
 const SOURCE_DOCUMENT = "sop-non-compliant.txt";
-/** Breadcrumb origin: page gutter, plus the mobile menu button until the desktop rail. */
-const BREADCRUMB_ALIGN_CLASS = "pl-[4.5rem] md:pl-20 xl:pl-8";
+/** Flush with the page gutter / hamburger on stacked viewports; breadcrumb origin from lg up. */
+const PANEL_ALIGN_LEFT_CLASS = "pl-6 md:pl-8 lg:pl-20 xl:pl-8";
+/** Stacked: match left gutter. Side-by-side: 16px center gutter only. */
+const PANEL_ALIGN_RIGHT_CLASS = "pl-6 md:pl-8 lg:pl-4 xl:pl-4";
 const ACTION_BUTTON_CLASS =
   "h-9 min-h-9 rounded-sm px-3 py-0 text-sm font-medium shadow-none";
 
@@ -120,11 +120,6 @@ function DocumentActionsMenu({
 function formatIndex(number: number) {
   return String(number).padStart(2, "0");
 }
-
-const FINDING_CARD_CLASS = cn(
-  DASHBOARD_CARD_CLASS,
-  "grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-3 p-4",
-);
 
 function FindingIndex({ number }: { number: number }) {
   return (
@@ -224,15 +219,15 @@ export default function RemediationWorkspace() {
   }
 
   return (
-    <div className={cn("flex h-full min-h-0 flex-1 flex-col overflow-hidden", PAGE_CANVAS_CLASS)}>
-      <header className={cn("mb-[-20px] flex h-11 shrink-0 items-start", BREADCRUMB_ALIGN_CLASS)}>
+    <div className={cn("flex h-0 max-h-[calc(100dvh-4rem)] min-h-0 w-full flex-1 flex-col overflow-hidden", PAGE_CANVAS_CLASS)}>
+      <header className={cn("mb-[-20px] flex h-11 shrink-0 items-start", PANEL_ALIGN_LEFT_CLASS)}>
         <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-foreground")}>
           Compliance Validation
         </h2>
       </header>
-      <div className="grid min-h-0 flex-1 grid-cols-1 overflow-y-auto pb-24 lg:grid-cols-2 lg:overflow-hidden lg:pb-0">
-        <Card className={cn("flex h-auto min-w-0 flex-col gap-0 overflow-visible rounded-none border-0 border-b border-border py-0 shadow-none lg:h-full lg:min-h-0 lg:overflow-hidden lg:border-b-0", PAGE_CANVAS_CLASS)}>
-          <CardHeader className={cn("flex h-14 shrink-0 flex-row items-center gap-6 py-0 pr-4", BREADCRUMB_ALIGN_CLASS)}>
+      <div className="grid h-full max-h-full min-h-0 w-full flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)_minmax(0,1fr)] gap-4 overflow-hidden pb-4 lg:grid-cols-2 lg:grid-rows-1 lg:gap-0">
+        <Card className={cn("flex h-full min-h-0 w-full min-w-0 flex-col gap-0 overflow-hidden rounded-none border-0 py-0 shadow-none", PAGE_CANVAS_CLASS)}>
+          <CardHeader className={cn("flex h-14 min-w-0 shrink-0 flex-row items-center gap-3 py-0 pr-6 md:pr-8 lg:gap-6 lg:pr-4", PANEL_ALIGN_LEFT_CLASS)}>
             <span className="shrink-0 text-base font-medium leading-6 text-foreground">
               Source Document
             </span>
@@ -263,9 +258,9 @@ export default function RemediationWorkspace() {
                 ]}
               />
           </CardHeader>
-          <ScrollArea className="h-auto flex-none max-lg:[&_[data-slot=scroll-area-viewport]]:!h-auto lg:min-h-0 lg:flex-1">
-            <div className={cn("pt-2 pr-4 pb-4", BREADCRUMB_ALIGN_CLASS)}>
-              <Card className={cn(DASHBOARD_CARD_CLASS, "w-full gap-0 p-4")}>
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+            <div className={cn("flex min-h-0 flex-1 flex-col pt-2 pr-6 md:pr-8 lg:pr-4", PANEL_ALIGN_LEFT_CLASS)}>
+              <Card className={cn(DASHBOARD_CARD_CLASS, "h-0 min-h-0 w-full flex-1 gap-0 overflow-y-auto p-4")}>
                 <ol className="m-0 flex list-none flex-col gap-4 p-0">
                   {lines.map((line) => (
                     <li key={line.number} className="m-0 flex items-baseline gap-3 p-0 text-base font-normal leading-6">
@@ -278,11 +273,11 @@ export default function RemediationWorkspace() {
                 </ol>
               </Card>
             </div>
-          </ScrollArea>
+          </div>
         </Card>
 
-        <Card className={cn("flex h-auto min-w-0 flex-col gap-0 overflow-visible rounded-none border-0 py-0 shadow-none lg:h-full lg:min-h-0 lg:overflow-hidden", PAGE_CANVAS_CLASS)}>
-          <CardHeader className="flex h-14 shrink-0 flex-row items-center gap-6 py-0 pr-6 pl-4 md:pr-8">
+        <Card className={cn("flex h-full min-h-0 w-full min-w-0 flex-col gap-0 overflow-hidden rounded-none border-0 py-0 shadow-none", PAGE_CANVAS_CLASS)}>
+          <CardHeader className={cn("flex h-14 min-w-0 w-full shrink-0 flex-row items-center gap-3 py-0 pr-6 md:pr-8 lg:gap-6", PANEL_ALIGN_RIGHT_CLASS)}>
             <span className="shrink-0 text-base font-medium leading-6 text-foreground">
               Edit Document
             </span>
@@ -307,131 +302,126 @@ export default function RemediationWorkspace() {
               ]}
             />
           </CardHeader>
-          <ScrollArea className="h-auto flex-none max-lg:[&_[data-slot=scroll-area-viewport]]:!h-auto lg:min-h-0 lg:flex-1">
-            <div className="flex flex-col gap-3 pt-2 pr-6 pb-4 pl-4 md:pr-8">
-              {chunks.map((chunk) => {
-                const assessment = assessChunk(chunk);
-                const review = reviews[chunk.id];
-                const resolved =
-                  assessment.status === "compliant" ||
-                  review?.decision === "accepted";
-                const status = resolved ? "compliant" : "non-compliant";
-                const editing = editingId === chunk.id;
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+            <div className={cn("flex min-h-0 flex-1 flex-col pt-2 pr-6 md:pr-8", PANEL_ALIGN_RIGHT_CLASS)}>
+              <Card className={cn(DASHBOARD_CARD_CLASS, "h-0 min-h-0 w-full flex-1 gap-0 overflow-y-auto p-4")}>
+                <ol className="m-0 flex list-none flex-col divide-y divide-zinc-200 p-0">
+                  {chunks.map((chunk) => {
+                    const assessment = assessChunk(chunk);
+                    const review = reviews[chunk.id];
+                    const resolved =
+                      assessment.status === "compliant" ||
+                      review?.decision === "accepted";
+                    const status = resolved ? "compliant" : "non-compliant";
+                    const editing = editingId === chunk.id;
+                    const blockNumber = chunk.lines[0].number;
+                    const showDetails = assessment.status !== "compliant" || editing;
 
-                const blockNumber = chunk.lines[0].number;
-
-                if (assessment.status === "compliant" && !editing) {
-                  return (
-                    <Card key={chunk.id} className={FINDING_CARD_CLASS}>
-                      <CardHeader className="contents">
+                    return (
+                      <li
+                        key={chunk.id}
+                        className="m-0 grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-3 gap-y-3 p-0 py-4 first:pt-0 last:pb-0"
+                      >
                         <FindingIndex number={blockNumber} />
                         <FindingTitle title={chunk.title} />
-                        <FindingStatus status="compliant" />
-                      </CardHeader>
-                    </Card>
-                  );
-                }
-
-                return (
-                  <Card key={chunk.id} className={FINDING_CARD_CLASS}>
-                    <CardHeader className="contents">
-                      <FindingIndex number={blockNumber} />
-                      <FindingTitle title={chunk.title} />
-                      <FindingStatus status={status} />
-                    </CardHeader>
-                    <CardContent className="col-span-2 col-start-2 p-0 pt-3">
-                      {editing ? (
-                        <div className="flex flex-col gap-3">
-                          <Textarea
-                            value={draft}
-                            onChange={(event) => setDraft(event.target.value)}
-                            aria-label={`Revision for ${chunk.title}`}
-                            className="min-h-28 rounded-sm border-border bg-muted/40"
-                          />
-                          <div className="flex flex-wrap justify-end gap-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              className={ACTION_BUTTON_CLASS}
-                              onClick={cancelEdit}
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="black"
-                              className={ACTION_BUTTON_CLASS}
-                              onClick={() => runComplianceCheck(chunk.id)}
-                            >
-                              Run Compliance Check
-                            </Button>
+                        <FindingStatus status={status} />
+                        {showDetails ? (
+                          <div className="col-span-2 col-start-2">
+                            {editing ? (
+                              <div className="flex flex-col gap-3">
+                                <Textarea
+                                  value={draft}
+                                  onChange={(event) => setDraft(event.target.value)}
+                                  aria-label={`Revision for ${chunk.title}`}
+                                  className="min-h-28 rounded-sm border-border bg-muted/40"
+                                />
+                                <div className="flex flex-wrap justify-end gap-2">
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    className={ACTION_BUTTON_CLASS}
+                                    onClick={cancelEdit}
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    type="button"
+                                    variant="black"
+                                    className={ACTION_BUTTON_CLASS}
+                                    onClick={() => runComplianceCheck(chunk.id)}
+                                  >
+                                    Run Compliance Check
+                                  </Button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex flex-col gap-3">
+                                <div className="flex flex-col gap-1">
+                                  <p className={CARD_EYEBROW_MUTED_CLASS}>
+                                    Suggested Revision
+                                  </p>
+                                  <p className="m-0 text-base font-normal leading-6 text-foreground">
+                                    {review?.decision === "accepted"
+                                      ? review.revision
+                                      : assessment.changeRequired}
+                                  </p>
+                                </div>
+                                {review?.decision === "pending" || !review ? (
+                                  <div className="flex flex-wrap justify-end gap-2">
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      className={ACTION_BUTTON_CLASS}
+                                      onClick={() =>
+                                        setDecision(
+                                          chunk.id,
+                                          "accepted",
+                                          assessment.changeRequired,
+                                        )
+                                      }
+                                    >
+                                      Accept Revision
+                                    </Button>
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      className={ACTION_BUTTON_CLASS}
+                                      onClick={() => startEdit(chunk)}
+                                    >
+                                      Edit Manually
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center justify-end gap-3">
+                                    {review.decision === "declined" ? (
+                                      <p className="m-0 mr-auto text-base font-normal text-muted-foreground">
+                                        Revision declined
+                                      </p>
+                                    ) : null}
+                                    <button
+                                      type="button"
+                                      className="rounded-sm text-sm font-medium text-foreground underline-offset-2 hover:underline"
+                                      onClick={() => undoDecision(chunk.id)}
+                                    >
+                                      Undo
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col gap-3">
-                          <div className="flex flex-col gap-1">
-                            <p className={CARD_EYEBROW_MUTED_CLASS}>
-                              Suggested Revision
-                            </p>
-                            <p className="m-0 text-base font-normal leading-6 text-foreground">
-                              {review?.decision === "accepted"
-                                ? review.revision
-                                : assessment.changeRequired}
-                            </p>
-                          </div>
-                          {review?.decision === "pending" || !review ? (
-                            <div className="flex flex-wrap justify-end gap-2">
-                              <Button
-                                type="button"
-                                variant="outline"
-                                className={ACTION_BUTTON_CLASS}
-                                onClick={() =>
-                                  setDecision(
-                                    chunk.id,
-                                    "accepted",
-                                    assessment.changeRequired,
-                                  )
-                                }
-                              >
-                                Accept Revision
-                              </Button>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                className={ACTION_BUTTON_CLASS}
-                                onClick={() => startEdit(chunk)}
-                              >
-                                Edit Manually
-                              </Button>
-                            </div>
-                          ) : (
-                            <div className="flex items-center justify-end gap-3">
-                              {review.decision === "declined" ? (
-                                <p className="m-0 mr-auto text-base font-normal text-muted-foreground">
-                                  Revision declined
-                                </p>
-                              ) : null}
-                              <button
-                                type="button"
-                                className="rounded-sm text-sm font-medium text-foreground underline-offset-2 hover:underline"
-                                onClick={() => undoDecision(chunk.id)}
-                              >
-                                Undo
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                        ) : null}
+                      </li>
+                    );
+                  })}
+                </ol>
+              </Card>
             </div>
-          </ScrollArea>
+          </div>
         </Card>
       </div>
 
-      <footer className={cn("relative z-10 flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border py-8 pr-6 md:pr-8", BREADCRUMB_ALIGN_CLASS, PAGE_CANVAS_CLASS)}>
+      <footer className={cn("relative z-10 flex shrink-0 flex-wrap items-center justify-between gap-3 py-8 pr-6 md:pr-8", PANEL_ALIGN_LEFT_CLASS, PAGE_CANVAS_CLASS)}>
         <p className="m-0 text-base font-normal leading-6 text-red-600">
           {flaggedCount}{" "}
           {flaggedCount === 1 ? "Finding" : "Findings"} Flagged for Remediation
