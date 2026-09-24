@@ -146,7 +146,7 @@ export default function Header() {
               <Button
                 type="button"
                 variant="ghost"
-                className={cn(NAV_UTILITY_BUTTON_CLASS, "xl:hidden")}
+                className={cn(NAV_UTILITY_BUTTON_CLASS, "-ml-2 xl:hidden")}
                 onClick={() => setMobileOpen(true)}
                 aria-label="Open menu"
               >

@@ -225,7 +225,7 @@ export default function RemediationWorkspace() {
           Compliance Validation
         </h2>
       </header>
-      <div className="grid h-full max-h-full min-h-0 w-full flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)_minmax(0,1fr)] gap-4 overflow-hidden pb-4 lg:grid-cols-2 lg:grid-rows-1 lg:gap-0">
+      <div className="grid h-full max-h-full min-h-0 w-full flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)_minmax(0,1fr)] gap-2 overflow-hidden pb-2 lg:grid-cols-2 lg:grid-rows-1 lg:gap-0 lg:pb-4">
         <Card className={cn("flex h-full min-h-0 w-full min-w-0 flex-col gap-0 overflow-hidden rounded-none border-0 py-0 shadow-none", PAGE_CANVAS_CLASS)}>
           <CardHeader className={cn("flex h-14 min-w-0 shrink-0 flex-row items-center gap-3 py-0 pr-6 md:pr-8 lg:gap-6 lg:pr-4", PANEL_ALIGN_LEFT_CLASS)}>
             <span className="shrink-0 text-base font-medium leading-6 text-foreground">
@@ -356,7 +356,7 @@ export default function RemediationWorkspace() {
                               </div>
                             ) : (
                               <div className="flex flex-col gap-3">
-                                <div className="flex flex-col gap-1">
+                                <div className="flex flex-col gap-1 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-3">
                                   <p className={CARD_EYEBROW_MUTED_CLASS}>
                                     Suggested Revision
                                   </p>
@@ -421,7 +421,7 @@ export default function RemediationWorkspace() {
         </Card>
       </div>
 
-      <footer className={cn("relative z-10 flex shrink-0 flex-wrap items-center justify-between gap-3 py-8 pr-6 md:pr-8", PANEL_ALIGN_LEFT_CLASS, PAGE_CANVAS_CLASS)}>
+      <footer className={cn("relative z-10 flex shrink-0 flex-wrap items-center justify-between gap-3 py-4 pr-6 md:pr-8 lg:py-8", PANEL_ALIGN_LEFT_CLASS, PAGE_CANVAS_CLASS)}>
         <p className="m-0 text-base font-normal leading-6 text-red-600">
           {flaggedCount}{" "}
           {flaggedCount === 1 ? "Finding" : "Findings"} Flagged for Remediation
