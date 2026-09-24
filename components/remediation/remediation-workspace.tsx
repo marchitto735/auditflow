@@ -34,10 +34,8 @@ import { textToPdfBlob } from "@/lib/text-pdf";
 import { cn } from "@/lib/utils";
 
 const SOURCE_DOCUMENT = "sop-non-compliant.txt";
-/** Flush with the page gutter / hamburger on stacked viewports; breadcrumb origin from lg up. */
-const PANEL_ALIGN_LEFT_CLASS = "pl-6 md:pl-8 lg:pl-20 xl:pl-8";
-/** Stacked: match left gutter. Side-by-side: 16px center gutter only. */
-const PANEL_ALIGN_RIGHT_CLASS = "pl-6 md:pl-8 lg:pl-4 xl:pl-4";
+/** Page gutter alignment — flush with hamburger / outer layout bounds. */
+const PAGE_EDGE_ALIGN_CLASS = "pl-6 pr-6 md:pl-8 md:pr-8";
 const ACTION_BUTTON_CLASS =
   "h-9 min-h-9 rounded-sm px-3 py-0 text-sm font-medium shadow-none";
 
@@ -146,7 +144,7 @@ function chunkIsReviewed(
 }
 
 export default function RemediationWorkspace() {
-  const { lines, chunks } = PARSED;
+  const { chunks } = PARSED;
   const [reviews, setReviews] = useState<Record<string, ChunkReview>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
@@ -206,6 +204,16 @@ export default function RemediationWorkspace() {
     toast.success("Compliance check passed. Revision accepted.");
   }
 
+  function downloadSource() {
+    const blob = new Blob([SOURCE_SOP_TEXT], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = window.document.createElement("a");
+    link.href = url;
+    link.download = SOURCE_DOCUMENT;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   function finalize() {
     const document = buildGoldStandard(chunks, reviews);
     const blob = textToPdfBlob(document);
@@ -220,220 +228,187 @@ export default function RemediationWorkspace() {
 
   return (
     <div className={cn("flex h-0 max-h-[calc(100dvh-4rem)] min-h-0 w-full flex-1 flex-col overflow-hidden", PAGE_CANVAS_CLASS)}>
-      <header className={cn("mb-[-20px] flex h-11 shrink-0 items-start", PANEL_ALIGN_LEFT_CLASS)}>
+      <header className={cn("mb-[-20px] flex h-11 shrink-0 items-start", PAGE_EDGE_ALIGN_CLASS)}>
         <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-foreground")}>
           Compliance Validation
         </h2>
       </header>
-      <div className="grid h-full max-h-full min-h-0 w-full flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)_minmax(0,1fr)] gap-2 overflow-hidden pb-2 lg:grid-cols-2 lg:grid-rows-1 lg:gap-0 lg:pb-4">
-        <Card className={cn("flex h-full min-h-0 w-full min-w-0 flex-col gap-0 overflow-hidden rounded-none border-0 py-0 shadow-none", PAGE_CANVAS_CLASS)}>
-          <CardHeader className={cn("flex h-14 min-w-0 shrink-0 flex-row items-center gap-3 py-0 pr-6 md:pr-8 lg:gap-6 lg:pr-4", PANEL_ALIGN_LEFT_CLASS)}>
-            <span className="shrink-0 text-base font-medium leading-6 text-foreground">
-              Source Document
-            </span>
-            <span className="ml-auto min-w-0 truncate font-mono text-sm leading-5 tabular-nums">
-              {SOURCE_DOCUMENT}
-            </span>
-            <DocumentActionsMenu
-                items={[
-                  {
-                    label: "Copy filename",
-                    onSelect: () => {
-                      void navigator.clipboard.writeText(SOURCE_DOCUMENT);
-                      toast.success("Filename copied.");
-                    },
-                  },
-                  {
-                    label: "Download source",
-                    onSelect: () => {
-                      const blob = new Blob([SOURCE_SOP_TEXT], { type: "text/plain" });
-                      const url = URL.createObjectURL(blob);
-                      const link = window.document.createElement("a");
-                      link.href = url;
-                      link.download = SOURCE_DOCUMENT;
-                      link.click();
-                      URL.revokeObjectURL(url);
-                    },
-                  },
-                ]}
-              />
-          </CardHeader>
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-            <div className={cn("flex min-h-0 flex-1 flex-col pt-2 pr-6 md:pr-8 lg:pr-4", PANEL_ALIGN_LEFT_CLASS)}>
-              <Card className={cn(DASHBOARD_CARD_CLASS, "h-0 min-h-0 w-full flex-1 gap-0 overflow-y-auto p-4")}>
-                <ol className="m-0 flex list-none flex-col gap-4 p-0">
-                  {lines.map((line) => (
-                    <li key={line.number} className="m-0 flex items-baseline gap-3 p-0 text-base font-normal leading-6">
-                      <span className="shrink-0 font-mono text-base font-normal tabular-nums leading-6 text-muted-foreground">
-                        {formatIndex(line.number)}
-                      </span>
-                      <span className="font-normal text-foreground">{line.text}</span>
-                    </li>
-                  ))}
-                </ol>
-              </Card>
-            </div>
-          </div>
-        </Card>
 
-        <Card className={cn("flex h-full min-h-0 w-full min-w-0 flex-col gap-0 overflow-hidden rounded-none border-0 py-0 shadow-none", PAGE_CANVAS_CLASS)}>
-          <CardHeader className={cn("flex h-14 min-w-0 w-full shrink-0 flex-row items-center gap-3 py-0 pr-6 md:pr-8 lg:gap-6", PANEL_ALIGN_RIGHT_CLASS)}>
-            <span className="shrink-0 text-base font-medium leading-6 text-foreground">
-              Edit Document
-            </span>
-            <p className="m-0 ml-auto text-sm font-normal leading-5 text-foreground">
-              <span className="font-mono tabular-nums">{complianceScore}</span>
-              {" / "}
-              <span className="font-mono tabular-nums">100</span>
-            </p>
-            <DocumentActionsMenu
-              items={[
-                {
-                  label: "Copy score",
-                  onSelect: () => {
-                    void navigator.clipboard.writeText(`${complianceScore} / 100`);
-                    toast.success("Score copied.");
-                  },
+      <div className={cn("flex min-h-0 w-full flex-1 flex-col overflow-hidden", PAGE_EDGE_ALIGN_CLASS)}>
+        <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden lg:w-1/2">
+        <CardHeader className="flex h-14 min-w-0 w-full shrink-0 flex-row items-center gap-3 px-0 py-0 lg:gap-6">
+          <span className="shrink-0 text-base font-medium leading-6 text-foreground">
+            Edit Document
+          </span>
+          <span className="ml-auto min-w-0 truncate font-mono text-sm leading-5 tabular-nums text-foreground">
+            {SOURCE_DOCUMENT}
+          </span>
+          <p className="m-0 shrink-0 text-sm font-normal leading-5 text-foreground">
+            <span className="font-mono tabular-nums">{complianceScore}</span>
+            {" / "}
+            <span className="font-mono tabular-nums">100</span>
+          </p>
+          <DocumentActionsMenu
+            items={[
+              {
+                label: "Copy filename",
+                onSelect: () => {
+                  void navigator.clipboard.writeText(SOURCE_DOCUMENT);
+                  toast.success("Filename copied.");
                 },
-                {
-                  label: "Export certified SOP",
-                  onSelect: finalize,
+              },
+              {
+                label: "Download source",
+                onSelect: downloadSource,
+              },
+              {
+                label: "Copy score",
+                onSelect: () => {
+                  void navigator.clipboard.writeText(`${complianceScore} / 100`);
+                  toast.success("Score copied.");
                 },
-              ]}
-            />
-          </CardHeader>
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-            <div className={cn("flex min-h-0 flex-1 flex-col pt-2 pr-6 md:pr-8", PANEL_ALIGN_RIGHT_CLASS)}>
-              <Card className={cn(DASHBOARD_CARD_CLASS, "h-0 min-h-0 w-full flex-1 gap-0 overflow-y-auto p-4")}>
-                <ol className="m-0 flex list-none flex-col divide-y divide-zinc-200 p-0">
-                  {chunks.map((chunk) => {
-                    const assessment = assessChunk(chunk);
-                    const review = reviews[chunk.id];
-                    const resolved =
-                      assessment.status === "compliant" ||
-                      review?.decision === "accepted";
-                    const status = resolved ? "compliant" : "non-compliant";
-                    const editing = editingId === chunk.id;
-                    const blockNumber = chunk.lines[0].number;
-                    const showDetails = assessment.status !== "compliant" || editing;
+              },
+              {
+                label: "Export certified SOP",
+                onSelect: finalize,
+              },
+            ]}
+          />
+        </CardHeader>
 
-                    return (
-                      <li
-                        key={chunk.id}
-                        className="m-0 grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-3 gap-y-3 p-0 py-4 first:pt-0 last:pb-0"
-                      >
-                        <FindingIndex number={blockNumber} />
-                        <FindingTitle title={chunk.title} />
-                        <FindingStatus status={status} />
-                        {showDetails ? (
-                          <div className="col-span-2 col-start-2">
-                            {editing ? (
-                              <div className="flex flex-col gap-3">
-                                <Textarea
-                                  value={draft}
-                                  onChange={(event) => setDraft(event.target.value)}
-                                  aria-label={`Revision for ${chunk.title}`}
-                                  className="min-h-28 rounded-sm border-border bg-muted/40"
-                                />
-                                <div className="flex flex-wrap justify-end gap-2">
-                                  <Button
-                                    type="button"
-                                    variant="outline"
-                                    className={ACTION_BUTTON_CLASS}
-                                    onClick={cancelEdit}
-                                  >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    type="button"
-                                    variant="black"
-                                    className={ACTION_BUTTON_CLASS}
-                                    onClick={() => runComplianceCheck(chunk.id)}
-                                  >
-                                    Run Compliance Check
-                                  </Button>
-                                </div>
+        <div className="flex min-h-0 flex-1 flex-col pt-2">
+          <Card className={cn(DASHBOARD_CARD_CLASS, "h-0 min-h-0 w-full flex-1 gap-0 overflow-y-auto p-4")}>
+            <ol className="m-0 flex list-none flex-col divide-y divide-zinc-200 p-0">
+              {chunks.map((chunk) => {
+                const assessment = assessChunk(chunk);
+                const review = reviews[chunk.id];
+                const resolved =
+                  assessment.status === "compliant" ||
+                  review?.decision === "accepted";
+                const status = resolved ? "compliant" : "non-compliant";
+                const editing = editingId === chunk.id;
+                const blockNumber = chunk.lines[0].number;
+                const showDetails = assessment.status !== "compliant" || editing;
+
+                return (
+                  <li
+                    key={chunk.id}
+                    className="m-0 grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-3 gap-y-3 p-0 py-4 first:pt-0 last:pb-0"
+                  >
+                    <FindingIndex number={blockNumber} />
+                    <FindingTitle title={chunk.title} />
+                    <FindingStatus status={status} />
+                    {showDetails ? (
+                      <div className="col-span-2 col-start-2 min-w-0">
+                        {editing ? (
+                          <div className="flex flex-col gap-3">
+                            <Textarea
+                              value={draft}
+                              onChange={(event) => setDraft(event.target.value)}
+                              aria-label={`Revision for ${chunk.title}`}
+                              className="min-h-28 rounded-sm border-border bg-muted/40"
+                            />
+                            <div className="flex flex-wrap justify-end gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className={ACTION_BUTTON_CLASS}
+                                onClick={cancelEdit}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="black"
+                                className={ACTION_BUTTON_CLASS}
+                                onClick={() => runComplianceCheck(chunk.id)}
+                              >
+                                Run Compliance Check
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-1 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-3">
+                              <p className={CARD_EYEBROW_MUTED_CLASS}>
+                                Suggested Revision
+                              </p>
+                              <p className="m-0 text-base font-normal leading-6 text-foreground">
+                                {review?.decision === "accepted"
+                                  ? review.revision
+                                  : assessment.changeRequired}
+                              </p>
+                            </div>
+                            {review?.decision === "pending" || !review ? (
+                              <div className="flex flex-wrap justify-end gap-2">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  className={ACTION_BUTTON_CLASS}
+                                  onClick={() =>
+                                    setDecision(
+                                      chunk.id,
+                                      "accepted",
+                                      assessment.changeRequired,
+                                    )
+                                  }
+                                >
+                                  Accept Revision
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  className={ACTION_BUTTON_CLASS}
+                                  onClick={() => startEdit(chunk)}
+                                >
+                                  Edit Manually
+                                </Button>
                               </div>
                             ) : (
-                              <div className="flex flex-col gap-3">
-                                <div className="flex flex-col gap-1 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-3">
-                                  <p className={CARD_EYEBROW_MUTED_CLASS}>
-                                    Suggested Revision
+                              <div className="flex items-center justify-end gap-3">
+                                {review.decision === "declined" ? (
+                                  <p className="m-0 mr-auto text-base font-normal text-muted-foreground">
+                                    Revision declined
                                   </p>
-                                  <p className="m-0 text-base font-normal leading-6 text-foreground">
-                                    {review?.decision === "accepted"
-                                      ? review.revision
-                                      : assessment.changeRequired}
-                                  </p>
-                                </div>
-                                {review?.decision === "pending" || !review ? (
-                                  <div className="flex flex-wrap justify-end gap-2">
-                                    <Button
-                                      type="button"
-                                      variant="outline"
-                                      className={ACTION_BUTTON_CLASS}
-                                      onClick={() =>
-                                        setDecision(
-                                          chunk.id,
-                                          "accepted",
-                                          assessment.changeRequired,
-                                        )
-                                      }
-                                    >
-                                      Accept Revision
-                                    </Button>
-                                    <Button
-                                      type="button"
-                                      variant="outline"
-                                      className={ACTION_BUTTON_CLASS}
-                                      onClick={() => startEdit(chunk)}
-                                    >
-                                      Edit Manually
-                                    </Button>
-                                  </div>
-                                ) : (
-                                  <div className="flex items-center justify-end gap-3">
-                                    {review.decision === "declined" ? (
-                                      <p className="m-0 mr-auto text-base font-normal text-muted-foreground">
-                                        Revision declined
-                                      </p>
-                                    ) : null}
-                                    <button
-                                      type="button"
-                                      className="rounded-sm text-sm font-medium text-foreground underline-offset-2 hover:underline"
-                                      onClick={() => undoDecision(chunk.id)}
-                                    >
-                                      Undo
-                                    </button>
-                                  </div>
-                                )}
+                                ) : null}
+                                <button
+                                  type="button"
+                                  className="rounded-sm text-sm font-medium text-foreground underline-offset-2 hover:underline"
+                                  onClick={() => undoDecision(chunk.id)}
+                                >
+                                  Undo
+                                </button>
                               </div>
                             )}
                           </div>
-                        ) : null}
-                      </li>
-                    );
-                  })}
-                </ol>
-              </Card>
-            </div>
-          </div>
-        </Card>
+                        )}
+                      </div>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ol>
+          </Card>
+        </div>
+        </div>
       </div>
 
-      <footer className={cn("relative z-10 flex shrink-0 flex-wrap items-center justify-between gap-3 py-4 pr-6 md:pr-8 lg:py-8", PANEL_ALIGN_LEFT_CLASS, PAGE_CANVAS_CLASS)}>
-        <p className="m-0 text-base font-normal leading-6 text-red-600">
-          {flaggedCount}{" "}
-          {flaggedCount === 1 ? "Finding" : "Findings"} Flagged for Remediation
-        </p>
-        <Button
-          type="button"
-          variant="black"
-          className="h-10 min-h-10 rounded-sm px-4 py-0 text-sm font-medium"
-          onClick={finalize}
-        >
-          Export Certified SOP
-        </Button>
+      <footer className={cn("relative z-10 shrink-0 pt-12 pb-4 lg:pb-8", PAGE_EDGE_ALIGN_CLASS, PAGE_CANVAS_CLASS)}>
+        <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-3 lg:w-1/2">
+          <p className="m-0 text-base font-normal leading-6 text-red-600">
+            {flaggedCount}{" "}
+            Non-Compliant {flaggedCount === 1 ? "Finding" : "Findings"}
+          </p>
+          <Button
+            type="button"
+            variant="black"
+            className="h-10 min-h-10 rounded-sm px-4 py-0 text-sm font-medium disabled:bg-zinc-200 disabled:text-zinc-400 disabled:opacity-100"
+            disabled={flaggedCount > 0}
+            onClick={finalize}
+          >
+            Export Certified SOP
+          </Button>
+        </div>
       </footer>
     </div>
   );

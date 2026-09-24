@@ -208,7 +208,7 @@ export function AppSidebarNav({
 
         <div
           className={cn(
-            "flex min-h-0 w-full min-w-0 flex-1 flex-col justify-between pb-[35px]",
+            "flex min-h-0 w-full min-w-0 flex-1 flex-col justify-between pb-8",
             railPad,
           )}
         >

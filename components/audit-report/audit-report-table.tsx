@@ -55,7 +55,7 @@ const REPORT_GRID_CLASS = cn(
 const META_FIELD_CLASS = "flex min-w-0 flex-col gap-2";
 const META_VALUE_CLASS = "text-body1 text-foreground";
 const ACTION_ITEM_CLASS =
-  "cursor-pointer gap-2 text-sm hover:bg-slate-100 focus:bg-slate-100";
+  "cursor-pointer gap-2 text-sm hover:bg-zinc-100 focus:bg-zinc-100";
 
 function HeaderLabel({
   label,
@@ -144,7 +144,7 @@ function AuditReportActionsMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="min-w-[13rem] rounded-2xl border border-slate-200 bg-white p-1 shadow-lg"
+        className="min-w-[13rem] rounded-2xl border border-zinc-200 bg-white p-1 shadow-lg"
       >
         <DropdownMenuItem
           className={ACTION_ITEM_CLASS}
@@ -157,7 +157,7 @@ function AuditReportActionsMenu({
           <Copy className="size-4" />
           Copy Audit ID
         </DropdownMenuItem>
-        <DropdownMenuSeparator className="bg-slate-200" />
+        <DropdownMenuSeparator className="bg-zinc-200" />
         <DropdownMenuItem
           className={ACTION_ITEM_CLASS}
           onSelect={() => onRerunAudit?.()}
@@ -255,7 +255,7 @@ export function AuditReportTable({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="inline-flex w-fit cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-medium text-slate-900 transition-colors hover:opacity-70"
+                className="inline-flex w-fit cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-medium text-zinc-900 transition-colors hover:opacity-70"
               >
                 Compliance Breakdown
                 <ChevronDown
