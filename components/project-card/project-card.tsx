@@ -248,34 +248,25 @@ export default function ProjectCard({
                   onRerunAudit={resetAudit}
                 />
               </CardContent>
-              <CardFooter className="flex w-full justify-end px-4 pt-4 pb-4">
+              <CardFooter className="flex w-full items-center justify-end gap-2 px-4 pt-4 pb-4">
                 <Button
                   type="button"
-                  variant="black"
+                  variant="outline"
                   className="text-button"
                   onClick={downloadReport}
                 >
                   Download Report
                 </Button>
+                <Button
+                  type="button"
+                  variant="black"
+                  className="text-button"
+                  onClick={() => router.push("/audit/remediate")}
+                >
+                  Start Compliance Validation
+                </Button>
               </CardFooter>
             </Card>
-          </div>
-
-          <div className="relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-zinc-200 bg-white px-4 py-4 shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm">
-            <div
-              aria-hidden
-              className="absolute inset-y-0 left-0 w-1.5 rounded-l-2xl bg-zinc-800"
-            />
-            <p className="m-0 text-center text-[14px] leading-5 text-black">
-              Resolve findings by uploading revised documentation.{" "}
-              <button
-                type="button"
-                className="inline text-[14px] leading-5 font-medium text-black underline decoration-solid underline-offset-2 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800 focus-visible:ring-offset-2"
-                onClick={() => router.push("/audit/remediate")}
-              >
-                Upgrade documentation
-              </button>
-            </p>
           </div>
         </div>
       );

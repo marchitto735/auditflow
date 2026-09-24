@@ -128,7 +128,7 @@ const BREADCRUMB_NESTED: Record<
   "/dashboard/audits": { parentHref: "/", title: "Audit Log" },
   "/dashboard/findings": { parentHref: "/", title: "Open Findings" },
   "/audit/results": { parentHref: "/audit/sop", title: "Audit Report" },
-  "/audit/remediate": { parentHref: "/", title: "Remediation" },
+  "/audit/remediate": { parentHref: "/", title: "Validation" },
   "/audit/bpr": {
     parentHref: "/audit/sop",
     title: "Batch Production Record Audit",

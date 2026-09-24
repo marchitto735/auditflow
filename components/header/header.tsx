@@ -157,7 +157,7 @@ export default function Header() {
               </div>
             </div>
 
-            <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
+            <div className="-mr-2 ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
               <Button
                 type="button"
                 variant="ghost"

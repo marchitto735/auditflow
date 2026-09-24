@@ -225,7 +225,7 @@ export default function RemediationWorkspace() {
 
   return (
     <div className={cn("flex h-full min-h-0 flex-1 flex-col overflow-hidden", PAGE_CANVAS_CLASS)}>
-      <header className={cn("mb-[-16px] flex h-11 shrink-0 items-start pt-1", BREADCRUMB_ALIGN_CLASS)}>
+      <header className={cn("mb-[-20px] flex h-11 shrink-0 items-start", BREADCRUMB_ALIGN_CLASS)}>
         <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-foreground")}>
           Compliance Validation
         </h2>
