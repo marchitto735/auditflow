@@ -37,7 +37,7 @@ const SOURCE_DOCUMENT = "sop-non-compliant.txt";
 /** Page gutter alignment — flush with hamburger / outer layout bounds. */
 const PAGE_EDGE_ALIGN_CLASS = "pl-6 pr-6 md:pl-8 md:pr-8";
 const ACTION_BUTTON_CLASS =
-  "h-9 min-h-9 rounded-sm px-3 py-0 text-sm font-medium shadow-none";
+  "rounded-sm px-3 py-0 text-sm font-medium shadow-none";
 
 const PARSED = parseDocumentChunks(SOURCE_SOP_TEXT);
 
@@ -402,7 +402,7 @@ export default function RemediationWorkspace() {
           <Button
             type="button"
             variant="black"
-            className="h-10 min-h-10 rounded-sm px-4 py-0 text-sm font-medium disabled:bg-zinc-200 disabled:text-zinc-400 disabled:opacity-100"
+            className="rounded-sm px-4 py-0 text-sm font-medium disabled:bg-zinc-200 disabled:text-zinc-400 disabled:opacity-100"
             disabled={flaggedCount > 0}
             onClick={finalize}
           >

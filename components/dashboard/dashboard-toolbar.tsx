@@ -318,7 +318,7 @@ function MobileFiltersSheet({
         <div className="shrink-0 border-t border-zinc-200 px-4 py-3">
           <button
             type="button"
-            className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-zinc-900 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+            className="inline-flex h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] w-full items-center justify-center rounded-lg bg-zinc-900 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
             onClick={() => setOpen(false)}
           >
             Done

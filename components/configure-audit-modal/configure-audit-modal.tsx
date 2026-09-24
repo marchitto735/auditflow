@@ -1023,7 +1023,7 @@ export function ConfigureAuditModal({
               <Button
                 type="button"
                 variant="outline"
-                className="h-10 rounded-lg border-zinc-800 bg-transparent px-4 text-sm font-medium text-black hover:bg-zinc-100"
+                className="rounded-lg border-zinc-800 bg-transparent px-4 text-sm font-medium text-black hover:bg-zinc-100"
                 onClick={() => handleDialogOpenChange(false)}
                 disabled={isInitializing}
               >
@@ -1032,7 +1032,7 @@ export function ConfigureAuditModal({
               <Button
                 type="button"
                 variant="black"
-                className="h-10 rounded-lg px-5 text-sm font-medium"
+                className="rounded-lg px-5 text-sm font-medium"
                 onClick={() => {
                   void handleInitialize();
                 }}
