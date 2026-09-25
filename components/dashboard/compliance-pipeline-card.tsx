@@ -8,7 +8,6 @@ import {
   CARD_CONTENT_CLASS,
   CARD_CTA_ARROW_CLASS,
   CARD_CTA_CLASS,
-  CARD_EYEBROW_CLASS,
   CARD_FOOTER_CLASS,
   CARD_HEADER_STACK_CLASS,
   CARD_TITLE_CLASS,
@@ -92,7 +91,6 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
     >
       <CardContent className={cn(CARD_CONTENT_CLASS, "h-auto gap-3")}>
         <div className={CARD_HEADER_STACK_CLASS}>
-          <p className={cn(CARD_EYEBROW_CLASS, "text-black")}>Pipeline</p>
           <h3
             className={cn(
               CARD_TITLE_CLASS,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { CheckCircle2, ChevronDown, TriangleAlert } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -15,10 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Card,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import {
   assessChunk,
@@ -228,56 +225,60 @@ export default function RemediationWorkspace() {
 
   return (
     <div className={cn("flex h-0 max-h-[calc(100dvh-4rem)] min-h-0 w-full flex-1 flex-col overflow-hidden", PAGE_CANVAS_CLASS)}>
-      <header className={cn("mb-[-20px] flex h-11 shrink-0 items-start", PAGE_EDGE_ALIGN_CLASS)}>
+      <header className={cn("mb-6 flex shrink-0 items-start", PAGE_EDGE_ALIGN_CLASS)}>
         <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-foreground")}>
           Compliance Validation
         </h2>
       </header>
 
-      <div className={cn("flex min-h-0 w-full flex-1 flex-col overflow-hidden", PAGE_EDGE_ALIGN_CLASS)}>
-        <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden lg:w-1/2">
-        <CardHeader className="flex h-14 min-w-0 w-full shrink-0 flex-row items-center gap-3 px-0 py-0 lg:gap-6">
-          <span className="shrink-0 text-base font-medium leading-6 text-foreground">
-            Edit Document
-          </span>
-          <span className="ml-auto min-w-0 truncate font-mono text-sm leading-5 tabular-nums text-foreground">
-            {SOURCE_DOCUMENT}
-          </span>
-          <p className="m-0 shrink-0 text-sm font-normal leading-5 text-foreground">
-            <span className="font-mono tabular-nums">{complianceScore}</span>
-            {" / "}
-            <span className="font-mono tabular-nums">100</span>
-          </p>
-          <DocumentActionsMenu
-            items={[
-              {
-                label: "Copy filename",
-                onSelect: () => {
-                  void navigator.clipboard.writeText(SOURCE_DOCUMENT);
-                  toast.success("Filename copied.");
+      <div className={cn("flex min-h-0 w-full flex-1 flex-col overflow-hidden pb-8", PAGE_EDGE_ALIGN_CLASS)}>
+        <Card
+          className={cn(
+            "flex h-full max-h-[calc(100dvh-140px)] min-h-0 w-full min-w-0 flex-1 flex-col gap-0 overflow-hidden py-0 lg:w-1/2",
+            DASHBOARD_CARD_CLASS,
+          )}
+        >
+          <header className="flex shrink-0 flex-row items-center gap-3 border-b border-zinc-100 p-4 lg:gap-6">
+            <span className="shrink-0 text-base font-medium leading-6 text-foreground">
+              Edit Document
+            </span>
+            <span className="ml-auto min-w-0 truncate font-mono text-sm leading-5 tabular-nums text-foreground">
+              {SOURCE_DOCUMENT}
+            </span>
+            <p className="m-0 shrink-0 text-sm font-normal leading-5 text-foreground">
+              <span className="font-mono tabular-nums">{complianceScore}</span>
+              {" / "}
+              <span className="font-mono tabular-nums">100</span>
+            </p>
+            <DocumentActionsMenu
+              items={[
+                {
+                  label: "Copy filename",
+                  onSelect: () => {
+                    void navigator.clipboard.writeText(SOURCE_DOCUMENT);
+                    toast.success("Filename copied.");
+                  },
                 },
-              },
-              {
-                label: "Download source",
-                onSelect: downloadSource,
-              },
-              {
-                label: "Copy score",
-                onSelect: () => {
-                  void navigator.clipboard.writeText(`${complianceScore} / 100`);
-                  toast.success("Score copied.");
+                {
+                  label: "Download source",
+                  onSelect: downloadSource,
                 },
-              },
-              {
-                label: "Export certified SOP",
-                onSelect: finalize,
-              },
-            ]}
-          />
-        </CardHeader>
+                {
+                  label: "Copy score",
+                  onSelect: () => {
+                    void navigator.clipboard.writeText(`${complianceScore} / 100`);
+                    toast.success("Score copied.");
+                  },
+                },
+                {
+                  label: "Export certified SOP",
+                  onSelect: finalize,
+                },
+              ]}
+            />
+          </header>
 
-        <div className="flex min-h-0 flex-1 flex-col pt-2">
-          <Card className={cn(DASHBOARD_CARD_CLASS, "h-0 min-h-0 w-full flex-1 gap-0 overflow-y-auto p-4")}>
+          <div className="min-h-0 flex-1 overflow-y-auto p-4">
             <ol className="m-0 flex list-none flex-col divide-y divide-zinc-200 p-0">
               {chunks.map((chunk) => {
                 const assessment = assessChunk(chunk);
@@ -388,28 +389,40 @@ export default function RemediationWorkspace() {
                 );
               })}
             </ol>
-          </Card>
-        </div>
-        </div>
-      </div>
+          </div>
 
-      <footer className={cn("relative z-10 shrink-0 pt-12 pb-4 lg:pb-8", PAGE_EDGE_ALIGN_CLASS, PAGE_CANVAS_CLASS)}>
-        <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-3 lg:w-1/2">
-          <p className="m-0 text-base font-normal leading-6 text-red-600">
-            {flaggedCount}{" "}
-            Non-Compliant {flaggedCount === 1 ? "Finding" : "Findings"}
-          </p>
-          <Button
-            type="button"
-            variant="black"
-            className="rounded-sm px-4 py-0 text-sm font-medium disabled:bg-zinc-200 disabled:text-zinc-400 disabled:opacity-100"
-            disabled={flaggedCount > 0}
-            onClick={finalize}
-          >
-            Export Certified SOP
-          </Button>
-        </div>
-      </footer>
+          <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-zinc-100 p-4">
+            <div
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold",
+                flaggedCount > 0
+                  ? "border-red-200 bg-red-50 text-red-700"
+                  : "border-emerald-200 bg-emerald-50 text-emerald-700",
+              )}
+            >
+              {flaggedCount > 0 ? (
+                <TriangleAlert className="size-4 shrink-0" aria-hidden />
+              ) : (
+                <CheckCircle2 className="size-4 shrink-0" aria-hidden />
+              )}
+              <span>
+                {flaggedCount > 0
+                  ? `${flaggedCount} Non-Compliant ${flaggedCount === 1 ? "Finding" : "Findings"}`
+                  : "Document Compliant"}
+              </span>
+            </div>
+            <Button
+              type="button"
+              variant="black"
+              className="rounded-sm px-4 py-0 text-sm font-medium disabled:bg-zinc-200 disabled:text-zinc-400 disabled:opacity-100"
+              disabled={flaggedCount > 0}
+              onClick={finalize}
+            >
+              Export Certified SOP
+            </Button>
+          </footer>
+        </Card>
+      </div>
     </div>
   );
 }

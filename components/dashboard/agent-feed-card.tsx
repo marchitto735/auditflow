@@ -5,7 +5,6 @@ import { AlertTriangle, CircleAlert } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   CARD_CONTENT_CLASS,
-  CARD_EYEBROW_CLASS,
   CARD_HEADER_STACK_CLASS,
   CARD_TITLE_CLASS,
   INTERACTIVE_CARD_CLASS,
@@ -189,7 +188,6 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
         )}
       >
         <div className={cn(CARD_HEADER_STACK_CLASS, "relative shrink-0")}>
-          <p className={CARD_EYEBROW_CLASS}>Runtime Stream</p>
           <p className="absolute right-0 top-0 m-0 flex items-center gap-2 text-sm font-medium leading-none text-black">
             <span
               className="relative flex size-2.5 shrink-0 items-center justify-center"
@@ -203,7 +201,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
           <h3
             className={cn(
               CARD_TITLE_CLASS,
-              "m-0 max-w-full text-balance text-black",
+              "m-0 max-w-full pr-[6.5rem] text-balance text-black",
             )}
           >
             Activity Feed

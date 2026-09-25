@@ -12,7 +12,6 @@ import {
   CARD_CONTENT_CLASS,
   CARD_CTA_ARROW_CLASS,
   CARD_CTA_CLASS,
-  CARD_EYEBROW_CLASS,
   CARD_FOOTER_CLASS,
   CARD_HEADER_STACK_CLASS,
   CARD_TITLE_CLASS,
@@ -195,7 +194,6 @@ export function AuditLauncherCard({
                   SHOW_AUDIT_SCORE_TREND && "max-w-[70%] sm:max-w-none",
                 )}
               >
-                <p className={CARD_EYEBROW_CLASS}>Audit</p>
                 <h3
                   className={cn(
                     CARD_TITLE_CLASS,

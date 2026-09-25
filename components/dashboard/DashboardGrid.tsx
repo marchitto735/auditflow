@@ -30,7 +30,7 @@ export default function DashboardGrid({
         )}
       >
         <DashboardSection
-          title="Flows"
+          title="Audits"
           description="Run an SOP, BPR, or FIR audit, choose a regulatory clause, get your report."
         >
           <AuditLauncher />
