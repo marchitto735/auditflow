@@ -161,7 +161,7 @@ export function AppSidebarNav({
           >
             {!compact ? (
               <Link
-                href="/"
+                href="/audits"
                 onClick={handleNavigate}
                   className="m-0 min-w-0 flex-1 truncate pl-3 text-xl font-bold tracking-tight text-black no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-lg dark:text-neutral-100 color:text-sidebar-foreground"
               >

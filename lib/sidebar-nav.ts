@@ -6,6 +6,7 @@ import {
   Crosshair,
   FileText,
   Gauge,
+  Layers,
   Settings,
   TrendingUp,
   Users,
@@ -34,10 +35,15 @@ export const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
     label: "Auditing",
     items: [
       {
-        title: "Dashboard",
-        href: "/",
-        icon: Gauge,
+        title: "Audits",
+        href: "/audits",
+        icon: Layers,
         exact: true,
+      },
+      {
+        title: "Dashboard",
+        href: "/dashboard",
+        icon: Gauge,
       },
       {
         title: "Policies",
@@ -125,17 +131,21 @@ const BREADCRUMB_NESTED: Record<
   string,
   { parentHref: string; title: string }
 > = {
-  "/dashboard/audits": { parentHref: "/", title: "Audit Log" },
-  "/dashboard/findings": { parentHref: "/", title: "Open Findings" },
-  "/audit/results": { parentHref: "/audit/sop", title: "Audit Report" },
-  "/audit/remediate": { parentHref: "/", title: "Validation" },
+  "/dashboard/audits": { parentHref: "/dashboard", title: "Audit Log" },
+  "/dashboard/findings": { parentHref: "/dashboard", title: "Open Findings" },
+  "/audit/results": { parentHref: "/audits", title: "Audit Report" },
+  "/audit/remediate": { parentHref: "/audits", title: "Validation" },
   "/audit/bpr": {
-    parentHref: "/audit/sop",
+    parentHref: "/audits",
     title: "Batch Production Record Audit",
   },
   "/audit/fir": {
-    parentHref: "/audit/sop",
+    parentHref: "/audits",
     title: "Facility Inspection Report Audit",
+  },
+  "/audit/sop": {
+    parentHref: "/audits",
+    title: "Standard Operating Procedure Audit",
   },
 };
 
@@ -164,7 +174,7 @@ export function findSidebarNavMatch(pathname: string): {
   for (const section of SIDEBAR_NAV_SECTIONS) {
     for (const item of section.items) {
       if (!isSidebarNavActive(pathname, item)) continue;
-      const score = item.href === "/" ? 1 : item.href.length;
+      const score = item.href.length;
       if (!best || score > best.score) {
         best = { section, item, score };
       }
@@ -175,7 +185,7 @@ export function findSidebarNavMatch(pathname: string): {
 }
 
 function sectionHomeHref(section: SidebarNavSection) {
-  return section.items[0]?.href ?? "/";
+  return section.items[0]?.href ?? "/audits";
 }
 
 /**
@@ -213,8 +223,8 @@ export function resolveBreadcrumbs(pathname: string): BreadcrumbSegment[] {
   return [
     {
       label: auditing?.label ?? "Auditing",
-      href: auditing ? sectionHomeHref(auditing) : "/",
+      href: auditing ? sectionHomeHref(auditing) : "/audits",
     },
-    { label: "Dashboard" },
+    { label: "Audits" },
   ];
 }

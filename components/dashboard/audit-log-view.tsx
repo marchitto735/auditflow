@@ -153,7 +153,7 @@ export default function AuditLogView({
       >
         <Card className={cn(DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-4">
-            <p className={CARD_EYEBROW_MUTED_CLASS}>Pass rate</p>
+            <p className={CARD_EYEBROW_MUTED_CLASS}>Pass Rate</p>
             <p className="text-h5 m-0 mt-2 font-semibold leading-none text-foreground">
               {passRate}%
             </p>
@@ -161,7 +161,7 @@ export default function AuditLogView({
         </Card>
         <Card className={cn(DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-4">
-            <p className={CARD_EYEBROW_MUTED_CLASS}>Fail rate</p>
+            <p className={CARD_EYEBROW_MUTED_CLASS}>Fail Rate</p>
             <p className="text-h5 m-0 mt-2 font-semibold leading-none text-foreground">
               {failRate}%
             </p>
@@ -170,7 +170,7 @@ export default function AuditLogView({
         <Card className={cn(DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-4">
             <p className={CARD_EYEBROW_MUTED_CLASS}>
-              Volume by type
+              Volume By Type
             </p>
             <p className="text-body1 m-0 mt-2 text-foreground">
               SOP {typeSplit.SOP} · BPR {typeSplit.BPR} · FIR {typeSplit.FIR}

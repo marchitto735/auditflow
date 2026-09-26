@@ -16,7 +16,8 @@ type DashboardGridProps = {
 
 /**
  * Full-width stacked Swiss bento:
- * Audit + KPI (3-up) → Recent Activity → System Telemetry (pipeline + AI feed).
+ * Quick Launch (compact SOP/BPR/FIR) → Status → History → Telemetry.
+ * Full Audits workspace remains at `/audits`.
  */
 export default function DashboardGrid({
   activityRows = [],
@@ -31,9 +32,9 @@ export default function DashboardGrid({
       >
         <DashboardSection
           title="Audits"
-          description="Run an SOP, BPR, or FIR audit, choose a regulatory clause, get your report."
+          description="Start an SOP, BPR, or FIR audit without leaving the dashboard."
         >
-          <AuditLauncher />
+          <AuditLauncher variant="compact" />
         </DashboardSection>
         <DashboardSection
           title="Status"

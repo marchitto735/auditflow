@@ -5,8 +5,8 @@ import { AlertTriangle, CircleAlert } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   CARD_CONTENT_CLASS,
+  CARD_EYEBROW_MUTED_CLASS,
   CARD_HEADER_STACK_CLASS,
-  CARD_TITLE_CLASS,
   INTERACTIVE_CARD_CLASS,
   TELEMETRY_LIST_CLASS,
   TELEMETRY_META_CLASS,
@@ -198,14 +198,9 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
             </span>
             <span>Live Feed</span>
           </p>
-          <h3
-            className={cn(
-              CARD_TITLE_CLASS,
-              "m-0 max-w-full pr-[6.5rem] text-balance text-black",
-            )}
-          >
+          <p className={cn(CARD_EYEBROW_MUTED_CLASS, "max-w-full pr-[6.5rem]")}>
             Activity Feed
-          </h3>
+          </p>
         </div>
 
         <ul

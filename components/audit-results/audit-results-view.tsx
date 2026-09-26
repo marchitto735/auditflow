@@ -138,7 +138,7 @@ export default function AuditResultsView() {
         actions={
           <button
             type="button"
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/audits")}
             className="flex size-9 shrink-0 items-center justify-center rounded-sm bg-transparent text-foreground hover:bg-[var(--sidebar-hover)]"
             aria-label="Close report"
           >
@@ -157,18 +157,10 @@ export default function AuditResultsView() {
               clauseLabel={clauseLabel}
               timestamp={timestamp}
               onDownloadReport={downloadReport}
-              onRerunAudit={() => router.push("/")}
+              onRerunAudit={() => router.push("/audits")}
             />
           </CardContent>
           <CardFooter className="flex w-full items-center justify-end gap-2 px-4 pt-4 pb-4">
-            <Button
-              type="button"
-              variant="outline"
-              className="text-button"
-              onClick={downloadReport}
-            >
-              Download Report
-            </Button>
             <Button
               type="button"
               variant="black"

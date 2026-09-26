@@ -32,7 +32,7 @@ import {
 } from "@/lib/page-layout";
 
 const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
-const DEFAULT_PAGE_SIZE = 5;
+const DEFAULT_PAGE_SIZE = 3;
 /** Demo catalog size for pagination chrome when fewer stored reports exist. */
 const DEMO_TOTAL_RESULTS = 194;
 

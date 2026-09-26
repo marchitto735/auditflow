@@ -1,14 +1,6 @@
-import Dashboard from "@/components/dashboard/dashboard";
-import { storedReportToActivityRow } from "@/lib/audit-report-rows";
-import { listStoredAuditReports } from "@/lib/services/list-audit-reports";
+import { redirect } from "next/navigation";
 
-export default async function Home() {
-  const reports = await listStoredAuditReports(50);
-  const activityRows = reports.map(storedReportToActivityRow);
-
-  return (
-    <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col pb-0">
-      <Dashboard activityRows={activityRows} />
-    </div>
-  );
+/** Default landing — Audits is the primary home destination. */
+export default function Home() {
+  redirect("/audits");
 }

@@ -187,7 +187,7 @@ export default function FindingsView() {
           <CardContent className="flex flex-col gap-4 p-4">
             <div>
               <p className={CARD_EYEBROW_MUTED_CLASS}>
-                Selected finding
+                Selected Finding
               </p>
               <h3 className="text-h4 m-0 mt-1 whitespace-normal break-words font-semibold leading-[1.15] text-foreground">
                 {active ? active.title : "Select a finding"}

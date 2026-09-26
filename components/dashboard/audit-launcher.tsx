@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useConfigureAudit } from "@/components/configure-audit-modal/configure-audit-context";
 import {
@@ -12,6 +13,7 @@ import {
   CARD_CONTENT_CLASS,
   CARD_CTA_ARROW_CLASS,
   CARD_CTA_CLASS,
+  CARD_EYEBROW_MUTED_CLASS,
   CARD_FOOTER_CLASS,
   CARD_HEADER_STACK_CLASS,
   CARD_TITLE_CLASS,
@@ -26,25 +28,47 @@ const CARD_CLASS = cn(
   "group flex w-full min-w-0 shrink-0 cursor-pointer flex-col text-left text-inherit",
 );
 
-/** Toggle score sparkline / telemetry without deleting the markup. */
-const SHOW_AUDIT_SCORE_TREND = false;
-const SHOW_AUDIT_TELEMETRY = false;
+/** Functional category eyebrow (CSS uppercase via CARD_EYEBROW_*). */
+const EYEBROW_DISPLAY: Record<AuditWorkflowId, string> = {
+  sop: "Standard Workflow",
+  bpr: "Production Log",
+  fir: "Site Audit",
+};
 
-/** Full name + acronym for card titles. */
+/** Full name + acronym kept on one line. */
 const TITLE_DISPLAY: Record<AuditWorkflowId, string> = {
   sop: "Standard Operating Procedure (SOP)",
   bpr: "Batch Production Record (BPR)",
   fir: "Facility Inspection Report (FIR)",
 };
 
+/** Feature bullets — Audits page (`featured`) only; never on Dashboard compact. */
+const FEATURE_BULLETS: Record<AuditWorkflowId, readonly [string, string, string]> = {
+  sop: [
+    "Parses master process documentation against active workflows.",
+    "Automatically flags step-by-step deviations and clause gaps.",
+    "Generates comparative compliance audit logs.",
+  ],
+  bpr: [
+    "Cross-references batch yields and parameter logs.",
+    "Validates critical control point compliance.",
+    "Highlights historical variance and batch anomalies.",
+  ],
+  fir: [
+    "Audits environmental and safety checklist logs.",
+    "Summarizes open facility findings and recurring issues.",
+    "Tracks required corrective action timelines.",
+  ],
+};
+
 type LauncherMetrics = {
-  /** Last 5 run scores (0–100) for the sparkline. */
   trend: number[];
   chunks: string;
   latency: string;
   success: string;
 };
 
+/** Dashboard Quick Launch only — not shown on the dedicated Audits page. */
 const LAUNCHER_METRICS: Record<AuditWorkflowId, LauncherMetrics> = {
   sop: {
     trend: [86, 88, 84, 91, 89],
@@ -66,7 +90,6 @@ const LAUNCHER_METRICS: Record<AuditWorkflowId, LauncherMetrics> = {
   },
 };
 
-/** Sparkline stroke mirrors the status pip on each card. */
 function workflowStatusSparkClass(status: string): string {
   switch (status) {
     case "Active":
@@ -89,39 +112,35 @@ function TrendSparkline({
   label: string;
   className?: string;
 }) {
-  const width = 72;
+  const width = 76;
   const height = 28;
-  /** Keep stroke ends + terminal dot inside the viewBox / card edge. */
-  const padX = 4;
-  const padY = 3;
-  const plotWidth = width - padX * 2;
-  const plotHeight = height - padY * 2;
-
+  const pad = 2;
   const min = Math.min(...values);
   const max = Math.max(...values);
   const range = Math.max(max - min, 1);
-
   const points = values
     .map((value, index) => {
       const x =
-        values.length === 1
-          ? width / 2
-          : padX + (index / (values.length - 1)) * plotWidth;
-      const y = height - padY - ((value - min) / range) * plotHeight;
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
+        pad + (index / Math.max(values.length - 1, 1)) * (width - pad * 2);
+      const y =
+        height - pad - ((value - min) / range) * (height - pad * 2);
+      return `${x},${y}`;
     })
     .join(" ");
-
-  const last = values[values.length - 1] ?? 0;
-  const lastX = padX + plotWidth;
-  const lastY = height - padY - ((last - min) / range) * plotHeight;
+  const lastX =
+    pad +
+    ((values.length - 1) / Math.max(values.length - 1, 1)) * (width - pad * 2);
+  const lastY =
+    height -
+    pad -
+    ((values[values.length - 1]! - min) / range) * (height - pad * 2);
 
   return (
     <svg
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
-      className={cn("mr-1 shrink-0 overflow-visible", className)}
+      className={cn("overflow-visible", className)}
       role="img"
       aria-label={label}
     >
@@ -141,17 +160,20 @@ function TrendSparkline({
 export function AuditLauncherCard({
   id,
   className,
+  featured = false,
 }: {
   id: AuditWorkflowId;
   className?: string;
+  /** Larger tile + primary button CTA for the dedicated Audits page (no telemetry). */
+  featured?: boolean;
 }) {
   const { openConfigureAudit } = useConfigureAudit();
   const workflow = AUDIT_WORKFLOWS[id];
+  const eyebrow = EYEBROW_DISPLAY[id];
   const title = TITLE_DISPLAY[id];
-  const metrics =
-    SHOW_AUDIT_SCORE_TREND || SHOW_AUDIT_TELEMETRY
-      ? LAUNCHER_METRICS[id]
-      : null;
+  /** Sparklines + ops metrics only on Dashboard compact Quick Launch. */
+  const metrics = featured ? null : LAUNCHER_METRICS[id];
+  const bullets = featured ? FEATURE_BULLETS[id] : null;
 
   function handleActivate() {
     openConfigureAudit(id);
@@ -162,7 +184,11 @@ export function AuditLauncherCard({
       role="button"
       tabIndex={0}
       data-audit-launcher-card={id}
-      className={cn(CARD_CLASS, AUDIT_LAUNCHER_CARD_HEIGHT_CLASS, className)}
+      className={cn(
+        CARD_CLASS,
+        featured ? "min-h-[280px] h-full" : AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
+        className,
+      )}
       onClick={handleActivate}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -176,14 +202,15 @@ export function AuditLauncherCard({
         <CardContent
           className={cn(
             CARD_CONTENT_CLASS,
-            "flex h-full w-full min-h-0 flex-col justify-between gap-3 overflow-visible p-4 text-left",
+            "flex h-full w-full min-h-0 flex-col justify-between overflow-visible text-left",
+            featured ? "gap-4 p-6" : "gap-3 p-4",
           )}
         >
           <div className="flex min-w-0 flex-col gap-2">
             <div
               className={cn(
                 "grid w-full items-start gap-x-3",
-                SHOW_AUDIT_SCORE_TREND
+                metrics
                   ? "grid-cols-[minmax(0,1fr)_auto]"
                   : "grid-cols-1",
               )}
@@ -191,23 +218,23 @@ export function AuditLauncherCard({
               <div
                 className={cn(
                   CARD_HEADER_STACK_CLASS,
-                  SHOW_AUDIT_SCORE_TREND && "max-w-[70%] sm:max-w-none",
+                  metrics && "max-w-[70%] sm:max-w-none",
                 )}
               >
+                <p className={cn(CARD_EYEBROW_MUTED_CLASS, "max-w-full")}>
+                  {eyebrow}
+                </p>
                 <h3
                   className={cn(
                     CARD_TITLE_CLASS,
-                    "m-0 max-w-full hyphens-auto break-words text-pretty leading-snug text-black",
+                    "m-0 max-w-full hyphens-auto break-words text-pretty text-black",
                   )}
                 >
                   {title}
                 </h3>
               </div>
-              {SHOW_AUDIT_SCORE_TREND && metrics ? (
-                <div className="flex w-[4.75rem] shrink-0 flex-col items-end gap-1 pt-0.5">
-                  <span className="text-[11px] font-medium leading-none tracking-wide text-black uppercase">
-                    Score
-                  </span>
+              {metrics ? (
+                <div className="flex w-[4.75rem] shrink-0 flex-col items-end justify-center pt-0.5">
                   <TrendSparkline
                     values={metrics.trend}
                     label={`${workflow.label} score trend over last five runs`}
@@ -217,55 +244,85 @@ export function AuditLauncherCard({
               ) : null}
             </div>
 
-            <p className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 leading-snug text-black">
-              <span
-                className={cn(
-                  "size-2.5 shrink-0 rounded-full",
-                  workflowStatusDotClass(workflow.status),
-                )}
-                aria-hidden
-              />
-              <span>{workflow.status}</span>
-              <span className="text-black" aria-hidden>
-                •
-              </span>
-              <span className="text-black">Last Run {workflow.lastRun}</span>
-            </p>
+            {!featured ? (
+              <p
+                className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-black"
+                aria-label={`${workflow.label} status ${workflow.status}, last run ${workflow.lastRun}`}
+              >
+                <span
+                  className={cn(
+                    "size-2.5 shrink-0 rounded-full",
+                    workflowStatusDotClass(workflow.status),
+                  )}
+                  aria-hidden
+                />
+                <span className="font-medium">{workflow.status}</span>
+                <span className="text-black" aria-hidden>
+                  •
+                </span>
+                <span className="text-black">Last Run {workflow.lastRun}</span>
+              </p>
+            ) : null}
+
+            {bullets ? (
+              <ul className="m-0 mt-1 flex list-disc flex-col gap-1.5 py-0 pl-4 text-base leading-snug text-black">
+                {bullets.map((bullet) => (
+                  <li key={bullet} className="pl-0.5">
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
 
           <div className="mt-auto flex min-w-0 flex-col gap-2.5">
-            {SHOW_AUDIT_TELEMETRY && metrics ? (
+            {metrics ? (
               <div
-                className="flex min-w-0 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-zinc-500"
+                className="flex min-w-0 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-black"
                 aria-label={`${workflow.label} operational metrics`}
               >
                 <span className="shrink-0">
-                  <span className="text-zinc-500">Chunks</span>{" "}
+                  <span className="text-black">Chunks</span>{" "}
                   <span className="font-medium text-black">{metrics.chunks}</span>
                 </span>
-                <span className="shrink-0 text-zinc-300" aria-hidden>
+                <span className="shrink-0 text-black" aria-hidden>
                   ·
                 </span>
                 <span className="shrink-0">
-                  <span className="text-zinc-500">Latency</span>{" "}
+                  <span className="text-black">Latency</span>{" "}
                   <span className="font-medium text-black">{metrics.latency}</span>
                 </span>
-                <span className="shrink-0 text-zinc-300" aria-hidden>
+                <span className="shrink-0 text-black" aria-hidden>
                   ·
                 </span>
                 <span className="min-w-0">
-                  <span className="text-zinc-500">Success</span>{" "}
+                  <span className="text-black">Success</span>{" "}
                   <span className="font-medium text-black">{metrics.success}</span>
                 </span>
               </div>
             ) : null}
 
-            <div className={cn(CARD_FOOTER_CLASS, "pt-0")}>
-              <span className={CARD_CTA_CLASS}>
-                <span>Run Audit</span>
-                <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
-              </span>
-            </div>
+            {featured ? (
+              <div className={cn(CARD_FOOTER_CLASS, "justify-start pt-1")}>
+                <Button
+                  type="button"
+                  variant="black"
+                  className="pointer-events-none"
+                  tabIndex={-1}
+                  aria-hidden
+                >
+                  Run Audit
+                  <ChevronRight className="size-4" aria-hidden />
+                </Button>
+              </div>
+            ) : (
+              <div className={cn(CARD_FOOTER_CLASS, "pt-0")}>
+                <span className={CARD_CTA_CLASS}>
+                  <span>Run Audit</span>
+                  <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
+                </span>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -275,19 +332,24 @@ export function AuditLauncherCard({
 
 /**
  * Audit launcher grid — SOP / BPR / FIR tiles.
- * Mobile 1-col → `md`+ 3-col (matches KPI snapshot).
- * Cards use `min-h` + flex `justify-between` so wrapped text expands vertically.
+ * Compact (Dashboard): score sparkline + ops metrics.
+ * Featured (Audits page): benefit bullets + primary CTAs, no telemetry.
  */
 export default function AuditLauncher({
   className,
+  variant = "compact",
 }: {
   className?: string;
+  /** `featured` — dedicated Audits page: taller cards, primary CTAs, no telemetry. */
+  variant?: "compact" | "featured";
 }) {
+  const featured = variant === "featured";
+
   return (
     <div className={cn("w-full", DASHBOARD_TRIPLE_CARD_GRID_CLASS, className)}>
-      <AuditLauncherCard id="sop" />
-      <AuditLauncherCard id="bpr" />
-      <AuditLauncherCard id="fir" />
+      <AuditLauncherCard id="sop" featured={featured} />
+      <AuditLauncherCard id="bpr" featured={featured} />
+      <AuditLauncherCard id="fir" featured={featured} />
     </div>
   );
 }

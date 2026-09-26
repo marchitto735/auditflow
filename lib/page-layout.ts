@@ -44,10 +44,10 @@ export const DASHBOARD_CARD_CLASS =
 export const DASHBOARD_TRACK_CARD_HEIGHT_CLASS = "min-h-[220px] h-full";
 
 /**
- * Audit Launcher tiles — flexible height so wrapped titles never clip.
- * Compact `min-h` keeps desktop rhythm with KPI cards.
+ * Audit Launcher tiles — compact Quick Launch height balances Status KPI row.
+ * Featured Audits page overrides with a taller min-height.
  */
-export const AUDIT_LAUNCHER_CARD_HEIGHT_CLASS = "min-h-[148px] h-full";
+export const AUDIT_LAUNCHER_CARD_HEIGHT_CLASS = "min-h-[200px] h-full";
 
 /**
  * Shared responsive grid for Audit Launcher + Compliance Snapshot (3 cards each).
@@ -75,11 +75,13 @@ export const INTERACTIVE_CARD_CLASS =
   "rounded-2xl border border-zinc-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30";
 
 /**
- * Card eyebrow / metric label — medium 14px.
- * Never use abbreviations (write “Average Score”, not “Avg Score”).
+ * Card eyebrow — default type-scale label for all cards.
+ * All-caps, 13px / medium.
+ * Prefer full words in source copy; CSS `uppercase` handles presentation
+ * (write “Average Score”, not “Avg Score”).
  */
 export const CARD_EYEBROW_CLASS =
-  "text-sm font-medium m-0 text-black";
+  "m-0 text-[13px] font-medium uppercase tracking-wider text-black";
 
 /**
  * Eyebrow → title stack — 8px gap on every dashboard card header.
@@ -87,11 +89,9 @@ export const CARD_EYEBROW_CLASS =
 export const CARD_HEADER_STACK_CLASS = "flex min-w-0 flex-col gap-2";
 
 /**
- * Muted card eyebrow (secondary metric cards).
- * Same no-abbreviation rule as CARD_EYEBROW_CLASS.
+ * Alias of `CARD_EYEBROW_CLASS` — single eyebrow style across the design system.
  */
-export const CARD_EYEBROW_MUTED_CLASS =
-  "text-sm font-medium m-0 text-muted-foreground";
+export const CARD_EYEBROW_MUTED_CLASS = CARD_EYEBROW_CLASS;
 
 /**
  * Page section grouping label (18px / medium).
@@ -100,10 +100,16 @@ export const SECTION_HEADER_CLASS =
   "text-lg font-medium leading-tight tracking-tight";
 
 /**
- * Primary card title / KPI display (20px / medium).
+ * Primary card title (22px / semibold) — audit launcher titles, etc.
  */
 export const CARD_TITLE_CLASS =
-  "text-xl font-medium leading-tight tracking-tight";
+  "text-[22px] font-semibold leading-tight tracking-tight";
+
+/**
+ * Status KPI primary metric value (22px / semibold).
+ */
+export const CARD_METRIC_CLASS =
+  "text-[22px] font-semibold leading-tight tracking-tight";
 
 /**
  * Shared interactive card body — compact padding, no fixed min-height.

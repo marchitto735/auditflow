@@ -271,7 +271,7 @@ export default function RemediationWorkspace() {
                   },
                 },
                 {
-                  label: "Export certified SOP",
+                  label: "Download Certified SOP",
                   onSelect: finalize,
                 },
               ]}
@@ -418,7 +418,7 @@ export default function RemediationWorkspace() {
               disabled={flaggedCount > 0}
               onClick={finalize}
             >
-              Export Certified SOP
+              Download Certified SOP
             </Button>
           </footer>
         </Card>

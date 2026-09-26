@@ -26,7 +26,7 @@ import {
   CARD_EYEBROW_CLASS,
   CARD_FOOTER_CLASS,
   CARD_HEADER_STACK_CLASS,
-  CARD_TITLE_CLASS,
+  CARD_METRIC_CLASS,
   DASHBOARD_TRACK_CARD_HEIGHT_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
   INTERACTIVE_CARD_CLASS,
@@ -221,7 +221,7 @@ function OpenFindingsChart() {
       </ResponsiveContainer>
       <p
         className={cn(
-          CARD_TITLE_CLASS,
+          CARD_METRIC_CLASS,
           METRIC_VALUE_CLASS,
           "pointer-events-none absolute inset-0 m-0 flex items-center justify-center leading-none text-foreground",
         )}
@@ -270,7 +270,7 @@ function AvgScoreGauge() {
       </ResponsiveContainer>
       <p
         className={cn(
-          CARD_TITLE_CLASS,
+          CARD_METRIC_CLASS,
           METRIC_VALUE_CLASS,
           "pointer-events-none absolute inset-x-0 bottom-[16%] m-0 text-center leading-none text-foreground",
         )}
@@ -299,7 +299,7 @@ export default function KpiCards({ className }: { className?: string }) {
         metric={
           <p
             className={cn(
-              CARD_TITLE_CLASS,
+              CARD_METRIC_CLASS,
               METRIC_VALUE_CLASS,
               "m-0 self-start pt-1 leading-none text-foreground",
             )}
