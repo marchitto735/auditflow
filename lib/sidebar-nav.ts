@@ -35,15 +35,15 @@ export const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
     label: "Operations",
     items: [
       {
+        title: "Dashboard",
+        href: "/dashboard",
+        icon: Gauge,
+      },
+      {
         title: "Audits",
         href: "/audits",
         icon: Layers,
         exact: true,
-      },
-      {
-        title: "Dashboard",
-        href: "/dashboard",
-        icon: Gauge,
       },
       {
         title: "Policies",
@@ -185,7 +185,7 @@ export function findSidebarNavMatch(pathname: string): {
 }
 
 function sectionHomeHref(section: SidebarNavSection) {
-  return section.items[0]?.href ?? "/audits";
+  return section.items[0]?.href ?? "/dashboard";
 }
 
 /**
@@ -223,7 +223,7 @@ export function resolveBreadcrumbs(pathname: string): BreadcrumbSegment[] {
   return [
     {
       label: auditing?.label ?? "Operations",
-      href: auditing ? sectionHomeHref(auditing) : "/audits",
+      href: auditing ? sectionHomeHref(auditing) : "/dashboard",
     },
     { label: "Audits" },
   ];

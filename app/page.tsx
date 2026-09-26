@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-/** Default landing — Audits is the primary home destination. */
+/** Default landing — Dashboard is the primary home destination. */
 export default function Home() {
-  redirect("/audits");
+  redirect("/dashboard");
 }
