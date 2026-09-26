@@ -38,16 +38,14 @@ export const DASHBOARD_CARD_CLASS =
   "rounded-2xl border border-zinc-200 bg-white shadow-none";
 
 /**
- * KPI cards — flexible height so larger charts + trend copy never clip.
- * `min-h` keeps row rhythm; `h-full` stretches siblings evenly in the grid.
+ * Status KPI cards — fixed 160px track height.
  */
-export const DASHBOARD_TRACK_CARD_HEIGHT_CLASS = "min-h-[220px] h-full";
+export const DASHBOARD_TRACK_CARD_HEIGHT_CLASS = "h-[160px] min-h-[160px]";
 
 /**
- * Audit Launcher tiles — compact Quick Launch height balances Status KPI row.
- * Featured Audits page overrides with a taller min-height.
+ * Audit Fleet tiles — fixed 160px track height (matches Status KPIs).
  */
-export const AUDIT_LAUNCHER_CARD_HEIGHT_CLASS = "min-h-[200px] h-full";
+export const AUDIT_LAUNCHER_CARD_HEIGHT_CLASS = "h-[160px] min-h-[160px]";
 
 /**
  * Shared responsive grid for Audit Launcher + Compliance Snapshot (3 cards each).
@@ -84,6 +82,12 @@ export const CARD_EYEBROW_CLASS =
   "m-0 text-[13px] font-medium uppercase tracking-wider text-black";
 
 /**
+ * Section card eyebrow — title case, 14px / semibold (no uppercase transform).
+ */
+export const CARD_SECTION_EYEBROW_CLASS =
+  "m-0 text-[14px] font-semibold tracking-tight text-black";
+
+/**
  * Eyebrow → title stack — 8px gap on every dashboard card header.
  */
 export const CARD_HEADER_STACK_CLASS = "flex min-w-0 flex-col gap-2";
@@ -100,16 +104,16 @@ export const SECTION_HEADER_CLASS =
   "text-lg font-medium leading-tight tracking-tight";
 
 /**
- * Primary card title (22px / semibold) — audit launcher titles, etc.
+ * Primary card title (26px / bold) — audit fleet metric titles, etc.
  */
 export const CARD_TITLE_CLASS =
-  "text-[22px] font-semibold leading-tight tracking-tight";
+  "text-[26px] font-bold leading-tight tracking-tight";
 
 /**
- * Status KPI primary metric value (22px / semibold).
+ * Status KPI primary metric value (26px / bold).
  */
 export const CARD_METRIC_CLASS =
-  "text-[22px] font-semibold leading-tight tracking-tight";
+  "text-[26px] font-bold leading-tight tracking-tight";
 
 /**
  * Shared interactive card body — compact padding, no fixed min-height.

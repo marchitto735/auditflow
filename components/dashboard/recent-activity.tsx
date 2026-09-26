@@ -8,6 +8,7 @@ import {
   type ActivityRow,
 } from "@/components/activity-table/activity-table";
 import {
+  CardActionsMenu,
   DASHBOARD_MENU_CONTENT_CLASS,
   DASHBOARD_MENU_ITEM_CLASS,
   DASHBOARD_MENU_ITEM_SELECTED_CLASS,
@@ -27,6 +28,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
+  CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
   RECENT_ACTIVITY_CARD_HEIGHT_CLASS,
 } from "@/lib/page-layout";
@@ -35,6 +37,13 @@ const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
 const DEFAULT_PAGE_SIZE = 3;
 /** Demo catalog size for pagination chrome when fewer stored reports exist. */
 const DEMO_TOTAL_RESULTS = 194;
+
+const AUDIT_HISTORY_MENU_ACTIONS = [
+  "Export CSV",
+  "Export PDF",
+  "Refresh",
+  "Clear filters",
+] as const;
 
 /** Match ActivityTable `table-fixed` + colgroup so footer locks to the same grid. */
 const ACTIVITY_TABLE_MIN_WIDTH_CLASS = "min-w-[42rem]";
@@ -339,9 +348,27 @@ export default function RecentActivity({
       )}
     >
       <CardContent className="flex flex-col p-0">
-        <div className="shrink-0 border-b border-zinc-200">
+        <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
+          <div className="min-w-0 pr-10">
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Audit History</p>
+            <p className="text-body1 m-0 mt-1 text-zinc-600">
+              Completed audits with scores, status, and document type.
+            </p>
+          </div>
+          <div className="absolute top-3 right-3">
+            <CardActionsMenu
+              label="Audit History"
+              actions={AUDIT_HISTORY_MENU_ACTIONS}
+              onAction={(action) => {
+                if (action === "Clear filters") {
+                  setFilters(INITIAL_FILTERS);
+                }
+              }}
+            />
+          </div>
           <DashboardToolbar
             embedded
+            className="px-0 py-0"
             value={filters}
             onChange={setFilters}
           />

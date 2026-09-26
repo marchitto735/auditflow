@@ -32,7 +32,7 @@ export type SidebarNavSection = {
 
 export const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
   {
-    label: "Auditing",
+    label: "Operations",
     items: [
       {
         title: "Audits",
@@ -222,7 +222,7 @@ export function resolveBreadcrumbs(pathname: string): BreadcrumbSegment[] {
   const auditing = SIDEBAR_NAV_SECTIONS[0];
   return [
     {
-      label: auditing?.label ?? "Auditing",
+      label: auditing?.label ?? "Operations",
       href: auditing ? sectionHomeHref(auditing) : "/audits",
     },
     { label: "Audits" },

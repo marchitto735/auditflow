@@ -37,9 +37,9 @@ export const CHART = {
  */
 export const CHART_GEOMETRY = {
   /** Ring / arc stroke width (px) */
-  stroke: 8,
+  stroke: 12,
   /** Max active bar column width (px) — same optical weight as linear tracks */
-  barMaxSize: 8,
+  barMaxSize: 12,
   /** Horizontal breathing room between bar columns */
   barCategoryGap: "28%",
   /** Top corner radius for columns — square tops */

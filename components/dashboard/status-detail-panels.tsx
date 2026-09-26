@@ -29,20 +29,45 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TruncatedText } from "@/components/ui/truncated-text";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { CHART, scoreFillClass, severityDotClass } from "@/lib/chart-tokens";
+import {
+  GMP_THRESHOLD,
+  OPEN_FINDINGS,
+  SCORE_CATEGORIES,
+  SCORE_TRENDS,
+  type FindingRow,
+  type FindingSeverity,
+} from "@/lib/dashboard-insights";
 import {
   CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
+const SEVERITY_ORDER: FindingSeverity[] = [
+  "Critical",
+  "High",
+  "Medium",
+  "Low",
+];
+
 const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
 const DEFAULT_PAGE_SIZE = 3;
-const TABLE_MIN_WIDTH_CLASS = "min-w-[42rem]";
-const FOOTER_DOCUMENT_COL_WIDTH = "32%";
-const FOOTER_GRID_TEMPLATE = `${FOOTER_DOCUMENT_COL_WIDTH} minmax(0,1fr)`;
+const FINDINGS_TABLE_MIN_WIDTH_CLASS = "min-w-[36rem]";
+const FOOTER_FINDING_COL_WIDTH = "40%";
+const FOOTER_GRID_TEMPLATE = `${FOOTER_FINDING_COL_WIDTH} minmax(0,1fr)`;
 
-const QUEUE_MENU_ACTIONS = [
+const FINDINGS_MENU_ACTIONS = [
   "Export CSV",
   "Export PDF",
   "Refresh",
@@ -56,187 +81,47 @@ const INITIAL_FILTERS: DashboardToolbarValues = {
   dateRange: "all",
 };
 
-const CELL_X_PAD_CLASS = "px-4";
-const HEADER_CELL_CLASS = cn(CELL_X_PAD_CLASS, "h-10");
-const BODY_CELL_CLASS = cn(CELL_X_PAD_CLASS, "h-12 py-0");
-const BODY_ROW_CLASS = "h-12 border-0";
-const STICKY_HEADER_DIVIDER_CLASS =
-  "border-b-0 shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0";
+const SORTED_FINDINGS = [...OPEN_FINDINGS].sort(
+  (a, b) =>
+    SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity),
+);
 
-const QUEUE_COLUMNS = [
-  {
-    key: "document",
-    label: "Document",
-    width: "32%",
-    minWidth: "12rem",
-    widthClass: "w-[32%] min-w-[12rem]",
-  },
-  {
-    key: "type",
-    label: "Type",
-    width: "22%",
-    minWidth: "8rem",
-    widthClass: "w-[22%] min-w-[8rem]",
-  },
-  {
-    key: "queueStatus",
-    label: "Queue Status",
-    width: "28%",
-    minWidth: "10rem",
-    widthClass: "w-[28%] min-w-[10rem]",
-  },
-  {
-    key: "estTime",
-    label: "Est. Time",
-    width: "18%",
-    minWidth: "5rem",
-    widthClass: "w-[18%] min-w-[5rem]",
-  },
-] as const;
-
-type QueueRow = {
-  id: string;
-  document: string;
-  type: string;
-  queueStatus: string;
-  estTime: string;
-};
-
-const SEED_QUEUE_ROWS: QueueRow[] = [
-  {
-    id: "queue-0",
-    document: "SOP-8490-Rev4.pdf",
-    type: "Standard Workflow",
-    queueStatus: "Ready (In Queue)",
-    estTime: "~4s",
-  },
-  {
-    id: "queue-1",
-    document: "BPR-Batch-2026-A.csv",
-    type: "Production Log",
-    queueStatus: "Parsing Chunks",
-    estTime: "~12s",
-  },
-  {
-    id: "queue-2",
-    document: "FIR-Facility-East-Q3.docx",
-    type: "Site Audit",
-    queueStatus: "Pending Upload",
-    estTime: "—",
-  },
-  {
-    id: "queue-3",
-    document: "SOP-Cleaning-Line-B.pdf",
-    type: "Standard Workflow",
-    queueStatus: "Ready (In Queue)",
-    estTime: "~6s",
-  },
-  {
-    id: "queue-4",
-    document: "BPR-Lot-7781.xlsx",
-    type: "Production Log",
-    queueStatus: "Parsing Chunks",
-    estTime: "~9s",
-  },
-  {
-    id: "queue-5",
-    document: "FIR-Warehouse-North.docx",
-    type: "Site Audit",
-    queueStatus: "Ready (In Queue)",
-    estTime: "~5s",
-  },
-  {
-    id: "queue-6",
-    document: "SOP-Changeover-Pack.pdf",
-    type: "Standard Workflow",
-    queueStatus: "Pending Upload",
-    estTime: "—",
-  },
-  {
-    id: "queue-7",
-    document: "BPR-Campaign-14.csv",
-    type: "Production Log",
-    queueStatus: "Ready (In Queue)",
-    estTime: "~8s",
-  },
-  {
-    id: "queue-8",
-    document: "FIR-Cleanroom-A2.docx",
-    type: "Site Audit",
-    queueStatus: "Parsing Chunks",
-    estTime: "~11s",
-  },
-  {
-    id: "queue-9",
-    document: "SOP-Labeling-Control.pdf",
-    type: "Standard Workflow",
-    queueStatus: "Ready (In Queue)",
-    estTime: "~3s",
-  },
-  {
-    id: "queue-10",
-    document: "BPR-Yield-Recalc.xlsx",
-    type: "Production Log",
-    queueStatus: "Pending Upload",
-    estTime: "—",
-  },
-  {
-    id: "queue-11",
-    document: "FIR-Utilities-Round.docx",
-    type: "Site Audit",
-    queueStatus: "Ready (In Queue)",
-    estTime: "~7s",
-  },
-];
-
-function queueDocumentType(document: string): "SOP" | "BPR" | "FIR" | null {
+function documentTypeLabel(document: string): "SOP" | "BPR" | "FIR" | null {
   if (document.startsWith("SOP")) return "SOP";
   if (document.startsWith("BPR")) return "BPR";
   if (document.startsWith("FIR")) return "FIR";
   return null;
 }
 
-function filterQueueRows(
-  rows: QueueRow[],
+function filterFindingsRows(
+  rows: FindingRow[],
   filters: DashboardToolbarValues,
-): QueueRow[] {
+): FindingRow[] {
   const query = filters.search.trim().toLowerCase();
 
   return rows.filter((row) => {
-    if (
-      filters.type !== "all" &&
-      queueDocumentType(row.document) !== filters.type
-    ) {
+    if (filters.type !== "all" && documentTypeLabel(row.document) !== filters.type) {
       return false;
     }
 
-    const status = row.queueStatus.toLowerCase();
-    if (filters.status === "Compliant" && !status.includes("ready")) {
+    if (filters.status === "Critical" && row.severity !== "Critical") {
       return false;
     }
-    if (filters.status === "Partial" && !status.includes("parsing")) {
+    if (filters.status === "Partial" && row.severity !== "High") {
       return false;
     }
-    if (filters.status === "Critical" && !status.includes("pending")) {
+    if (filters.status === "Compliant" && row.severity !== "Low") {
       return false;
     }
 
     if (query) {
       const haystack =
-        `${row.document} ${row.type} ${row.queueStatus} ${row.id}`.toLowerCase();
+        `${row.title} ${row.document} ${row.id} ${row.status} ${row.severity}`.toLowerCase();
       if (!haystack.includes(query)) return false;
     }
 
     return true;
   });
-}
-
-function queueStatusDotClass(status: string) {
-  const value = status.toLowerCase();
-  if (value.includes("parsing")) return "bg-amber-500";
-  if (value.includes("ready")) return "bg-emerald-500";
-  if (value.includes("pending")) return "bg-zinc-400";
-  return "bg-zinc-400";
 }
 
 function buildPageItems(currentPage: number, totalPages: number) {
@@ -329,7 +214,7 @@ function PageSizeSelector({
   );
 }
 
-function QueuePaginationNav({
+function FindingsPaginationNav({
   pageItems,
   currentPage,
   totalPages,
@@ -345,7 +230,7 @@ function QueuePaginationNav({
   return (
     <nav
       className={cn("flex min-w-0 flex-wrap items-center gap-2", className)}
-      aria-label="Execution queue pagination"
+      aria-label="Priority findings pagination"
     >
       <Button
         type="button"
@@ -396,112 +281,20 @@ function QueuePaginationNav({
   );
 }
 
-function QueueStatus({ status }: { status: string }) {
+function SeverityStatus({ severity }: { severity: FindingSeverity }) {
   return (
     <span className="inline-flex max-w-full min-w-0 items-center gap-2 text-foreground">
       <span
-        className={cn("size-2.5 shrink-0 rounded-full", queueStatusDotClass(status))}
+        className={cn("size-2.5 shrink-0 rounded-full", severityDotClass(severity))}
         aria-hidden
       />
-      <span className="min-w-0 truncate">{status}</span>
+      <span className="min-w-0 truncate">{severity}</span>
     </span>
   );
 }
 
-function ExecutionQueueTable({ rows }: { rows: QueueRow[] }) {
-  return (
-    <TooltipProvider delayDuration={150}>
-      <Table
-        className="w-full min-w-[42rem] table-fixed border-separate border-spacing-0"
-        containerClassName="overflow-visible"
-      >
-        <colgroup>
-          {QUEUE_COLUMNS.map((column) => (
-            <col
-              key={column.key}
-              className={column.widthClass}
-              style={{ width: column.width, minWidth: column.minWidth }}
-            />
-          ))}
-        </colgroup>
-        <TableHeader
-          className={cn("sticky top-0 z-20 bg-white", STICKY_HEADER_DIVIDER_CLASS)}
-        >
-          <TableRow className="border-0 bg-white hover:bg-transparent">
-            {QUEUE_COLUMNS.map((column) => (
-              <TableHead
-                key={column.key}
-                className={cn(
-                  HEADER_CELL_CLASS,
-                  column.widthClass,
-                  "sticky top-0 z-20 border-b-0 bg-white text-left",
-                )}
-              >
-                {column.label}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody
-          className={cn(
-            "divide-y divide-border border-b-0",
-            "[&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
-          )}
-        >
-          {rows.map((row) => (
-            <TableRow key={row.id} className={cn(BODY_ROW_CLASS, "hover:bg-transparent")}>
-              <TableCell
-                className={cn(
-                  BODY_CELL_CLASS,
-                  QUEUE_COLUMNS[0].widthClass,
-                  "max-w-0 overflow-hidden text-left",
-                )}
-              >
-                <TruncatedText text={row.document} />
-              </TableCell>
-              <TableCell
-                className={cn(
-                  BODY_CELL_CLASS,
-                  QUEUE_COLUMNS[1].widthClass,
-                  "max-w-0 overflow-hidden text-left",
-                )}
-              >
-                <TruncatedText text={row.type} />
-              </TableCell>
-              <TableCell
-                className={cn(
-                  BODY_CELL_CLASS,
-                  QUEUE_COLUMNS[2].widthClass,
-                  "max-w-0 overflow-hidden text-left",
-                )}
-              >
-                <QueueStatus status={row.queueStatus} />
-              </TableCell>
-              <TableCell
-                className={cn(
-                  BODY_CELL_CLASS,
-                  QUEUE_COLUMNS[3].widthClass,
-                  "text-left font-mono tabular-nums",
-                )}
-              >
-                {row.estTime}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TooltipProvider>
-  );
-}
-
-/**
- * Active Execution Queue — Audits page table matching Dashboard History chrome.
- */
-export default function ActiveExecutionQueue({
-  className,
-}: {
-  className?: string;
-}) {
+/** Read-only findings table — Critical/High first, with History-style chrome. */
+export function FindingsSummaryPanel({ className }: { className?: string }) {
   const [filters, setFilters] = useState<DashboardToolbarValues>(INITIAL_FILTERS);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [page, setPage] = useState(1);
@@ -512,7 +305,7 @@ export default function ActiveExecutionQueue({
   }, []);
 
   const catalog = useMemo(
-    () => filterQueueRows(SEED_QUEUE_ROWS, filters),
+    () => filterFindingsRows(SORTED_FINDINGS, filters),
     [filters],
   );
   const totalCount = catalog.length;
@@ -540,23 +333,23 @@ export default function ActiveExecutionQueue({
   return (
     <Card
       className={cn(
-        "flex shrink-0 flex-col overflow-hidden",
+        "flex h-full min-h-0 flex-col overflow-hidden",
         DASHBOARD_CARD_CLASS,
         className,
       )}
     >
-      <CardContent className="flex flex-col p-0">
+      <CardContent className="flex h-full min-h-0 flex-col p-0">
         <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
-            <p className={CARD_SECTION_EYEBROW_CLASS}>Execution Queue</p>
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Priority Findings</p>
             <p className="text-body1 m-0 mt-1 text-zinc-600">
-              Documents waiting to run, parsing, or pending upload.
+              Highest-severity open items across active audits.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
-              label="Execution Queue"
-              actions={QUEUE_MENU_ACTIONS}
+              label="Priority Findings"
+              actions={FINDINGS_MENU_ACTIONS}
               onAction={(action) => {
                 if (action === "Clear filters") {
                   setFilters(INITIAL_FILTERS);
@@ -574,14 +367,83 @@ export default function ActiveExecutionQueue({
 
         {catalog.length === 0 ? (
           <p className="text-body1 m-0 px-4 py-4 text-muted-foreground">
-            No queue items match the current search and filters.
+            No findings match the current search and filters.
           </p>
         ) : (
           <div
-            className="flex shrink-0 flex-col"
+            className="flex min-h-0 flex-1 flex-col"
             style={{ overflowAnchor: "none" }}
           >
-            <ExecutionQueueTable rows={pageRows} />
+            <div className="min-h-0 flex-1 overflow-x-auto">
+              <Table
+                className={cn(
+                  "w-full table-fixed border-separate border-spacing-0",
+                  FINDINGS_TABLE_MIN_WIDTH_CLASS,
+                )}
+                containerClassName="overflow-visible"
+              >
+                <colgroup>
+                  <col
+                    className="w-[40%] min-w-[12rem]"
+                    style={{ width: "40%" }}
+                  />
+                  <col
+                    className="w-[22%] min-w-[8rem]"
+                    style={{ width: "22%" }}
+                  />
+                  <col
+                    className="w-[16%] min-w-[6rem]"
+                    style={{ width: "16%" }}
+                  />
+                  <col
+                    className="w-[22%] min-w-[7rem]"
+                    style={{ width: "22%" }}
+                  />
+                </colgroup>
+                <TableHeader className="border-b-0 shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0">
+                  <TableRow className="border-0 bg-white hover:bg-transparent">
+                    <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                      Finding
+                    </TableHead>
+                    <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                      Document
+                    </TableHead>
+                    <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                      Severity
+                    </TableHead>
+                    <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                      Status
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody
+                  className={cn(
+                    "divide-y divide-border border-b-0",
+                    "[&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
+                  )}
+                >
+                  {pageRows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      className="h-12 border-0 hover:bg-transparent"
+                    >
+                      <TableCell className="h-12 px-4 py-0">
+                        <TruncatedText text={row.title} />
+                      </TableCell>
+                      <TableCell className="h-12 px-4 py-0">
+                        <TruncatedText text={row.document} />
+                      </TableCell>
+                      <TableCell className="h-12 px-4 py-0">
+                        <SeverityStatus severity={row.severity} />
+                      </TableCell>
+                      <TableCell className="h-12 px-4 py-0 text-sm text-foreground">
+                        {row.status}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
 
             <div className="relative z-20 shrink-0 border-t-0 bg-white py-3 shadow-[0_-1px_0_0_var(--border)]">
               <div className="flex flex-col gap-3 px-4 md:hidden">
@@ -596,7 +458,7 @@ export default function ActiveExecutionQueue({
                     menuAlign="start"
                   />
                 </div>
-                <QueuePaginationNav
+                <FindingsPaginationNav
                   pageItems={pageItems}
                   currentPage={currentPage}
                   totalPages={totalPages}
@@ -608,7 +470,7 @@ export default function ActiveExecutionQueue({
               <div
                 className={cn(
                   "hidden w-full items-center md:grid",
-                  TABLE_MIN_WIDTH_CLASS,
+                  FINDINGS_TABLE_MIN_WIDTH_CLASS,
                 )}
                 style={{ gridTemplateColumns: FOOTER_GRID_TEMPLATE }}
               >
@@ -622,7 +484,7 @@ export default function ActiveExecutionQueue({
                     onChange={handlePageSizeChange}
                     menuAlign="start"
                   />
-                  <QueuePaginationNav
+                  <FindingsPaginationNav
                     pageItems={pageItems}
                     currentPage={currentPage}
                     totalPages={totalPages}
@@ -634,6 +496,108 @@ export default function ActiveExecutionQueue({
             </div>
           </div>
         )}
+      </CardContent>
+    </Card>
+  );
+}
+
+/** Read-only category score bars for the command center. */
+export function CategoryBreakdownPanel({ className }: { className?: string }) {
+  return (
+    <Card className={cn(DASHBOARD_CARD_CLASS, "h-full", className)}>
+      <CardContent className="flex h-full flex-col gap-3 p-4">
+        <div>
+          <p className={CARD_SECTION_EYEBROW_CLASS}>Category Breakdown</p>
+          <p className="text-body1 m-0 mt-1 text-zinc-600">
+            GMP threshold {GMP_THRESHOLD}%.
+          </p>
+        </div>
+        <div className="flex flex-col gap-3">
+          {SCORE_CATEGORIES.map((category) => (
+            <div key={category.name}>
+              <div className="mb-1 flex items-baseline justify-between gap-4">
+                <p className="text-body1 m-0 text-foreground">
+                  {category.name}
+                </p>
+                <p className="text-body1 m-0 font-medium tabular-nums text-foreground">
+                  {category.score}%
+                </p>
+              </div>
+              <div className="h-1.5 overflow-hidden rounded-none bg-zinc-200">
+                <div
+                  className={cn(
+                    "h-full rounded-none",
+                    scoreFillClass(category.score),
+                  )}
+                  style={{ width: `${category.score}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+/** Read-only 90d compliance score trend for the command center. */
+export function ComplianceTrendPanel({ className }: { className?: string }) {
+  const trend = SCORE_TRENDS[90];
+
+  return (
+    <Card className={cn(DASHBOARD_CARD_CLASS, "h-full", className)}>
+      <CardContent className="flex h-full flex-col gap-3 p-4">
+        <div>
+          <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance Trend</p>
+          <p className="text-body1 m-0 mt-1 text-zinc-600">
+            90-day score vs {GMP_THRESHOLD}% GMP standard.
+          </p>
+        </div>
+        <div className="h-[200px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={[...trend]}
+              margin={{ top: 8, right: 12, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid stroke={CHART.grid} vertical={false} />
+              <XAxis
+                dataKey="label"
+                tickLine={false}
+                axisLine={false}
+                tick={{ fill: CHART.structuralMuted, fontSize: 12 }}
+              />
+              <YAxis
+                domain={[70, 100]}
+                tickLine={false}
+                axisLine={false}
+                width={32}
+                tick={{ fill: CHART.structuralMuted, fontSize: 12 }}
+              />
+              <Tooltip
+                contentStyle={{
+                  borderRadius: 8,
+                  border: `1px solid ${CHART.track}`,
+                  boxShadow: "none",
+                  fontSize: 13,
+                }}
+              />
+              <ReferenceLine
+                y={GMP_THRESHOLD}
+                stroke={CHART.reference}
+                strokeDasharray="3 5"
+                strokeWidth={1}
+              />
+              <Line
+                type="monotone"
+                dataKey="score"
+                stroke={CHART.primary}
+                strokeWidth={1.75}
+                dot={{ r: 2.5, fill: CHART.primary, strokeWidth: 0 }}
+                isAnimationActive={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );

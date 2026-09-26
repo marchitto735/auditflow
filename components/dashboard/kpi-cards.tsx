@@ -1,9 +1,6 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { ChevronRight } from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -21,70 +18,39 @@ import {
 } from "@/lib/chart-tokens";
 import {
   CARD_CONTENT_CLASS,
-  CARD_CTA_ARROW_CLASS,
-  CARD_CTA_CLASS,
   CARD_EYEBROW_CLASS,
-  CARD_FOOTER_CLASS,
   CARD_HEADER_STACK_CLASS,
   CARD_METRIC_CLASS,
+  DASHBOARD_CARD_CLASS,
   DASHBOARD_TRACK_CARD_HEIGHT_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
-  INTERACTIVE_CARD_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 const AUDIT_THRESHOLD = 20;
 const AVG_SCORE = 88;
-const AUDITS_HREF = "/dashboard/audits";
 
-const METRIC_VALUE_CLASS = "font-mono tabular-nums";
+const METRIC_VALUE_CLASS = "font-sans tabular-nums";
 
 const CARD_CLASS = cn(
-  INTERACTIVE_CARD_CLASS,
+  DASHBOARD_CARD_CLASS,
   DASHBOARD_TRACK_CARD_HEIGHT_CLASS,
-  "group flex w-full min-w-0 shrink-0 cursor-pointer flex-col text-inherit no-underline",
+  "flex w-full min-w-0 shrink-0 flex-col",
 );
 
 function KpiCard({
-  href,
-  cta,
   eyebrow,
   metric,
   chart,
   helper,
 }: {
-  href: string;
-  cta: string;
   eyebrow: string;
-  /** Primary value under the eyebrow (same stack as Pipeline / Audit titles). */
   metric?: ReactNode;
   chart: ReactNode;
-  /** Trend copy — pinned above the CTA so all KPI cards share the same slot. */
   helper: string;
 }) {
-  const router = useRouter();
-
-  function handleActivate() {
-    router.push(href);
-  }
-
   return (
-    <div
-      role="link"
-      tabIndex={0}
-      data-kpi-card
-      className={CARD_CLASS}
-      onClick={handleActivate}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          handleActivate();
-        }
-      }}
-      onMouseEnter={() => router.prefetch(href)}
-      onFocus={() => router.prefetch(href)}
-      aria-label={cta}
-    >
+    <div data-kpi-card className={CARD_CLASS}>
       <Card className="flex h-full min-h-0 w-full flex-col border-0 bg-transparent shadow-none">
         <CardContent
           className={cn(
@@ -92,7 +58,6 @@ function KpiCard({
             "relative flex h-full w-full min-h-0 flex-col justify-between gap-3 overflow-visible p-4 text-left",
           )}
         >
-          {/* Graph stays geometrically centered; text layers never reflow around it. */}
           <div
             className="pointer-events-none absolute inset-0 z-0 flex -translate-y-[14px] items-center justify-center"
             aria-hidden
@@ -109,12 +74,6 @@ function KpiCard({
             <p className="text-body1 m-0 w-full self-start text-left font-sans leading-snug text-black">
               {helper}
             </p>
-            <div className={cn(CARD_FOOTER_CLASS, "pt-0")}>
-              <span className={CARD_CTA_CLASS}>
-                <span>{cta}</span>
-                <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
-              </span>
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -137,13 +96,10 @@ const FINDINGS_BY_SEVERITY = [
   { name: "High" as const, value: 3 },
   { name: "Medium" as const, value: 2 },
   { name: "Low" as const, value: 1 },
-].map((entry) => ({
-  ...entry,
-  color: severityFill(entry.name),
-}));
+];
 
 const FINDINGS_TOTAL = FINDINGS_BY_SEVERITY.reduce(
-  (sum, item) => sum + item.value,
+  (sum, entry) => sum + entry.value,
   0,
 );
 
@@ -166,7 +122,7 @@ function TotalAuditsChart() {
           <Bar
             dataKey="audits"
             radius={CHART_GEOMETRY.barRadius}
-            maxBarSize={14}
+            maxBarSize={CHART_GEOMETRY.barMaxSize}
             {...(showTrack
               ? { background: { fill: CHART.track } }
               : { background: { fill: "transparent" } })}
@@ -190,19 +146,22 @@ function TotalAuditsChart() {
 }
 
 function OpenFindingsChart() {
-  const stroke = 10;
-  const outer = 48;
-  const inner = outer - stroke;
+  const data = FINDINGS_BY_SEVERITY.map((entry) => ({
+    ...entry,
+    color: severityFill(entry.name),
+  }));
+  const outer = 52;
+  const inner = outer - CHART_GEOMETRY.stroke;
 
   return (
     <div
-      className="pointer-events-none relative mx-auto size-[104px] max-h-[104px] max-w-full shrink-0 overflow-hidden outline-none [&_*]:outline-none"
+      className="pointer-events-none relative mx-auto size-[112px] max-w-full shrink-0 overflow-hidden outline-none [&_*]:outline-none"
       aria-hidden
     >
       <ResponsiveContainer width="100%" height="100%">
         <PieChart style={{ outline: "none" }}>
           <Pie
-            data={FINDINGS_BY_SEVERITY}
+            data={data}
             dataKey="value"
             nameKey="name"
             innerRadius={inner}
@@ -213,7 +172,7 @@ function OpenFindingsChart() {
             endAngle={-270}
             isAnimationActive={false}
           >
-            {FINDINGS_BY_SEVERITY.map((entry) => (
+            {data.map((entry) => (
               <Cell key={entry.name} fill={entry.color} />
             ))}
           </Pie>
@@ -239,7 +198,7 @@ function AvgScoreGauge() {
     { name: "score", value: AVG_SCORE },
     { name: "rest", value: remainder },
   ];
-  const stroke = 10;
+  const stroke = CHART_GEOMETRY.stroke;
   const outer = 58;
   const inner = outer - stroke;
 
@@ -281,20 +240,13 @@ function AvgScoreGauge() {
   );
 }
 
+/** Static Status KPI strip — charts + values only, no navigation CTAs. */
 export default function KpiCards({ className }: { className?: string }) {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.prefetch(AUDITS_HREF);
-  }, [router]);
-
   return (
     <div
       className={cn(DASHBOARD_TRIPLE_CARD_GRID_CLASS, "items-stretch", className)}
     >
       <KpiCard
-        href={AUDITS_HREF}
-        cta="View Audit Log"
         eyebrow="Total Audits"
         metric={
           <p
@@ -312,16 +264,12 @@ export default function KpiCards({ className }: { className?: string }) {
       />
 
       <KpiCard
-        href="/dashboard/findings"
-        cta="Inspect Findings"
         eyebrow="Open Findings"
         chart={<OpenFindingsChart />}
         helper="−2 this week"
       />
 
       <KpiCard
-        href="/dashboard/score-analysis"
-        cta="Score Breakdown"
         eyebrow="Average Score"
         chart={<AvgScoreGauge />}
         helper="+1.2 pts this week"

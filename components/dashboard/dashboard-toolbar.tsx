@@ -344,6 +344,7 @@ export function DashboardToolbar({
       className={cn(
         "flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4",
         embedded && "px-4 py-3",
+        className,
       )}
       role="search"
       aria-label="Search and filter audits"
@@ -390,7 +391,7 @@ export function DashboardToolbar({
   );
 
   if (embedded) {
-    return <div className={className}>{controls}</div>;
+    return controls;
   }
 
   return (

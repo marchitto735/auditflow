@@ -3,7 +3,6 @@
 import * as React from "react";
 import { AgentFeedCard } from "@/components/dashboard/agent-feed-card";
 import { CompliancePipelineCard } from "@/components/dashboard/compliance-pipeline-card";
-import { DashboardSection } from "@/components/dashboard/dashboard-section";
 import { cn } from "@/lib/utils";
 
 /**
@@ -45,11 +44,7 @@ export function SystemTelemetrySection({ className }: { className?: string }) {
   }, []);
 
   return (
-    <DashboardSection
-      title="Metrics"
-      description="Real-time AI agent execution pulse, background cache status, and queue telemetry."
-      className={className}
-    >
+    <section className={cn("flex min-w-0 flex-col", className)}>
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
         <div ref={pipelineRef} className="min-w-0">
           <CompliancePipelineCard />
@@ -61,6 +56,6 @@ export function SystemTelemetrySection({ className }: { className?: string }) {
           <AgentFeedCard className="h-full min-h-0" />
         </div>
       </div>
-    </DashboardSection>
+    </section>
   );
 }

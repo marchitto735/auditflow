@@ -1,13 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { AlertTriangle, CircleAlert } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   CARD_CONTENT_CLASS,
-  CARD_EYEBROW_MUTED_CLASS,
-  CARD_HEADER_STACK_CLASS,
-  INTERACTIVE_CARD_CLASS,
+  CARD_SECTION_EYEBROW_CLASS,
+  DASHBOARD_CARD_CLASS,
   TELEMETRY_LIST_CLASS,
   TELEMETRY_META_CLASS,
   TELEMETRY_PILL_CLASS,
@@ -22,21 +20,9 @@ type FeedEvent = {
   subsystem: string;
   message: string;
   status?: FeedStatus;
-  /** Destination for the row click — audit log, findings, or score analysis. */
-  href: string;
 };
 
-function feedHrefFor(event: Omit<FeedEvent, "href">): string {
-  if (event.status === "warn" || event.status === "error") {
-    return "/dashboard/findings";
-  }
-  if (event.subsystem === "Scorer") {
-    return "/dashboard/score-analysis";
-  }
-  return "/dashboard/audits";
-}
-
-const FEED_EVENT_SEED: Omit<FeedEvent, "href">[] = [
+const FEED_EVENTS: FeedEvent[] = [
   {
     time: "10:12 AM",
     subsystem: "Agent",
@@ -151,11 +137,6 @@ const FEED_EVENT_SEED: Omit<FeedEvent, "href">[] = [
   },
 ];
 
-const FEED_EVENTS: FeedEvent[] = FEED_EVENT_SEED.map((event) => ({
-  ...event,
-  href: feedHrefFor(event),
-}));
-
 /** Subtle thin scrollbar for the agent feed log. */
 const FEED_SCROLLBAR_CLASS = cn(
   "overflow-x-hidden overflow-y-auto overscroll-y-contain overscroll-x-none",
@@ -176,8 +157,8 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
   return (
     <Card
       className={cn(
-        INTERACTIVE_CARD_CLASS,
-        "flex h-full min-h-0 flex-col overflow-hidden shadow-none hover:shadow-none",
+        DASHBOARD_CARD_CLASS,
+        "flex h-full min-h-0 flex-col overflow-hidden",
         className,
       )}
     >
@@ -187,19 +168,10 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
           "flex h-full min-h-0 flex-1 flex-col gap-3 overflow-hidden",
         )}
       >
-        <div className={cn(CARD_HEADER_STACK_CLASS, "relative shrink-0")}>
-          <p className="absolute right-0 top-0 m-0 flex items-center gap-2 text-sm font-medium leading-none text-black">
-            <span
-              className="relative flex size-2.5 shrink-0 items-center justify-center"
-              aria-hidden
-            >
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400/70" />
-              <span className="relative size-2.5 rounded-full bg-emerald-500" />
-            </span>
-            <span>Live Feed</span>
-          </p>
-          <p className={cn(CARD_EYEBROW_MUTED_CLASS, "max-w-full pr-[6.5rem]")}>
-            Activity Feed
+        <div className="shrink-0">
+          <p className={CARD_SECTION_EYEBROW_CLASS}>Activity Feed</p>
+          <p className="text-body1 m-0 mt-1 text-zinc-600">
+            Real-time agent events across validation, scoring, and export.
           </p>
         </div>
 
@@ -226,15 +198,8 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
                 key={`${event.time}-${event.subsystem}-${event.message}`}
                 className="m-0 min-w-0 list-none"
               >
-                <Link
-                  href={event.href}
-                  className={cn(
-                    TELEMETRY_ROW_CLASS,
-                    "min-w-0 cursor-pointer rounded-lg no-underline transition-colors",
-                    "hover:bg-zinc-50/60",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                  )}
-                  aria-label={`${event.message} — open related view`}
+                <div
+                  className={cn(TELEMETRY_ROW_CLASS, "min-w-0 rounded-lg")}
                 >
                   <p
                     className={cn(
@@ -272,7 +237,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
                       {event.subsystem}
                     </span>
                   </div>
-                </Link>
+                </div>
               </li>
             );
           })}

@@ -11,35 +11,47 @@ import {
 import {
   AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
   CARD_CONTENT_CLASS,
-  CARD_CTA_ARROW_CLASS,
-  CARD_CTA_CLASS,
   CARD_EYEBROW_MUTED_CLASS,
   CARD_FOOTER_CLASS,
   CARD_HEADER_STACK_CLASS,
   CARD_TITLE_CLASS,
+  DASHBOARD_CARD_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
-  INTERACTIVE_CARD_CLASS,
 } from "@/lib/page-layout";
 import { workflowStatusDotClass } from "@/lib/chart-tokens";
 import { cn } from "@/lib/utils";
 
-const CARD_CLASS = cn(
-  INTERACTIVE_CARD_CLASS,
-  "group flex w-full min-w-0 shrink-0 cursor-pointer flex-col text-left text-inherit",
+const FEATURED_CARD_CLASS = cn(
+  DASHBOARD_CARD_CLASS,
+  "flex w-full min-w-0 shrink-0 flex-col text-left",
 );
 
 /** Functional category eyebrow (CSS uppercase via CARD_EYEBROW_*). */
 const EYEBROW_DISPLAY: Record<AuditWorkflowId, string> = {
-  sop: "Standard Workflow",
+  sop: "Standard Operating Procedure (SOP)",
+  bpr: "Batch Production Record (BPR)",
+  fir: "Facility Inspection Report (FIR)",
+};
+
+/** Featured Audits page eyebrows — regulatory domain categories. */
+const FEATURED_EYEBROW_DISPLAY: Record<AuditWorkflowId, string> = {
+  sop: "Policy Control",
   bpr: "Production Log",
   fir: "Site Audit",
 };
 
-/** Full name + acronym kept on one line. */
-const TITLE_DISPLAY: Record<AuditWorkflowId, string> = {
+/** Featured Audits page titles — full document type names. */
+const FEATURED_TITLE_DISPLAY: Record<AuditWorkflowId, string> = {
   sop: "Standard Operating Procedure (SOP)",
   bpr: "Batch Production Record (BPR)",
   fir: "Facility Inspection Report (FIR)",
+};
+
+/** Dashboard compact titles — live counts for fleet telemetry. */
+const COMPACT_TITLE_DISPLAY: Record<AuditWorkflowId, string> = {
+  sop: "738",
+  bpr: "392",
+  fir: "846",
 };
 
 /** Feature bullets — Audits page (`featured`) only; never on Dashboard compact. */
@@ -169,8 +181,12 @@ export function AuditLauncherCard({
 }) {
   const { openConfigureAudit } = useConfigureAudit();
   const workflow = AUDIT_WORKFLOWS[id];
-  const eyebrow = EYEBROW_DISPLAY[id];
-  const title = TITLE_DISPLAY[id];
+  const eyebrow = featured
+    ? FEATURED_EYEBROW_DISPLAY[id]
+    : EYEBROW_DISPLAY[id];
+  const title = featured
+    ? FEATURED_TITLE_DISPLAY[id]
+    : COMPACT_TITLE_DISPLAY[id];
   /** Sparklines + ops metrics only on Dashboard compact Quick Launch. */
   const metrics = featured ? null : LAUNCHER_METRICS[id];
   const bullets = featured ? FEATURE_BULLETS[id] : null;
@@ -179,48 +195,21 @@ export function AuditLauncherCard({
     openConfigureAudit(id);
   }
 
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      data-audit-launcher-card={id}
-      className={cn(
-        CARD_CLASS,
-        featured ? "min-h-[280px] h-full" : AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
-        className,
-      )}
-      onClick={handleActivate}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          handleActivate();
-        }
-      }}
-      aria-label={`Run Audit ${title}`}
-    >
-      <Card className="flex h-full w-full min-h-0 flex-col border-0 bg-transparent shadow-none">
-        <CardContent
-          className={cn(
-            CARD_CONTENT_CLASS,
-            "flex h-full w-full min-h-0 flex-col justify-between overflow-visible text-left",
-            featured ? "gap-4 p-6" : "gap-3 p-4",
-          )}
-        >
-          <div className="flex min-w-0 flex-col gap-2">
-            <div
-              className={cn(
-                "grid w-full items-start gap-x-3",
-                metrics
-                  ? "grid-cols-[minmax(0,1fr)_auto]"
-                  : "grid-cols-1",
-              )}
-            >
-              <div
-                className={cn(
-                  CARD_HEADER_STACK_CLASS,
-                  metrics && "max-w-[70%] sm:max-w-none",
-                )}
-              >
+  if (featured) {
+    return (
+      <div
+        data-audit-launcher-card={id}
+        className={cn(FEATURED_CARD_CLASS, "min-h-[280px] h-full", className)}
+      >
+        <Card className="flex h-full w-full min-h-0 flex-col border-0 bg-transparent shadow-none">
+          <CardContent
+            className={cn(
+              CARD_CONTENT_CLASS,
+              "flex h-full w-full min-h-0 flex-col justify-between gap-4 overflow-visible p-4 text-left",
+            )}
+          >
+            <div className="flex min-w-0 flex-col gap-2">
+              <div className={CARD_HEADER_STACK_CLASS}>
                 <p className={cn(CARD_EYEBROW_MUTED_CLASS, "max-w-full")}>
                   {eyebrow}
                 </p>
@@ -233,8 +222,74 @@ export function AuditLauncherCard({
                   {title}
                 </h3>
               </div>
+
+              {bullets ? (
+                <ul className="m-0 mt-1 flex list-disc flex-col gap-3 py-0 pl-4 text-base leading-snug text-black">
+                  {bullets.map((bullet) => (
+                    <li key={bullet} className="pl-0.5">
+                      {bullet}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+
+            <div className={cn(CARD_FOOTER_CLASS, "w-full justify-stretch pt-1")}>
+              <Button
+                type="button"
+                variant="black"
+                className="w-full"
+                onClick={handleActivate}
+              >
+                Run Audit
+                <ChevronRight className="size-4" aria-hidden />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      data-audit-launcher-card={id}
+      className={cn(
+        DASHBOARD_CARD_CLASS,
+        "flex w-full min-w-0 shrink-0 flex-col text-left",
+        AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
+        className,
+      )}
+    >
+      <Card className="flex h-full w-full min-h-0 flex-col border-0 bg-transparent shadow-none">
+        <CardContent
+          className={cn(
+            CARD_CONTENT_CLASS,
+            "flex h-full w-full min-h-0 flex-col justify-between gap-3 overflow-visible p-4 text-left",
+          )}
+        >
+          <div className="flex min-w-0 flex-col gap-2">
+            <p className={cn(CARD_EYEBROW_MUTED_CLASS, "max-w-full")}>
+              {eyebrow}
+            </p>
+            <div
+              className={cn(
+                "grid w-full items-center gap-x-3",
+                metrics
+                  ? "grid-cols-[minmax(0,1fr)_auto]"
+                  : "grid-cols-1",
+              )}
+            >
+              <h3
+                className={cn(
+                  CARD_TITLE_CLASS,
+                  "m-0 max-w-full hyphens-auto break-words text-pretty text-black",
+                )}
+              >
+                {title}
+              </h3>
               {metrics ? (
-                <div className="flex w-[4.75rem] shrink-0 flex-col items-end justify-center pt-0.5">
+                <div className="flex w-[4.75rem] shrink-0 flex-col items-end justify-center">
                   <TrendSparkline
                     values={metrics.trend}
                     label={`${workflow.label} score trend over last five runs`}
@@ -244,38 +299,26 @@ export function AuditLauncherCard({
               ) : null}
             </div>
 
-            {!featured ? (
-              <p
-                className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-black"
-                aria-label={`${workflow.label} status ${workflow.status}, last run ${workflow.lastRun}`}
-              >
-                <span
-                  className={cn(
-                    "size-2.5 shrink-0 rounded-full",
-                    workflowStatusDotClass(workflow.status),
-                  )}
-                  aria-hidden
-                />
-                <span className="font-medium">{workflow.status}</span>
-                <span className="text-black" aria-hidden>
-                  •
-                </span>
-                <span className="text-black">Last Run {workflow.lastRun}</span>
-              </p>
-            ) : null}
-
-            {bullets ? (
-              <ul className="m-0 mt-1 flex list-disc flex-col gap-1.5 py-0 pl-4 text-base leading-snug text-black">
-                {bullets.map((bullet) => (
-                  <li key={bullet} className="pl-0.5">
-                    {bullet}
-                  </li>
-                ))}
-              </ul>
-            ) : null}
+            <p
+              className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-black"
+              aria-label={`${workflow.label} status ${workflow.status}, last run ${workflow.lastRun}`}
+            >
+              <span
+                className={cn(
+                  "size-2.5 shrink-0 rounded-full",
+                  workflowStatusDotClass(workflow.status),
+                )}
+                aria-hidden
+              />
+              <span className="font-medium">{workflow.status}</span>
+              <span className="text-black" aria-hidden>
+                •
+              </span>
+              <span className="text-black">Last Run {workflow.lastRun}</span>
+            </p>
           </div>
 
-          <div className="mt-auto flex min-w-0 flex-col gap-2.5">
+            <div className="mt-auto flex min-w-0 flex-col gap-2.5">
             {metrics ? (
               <div
                 className="flex min-w-0 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-black"
@@ -301,28 +344,6 @@ export function AuditLauncherCard({
                 </span>
               </div>
             ) : null}
-
-            {featured ? (
-              <div className={cn(CARD_FOOTER_CLASS, "justify-start pt-1")}>
-                <Button
-                  type="button"
-                  variant="black"
-                  className="pointer-events-none"
-                  tabIndex={-1}
-                  aria-hidden
-                >
-                  Run Audit
-                  <ChevronRight className="size-4" aria-hidden />
-                </Button>
-              </div>
-            ) : (
-              <div className={cn(CARD_FOOTER_CLASS, "pt-0")}>
-                <span className={CARD_CTA_CLASS}>
-                  <span>Run Audit</span>
-                  <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
-                </span>
-              </div>
-            )}
           </div>
         </CardContent>
       </Card>

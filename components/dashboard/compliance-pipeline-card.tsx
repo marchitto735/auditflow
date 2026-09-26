@@ -1,16 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   CARD_CONTENT_CLASS,
-  CARD_CTA_ARROW_CLASS,
-  CARD_CTA_CLASS,
-  CARD_EYEBROW_MUTED_CLASS,
-  CARD_FOOTER_CLASS,
-  CARD_HEADER_STACK_CLASS,
+  CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
   TELEMETRY_LIST_CLASS,
   TELEMETRY_META_CLASS,
@@ -67,109 +60,62 @@ const ACTIVE_JOBS: PipelineJob[] = [
   },
 ];
 
+/** Static pipeline telemetry — no stage filters or drill-down CTAs. */
 export function CompliancePipelineCard({ className }: { className?: string }) {
-  const [selectedStage, setSelectedStage] = useState<PipelineStageId | null>(
-    null,
-  );
-
-  const filteredJobs = useMemo(() => {
-    if (!selectedStage) return ACTIVE_JOBS;
-    return ACTIVE_JOBS.filter((job) => job.stageId === selectedStage);
-  }, [selectedStage]);
-
-  function handleStageClick(stageId: PipelineStageId) {
-    setSelectedStage((current) => (current === stageId ? null : stageId));
-  }
-
   return (
     <Card
       className={cn(
         DASHBOARD_CARD_CLASS,
-        "group h-auto w-full shrink-0 self-start",
+        "h-auto w-full shrink-0 self-start",
         className,
       )}
     >
       <CardContent className={cn(CARD_CONTENT_CLASS, "h-auto gap-3")}>
-        <div className={CARD_HEADER_STACK_CLASS}>
-          <p className={CARD_EYEBROW_MUTED_CLASS}>Compliance Pipeline</p>
+        <div className="shrink-0">
+          <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance Pipeline</p>
+          <p className="text-body1 m-0 mt-1 text-zinc-600">
+            Active document volume by stage from ingest through export.
+          </p>
         </div>
 
         <ol
           className="m-0 flex list-none flex-wrap items-stretch gap-2 p-0"
           aria-label="Compliance pipeline stages"
         >
-          {STAGES.map((stage, index) => {
-            const isSelected = selectedStage === stage.id;
-            return (
-              <li key={stage.id} className="flex min-w-0 flex-1">
-                <button
-                  type="button"
-                  aria-pressed={isSelected}
-                  onClick={() => handleStageClick(stage.id)}
-                  className={cn(
-                    "flex w-full min-w-0 cursor-pointer flex-col gap-1 rounded-lg border px-3 py-2 text-left transition-colors",
-                    "hover:border-zinc-400 hover:bg-zinc-50/50",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                    isSelected
-                      ? "border-zinc-900 bg-zinc-50"
-                      : "border-zinc-200 bg-sidebar-muted/40",
-                  )}
-                >
-                  <span className="font-mono text-xs font-semibold uppercase tracking-wider text-black tabular-nums">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-sm font-medium text-black">
-                    {stage.label}
-                  </span>
-                  <span className="text-body1 m-0 font-mono tabular-nums text-black">
-                    {stage.count} active
-                  </span>
-                </button>
-              </li>
-            );
-          })}
+          {STAGES.map((stage, index) => (
+            <li key={stage.id} className="flex min-w-0 flex-1">
+              <div
+                className={cn(
+                  "flex w-full min-w-0 flex-col gap-1 rounded-lg border border-zinc-200 bg-sidebar-muted/40 px-3 py-2 text-left",
+                )}
+              >
+                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-black tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="text-sm font-medium text-black">
+                  {stage.label}
+                </span>
+                <span className="text-body1 m-0 font-mono tabular-nums text-black">
+                  {stage.count} active
+                </span>
+              </div>
+            </li>
+          ))}
         </ol>
 
-        <ul
-          className={cn(TELEMETRY_LIST_CLASS, "mt-2")}
-          aria-label={
-            selectedStage
-              ? `Active pipeline jobs in ${STAGES.find((s) => s.id === selectedStage)?.label}`
-              : "Active pipeline jobs"
-          }
-        >
-          {filteredJobs.length > 0 ? (
-            filteredJobs.map((job) => (
-              <li key={job.id} className={TELEMETRY_ROW_CLASS}>
-                <p className="text-base m-0 min-w-0 max-w-[65%] flex-1 truncate leading-snug text-black">
-                  {job.document}
-                </p>
-                <div className="flex shrink-0 items-center gap-2">
-                  <span className={TELEMETRY_META_CLASS}>ETA {job.eta}</span>
-                  <span className={TELEMETRY_PILL_CLASS}>{job.stage}</span>
-                </div>
-              </li>
-            ))
-          ) : (
-            <li className="text-body1 m-0 text-black">
-              No active jobs in this stage.
-              <button
-                type="button"
-                onClick={() => setSelectedStage(null)}
-                className="ml-2 font-medium text-black underline underline-offset-2 transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                Show all
-              </button>
+        <ul className={cn(TELEMETRY_LIST_CLASS, "mt-2")} aria-label="Active pipeline jobs">
+          {ACTIVE_JOBS.map((job) => (
+            <li key={job.id} className={TELEMETRY_ROW_CLASS}>
+              <p className="text-base m-0 min-w-0 max-w-[65%] flex-1 truncate leading-snug text-black">
+                {job.document}
+              </p>
+              <div className="flex shrink-0 items-center gap-2">
+                <span className={TELEMETRY_META_CLASS}>ETA {job.eta}</span>
+                <span className={TELEMETRY_PILL_CLASS}>{job.stage}</span>
+              </div>
             </li>
-          )}
+          ))}
         </ul>
-
-        <div className={CARD_FOOTER_CLASS}>
-          <Link href="/dashboard/audits" className={CARD_CTA_CLASS}>
-            <span>View Audit Log</span>
-            <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
-          </Link>
-        </div>
       </CardContent>
     </Card>
   );

@@ -33,8 +33,8 @@ export const DASHBOARD_MENU_ITEM_SELECTED_CLASS =
 
 type CardActionsMenuProps = {
   label: string;
-  actions?: readonly CardMenuAction[];
-  onAction?: (action: CardMenuAction) => void;
+  actions?: readonly string[];
+  onAction?: (action: string) => void;
   className?: string;
 };
 
