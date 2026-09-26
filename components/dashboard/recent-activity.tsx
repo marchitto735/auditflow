@@ -13,11 +13,6 @@ import {
   DASHBOARD_MENU_ITEM_CLASS,
   DASHBOARD_MENU_ITEM_SELECTED_CLASS,
 } from "@/components/dashboard/card-actions-menu";
-import {
-  DashboardToolbar,
-  filterActivityRows,
-  type DashboardToolbarValues,
-} from "@/components/dashboard/dashboard-toolbar";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -42,7 +37,6 @@ const AUDIT_HISTORY_MENU_ACTIONS = [
   "Export CSV",
   "Export PDF",
   "Refresh",
-  "Clear filters",
 ] as const;
 
 /** Match ActivityTable `table-fixed` + colgroup so footer locks to the same grid. */
@@ -57,13 +51,6 @@ function formatDemoDate(utcMinutesOffset: number) {
   const mm = String(Math.max(0, minutes)).padStart(2, "0");
   return `9/19/2026, 1:${mm}:44 AM`;
 }
-
-const INITIAL_FILTERS: DashboardToolbarValues = {
-  search: "",
-  type: "all",
-  status: "all",
-  dateRange: "all",
-};
 
 /** Seeded first-page demos for the default page size. */
 const SEED_ACTIVITY_ROWS: ActivityRow[] = [
@@ -300,7 +287,6 @@ export default function RecentActivity({
   rows: ActivityRow[];
   className?: string;
 }) {
-  const [filters, setFilters] = useState<DashboardToolbarValues>(INITIAL_FILTERS);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [page, setPage] = useState(1);
   const [menusMounted, setMenusMounted] = useState(false);
@@ -309,10 +295,10 @@ export default function RecentActivity({
     setMenusMounted(true);
   }, []);
 
-  const catalog = useMemo(() => {
-    const padded = padActivityRows(rows, Math.max(DEMO_TOTAL_RESULTS, pageSize));
-    return filterActivityRows(padded, filters);
-  }, [rows, pageSize, filters]);
+  const catalog = useMemo(
+    () => padActivityRows(rows, Math.max(DEMO_TOTAL_RESULTS, pageSize)),
+    [rows, pageSize],
+  );
 
   const totalCount = catalog.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
@@ -323,7 +309,7 @@ export default function RecentActivity({
 
   useEffect(() => {
     setPage(1);
-  }, [filters, pageSize]);
+  }, [pageSize]);
 
   function handlePageSizeChange(value: string) {
     const scrollY = window.scrollY;
@@ -348,7 +334,7 @@ export default function RecentActivity({
       )}
     >
       <CardContent className="flex flex-col p-0">
-        <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
+        <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Audit History</p>
             <p className="text-body1 m-0 mt-1 text-zinc-600">
@@ -359,94 +345,70 @@ export default function RecentActivity({
             <CardActionsMenu
               label="Audit History"
               actions={AUDIT_HISTORY_MENU_ACTIONS}
-              onAction={(action) => {
-                if (action === "Clear filters") {
-                  setFilters(INITIAL_FILTERS);
-                }
-              }}
             />
           </div>
-          <DashboardToolbar
-            embedded
-            className="px-0 py-0"
-            value={filters}
-            onChange={setFilters}
-          />
         </div>
 
-        {catalog.length === 0 ? (
-          <p className="text-body1 m-0 px-4 py-4 text-muted-foreground">
-            No audits match the current search and filters.
-          </p>
-        ) : (
-          <>
-            {/*
-              Height follows pageSize (3–50). No nested overflow — the main
-              window scrolls so the wheel is never trapped over the table.
-              Header/footer dividers are 1px box-shadows (not layout borders).
-            */}
-            <div
-              className="flex shrink-0 flex-col"
-              style={{ overflowAnchor: "none" }}
-            >
-              <ActivityTable rows={pageRows} />
+        <div
+          className="flex shrink-0 flex-col"
+          style={{ overflowAnchor: "none" }}
+        >
+          <ActivityTable rows={pageRows} />
 
-              <div className="relative z-20 shrink-0 border-t-0 bg-white py-3 shadow-[0_-1px_0_0_var(--border)]">
-                {/* Mobile: status + rows selector on top, pagination below */}
-                <div className="flex flex-col gap-3 px-4 md:hidden">
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                    <p className="m-0 min-w-0 text-sm text-muted-foreground">
-                      Showing {pageRows.length} of {totalCount} results
-                    </p>
-                    <PageSizeSelector
-                      pageSize={pageSize}
-                      menusMounted={menusMounted}
-                      onChange={handlePageSizeChange}
-                      menuAlign="start"
-                    />
-                  </div>
-                  <ActivityPaginationNav
-                    pageItems={pageItems}
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setPage}
-                    className="justify-center"
+          <div className="relative z-20 shrink-0 border-t-0 bg-white py-3 shadow-[0_-1px_0_0_var(--border)]">
+            {/* Mobile: status + rows selector on top, pagination below */}
+            <div className="flex flex-col gap-3 px-4 md:hidden">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <p className="m-0 min-w-0 text-sm text-muted-foreground">
+                  Showing {pageRows.length} of {totalCount} results
+                </p>
+                <PageSizeSelector
+                  pageSize={pageSize}
+                  menusMounted={menusMounted}
+                  onChange={handlePageSizeChange}
+                  menuAlign="start"
+                />
+              </div>
+              <ActivityPaginationNav
+                pageItems={pageItems}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setPage}
+                className="justify-center"
+              />
+            </div>
+
+            {/* Desktop: status + rows selector left, pagination right */}
+            <div
+              className={cn(
+                "hidden w-full items-center md:grid",
+                ACTIVITY_TABLE_MIN_WIDTH_CLASS,
+              )}
+              style={{ gridTemplateColumns: FOOTER_GRID_TEMPLATE }}
+            >
+              <p className="m-0 px-4 text-sm text-muted-foreground">
+                Showing {pageRows.length} of {totalCount} results
+              </p>
+              <div className="flex min-w-0 items-center justify-between gap-4 px-4">
+                <div className="-ml-[111px]">
+                  <PageSizeSelector
+                    pageSize={pageSize}
+                    menusMounted={menusMounted}
+                    onChange={handlePageSizeChange}
+                    menuAlign="start"
                   />
                 </div>
-
-                {/* Desktop: status + rows selector left, pagination right */}
-                <div
-                  className={cn(
-                    "hidden w-full items-center md:grid",
-                    ACTIVITY_TABLE_MIN_WIDTH_CLASS,
-                  )}
-                  style={{ gridTemplateColumns: FOOTER_GRID_TEMPLATE }}
-                >
-                  <p className="m-0 px-4 text-sm text-muted-foreground">
-                    Showing {pageRows.length} of {totalCount} results
-                  </p>
-                  <div className="flex min-w-0 items-center justify-between gap-4 px-4">
-                    <div className="-ml-[111px]">
-                      <PageSizeSelector
-                        pageSize={pageSize}
-                        menusMounted={menusMounted}
-                        onChange={handlePageSizeChange}
-                        menuAlign="start"
-                      />
-                    </div>
-                    <ActivityPaginationNav
-                      pageItems={pageItems}
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      onPageChange={setPage}
-                      className="shrink-0 justify-end"
-                    />
-                  </div>
-                </div>
+                <ActivityPaginationNav
+                  pageItems={pageItems}
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                  className="shrink-0 justify-end"
+                />
               </div>
             </div>
-          </>
-        )}
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

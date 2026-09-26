@@ -48,7 +48,14 @@ export const CHART_GEOMETRY = {
 
 export type ChartSeverity = "Critical" | "High" | "Medium" | "Low";
 
-export type WorkflowStatus = "Active" | "Ready" | "Draft" | "Pending";
+export type WorkflowStatus =
+  | "Active"
+  | "Ready"
+  | "Draft"
+  | "Pending"
+  | "Synced"
+  | "Flagged"
+  | "Verified";
 
 export function severityFill(severity: ChartSeverity): string {
   switch (severity) {
@@ -77,18 +84,41 @@ export function severityDotClass(severity: ChartSeverity): string {
   }
 }
 
-/** Audit launcher / workflow status pips. */
-export function workflowStatusDotClass(status: string): string {
+/**
+ * Dashboard telemetry status → palette (sparkline + status pip).
+ * Emerald / Amber / Slate / Sky / Red / Indigo — one pairing per card.
+ */
+function workflowStatusTone(status: string): {
+  spark: string;
+  dot: string;
+} {
   switch (status) {
     case "Active":
-      return "bg-emerald-500";
+      return { spark: "text-emerald-500", dot: "bg-emerald-500" }; // #10b981
     case "Ready":
     case "Pending":
-      return "bg-amber-500";
+      return { spark: "text-amber-500", dot: "bg-amber-500" }; // #f59e0b
     case "Draft":
+      return { spark: "text-slate-500", dot: "bg-slate-500" }; // #64748b
+    case "Synced":
+      return { spark: "text-sky-500", dot: "bg-sky-500" }; // #0ea5e9
+    case "Flagged":
+      return { spark: "text-red-500", dot: "bg-red-500" }; // #ef4444
+    case "Verified":
+      return { spark: "text-indigo-500", dot: "bg-indigo-500" }; // #6366f1
     default:
-      return "bg-zinc-400";
+      return { spark: "text-slate-500", dot: "bg-slate-500" };
   }
+}
+
+/** Audit launcher / KPI status pips. */
+export function workflowStatusDotClass(status: string): string {
+  return workflowStatusTone(status).dot;
+}
+
+/** Sparkline stroke color — matches status pip for the same label. */
+export function workflowStatusSparkClass(status: string): string {
+  return workflowStatusTone(status).spark;
 }
 
 /** Score → series fill (gauge, category bars). */

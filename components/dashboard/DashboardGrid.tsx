@@ -1,8 +1,8 @@
 "use client";
 
-import KpiCards from "@/components/dashboard/kpi-cards";
 import RecentActivity from "@/components/dashboard/recent-activity";
-import AuditLauncher from "@/components/dashboard/audit-launcher";
+import { AuditLauncherCard } from "@/components/dashboard/audit-launcher";
+import { KpiCardItems } from "@/components/dashboard/kpi-cards";
 import { DashboardCommandHeader } from "@/components/dashboard/dashboard-command-header";
 import { SystemTelemetrySection } from "@/components/dashboard/SystemTelemetrySection";
 import {
@@ -12,7 +12,10 @@ import {
 } from "@/components/dashboard/status-detail-panels";
 import type { ActivityRow } from "@/components/activity-table/activity-table";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { DASHBOARD_SECTION_GAP_CLASS } from "@/lib/page-layout";
+import {
+  DASHBOARD_SECTION_GAP_CLASS,
+  DASHBOARD_TELEMETRY_CARD_GRID_CLASS,
+} from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 type DashboardGridProps = {
@@ -36,10 +39,14 @@ export default function DashboardGrid({
       >
         <DashboardCommandHeader />
 
-        <AuditLauncher variant="compact" />
+        <div className={cn("w-full min-w-0", DASHBOARD_TELEMETRY_CARD_GRID_CLASS)}>
+          <AuditLauncherCard id="sop" />
+          <AuditLauncherCard id="bpr" />
+          <AuditLauncherCard id="fir" />
+          <KpiCardItems />
+        </div>
 
         <div className="flex min-w-0 flex-col gap-6">
-          <KpiCards />
           <FindingsSummaryPanel className="w-full min-w-0" />
           <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
             <CategoryBreakdownPanel />

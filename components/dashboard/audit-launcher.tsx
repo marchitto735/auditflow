@@ -11,6 +11,7 @@ import {
 import {
   AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
   CARD_CONTENT_CLASS,
+  CARD_CORNER_LABEL_CLASS,
   CARD_EYEBROW_MUTED_CLASS,
   CARD_FOOTER_CLASS,
   CARD_HEADER_STACK_CLASS,
@@ -18,7 +19,7 @@ import {
   DASHBOARD_CARD_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
 } from "@/lib/page-layout";
-import { workflowStatusDotClass } from "@/lib/chart-tokens";
+import { workflowStatusDotClass, workflowStatusSparkClass } from "@/lib/chart-tokens";
 import { cn } from "@/lib/utils";
 
 const FEATURED_CARD_CLASS = cn(
@@ -26,18 +27,18 @@ const FEATURED_CARD_CLASS = cn(
   "flex w-full min-w-0 shrink-0 flex-col text-left",
 );
 
-/** Functional category eyebrow (CSS uppercase via CARD_EYEBROW_*). */
+/** Regulatory domain eyebrows — Dashboard compact + Audits featured (CSS uppercase). */
 const EYEBROW_DISPLAY: Record<AuditWorkflowId, string> = {
-  sop: "Standard Operating Procedure (SOP)",
-  bpr: "Batch Production Record (BPR)",
-  fir: "Facility Inspection Report (FIR)",
-};
-
-/** Featured Audits page eyebrows — regulatory domain categories. */
-const FEATURED_EYEBROW_DISPLAY: Record<AuditWorkflowId, string> = {
   sop: "Policy Control",
   bpr: "Production Log",
   fir: "Site Audit",
+};
+
+/** Dashboard compact telemetry — shorthand acronym in the card corner. */
+const WORKFLOW_ACRONYM: Record<AuditWorkflowId, string> = {
+  sop: "SOP",
+  bpr: "BPR",
+  fir: "FIR",
 };
 
 /** Featured Audits page titles — full document type names. */
@@ -78,6 +79,8 @@ type LauncherMetrics = {
   chunks: string;
   latency: string;
   success: string;
+  /** Pipeline throughput — bottom-right telemetry (e.g. docs/min or s/doc). */
+  throughput: string;
 };
 
 /** Dashboard Quick Launch only — not shown on the dedicated Audits page. */
@@ -87,35 +90,25 @@ const LAUNCHER_METRICS: Record<AuditWorkflowId, LauncherMetrics> = {
     chunks: "1.4k",
     latency: "1.2s",
     success: "98%",
+    throughput: "~1.2s/doc",
   },
   bpr: {
     trend: [78, 82, 80, 85, 83],
     chunks: "2.1k",
     latency: "1.8s",
     success: "94%",
+    throughput: "8.6 docs/min",
   },
   fir: {
     trend: [72, 70, 74, 76, 75],
     chunks: "0.9k",
     latency: "0.9s",
     success: "91%",
+    throughput: "12.4 docs/min",
   },
 };
 
-function workflowStatusSparkClass(status: string): string {
-  switch (status) {
-    case "Active":
-      return "text-emerald-500";
-    case "Ready":
-    case "Pending":
-      return "text-amber-500";
-    case "Draft":
-    default:
-      return "text-zinc-400";
-  }
-}
-
-function TrendSparkline({
+export function TrendSparkline({
   values,
   label,
   className,
@@ -149,10 +142,11 @@ function TrendSparkline({
 
   return (
     <svg
-      width={width}
+      width="100%"
       height={height}
       viewBox={`0 0 ${width} ${height}`}
-      className={cn("overflow-visible", className)}
+      preserveAspectRatio="xMidYMid meet"
+      className={cn("max-w-[76px] overflow-hidden", className)}
       role="img"
       aria-label={label}
     >
@@ -181,9 +175,8 @@ export function AuditLauncherCard({
 }) {
   const { openConfigureAudit } = useConfigureAudit();
   const workflow = AUDIT_WORKFLOWS[id];
-  const eyebrow = featured
-    ? FEATURED_EYEBROW_DISPLAY[id]
-    : EYEBROW_DISPLAY[id];
+  const eyebrow = EYEBROW_DISPLAY[id];
+  const acronym = WORKFLOW_ACRONYM[id];
   const title = featured
     ? FEATURED_TITLE_DISPLAY[id]
     : COMPACT_TITLE_DISPLAY[id];
@@ -256,95 +249,110 @@ export function AuditLauncherCard({
       data-audit-launcher-card={id}
       className={cn(
         DASHBOARD_CARD_CLASS,
-        "flex w-full min-w-0 shrink-0 flex-col text-left",
+        "flex w-full min-w-0 flex-col overflow-hidden text-left",
         AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
         className,
       )}
     >
-      <Card className="flex h-full w-full min-h-0 flex-col border-0 bg-transparent shadow-none">
+      <Card className="flex h-auto w-full min-h-0 min-w-0 flex-col border-0 bg-transparent shadow-none">
         <CardContent
           className={cn(
             CARD_CONTENT_CLASS,
-            "flex h-full w-full min-h-0 flex-col justify-between gap-3 overflow-visible p-4 text-left",
+            "flex h-auto w-full min-h-0 min-w-0 flex-col gap-3 overflow-hidden px-4 pt-4 pb-[16px] text-left",
           )}
         >
-          <div className="flex min-w-0 flex-col gap-2">
-            <p className={cn(CARD_EYEBROW_MUTED_CLASS, "max-w-full")}>
-              {eyebrow}
-            </p>
-            <div
-              className={cn(
-                "grid w-full items-center gap-x-3",
-                metrics
-                  ? "grid-cols-[minmax(0,1fr)_auto]"
-                  : "grid-cols-1",
-              )}
-            >
+          <div className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 sm:gap-x-3">
+            <div className="flex min-w-0 flex-col gap-2 overflow-hidden">
+              <p
+                className={cn(
+                  CARD_EYEBROW_MUTED_CLASS,
+                  "min-w-0 max-w-full truncate",
+                )}
+              >
+                {eyebrow}
+              </p>
               <h3
                 className={cn(
                   CARD_TITLE_CLASS,
-                  "m-0 max-w-full hyphens-auto break-words text-pretty text-black",
+                  "m-0 max-w-full break-words text-pretty text-black",
                 )}
               >
                 {title}
               </h3>
-              {metrics ? (
-                <div className="flex w-[4.75rem] shrink-0 flex-col items-end justify-center">
-                  <TrendSparkline
-                    values={metrics.trend}
-                    label={`${workflow.label} score trend over last five runs`}
-                    className={workflowStatusSparkClass(workflow.status)}
-                  />
-                </div>
-              ) : null}
             </div>
-
-            <p
-              className="text-body1 m-0 flex flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-black"
-              aria-label={`${workflow.label} status ${workflow.status}, last run ${workflow.lastRun}`}
-            >
-              <span
-                className={cn(
-                  "size-2.5 shrink-0 rounded-full",
-                  workflowStatusDotClass(workflow.status),
-                )}
-                aria-hidden
-              />
-              <span className="font-medium">{workflow.status}</span>
-              <span className="text-black" aria-hidden>
-                •
-              </span>
-              <span className="text-black">Last Run {workflow.lastRun}</span>
-            </p>
+            {metrics ? (
+              <div className="flex w-[3.75rem] max-w-full shrink-0 flex-col items-center justify-start gap-1 sm:w-[4.75rem]">
+                <TrendSparkline
+                  values={metrics.trend}
+                  label={`${workflow.label} score trend over last five runs`}
+                  className={cn(
+                    "max-w-full",
+                    workflowStatusSparkClass(workflow.status),
+                  )}
+                />
+                <p
+                  className={CARD_CORNER_LABEL_CLASS}
+                  aria-label={`${workflow.label} document type ${acronym}`}
+                >
+                  {acronym}
+                </p>
+              </div>
+            ) : null}
           </div>
 
-            <div className="mt-auto flex min-w-0 flex-col gap-2.5">
-            {metrics ? (
-              <div
-                className="flex min-w-0 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-black"
-                aria-label={`${workflow.label} operational metrics`}
-              >
-                <span className="shrink-0">
+          <p
+            className="text-body1 m-0 flex min-w-0 flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-black"
+            aria-label={`${workflow.label} status ${workflow.status}, last run ${workflow.lastRun}`}
+          >
+            <span
+              className={cn(
+                "size-2.5 shrink-0 rounded-full",
+                workflowStatusDotClass(workflow.status),
+              )}
+              aria-hidden
+            />
+            <span className="shrink-0 font-medium">{workflow.status}</span>
+            <span className="shrink-0 text-black" aria-hidden>
+              •
+            </span>
+            <span className="min-w-0 break-words text-black">
+              Last Run {workflow.lastRun}
+            </span>
+          </p>
+
+          {metrics ? (
+            <div
+              className="mt-auto flex min-w-0 flex-wrap items-end justify-between gap-x-3 gap-y-1"
+              aria-label={`${workflow.label} operational metrics`}
+            >
+              <div className="flex min-w-0 flex-1 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-black">
+                <span className="shrink-0 whitespace-nowrap">
                   <span className="text-black">Chunks</span>{" "}
                   <span className="font-medium text-black">{metrics.chunks}</span>
                 </span>
                 <span className="shrink-0 text-black" aria-hidden>
                   ·
                 </span>
-                <span className="shrink-0">
+                <span className="shrink-0 whitespace-nowrap">
                   <span className="text-black">Latency</span>{" "}
                   <span className="font-medium text-black">{metrics.latency}</span>
                 </span>
                 <span className="shrink-0 text-black" aria-hidden>
                   ·
                 </span>
-                <span className="min-w-0">
+                <span className="shrink-0 whitespace-nowrap">
                   <span className="text-black">Success</span>{" "}
                   <span className="font-medium text-black">{metrics.success}</span>
                 </span>
               </div>
-            ) : null}
-          </div>
+              <p
+                className="m-0 max-w-full shrink-0 text-right text-xs font-medium tabular-nums tracking-wider break-words text-muted-foreground"
+                aria-label={`${workflow.label} throughput ${metrics.throughput}`}
+              >
+                {metrics.throughput}
+              </p>
+            </div>
+          ) : null}
         </CardContent>
       </Card>
     </div>

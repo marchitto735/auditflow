@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import {
   CardActionsMenu,
@@ -8,10 +8,6 @@ import {
   DASHBOARD_MENU_ITEM_CLASS,
   DASHBOARD_MENU_ITEM_SELECTED_CLASS,
 } from "@/components/dashboard/card-actions-menu";
-import {
-  DashboardToolbar,
-  type DashboardToolbarValues,
-} from "@/components/dashboard/dashboard-toolbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -45,7 +41,6 @@ import {
   OPEN_FINDINGS,
   SCORE_CATEGORIES,
   SCORE_TRENDS,
-  type FindingRow,
   type FindingSeverity,
 } from "@/lib/dashboard-insights";
 import {
@@ -71,58 +66,12 @@ const FINDINGS_MENU_ACTIONS = [
   "Export CSV",
   "Export PDF",
   "Refresh",
-  "Clear filters",
 ] as const;
-
-const INITIAL_FILTERS: DashboardToolbarValues = {
-  search: "",
-  type: "all",
-  status: "all",
-  dateRange: "all",
-};
 
 const SORTED_FINDINGS = [...OPEN_FINDINGS].sort(
   (a, b) =>
     SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity),
 );
-
-function documentTypeLabel(document: string): "SOP" | "BPR" | "FIR" | null {
-  if (document.startsWith("SOP")) return "SOP";
-  if (document.startsWith("BPR")) return "BPR";
-  if (document.startsWith("FIR")) return "FIR";
-  return null;
-}
-
-function filterFindingsRows(
-  rows: FindingRow[],
-  filters: DashboardToolbarValues,
-): FindingRow[] {
-  const query = filters.search.trim().toLowerCase();
-
-  return rows.filter((row) => {
-    if (filters.type !== "all" && documentTypeLabel(row.document) !== filters.type) {
-      return false;
-    }
-
-    if (filters.status === "Critical" && row.severity !== "Critical") {
-      return false;
-    }
-    if (filters.status === "Partial" && row.severity !== "High") {
-      return false;
-    }
-    if (filters.status === "Compliant" && row.severity !== "Low") {
-      return false;
-    }
-
-    if (query) {
-      const haystack =
-        `${row.title} ${row.document} ${row.id} ${row.status} ${row.severity}`.toLowerCase();
-      if (!haystack.includes(query)) return false;
-    }
-
-    return true;
-  });
-}
 
 function buildPageItems(currentPage: number, totalPages: number) {
   if (totalPages <= 7) {
@@ -293,9 +242,8 @@ function SeverityStatus({ severity }: { severity: FindingSeverity }) {
   );
 }
 
-/** Read-only findings table — Critical/High first, with History-style chrome. */
+/** Read-only findings table — Critical/High first, static dashboard display. */
 export function FindingsSummaryPanel({ className }: { className?: string }) {
-  const [filters, setFilters] = useState<DashboardToolbarValues>(INITIAL_FILTERS);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [page, setPage] = useState(1);
   const [menusMounted, setMenusMounted] = useState(false);
@@ -304,10 +252,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
     setMenusMounted(true);
   }, []);
 
-  const catalog = useMemo(
-    () => filterFindingsRows(SORTED_FINDINGS, filters),
-    [filters],
-  );
+  const catalog = SORTED_FINDINGS;
   const totalCount = catalog.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
   const currentPage = Math.min(page, totalPages);
@@ -317,7 +262,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
 
   useEffect(() => {
     setPage(1);
-  }, [filters, pageSize]);
+  }, [pageSize]);
 
   function handlePageSizeChange(value: string) {
     const scrollY = window.scrollY;
@@ -339,7 +284,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
       )}
     >
       <CardContent className="flex h-full min-h-0 flex-col p-0">
-        <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
+        <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Priority Findings</p>
             <p className="text-body1 m-0 mt-1 text-zinc-600">
@@ -350,152 +295,135 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
             <CardActionsMenu
               label="Priority Findings"
               actions={FINDINGS_MENU_ACTIONS}
-              onAction={(action) => {
-                if (action === "Clear filters") {
-                  setFilters(INITIAL_FILTERS);
-                }
-              }}
             />
           </div>
-          <DashboardToolbar
-            embedded
-            className="px-0 py-0"
-            value={filters}
-            onChange={setFilters}
-          />
         </div>
 
-        {catalog.length === 0 ? (
-          <p className="text-body1 m-0 px-4 py-4 text-muted-foreground">
-            No findings match the current search and filters.
-          </p>
-        ) : (
-          <div
-            className="flex min-h-0 flex-1 flex-col"
-            style={{ overflowAnchor: "none" }}
-          >
-            <div className="min-h-0 flex-1 overflow-x-auto">
-              <Table
+        <div
+          className="flex min-h-0 flex-1 flex-col"
+          style={{ overflowAnchor: "none" }}
+        >
+          <div className="min-h-0 flex-1 overflow-x-auto">
+            <Table
+              className={cn(
+                "w-full table-fixed border-separate border-spacing-0",
+                FINDINGS_TABLE_MIN_WIDTH_CLASS,
+              )}
+              containerClassName="overflow-visible"
+            >
+              <colgroup>
+                <col
+                  className="w-[40%] min-w-[12rem]"
+                  style={{ width: "40%" }}
+                />
+                <col
+                  className="w-[22%] min-w-[8rem]"
+                  style={{ width: "22%" }}
+                />
+                <col
+                  className="w-[16%] min-w-[6rem]"
+                  style={{ width: "16%" }}
+                />
+                <col
+                  className="w-[22%] min-w-[7rem]"
+                  style={{ width: "22%" }}
+                />
+              </colgroup>
+              <TableHeader className="border-b-0 shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0">
+                <TableRow className="border-0 bg-white hover:bg-transparent">
+                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                    Finding
+                  </TableHead>
+                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                    Document
+                  </TableHead>
+                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                    Severity
+                  </TableHead>
+                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                    Status
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody
                 className={cn(
-                  "w-full table-fixed border-separate border-spacing-0",
-                  FINDINGS_TABLE_MIN_WIDTH_CLASS,
+                  "divide-y divide-border border-b-0",
+                  "[&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
                 )}
-                containerClassName="overflow-visible"
               >
-                <colgroup>
-                  <col
-                    className="w-[40%] min-w-[12rem]"
-                    style={{ width: "40%" }}
-                  />
-                  <col
-                    className="w-[22%] min-w-[8rem]"
-                    style={{ width: "22%" }}
-                  />
-                  <col
-                    className="w-[16%] min-w-[6rem]"
-                    style={{ width: "16%" }}
-                  />
-                  <col
-                    className="w-[22%] min-w-[7rem]"
-                    style={{ width: "22%" }}
-                  />
-                </colgroup>
-                <TableHeader className="border-b-0 shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0">
-                  <TableRow className="border-0 bg-white hover:bg-transparent">
-                    <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                      Finding
-                    </TableHead>
-                    <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                      Document
-                    </TableHead>
-                    <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                      Severity
-                    </TableHead>
-                    <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                      Status
-                    </TableHead>
+                {pageRows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    className="h-12 border-0 hover:bg-transparent"
+                  >
+                    <TableCell className="h-12 px-4 py-0">
+                      <TruncatedText text={row.title} />
+                    </TableCell>
+                    <TableCell className="h-12 px-4 py-0">
+                      <TruncatedText text={row.document} />
+                    </TableCell>
+                    <TableCell className="h-12 px-4 py-0">
+                      <SeverityStatus severity={row.severity} />
+                    </TableCell>
+                    <TableCell className="h-12 px-4 py-0 text-sm text-foreground">
+                      {row.status}
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody
-                  className={cn(
-                    "divide-y divide-border border-b-0",
-                    "[&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
-                  )}
-                >
-                  {pageRows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      className="h-12 border-0 hover:bg-transparent"
-                    >
-                      <TableCell className="h-12 px-4 py-0">
-                        <TruncatedText text={row.title} />
-                      </TableCell>
-                      <TableCell className="h-12 px-4 py-0">
-                        <TruncatedText text={row.document} />
-                      </TableCell>
-                      <TableCell className="h-12 px-4 py-0">
-                        <SeverityStatus severity={row.severity} />
-                      </TableCell>
-                      <TableCell className="h-12 px-4 py-0 text-sm text-foreground">
-                        {row.status}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <div className="relative z-20 shrink-0 border-t-0 bg-white py-3 shadow-[0_-1px_0_0_var(--border)]">
+            <div className="flex flex-col gap-3 px-4 md:hidden">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <p className="m-0 min-w-0 text-sm text-muted-foreground">
+                  Showing {pageRows.length} of {totalCount} results
+                </p>
+                <PageSizeSelector
+                  pageSize={pageSize}
+                  menusMounted={menusMounted}
+                  onChange={handlePageSizeChange}
+                  menuAlign="start"
+                />
+              </div>
+              <FindingsPaginationNav
+                pageItems={pageItems}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setPage}
+                className="justify-center"
+              />
             </div>
 
-            <div className="relative z-20 shrink-0 border-t-0 bg-white py-3 shadow-[0_-1px_0_0_var(--border)]">
-              <div className="flex flex-col gap-3 px-4 md:hidden">
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                  <p className="m-0 min-w-0 text-sm text-muted-foreground">
-                    Showing {pageRows.length} of {totalCount} results
-                  </p>
-                  <PageSizeSelector
-                    pageSize={pageSize}
-                    menusMounted={menusMounted}
-                    onChange={handlePageSizeChange}
-                    menuAlign="start"
-                  />
-                </div>
+            <div
+              className={cn(
+                "hidden w-full items-center md:grid",
+                FINDINGS_TABLE_MIN_WIDTH_CLASS,
+              )}
+              style={{ gridTemplateColumns: FOOTER_GRID_TEMPLATE }}
+            >
+              <p className="m-0 px-4 text-sm text-muted-foreground">
+                Showing {pageRows.length} of {totalCount} results
+              </p>
+              <div className="flex min-w-0 items-center justify-between gap-4 px-4">
+                <PageSizeSelector
+                  pageSize={pageSize}
+                  menusMounted={menusMounted}
+                  onChange={handlePageSizeChange}
+                  menuAlign="start"
+                />
                 <FindingsPaginationNav
                   pageItems={pageItems}
                   currentPage={currentPage}
                   totalPages={totalPages}
                   onPageChange={setPage}
-                  className="justify-center"
+                  className="shrink-0 justify-end"
                 />
-              </div>
-
-              <div
-                className={cn(
-                  "hidden w-full items-center md:grid",
-                  FINDINGS_TABLE_MIN_WIDTH_CLASS,
-                )}
-                style={{ gridTemplateColumns: FOOTER_GRID_TEMPLATE }}
-              >
-                <p className="m-0 px-4 text-sm text-muted-foreground">
-                  Showing {pageRows.length} of {totalCount} results
-                </p>
-                <div className="flex min-w-0 items-center justify-between gap-4 px-4">
-                  <PageSizeSelector
-                    pageSize={pageSize}
-                    menusMounted={menusMounted}
-                    onChange={handlePageSizeChange}
-                    menuAlign="start"
-                  />
-                  <FindingsPaginationNav
-                    pageItems={pageItems}
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setPage}
-                    className="shrink-0 justify-end"
-                  />
-                </div>
               </div>
             </div>
           </div>
-        )}
+        </div>
       </CardContent>
     </Card>
   );
