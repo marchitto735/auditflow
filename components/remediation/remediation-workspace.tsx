@@ -5,6 +5,7 @@ import { CheckCircle2, ChevronDown, TriangleAlert } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DASHBOARD_MENU_CONTENT_CLASS,
   DASHBOARD_MENU_ITEM_CLASS,
@@ -47,10 +48,10 @@ if (
 
 type FindingStatusValue = "compliant" | "non-compliant" | "partial";
 
-function statusDotClass(status: FindingStatusValue) {
-  if (status === "compliant") return "bg-status-success";
-  if (status === "partial") return "bg-status-warning";
-  return "bg-status-critical";
+function findingBadgeVariant(status: FindingStatusValue) {
+  if (status === "compliant") return "success" as const;
+  if (status === "partial") return "warning" as const;
+  return "destructive" as const;
 }
 
 function statusLabel(status: FindingStatusValue) {
@@ -61,13 +62,9 @@ function statusLabel(status: FindingStatusValue) {
 
 function FindingStatus({ status }: { status: FindingStatusValue }) {
   return (
-    <span className="inline-flex items-center gap-2 text-base font-normal leading-6 text-foreground">
-      <span
-        className={cn("size-2.5 shrink-0 rounded-full", statusDotClass(status))}
-        aria-hidden
-      />
+    <Badge variant={findingBadgeVariant(status)}>
       {statusLabel(status)}
-    </span>
+    </Badge>
   );
 }
 

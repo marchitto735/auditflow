@@ -13,6 +13,7 @@ import {
   type DashboardToolbarValues,
 } from "@/components/dashboard/dashboard-toolbar";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -231,12 +232,12 @@ function filterQueueRows(
   });
 }
 
-function queueStatusDotClass(status: string) {
+function queueStatusBadgeVariant(status: string) {
   const value = status.toLowerCase();
-  if (value.includes("parsing")) return "bg-primary";
-  if (value.includes("ready")) return "bg-status-success";
-  if (value.includes("pending")) return "bg-status-warning";
-  return "bg-neutral-400";
+  if (value.includes("ready")) return "success" as const;
+  if (value.includes("pending")) return "warning" as const;
+  if (value.includes("parsing")) return "warning" as const;
+  return "outline" as const;
 }
 
 function buildPageItems(currentPage: number, totalPages: number) {
@@ -398,13 +399,7 @@ function QueuePaginationNav({
 
 function QueueStatus({ status }: { status: string }) {
   return (
-    <span className="inline-flex max-w-full min-w-0 items-center gap-2 text-foreground">
-      <span
-        className={cn("size-2.5 shrink-0 rounded-full", queueStatusDotClass(status))}
-        aria-hidden
-      />
-      <span className="min-w-0 truncate">{status}</span>
-    </span>
+    <Badge variant={queueStatusBadgeVariant(status)}>{status}</Badge>
   );
 }
 

@@ -1,16 +1,13 @@
 "use client";
 
-import { AlertTriangle, CircleAlert } from "lucide-react";
 import { CardActionsMenu, FEED_CARD_MENU_ACTIONS } from "@/components/dashboard/card-actions-menu";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   CARD_CONTENT_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
-  TELEMETRY_LIST_CLASS,
   TELEMETRY_META_CLASS,
-  TELEMETRY_PILL_CLASS,
-  TELEMETRY_ROW_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -184,7 +181,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
 
         <ul
           className={cn(
-            TELEMETRY_LIST_CLASS,
+            "m-0 grid list-none grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-4 gap-y-3 p-0",
             "max-h-[350px] min-h-0 flex-1 overflow-x-hidden overflow-y-auto pr-1 lg:max-h-none",
             FEED_SCROLLBAR_CLASS,
           )}
@@ -192,61 +189,30 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
         >
           {FEED_EVENTS.map((event) => {
             const status = event.status ?? "info";
-            const isWarn = status === "warn";
-            const isError = status === "error";
-            const messageTone = isError
-              ? "text-status-critical"
-              : isWarn
-                ? "text-amber-800"
-                : "text-neutral-900";
+            const badgeTone =
+              status === "error"
+                ? "danger"
+                : status === "warn"
+                  ? "warning"
+                  : "neutral";
 
             return (
               <li
                 key={`${event.time}-${event.subsystem}-${event.message}`}
-                className="m-0 min-w-0 list-none"
+                className="contents"
               >
-                <div
-                  className={cn(TELEMETRY_ROW_CLASS, "min-w-0 rounded-lg")}
+                <p className="text-base m-0 min-w-0 overflow-hidden leading-snug text-pretty text-foreground">
+                  {event.message}
+                </p>
+                <time
+                  className={cn(TELEMETRY_META_CLASS, "justify-self-end text-right")}
+                  dateTime={event.time}
                 >
-                  <p
-                    className={cn(
-                      "text-base m-0 min-w-0 max-w-[65%] flex-1 overflow-hidden leading-snug text-pretty",
-                      messageTone,
-                    )}
-                  >
-                    {event.message}
-                  </p>
-                  <div className="flex shrink-0 items-center gap-2">
-                    {isWarn ? (
-                      <AlertTriangle
-                        className="size-3.5 shrink-0 text-status-warning"
-                        aria-hidden
-                        strokeWidth={2}
-                      />
-                    ) : null}
-                    {isError ? (
-                      <CircleAlert
-                        className="size-3.5 shrink-0 text-status-critical"
-                        aria-hidden
-                        strokeWidth={2}
-                      />
-                    ) : null}
-                    <time className={TELEMETRY_META_CLASS} dateTime={event.time}>
-                      {event.time}
-                    </time>
-                    <span
-                      className={cn(
-                        TELEMETRY_PILL_CLASS,
-                        isError &&
-                          "border-red-200 bg-status-critical-muted text-red-800",
-                        isWarn &&
-                          "border-amber-200 bg-status-warning-muted text-amber-900",
-                      )}
-                    >
-                      {event.subsystem}
-                    </span>
-                  </div>
-                </div>
+                  {event.time}
+                </time>
+                <Badge className="justify-self-start" tone={badgeTone}>
+                  {event.subsystem}
+                </Badge>
               </li>
             );
           })}

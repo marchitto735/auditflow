@@ -23,6 +23,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 import {
   OPEN_FINDINGS,
   type FindingRow,
@@ -30,7 +31,7 @@ import {
   type FindingStatus,
 } from "@/lib/dashboard-insights";
 import { DASHBOARD_CARD_CLASS, DASHBOARD_GAP_CLASS, CARD_EYEBROW_MUTED_CLASS } from "@/lib/page-layout";
-import { severityDotClass } from "@/lib/chart-tokens";
+import { severityBadgeVariant } from "@/lib/chart-tokens";
 import { cn } from "@/lib/utils";
 
 const SEVERITY_ORDER: FindingSeverity[] = [
@@ -54,15 +55,7 @@ function sortFindings(rows: FindingRow[]) {
 }
 
 function SeverityStatus({ severity }: { severity: FindingSeverity }) {
-  return (
-    <span className="inline-flex max-w-full min-w-0 items-center gap-2 text-foreground">
-      <span
-        className={cn("size-2.5 shrink-0 rounded-full", severityDotClass(severity))}
-        aria-hidden
-      />
-      <span className="min-w-0 truncate">{severity}</span>
-    </span>
-  );
+  return <Badge variant={severityBadgeVariant(severity)}>{severity}</Badge>;
 }
 
 export default function FindingsView() {

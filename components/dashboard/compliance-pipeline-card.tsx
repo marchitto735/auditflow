@@ -1,15 +1,13 @@
 "use client";
 
 import { CardActionsMenu, FEED_CARD_MENU_ACTIONS } from "@/components/dashboard/card-actions-menu";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   CARD_CONTENT_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
-  TELEMETRY_LIST_CLASS,
   TELEMETRY_META_CLASS,
-  TELEMETRY_PILL_CLASS,
-  TELEMETRY_ROW_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -110,16 +108,23 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
           ))}
         </ol>
 
-        <ul className={cn(TELEMETRY_LIST_CLASS, "mt-2")} aria-label="Active pipeline jobs">
+        <ul
+          className="m-0 mt-2 grid list-none grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-4 gap-y-3 p-0"
+          aria-label="Active pipeline jobs"
+        >
           {ACTIVE_JOBS.map((job) => (
-            <li key={job.id} className={TELEMETRY_ROW_CLASS}>
-              <p className="text-base m-0 min-w-0 max-w-[65%] flex-1 truncate leading-snug text-neutral-900">
+            <li key={job.id} className="contents">
+              <p className="text-base m-0 min-w-0 truncate leading-snug text-foreground">
                 {job.document}
               </p>
-              <div className="flex shrink-0 items-center gap-2">
-                <span className={TELEMETRY_META_CLASS}>ETA {job.eta}</span>
-                <span className={TELEMETRY_PILL_CLASS}>{job.stage}</span>
-              </div>
+              <span
+                className={cn(TELEMETRY_META_CLASS, "justify-self-end text-right")}
+              >
+                ETA {job.eta}
+              </span>
+              <Badge className="justify-self-start" variant="outline">
+                {job.stage}
+              </Badge>
             </li>
           ))}
         </ul>

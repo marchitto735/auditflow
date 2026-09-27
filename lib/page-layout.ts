@@ -194,12 +194,6 @@ export const TELEMETRY_META_CLASS =
   "shrink-0 font-mono text-sm font-normal tabular-nums text-neutral-700 whitespace-nowrap";
 
 /**
- * Shared agent/stage badge pill for telemetry rows.
- */
-export const TELEMETRY_PILL_CLASS =
-  "inline-flex shrink-0 items-center rounded-md border border-neutral-200 bg-neutral-50 px-1.5 py-0.5 text-[11px] font-medium leading-none whitespace-nowrap text-neutral-700";
-
-/**
  * Shared telemetry list stack (pipeline jobs + activity feed).
  */
 export const TELEMETRY_LIST_CLASS =

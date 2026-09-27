@@ -6,7 +6,6 @@ import {
   FileUp,
   Search,
   ShieldCheck,
-  Workflow,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -74,7 +73,7 @@ import {
 } from "@/lib/policies";
 import { cn } from "@/lib/utils";
 
-const PAGE_SIZE_OPTIONS = [5, 10, 25, 50] as const;
+const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
 const DEFAULT_PAGE_SIZE = 10;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[56rem]";
 
@@ -99,31 +98,30 @@ function buildPageItems(currentPage: number, totalPages: number) {
   return items;
 }
 
-function statusPillClass(status: PolicyStatus) {
+function statusBadgeVariant(status: PolicyStatus) {
   switch (status) {
     case "Active":
-      return "border-primary bg-primary text-primary-foreground";
     case "Ready":
-      return "border-emerald-200 bg-status-success-muted text-emerald-800";
-    case "Draft":
-      return "border-neutral-300 bg-neutral-50 text-neutral-600";
+      return "success" as const;
     case "Pending Review":
-      return "border-amber-200 bg-status-warning-muted text-amber-900";
+      return "warning" as const;
+    case "Draft":
     default:
-      return "border-neutral-200 bg-neutral-50 text-neutral-700";
+      return "outline" as const;
   }
 }
 
-function n8nStatusClass(status: MasterPolicy["n8nStatus"]) {
+function n8nBadgeVariant(status: MasterPolicy["n8nStatus"]) {
   switch (status) {
     case "Synced":
-      return "text-status-success";
+      return "success" as const;
     case "Queued":
-      return "text-status-warning";
+      return "warning" as const;
     case "Failed":
-      return "font-medium text-status-critical";
+      return "destructive" as const;
+    case "Idle":
     default:
-      return "text-neutral-500";
+      return "outline" as const;
   }
 }
 
@@ -493,15 +491,11 @@ function PolicyInspectSheet({
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2">
                 <p className="m-0 text-xs text-neutral-500">Ingestion</p>
-                <p
-                  className={cn(
-                    "m-0 mt-1 inline-flex items-center gap-1.5 text-sm font-medium",
-                    n8nStatusClass(policy.n8nStatus),
-                  )}
-                >
-                  <Workflow className="size-3.5" aria-hidden />
-                  {policy.n8nStatus}
-                </p>
+                <div className="mt-1.5">
+                  <Badge variant={n8nBadgeVariant(policy.n8nStatus)}>
+                    {policy.n8nStatus}
+                  </Badge>
+                </div>
               </div>
               <div className="rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2">
                 <p className="m-0 text-xs text-neutral-500">Chunks</p>
@@ -530,11 +524,7 @@ function PolicyInspectSheet({
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {policy.frameworks.map((framework) => (
-                  <Badge
-                    key={framework}
-                    variant="outline"
-                    className="border-neutral-200 bg-white text-neutral-800"
-                  >
+                  <Badge key={framework} variant="outline">
                     {framework}
                   </Badge>
                 ))}
@@ -781,13 +771,7 @@ export default function PoliciesTableCard({
                         v{policy.version}
                       </TableCell>
                       <TableCell className="h-12 px-4 py-0 align-middle">
-                        <Badge
-                          variant="outline"
-                          className={cn(
-                            "font-normal",
-                            statusPillClass(policy.status),
-                          )}
-                        >
+                        <Badge variant={statusBadgeVariant(policy.status)}>
                           {policy.status}
                         </Badge>
                       </TableCell>

@@ -141,7 +141,7 @@ export function KpiCard({ card }: { card: KpiCardData }) {
               )}
               aria-hidden
             />
-            <span className="shrink-0 font-medium">{card.status}</span>
+            <span className="shrink-0 font-normal text-foreground">{card.status}</span>
             <span className="shrink-0 text-neutral-900" aria-hidden>
               •
             </span>

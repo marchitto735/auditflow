@@ -11,6 +11,7 @@ import {
   TABLE_CARD_MENU_ACTIONS,
 } from "@/components/dashboard/card-actions-menu";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -37,7 +38,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { CHART, scoreFillClass, severityDotClass } from "@/lib/chart-tokens";
+import { CHART, scoreFillClass, severityBadgeVariant } from "@/lib/chart-tokens";
 import {
   GMP_THRESHOLD,
   OPEN_FINDINGS,
@@ -227,15 +228,7 @@ function FindingsPaginationNav({
 }
 
 function SeverityStatus({ severity }: { severity: FindingSeverity }) {
-  return (
-    <span className="inline-flex max-w-full min-w-0 items-center gap-2 text-foreground">
-      <span
-        className={cn("size-2.5 shrink-0 rounded-full", severityDotClass(severity))}
-        aria-hidden
-      />
-      <span className="min-w-0 truncate">{severity}</span>
-    </span>
-  );
+  return <Badge variant={severityBadgeVariant(severity)}>{severity}</Badge>;
 }
 
 /** Read-only findings table — Critical/High first, static dashboard display. */

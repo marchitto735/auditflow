@@ -6,8 +6,6 @@ import {
   MoreHorizontal,
   Plus,
   Search,
-  ShieldCheck,
-  ShieldOff,
 } from "lucide-react";
 import {
   deactivateDirectoryUser,
@@ -65,7 +63,7 @@ import {
 } from "@/lib/users";
 import { cn } from "@/lib/utils";
 
-const PAGE_SIZE_OPTIONS = [5, 10, 25, 50] as const;
+const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
 const DEFAULT_PAGE_SIZE = 10;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[56rem]";
 
@@ -101,16 +99,16 @@ function buildPageItems(currentPage: number, totalPages: number) {
   return items;
 }
 
-function statusDotClass(status: UserStatus) {
+function userStatusBadgeVariant(status: UserStatus) {
   switch (status) {
     case "Active":
-      return "bg-status-success";
+      return "success" as const;
     case "Pending":
-      return "bg-status-warning";
+      return "warning" as const;
     case "Suspended":
-      return "bg-status-critical";
+      return "destructive" as const;
     default:
-      return "bg-neutral-400";
+      return "outline" as const;
   }
 }
 
@@ -637,31 +635,15 @@ export default function UsersTableCard({
                       </TableCell>
                       <TableCell className="h-12 px-4 py-0 align-middle">
                         <Badge
-                          variant="outline"
-                          className={cn(
-                            "gap-1 border-neutral-200 bg-neutral-50 font-medium text-neutral-800",
-                            !user.mfaEnabled && "text-neutral-500",
-                          )}
+                          tone={user.mfaEnabled ? "success" : "neutral"}
                         >
-                          {user.mfaEnabled ? (
-                            <ShieldCheck className="size-3" aria-hidden />
-                          ) : (
-                            <ShieldOff className="size-3" aria-hidden />
-                          )}
                           {user.mfaEnabled ? "Enabled" : "Disabled"}
                         </Badge>
                       </TableCell>
                       <TableCell className="h-12 px-4 py-0 align-middle">
-                        <span className="inline-flex max-w-full min-w-0 items-center gap-2 text-neutral-900">
-                          <span
-                            className={cn(
-                              "size-2.5 shrink-0 rounded-full",
-                              statusDotClass(user.status),
-                            )}
-                            aria-hidden
-                          />
-                          <span className="truncate">{user.status}</span>
-                        </span>
+                        <Badge variant={userStatusBadgeVariant(user.status)}>
+                          {user.status}
+                        </Badge>
                       </TableCell>
                       <TableCell className="h-12 px-4 py-0 align-middle">
                         <span className="font-mono text-sm tabular-nums text-neutral-700">

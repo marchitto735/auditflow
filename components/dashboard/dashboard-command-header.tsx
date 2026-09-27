@@ -7,7 +7,6 @@ import {
   DASHBOARD_MENU_ITEM_CLASS,
   DASHBOARD_MENU_ITEM_SELECTED_CLASS,
 } from "@/components/dashboard/card-actions-menu";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -169,7 +168,7 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
         />
 
         <span
-          className="inline-flex h-9 min-h-9 cursor-default items-center gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 shadow-none select-none"
+          className="inline-flex h-9 min-h-9 cursor-default items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 text-sm font-medium text-foreground shadow-none select-none"
           aria-label="System status: live"
           role="status"
         >
@@ -177,19 +176,16 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
             className="relative flex size-2.5 shrink-0 items-center justify-center"
             aria-hidden
           >
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-status-success/70" />
-            <span className="relative size-2.5 rounded-full bg-status-success" />
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400/70" />
+            <span className="relative size-2.5 rounded-full bg-emerald-600" />
           </span>
           <span>Live</span>
         </span>
       </div>
 
-      <Badge
-        variant="ghost"
-        className="h-auto px-0 py-0 text-sm font-normal text-neutral-500 tabular-nums"
-      >
+      <span className="text-sm font-normal text-neutral-500 tabular-nums">
         {formatUpdatedLabel(secondsAgo)}
-      </Badge>
+      </span>
     </div>
   );
 }

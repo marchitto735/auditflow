@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState, type MouseEvent, type ReactNode } from "react";
+import { Badge, type BadgeVariant } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import {
   Table,
@@ -135,30 +136,16 @@ export function activityStatusLabel(status: string | null | undefined) {
   return toTitleCase(raw);
 }
 
-export function statusBadgeClass(status: string | null | undefined) {
-  const label = activityStatusLabel(status);
-  if (label === "Compliant" || label === "Pass") {
-    return "border-emerald-200 bg-status-success-muted text-emerald-800";
-  }
-  if (label === "Critical" || label === "Fail") {
-    return "border-red-200 bg-status-critical-muted text-red-800";
-  }
-  if (label === "Partial" || label === "Review") {
-    return "border-amber-200 bg-status-warning-muted text-amber-900";
-  }
-  return "border-neutral-200 bg-neutral-50 text-neutral-700";
-}
+export type StatusBadgeVariant = BadgeVariant;
 
-export const STATUS_BADGE_CLASS =
-  "h-auto min-h-0 border-0 px-3 py-1 text-xs font-medium leading-none";
-
-export function statusDotClass(status: string | null | undefined) {
+export function statusBadgeVariant(
+  status: string | null | undefined,
+): StatusBadgeVariant {
   const label = activityStatusLabel(status);
-  if (label === "Compliant" || label === "Pass") return "bg-status-success";
-  if (label === "Critical" || label === "Fail") return "bg-status-critical";
-  if (label === "Partial" || label === "Review") return "bg-status-warning";
-  if (label === "—") return "";
-  return "bg-neutral-400";
+  if (label === "Compliant" || label === "Pass") return "success";
+  if (label === "Critical" || label === "Fail") return "destructive";
+  if (label === "Partial" || label === "Review") return "warning";
+  return "outline";
 }
 
 export function ActivityStatus({
@@ -174,18 +161,9 @@ export function ActivityStatus({
   }
 
   return (
-    <span
-      className={cn(
-        "inline-flex max-w-full min-w-0 items-center gap-2 text-foreground",
-        className,
-      )}
-    >
-      <span
-        className={cn("size-2.5 shrink-0 rounded-full", statusDotClass(status))}
-        aria-hidden
-      />
-      <span className="min-w-0 truncate">{label}</span>
-    </span>
+    <Badge variant={statusBadgeVariant(status)} className={className}>
+      {label}
+    </Badge>
   );
 }
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { ShoppingBag } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/cart/cart-context";
 import { NAV_UTILITY_BUTTON_CLASS } from "@/lib/page-layout";
@@ -21,12 +20,12 @@ export default function CartTrigger() {
     >
       <ShoppingBag className="size-5" />
       {itemCount > 0 ? (
-        <Badge
-          variant="default"
-          className="absolute top-0 right-0 h-4 min-w-4 justify-center border-0 px-1 py-0 text-[10px]"
+        <span
+          className="absolute top-0 right-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-neutral-900 px-1 text-[10px] font-medium text-white"
+          aria-hidden
         >
           {itemCount > 9 ? "9+" : itemCount}
-        </Badge>
+        </span>
       ) : null}
     </Button>
   );

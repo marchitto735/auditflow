@@ -63,7 +63,7 @@ import {
 } from "@/lib/frameworks";
 import { cn } from "@/lib/utils";
 
-const PAGE_SIZE_OPTIONS = [5, 10, 25, 50] as const;
+const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
 const DEFAULT_PAGE_SIZE = 10;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[52rem]";
 
@@ -88,16 +88,15 @@ function buildPageItems(currentPage: number, totalPages: number) {
   return items;
 }
 
-function mappingStatusClass(status: MappingStatus) {
+function mappingBadgeVariant(status: MappingStatus) {
   switch (status) {
     case "Fully Mapped":
-      return "border-emerald-600 bg-status-success text-status-success-foreground";
+      return "success" as const;
     case "Partial Gap":
-      return "border-amber-200 bg-status-warning-muted text-amber-900";
+      return "warning" as const;
     case "Under Review":
-      return "border-neutral-300 bg-neutral-50 text-neutral-600";
     default:
-      return "border-neutral-200 bg-neutral-50 text-neutral-700";
+      return "outline" as const;
   }
 }
 
@@ -419,8 +418,8 @@ function FrameworkOverviewCards({
                 </p>
               </div>
               <Badge
-                variant="outline"
-                className={cn("shrink-0 font-medium", mappingStatusClass(fw.status))}
+                variant={mappingBadgeVariant(fw.status)}
+                className="shrink-0"
               >
                 {fw.status}
               </Badge>
@@ -632,13 +631,7 @@ function MappingTable({
                       </span>
                     </TableCell>
                     <TableCell className="h-12 px-4 py-0">
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          "font-medium",
-                          mappingStatusClass(row.status),
-                        )}
-                      >
+                      <Badge variant={mappingBadgeVariant(row.status)}>
                         {row.status}
                       </Badge>
                     </TableCell>

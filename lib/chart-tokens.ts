@@ -89,6 +89,21 @@ export function severityDotClass(severity: ChartSeverity): string {
   }
 }
 
+/** Unified Badge tone for severity chips in tables. */
+export function severityBadgeVariant(
+  severity: ChartSeverity,
+): "destructive" | "warning" | "outline" {
+  switch (severity) {
+    case "Critical":
+      return "destructive";
+    case "High":
+    case "Medium":
+      return "warning";
+    default:
+      return "outline";
+  }
+}
+
 /**
  * Dashboard telemetry status → sparkline + status pip.
  * Semantic colors only when the label represents that state;

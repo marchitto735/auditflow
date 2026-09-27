@@ -15,6 +15,7 @@ import {
   ComplianceTrendPanel,
 } from "@/components/dashboard/status-detail-panels";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -38,7 +39,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TruncatedText } from "@/components/ui/truncated-text";
-import { severityDotClass } from "@/lib/chart-tokens";
+import { severityBadgeVariant } from "@/lib/chart-tokens";
 import {
   DEPARTMENT_SCORES,
   VARIANCE_LOG,
@@ -71,7 +72,7 @@ const DEPARTMENT_FILTERS = [
 
 type DepartmentFilter = (typeof DEPARTMENT_FILTERS)[number]["value"];
 
-const PAGE_SIZE_OPTIONS = [3, 5, 10, 25] as const;
+const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
 const DEFAULT_PAGE_SIZE = 3;
 
 function buildPageItems(currentPage: number, totalPages: number) {
@@ -305,32 +306,21 @@ function TableFooterBar({
   );
 }
 
-function departmentStatusDotClass(status: DepartmentScoreRow["status"]) {
+function departmentBadgeVariant(status: DepartmentScoreRow["status"]) {
   switch (status) {
     case "On Track":
-      return "bg-status-success";
+      return "success" as const;
     case "Watch":
-      return "bg-status-warning";
+      return "warning" as const;
     case "At Risk":
-      return "bg-status-critical";
+      return "destructive" as const;
     default:
-      return "bg-neutral-400";
+      return "outline" as const;
   }
 }
 
 function DepartmentStatus({ status }: { status: DepartmentScoreRow["status"] }) {
-  return (
-    <span className="inline-flex max-w-full min-w-0 items-center gap-2 text-foreground">
-      <span
-        className={cn(
-          "size-2.5 shrink-0 rounded-full",
-          departmentStatusDotClass(status),
-        )}
-        aria-hidden
-      />
-      <span className="min-w-0 truncate">{status}</span>
-    </span>
-  );
+  return <Badge variant={departmentBadgeVariant(status)}>{status}</Badge>;
 }
 
 function VarianceSeverity({
@@ -338,15 +328,7 @@ function VarianceSeverity({
 }: {
   severity: VarianceLogRow["severity"];
 }) {
-  return (
-    <span className="inline-flex max-w-full min-w-0 items-center gap-2 text-foreground">
-      <span
-        className={cn("size-2.5 shrink-0 rounded-full", severityDotClass(severity))}
-        aria-hidden
-      />
-      <span className="min-w-0 truncate">{severity}</span>
-    </span>
-  );
+  return <Badge variant={severityBadgeVariant(severity)}>{severity}</Badge>;
 }
 
 function usePagedRows<T>(rows: readonly T[], pageSize: number, page: number) {

@@ -316,7 +316,7 @@ export function AuditLauncherCard({
               )}
               aria-hidden
             />
-            <span className="shrink-0 font-medium">{workflow.status}</span>
+            <span className="shrink-0 font-normal text-foreground">{workflow.status}</span>
             <span className="shrink-0 text-neutral-900" aria-hidden>
               •
             </span>

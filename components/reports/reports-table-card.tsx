@@ -17,8 +17,7 @@ import type { DateRange } from "react-day-picker";
 import { toast } from "sonner";
 import {
   activityStatusLabel,
-  statusBadgeClass,
-  STATUS_BADGE_CLASS,
+  statusBadgeVariant,
   TECHNICAL_VALUE_CLASS,
   isTechnicalId,
 } from "@/components/activity-table/activity-table";
@@ -79,7 +78,7 @@ import {
 } from "@/lib/reports";
 import { cn } from "@/lib/utils";
 
-const PAGE_SIZE_OPTIONS = [5, 10, 25, 50] as const;
+const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
 const DEFAULT_PAGE_SIZE = 10;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[56rem]";
 
@@ -477,14 +476,13 @@ function ReportsKpiHeader({ rows }: { rows: ReportRow[] }) {
 function ReportStatusBadge({ status }: { status: string }) {
   const label = activityStatusLabel(status);
   if (label === "—") return <span>—</span>;
-  return (
-    <Badge
-      variant="outline"
-      className={cn(STATUS_BADGE_CLASS, statusBadgeClass(status))}
-    >
-      {label === "Fail" || label === "Critical" ? "Failed" : label === "Pass" ? "Compliant" : label}
-    </Badge>
-  );
+  const display =
+    label === "Fail" || label === "Critical"
+      ? "Failed"
+      : label === "Pass"
+        ? "Compliant"
+        : label;
+  return <Badge variant={statusBadgeVariant(status)}>{display}</Badge>;
 }
 
 function RowActionsMenu({

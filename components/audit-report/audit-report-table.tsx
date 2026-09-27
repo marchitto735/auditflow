@@ -23,7 +23,6 @@ import {
 import {
   ActivityStatus,
   activityStatusLabel,
-  statusBadgeClass,
 } from "@/components/activity-table/activity-table";
 import {
   Tooltip,
@@ -35,7 +34,7 @@ import type { SopAuditReport } from "@/lib/sop-report";
 import { NAV_UTILITY_BUTTON_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
-export { statusBadgeClass };
+export { ActivityStatus };
 
 type AuditReportTableProps = {
   report: SopAuditReport | null;

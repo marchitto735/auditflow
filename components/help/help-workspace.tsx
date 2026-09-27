@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState, useTransition, type FormEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition, type FormEvent, type ReactNode } from "react";
 import {
   BookOpen,
   Check,
+  ChevronDown,
   Copy,
   ExternalLink,
   Phone,
@@ -12,10 +13,21 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { submitSupportTicket } from "@/app/actions/help-actions";
+import {
+  DASHBOARD_MENU_CONTENT_CLASS,
+  DASHBOARD_MENU_ITEM_CLASS,
+  DASHBOARD_MENU_ITEM_SELECTED_CLASS,
+} from "@/components/dashboard/card-actions-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -55,30 +67,191 @@ import {
 } from "@/lib/help";
 import { cn } from "@/lib/utils";
 
-function statusDotClass(status: SystemServiceStatus["status"]) {
+function serviceStatusBadgeVariant(
+  status: SystemServiceStatus["status"],
+) {
   switch (status) {
     case "Operational":
-      return "bg-status-success";
+      return "success" as const;
     case "Degraded":
-      return "bg-status-warning";
+      return "warning" as const;
     case "Outage":
-      return "bg-status-critical";
+      return "destructive" as const;
     default:
-      return "bg-neutral-400";
+      return "outline" as const;
   }
 }
 
-function ticketStatusDotClass(status: SupportTicket["status"]) {
+function ticketStatusBadgeVariant(status: SupportTicket["status"]) {
   switch (status) {
     case "Resolved":
-      return "bg-status-success";
-    case "In Progress":
-      return "bg-primary";
+      return "success" as const;
     case "Waiting":
-      return "bg-status-warning";
+      return "warning" as const;
+    case "In Progress":
+      return "success" as const;
+    case "Open":
     default:
-      return "bg-neutral-400";
+      return "outline" as const;
   }
+}
+
+const TICKET_PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
+const TICKET_DEFAULT_PAGE_SIZE = 10;
+
+function buildTicketPageItems(currentPage: number, totalPages: number) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  const items: Array<number | "ellipsis"> = [1];
+  const start = Math.max(2, currentPage - 1);
+  const end = Math.min(totalPages - 1, currentPage + 1);
+
+  if (start > 2) items.push("ellipsis");
+  for (let page = start; page <= end; page += 1) items.push(page);
+  if (end < totalPages - 1) items.push("ellipsis");
+  items.push(totalPages);
+  return items;
+}
+
+function TicketPageSizeSelector({
+  pageSize,
+  menusMounted,
+  onChange,
+}: {
+  pageSize: number;
+  menusMounted: boolean;
+  onChange: (value: string) => void;
+}) {
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  function releaseTriggerFocus() {
+    triggerRef.current?.blur();
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }
+
+  const trigger = (
+    <button
+      ref={triggerRef}
+      type="button"
+      aria-label="Rows per page"
+      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-neutral-200 bg-white px-2 text-sm font-medium text-neutral-900 transition-colors duration-200 hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    >
+      <span>{pageSize}</span>
+      <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden />
+    </button>
+  );
+
+  return (
+    <div className="flex shrink-0 items-center gap-2">
+      <span className="text-sm text-muted-foreground">Rows per page:</span>
+      {menusMounted ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="start"
+            sideOffset={6}
+            className={DASHBOARD_MENU_CONTENT_CLASS}
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              releaseTriggerFocus();
+            }}
+          >
+            {TICKET_PAGE_SIZE_OPTIONS.map((size) => {
+              const isSelected = size === pageSize;
+              return (
+                <DropdownMenuItem
+                  key={size}
+                  className={cn(
+                    DASHBOARD_MENU_ITEM_CLASS,
+                    isSelected && DASHBOARD_MENU_ITEM_SELECTED_CLASS,
+                  )}
+                  onSelect={() => {
+                    releaseTriggerFocus();
+                    onChange(String(size));
+                  }}
+                >
+                  {size}
+                </DropdownMenuItem>
+              );
+            })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        trigger
+      )}
+    </div>
+  );
+}
+
+function TicketPaginationNav({
+  pageItems,
+  currentPage,
+  totalPages,
+  onPageChange,
+  className,
+}: {
+  pageItems: Array<number | "ellipsis">;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  className?: string;
+}) {
+  return (
+    <nav
+      className={cn("flex min-w-0 flex-wrap items-center gap-2", className)}
+      aria-label="Active tickets pagination"
+    >
+      <Button
+        type="button"
+        variant="ghost"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-neutral-100 hover:text-neutral-900"
+        disabled={currentPage <= 1}
+        onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+      >
+        Previous
+      </Button>
+      {pageItems.map((item, index) =>
+        item === "ellipsis" ? (
+          <span
+            key={`ellipsis-${index}`}
+            className="inline-flex h-8 items-center px-1 text-sm text-neutral-900"
+            aria-hidden
+          >
+            …
+          </span>
+        ) : (
+          <Button
+            key={item}
+            type="button"
+            variant="ghost"
+            className={cn(
+              "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
+              item === currentPage
+                ? "bg-primary text-primary-foreground hover:bg-[var(--primary-hover)] hover:text-primary-foreground"
+                : "text-neutral-900 hover:bg-neutral-100 hover:text-neutral-900",
+            )}
+            aria-current={item === currentPage ? "page" : undefined}
+            onClick={() => onPageChange(item)}
+          >
+            {item}
+          </Button>
+        ),
+      )}
+      <Button
+        type="button"
+        variant="ghost"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-neutral-100 hover:text-neutral-900"
+        disabled={currentPage >= totalPages}
+        onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+      >
+        Next
+      </Button>
+    </nav>
+  );
 }
 
 function CardShell({
@@ -151,16 +324,9 @@ function SystemStatusStrip() {
                 </p>
               </div>
               <Badge
-                variant="outline"
-                className="shrink-0 border-neutral-200 bg-neutral-50 font-medium text-neutral-800"
+                variant={serviceStatusBadgeVariant(service.status)}
+                className="shrink-0"
               >
-                <span
-                  className={cn(
-                    "mr-1.5 inline-block size-2 rounded-full",
-                    statusDotClass(service.status),
-                  )}
-                  aria-hidden
-                />
                 {service.status}
               </Badge>
             </li>
@@ -245,12 +411,7 @@ function KnowledgeBase() {
                   className="flex h-full flex-col gap-2 rounded-lg border border-neutral-200 bg-white p-4 no-underline transition-colors hover:border-neutral-300 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <Badge
-                      variant="outline"
-                      className="border-neutral-200 bg-neutral-50 text-neutral-700"
-                    >
-                      {article.category}
-                    </Badge>
+                    <Badge variant="outline">{article.category}</Badge>
                     <BookOpen
                       className="size-4 shrink-0 text-neutral-500"
                       aria-hidden
@@ -401,6 +562,28 @@ function TicketForm() {
 }
 
 function ActiveTicketsTable() {
+  const [pageSize, setPageSize] = useState(TICKET_DEFAULT_PAGE_SIZE);
+  const [page, setPage] = useState(1);
+  const [menusMounted, setMenusMounted] = useState(false);
+
+  useEffect(() => {
+    setMenusMounted(true);
+  }, []);
+
+  const totalCount = HELP_SUPPORT_TICKETS.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const pageRows = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return HELP_SUPPORT_TICKETS.slice(start, start + pageSize);
+  }, [currentPage, pageSize]);
+  const pageItems = buildTicketPageItems(currentPage, totalPages);
+
+  function handlePageSizeChange(value: string) {
+    setPageSize(Number(value));
+    setPage(1);
+  }
+
   return (
     <CardShell
       eyebrow="Active Tickets"
@@ -434,7 +617,7 @@ function ActiveTicketsTable() {
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-border [&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border">
-            {HELP_SUPPORT_TICKETS.map((ticket) => (
+            {pageRows.map((ticket) => (
               <TableRow
                 key={ticket.id}
                 className="border-0 bg-white hover:bg-neutral-50"
@@ -451,16 +634,9 @@ function ActiveTicketsTable() {
                   {ticket.severity}
                 </TableCell>
                 <TableCell className="h-12 px-4 py-0">
-                  <span className="inline-flex items-center gap-2 text-sm text-neutral-900">
-                    <span
-                      className={cn(
-                        "size-2.5 shrink-0 rounded-full",
-                        ticketStatusDotClass(ticket.status),
-                      )}
-                      aria-hidden
-                    />
+                  <Badge variant={ticketStatusBadgeVariant(ticket.status)}>
                     {ticket.status}
-                  </span>
+                  </Badge>
                 </TableCell>
                 <TableCell className="h-12 max-w-0 px-4 py-0">
                   <span className="block truncate text-sm text-neutral-700">
@@ -478,11 +654,46 @@ function ActiveTicketsTable() {
           </TableBody>
         </Table>
       </div>
-      <div className="border-t-0 bg-white px-4 py-3 shadow-[0_-1px_0_0_var(--border)]">
-        <p className="m-0 text-sm text-muted-foreground">
-          Showing {HELP_SUPPORT_TICKETS.length} of {HELP_SUPPORT_TICKETS.length}{" "}
-          results
-        </p>
+      <div className="relative z-20 shrink-0 border-t-0 bg-white py-3 shadow-[0_-1px_0_0_var(--border)]">
+        <div className="flex flex-col gap-3 px-4 md:hidden">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <p className="m-0 min-w-0 text-sm text-muted-foreground">
+              Showing {pageRows.length} of {totalCount} results
+            </p>
+            <TicketPageSizeSelector
+              pageSize={pageSize}
+              menusMounted={menusMounted}
+              onChange={handlePageSizeChange}
+            />
+          </div>
+          <TicketPaginationNav
+            pageItems={pageItems}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            className="justify-center"
+          />
+        </div>
+
+        <div className="hidden w-full min-w-[44rem] items-center justify-between gap-4 md:flex">
+          <p className="m-0 px-4 text-sm text-muted-foreground">
+            Showing {pageRows.length} of {totalCount} results
+          </p>
+          <div className="flex min-w-0 items-center justify-end gap-4 px-4">
+            <TicketPageSizeSelector
+              pageSize={pageSize}
+              menusMounted={menusMounted}
+              onChange={handlePageSizeChange}
+            />
+            <TicketPaginationNav
+              pageItems={pageItems}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setPage}
+              className="shrink-0 justify-end"
+            />
+          </div>
+        </div>
       </div>
     </CardShell>
   );
@@ -492,7 +703,7 @@ function EmergencyEscalation() {
   return (
     <Card
       className={cn(
-        "overflow-hidden border-l-4 border-l-status-critical",
+        "overflow-hidden border-l-4 border-l-neutral-900",
         DASHBOARD_CARD_CLASS,
       )}
     >
@@ -500,7 +711,7 @@ function EmergencyEscalation() {
         <div className="min-w-0 max-w-2xl">
           <div className="flex items-center gap-2">
             <ShieldAlert
-              className="size-5 shrink-0 text-status-critical"
+              className="size-5 shrink-0 text-neutral-900"
               aria-hidden
             />
             <p className={cn(CARD_SECTION_EYEBROW_CLASS, "tracking-wider")}>
