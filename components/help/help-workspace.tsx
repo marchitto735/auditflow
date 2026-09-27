@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition, type FormEvent, type ReactNode } from "react";
-import { Phone, ShieldAlert } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { submitSupportTicket } from "@/app/actions/help-actions";
 import { Badge } from "@/components/ui/badge";
@@ -125,7 +125,6 @@ function CriticalEscalationBanner() {
           })
         }
       >
-        <Phone className="size-4" aria-hidden />
         Call on-call
       </Button>
     </div>

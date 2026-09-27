@@ -35,8 +35,8 @@ export default function AuditsPage() {
                 DASHBOARD_SECTION_GAP_CLASS,
               )}
             >
-              <AuditsKpiHeader />
               <AuditLauncher variant="featured" />
+              <AuditsKpiHeader />
               <ActiveExecutionQueue />
             </div>
           </TooltipProvider>

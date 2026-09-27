@@ -6,7 +6,6 @@ import {
   ChevronDown,
   Layers,
   Percent,
-  RefreshCw,
   Search,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -445,7 +444,6 @@ function MappingTable({
                 className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
                 onClick={onOpenSync}
               >
-                <RefreshCw className="size-4" aria-hidden />
                 Sync framework
               </Button>
             </div>

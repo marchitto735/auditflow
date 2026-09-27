@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ChevronRight, Play } from "lucide-react";
 import { useConfigureAudit } from "@/components/configure-audit-modal/configure-audit-context";
 import { CardActionsMenu } from "@/components/dashboard/card-actions-menu";
 import {
@@ -397,9 +396,7 @@ export default function ActiveExecutionQueue({
                 className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
                 onClick={() => openConfigureAudit(null)}
               >
-                <Play className="size-4" aria-hidden />
                 Run next
-                <ChevronRight className="size-4" aria-hidden />
               </Button>
             }
           />

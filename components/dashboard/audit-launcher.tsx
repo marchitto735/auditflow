@@ -1,6 +1,5 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useConfigureAudit } from "@/components/configure-audit-modal/configure-audit-context";
@@ -224,7 +223,6 @@ export function AuditLauncherCard({
                 onClick={handleActivate}
               >
                 Run Audit
-                <ChevronRight className="size-4" aria-hidden />
               </Button>
             </div>
           </CardContent>

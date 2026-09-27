@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import {
   ChevronDown,
   MoreHorizontal,
-  Plus,
   Search,
 } from "lucide-react";
 import {
@@ -395,7 +394,6 @@ export default function UsersTableCard({
                   className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
                   onClick={() => setInviteOpen(true)}
                 >
-                  <Plus className="size-4" aria-hidden />
                   Invite User
                 </Button>
               </div>

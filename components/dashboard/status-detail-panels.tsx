@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, ChevronRight, Search } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import {
   CardActionsMenu,
   CHART_CARD_MENU_ACTIONS,
@@ -291,10 +291,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
                 className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
                 asChild
               >
-                <Link href="/dashboard/findings">
-                  View all
-                  <ChevronRight className="size-4" aria-hidden />
-                </Link>
+                <Link href="/dashboard/findings">View all</Link>
               </Button>
             </div>
           </div>

@@ -635,7 +635,6 @@ export default function PoliciesTableCard({
                   className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
                   onClick={() => setUploadOpen(true)}
                 >
-                  <FileUp className="size-4" aria-hidden />
                   Upload document
                 </Button>
               </div>

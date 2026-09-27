@@ -8,7 +8,6 @@ import {
   Download,
   FileText,
   MoreHorizontal,
-  Package,
   Search,
   ShieldAlert,
 } from "lucide-react";
@@ -28,7 +27,6 @@ import {
   DASHBOARD_MENU_ITEM_SELECTED_CLASS,
   TABLE_CARD_MENU_ACTIONS,
 } from "@/components/dashboard/card-actions-menu";
-import { CategoryBreakdownPanel } from "@/components/dashboard/status-detail-panels";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -643,7 +641,6 @@ export default function ReportsTableCard({
     <>
       <div className={cn("flex w-full flex-col", DASHBOARD_GAP_CLASS, className)}>
         <ReportsKpiHeader rows={rows} />
-        <CategoryBreakdownPanel className="w-full min-w-0" />
 
         <Card
           className={cn(
@@ -708,7 +705,6 @@ export default function ReportsTableCard({
                     className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
                     onClick={exportBatch}
                   >
-                    <Package className="size-4" aria-hidden />
                     Export Batch Package
                   </Button>
                 </div>
