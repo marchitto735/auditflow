@@ -181,7 +181,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
 
         <ul
           className={cn(
-            "m-0 grid list-none grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-4 gap-y-3 p-0",
+            "m-0 grid list-none grid-cols-[minmax(0,1fr)_auto_auto] gap-x-4 gap-y-4 p-0",
             "max-h-[350px] min-h-0 flex-1 overflow-x-hidden overflow-y-auto pr-1 lg:max-h-none",
             FEED_SCROLLBAR_CLASS,
           )}
@@ -199,7 +199,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
             return (
               <li
                 key={`${event.time}-${event.subsystem}-${event.message}`}
-                className="contents"
+                className="col-span-3 grid grid-cols-subgrid items-center"
               >
                 <p className="text-base m-0 min-w-0 overflow-hidden leading-snug text-pretty text-foreground">
                   {event.message}

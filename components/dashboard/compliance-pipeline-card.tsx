@@ -118,9 +118,15 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
                 {job.document}
               </p>
               <span
-                className={cn(TELEMETRY_META_CLASS, "justify-self-end text-right")}
+                className={cn(
+                  TELEMETRY_META_CLASS,
+                  "inline-flex items-center gap-1 justify-self-start",
+                )}
               >
-                ETA {job.eta}
+                <span>ETA</span>
+                <span className="inline-block w-[3ch] text-left tabular-nums">
+                  {job.eta}
+                </span>
               </span>
               <Badge className="justify-self-start" variant="outline">
                 {job.stage}

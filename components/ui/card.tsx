@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { CARD_EYEBROW_CLASS } from "@/lib/page-layout"
 import { cn } from "@/lib/utils"
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
@@ -23,6 +24,19 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
         "@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start has-data-[slot=card-action]:grid-cols-[1fr_auto]",
         className
       )}
+      {...props}
+    />
+  )
+}
+
+/**
+ * Card section eyebrow — matches sidebar group headers (xs / semibold / uppercase / tracking-wider).
+ */
+function CardEyebrow({ className, ...props }: React.ComponentProps<"p">) {
+  return (
+    <p
+      data-slot="card-eyebrow"
+      className={cn(CARD_EYEBROW_CLASS, className)}
       {...props}
     />
   )
@@ -86,6 +100,7 @@ export {
   CardHeader,
   CardFooter,
   CardTitle,
+  CardEyebrow,
   CardAction,
   CardDescription,
   CardContent,

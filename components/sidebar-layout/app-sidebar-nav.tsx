@@ -42,6 +42,7 @@ import {
 import {
   APP_TOPBAR_HEIGHT_CLASS,
   NAV_UTILITY_BUTTON_CLASS,
+  SECTION_LABEL_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 import {
@@ -225,11 +226,13 @@ export function AppSidebarNav({
               >
                 <SidebarGroupLabel
                   visible={showLabels}
-                  className="overflow-hidden px-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-900 whitespace-nowrap"
+                  className={cn(
+                    "overflow-hidden px-2.5 whitespace-nowrap",
+                    SECTION_LABEL_CLASS,
+                  )}
                 >
                   {section.label}
-                </SidebarGroupLabel>
-                <SidebarMenu
+                </SidebarGroupLabel>                <SidebarMenu
                   className={cn("gap-0.5", compact && "w-full items-center")}
                 >
                   {section.items.map((item) => {

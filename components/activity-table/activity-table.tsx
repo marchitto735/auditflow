@@ -168,7 +168,7 @@ export function ActivityStatus({
 }
 
 export const TECHNICAL_VALUE_CLASS =
-  "font-mono tabular-nums text-neutral-900";
+  "font-mono text-base font-normal tabular-nums text-foreground";
 
 /** UUID / hash cells — names with spaces stay in Geist Sans. */
 export function isTechnicalId(value: string) {
@@ -191,7 +191,7 @@ function renderCellContent(
       return wrapped ? (
         <span
           className={cn(
-            "block whitespace-normal break-words text-neutral-900",
+            "block whitespace-normal break-words text-foreground",
             isTechnicalId(row.document) && TECHNICAL_VALUE_CLASS,
           )}
         >
@@ -200,7 +200,7 @@ function renderCellContent(
       ) : (
         <span
           className={cn(
-            "block w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-neutral-900",
+            "block w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-foreground",
             isTechnicalId(row.document) && TECHNICAL_VALUE_CLASS,
           )}
         >

@@ -5,7 +5,7 @@ export const POLICY_STATUSES = [
   "Active",
   "Ready",
   "Draft",
-  "Pending Review",
+  "Pending",
 ] as const;
 export type PolicyStatus = (typeof POLICY_STATUSES)[number];
 
@@ -144,7 +144,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
     documentId: "FIR-8840-Rev2",
     type: "FIR",
     version: "2.1",
-    status: "Pending Review",
+    status: "Pending",
     lastParsedAt: "2026-09-24T11:08:00.000Z",
     chunkCount: 64,
     frameworks: ["ISO 13485"],
@@ -228,7 +228,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
     documentId: "BPR-5509-Rev6",
     type: "BPR",
     version: "6.1",
-    status: "Pending Review",
+    status: "Pending",
     lastParsedAt: "2026-09-18T22:01:00.000Z",
     chunkCount: 57,
     frameworks: ["ICH Q7"],

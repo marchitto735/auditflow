@@ -118,13 +118,17 @@ export const INTERACTIVE_CARD_CLASS =
   "rounded-2xl border border-neutral-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-neutral-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-neutral-900/30";
 
 /**
- * Card eyebrow — single style for every card header on Dashboard + Audits.
- * All-caps, 13px / medium, tracked-out.
- * Prefer full words in source copy; CSS `uppercase` handles presentation
- * (write “Policy Control”, not “POLICY CONTROL”).
+ * Shared section label — matches sidebar group headers (Operations, Insights, System).
+ * All-caps, xs / semibold, tracked-out. Prefer title case in source copy;
+ * CSS `uppercase` handles presentation.
  */
-export const CARD_EYEBROW_CLASS =
-  "m-0 text-[13px] font-medium uppercase tracking-wider text-neutral-900";
+export const SECTION_LABEL_CLASS =
+  "text-xs font-semibold uppercase tracking-wider text-neutral-900";
+
+/**
+ * Card eyebrow — identical to sidebar section headers for visual hierarchy.
+ */
+export const CARD_EYEBROW_CLASS = `m-0 ${SECTION_LABEL_CLASS}`;
 
 /**
  * Top-right card corner label (SOP / YTD / etc.) — stacked under telemetry sparklines.
