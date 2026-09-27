@@ -12,6 +12,7 @@ import {
   DASHBOARD_MENU_CONTENT_CLASS,
   DASHBOARD_MENU_ITEM_CLASS,
   DASHBOARD_MENU_ITEM_SELECTED_CLASS,
+  TABLE_CARD_MENU_ACTIONS,
 } from "@/components/dashboard/card-actions-menu";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -32,12 +33,6 @@ const PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const;
 const DEFAULT_PAGE_SIZE = 3;
 /** Demo catalog size for pagination chrome when fewer stored reports exist. */
 const DEMO_TOTAL_RESULTS = 194;
-
-const AUDIT_HISTORY_MENU_ACTIONS = [
-  "Export CSV",
-  "Export PDF",
-  "Refresh",
-] as const;
 
 /** Match ActivityTable `table-fixed` + colgroup so footer locks to the same grid. */
 const ACTIVITY_TABLE_MIN_WIDTH_CLASS = "min-w-[42rem]";
@@ -161,10 +156,10 @@ function PageSizeSelector({
       ref={triggerRef}
       type="button"
       aria-label="Rows per page"
-      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-sidebar-muted/40 px-2 text-sm font-medium text-black transition-colors duration-200 hover:border-zinc-400 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-sidebar-muted/40 px-2 text-sm font-medium text-neutral-900 transition-colors duration-200 hover:border-zinc-400 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <span>{pageSize}</span>
-      <ChevronDown className="h-4 w-4 shrink-0 text-black" aria-hidden />
+      <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden />
     </button>
   );
 
@@ -234,7 +229,7 @@ function ActivityPaginationNav({
       <Button
         type="button"
         variant="ghost"
-        className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-500 shadow-none transition-colors duration-150 hover:bg-transparent hover:text-zinc-900"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-zinc-100 hover:text-neutral-900"
         disabled={currentPage <= 1}
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
       >
@@ -244,7 +239,7 @@ function ActivityPaginationNav({
         item === "ellipsis" ? (
           <span
             key={`ellipsis-${index}`}
-            className="inline-flex h-8 items-center px-1 text-sm text-black"
+            className="inline-flex h-8 items-center px-1 text-sm text-neutral-900"
             aria-hidden
           >
             …
@@ -257,8 +252,8 @@ function ActivityPaginationNav({
             className={cn(
               "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
               item === currentPage
-                ? "bg-zinc-500 text-white hover:bg-zinc-400 hover:text-white"
-                : "text-black hover:bg-zinc-100",
+                ? "bg-neutral-800 text-white hover:bg-neutral-800 hover:text-white"
+                : "text-neutral-900 hover:bg-zinc-100",
             )}
             aria-current={item === currentPage ? "page" : undefined}
             onClick={() => onPageChange(item)}
@@ -270,7 +265,7 @@ function ActivityPaginationNav({
       <Button
         type="button"
         variant="ghost"
-        className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-500 shadow-none transition-colors duration-150 hover:bg-transparent hover:text-zinc-900"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-zinc-100 hover:text-neutral-900"
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
       >
@@ -337,14 +332,14 @@ export default function RecentActivity({
         <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Audit History</p>
-            <p className="text-body1 m-0 mt-1 text-zinc-600">
+            <p className="text-body1 m-0 mt-1 text-neutral-600">
               Completed audits with scores, status, and document type.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
               label="Audit History"
-              actions={AUDIT_HISTORY_MENU_ACTIONS}
+              actions={TABLE_CARD_MENU_ACTIONS}
             />
           </div>
         </div>

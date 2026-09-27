@@ -22,7 +22,7 @@ export default function SectionHeader({
       )}
     >
       <div className="min-w-0">
-        <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-black")}>
+        <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-neutral-900")}>
           {title}
         </h2>
         {description ? (

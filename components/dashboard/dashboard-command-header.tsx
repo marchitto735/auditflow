@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Pause, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -90,8 +89,9 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
               value={option.value}
               className={cn(
                 "h-8 rounded-md border-0 px-3 shadow-none first:rounded-md last:rounded-md data-[spacing=0]:rounded-md data-[spacing=0]:first:rounded-md data-[spacing=0]:last:rounded-md",
-                "data-[state=on]:bg-[#E4E8EE] data-[state=on]:font-semibold data-[state=on]:text-zinc-900",
-                "data-[state=off]:bg-transparent data-[state=off]:font-medium data-[state=off]:text-zinc-500",
+                "data-[state=on]:bg-neutral-800 data-[state=on]:font-semibold data-[state=on]:text-white data-[state=on]:hover:bg-neutral-800 data-[state=on]:hover:text-white",
+                "data-[state=off]:bg-transparent data-[state=off]:font-medium data-[state=off]:text-neutral-500 data-[state=off]:hover:bg-neutral-200 data-[state=off]:hover:text-neutral-900",
+                "focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-0",
               )}
             >
               {option.label}
@@ -127,7 +127,7 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
           aria-pressed={live}
           aria-label={live ? "Pause live updates" : "Resume live updates"}
           onClick={() => setLive((prev) => !prev)}
-          className="h-9 min-h-9 gap-2 border-zinc-200 bg-white px-3 text-sm font-medium text-zinc-600 shadow-none hover:bg-zinc-50/80 [&_svg]:size-3.5 [&_svg]:text-zinc-500"
+          className="h-9 min-h-9 gap-2 border-zinc-200 bg-white px-3 text-sm font-medium text-neutral-600 shadow-none hover:bg-zinc-50/80"
         >
           <span
             className="relative flex size-2.5 shrink-0 items-center justify-center"
@@ -135,21 +135,20 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
           >
             {live ? (
               <>
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400/70" />
-                <span className="relative size-2.5 rounded-full bg-emerald-500" />
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-neutral-400/70" />
+                <span className="relative size-2.5 rounded-full bg-neutral-900" />
               </>
             ) : (
-              <span className="size-2.5 rounded-full bg-zinc-300" />
+              <span className="size-2.5 rounded-full bg-neutral-300" />
             )}
           </span>
           <span>{live ? "Live" : "Paused"}</span>
-          {live ? <Pause aria-hidden /> : <Play aria-hidden />}
         </Button>
       </div>
 
       <Badge
         variant="ghost"
-        className="h-auto px-0 py-0 text-sm font-normal text-zinc-500 tabular-nums"
+        className="h-auto px-0 py-0 text-sm font-normal text-neutral-500 tabular-nums"
       >
         {formatUpdatedLabel(secondsAgo)}
       </Badge>

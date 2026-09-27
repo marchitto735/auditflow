@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, CircleAlert } from "lucide-react";
+import { CardActionsMenu, FEED_CARD_MENU_ACTIONS } from "@/components/dashboard/card-actions-menu";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   CARD_CONTENT_CLASS,
@@ -165,20 +166,26 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
       <CardContent
         className={cn(
           CARD_CONTENT_CLASS,
-          "flex h-full min-h-0 flex-1 flex-col gap-3 overflow-hidden",
+          "relative flex h-full min-h-0 flex-1 flex-col gap-3 overflow-hidden",
         )}
       >
-        <div className="shrink-0">
+        <div className="min-w-0 shrink-0 pr-10">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Activity Feed</p>
-          <p className="text-body1 m-0 mt-1 text-zinc-600">
+          <p className="text-body1 m-0 mt-1 text-neutral-600">
             Real-time agent events across validation, scoring, and export.
           </p>
+        </div>
+        <div className="absolute top-3 right-3">
+          <CardActionsMenu
+            label="Activity Feed"
+            actions={FEED_CARD_MENU_ACTIONS}
+          />
         </div>
 
         <ul
           className={cn(
             TELEMETRY_LIST_CLASS,
-            "max-h-[350px] min-h-0 flex-1 overflow-x-hidden overflow-y-auto pr-1",
+            "max-h-[350px] min-h-0 flex-1 overflow-x-hidden overflow-y-auto pr-1 lg:max-h-none",
             FEED_SCROLLBAR_CLASS,
           )}
           aria-label="AI agent activity feed"
@@ -188,10 +195,10 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
             const isWarn = status === "warn";
             const isError = status === "error";
             const messageTone = isError
-              ? "text-red-700"
+              ? "text-neutral-900"
               : isWarn
-                ? "text-amber-700"
-                : "text-black";
+                ? "text-neutral-700"
+                : "text-neutral-900";
 
             return (
               <li
@@ -212,14 +219,14 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
                   <div className="flex shrink-0 items-center gap-2">
                     {isWarn ? (
                       <AlertTriangle
-                        className="size-3.5 shrink-0 text-amber-700"
+                        className="size-3.5 shrink-0 text-neutral-600"
                         aria-hidden
                         strokeWidth={2}
                       />
                     ) : null}
                     {isError ? (
                       <CircleAlert
-                        className="size-3.5 shrink-0 text-red-700"
+                        className="size-3.5 shrink-0 text-neutral-800"
                         aria-hidden
                         strokeWidth={2}
                       />
@@ -230,8 +237,10 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
                     <span
                       className={cn(
                         TELEMETRY_PILL_CLASS,
-                        isError && "border-red-200 bg-red-50 text-red-700",
-                        isWarn && "border-amber-200 bg-amber-50 text-amber-700",
+                        isError &&
+                          "border-neutral-400 bg-neutral-200 text-neutral-900",
+                        isWarn &&
+                          "border-neutral-300 bg-neutral-100 text-neutral-700",
                       )}
                     >
                       {event.subsystem}

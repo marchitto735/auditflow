@@ -89,10 +89,10 @@ type DashboardToolbarProps = {
 };
 
 const CONTROL_CLASS =
-  "inline-flex h-10 w-full min-w-[9.5rem] items-center justify-between gap-2 rounded-lg border border-zinc-200 bg-sidebar-muted/40 px-3 text-sm font-medium transition-colors duration-200 hover:border-zinc-400 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background md:w-[10.5rem]";
+  "inline-flex h-10 w-full min-w-[9.5rem] items-center justify-between gap-2 rounded-lg border border-zinc-200 bg-sidebar-muted/40 px-3 text-sm font-medium transition-colors duration-200 hover:border-zinc-400 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background md:w-[10.5rem]";
 
 function filterTriggerClass(extra?: string) {
-  return cn(CONTROL_CLASS, "text-black", extra);
+  return cn(CONTROL_CLASS, "text-neutral-900", extra);
 }
 
 type FilterOption<T extends string> = {
@@ -129,7 +129,7 @@ function FilterDropdown<T extends string>({
       <span className="min-w-0 flex-1 truncate text-left">
         {selected?.label ?? label}
       </span>
-      <ChevronDown className="h-4 w-4 shrink-0 text-black" aria-hidden />
+      <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden />
     </button>
   );
 
@@ -207,7 +207,7 @@ function MobileFilterSection<T extends string>({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <p className="m-0 px-1 text-xs font-semibold tracking-wide text-zinc-500 uppercase">
+      <p className="m-0 px-1 text-xs font-semibold tracking-wide text-neutral-500 uppercase">
         {title}
       </p>
       <div className="flex flex-col gap-0.5 rounded-xl border border-zinc-200 bg-white p-1">
@@ -261,7 +261,7 @@ function MobileFiltersSheet({
           {count}
         </span>
       ) : (
-        <ChevronDown className="h-4 w-4 shrink-0 text-black" aria-hidden />
+        <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden />
       )}
     </button>
   );
@@ -283,7 +283,7 @@ function MobileFiltersSheet({
             {count}
           </span>
         ) : (
-          <ChevronDown className="h-4 w-4 shrink-0 text-black" aria-hidden />
+          <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden />
         )}
       </button>
       <SheetContent
@@ -291,7 +291,7 @@ function MobileFiltersSheet({
         className="max-h-[85dvh] gap-0 rounded-t-2xl border-zinc-200 bg-[#F7F7F7] p-0"
       >
         <SheetHeader className="shrink-0 border-b border-zinc-200 px-4 py-4">
-          <SheetTitle className="text-left text-base font-medium text-black">
+          <SheetTitle className="text-left text-base font-medium text-neutral-900">
             Filters
           </SheetTitle>
         </SheetHeader>
@@ -352,7 +352,7 @@ export function DashboardToolbar({
       <div className="flex min-w-0 w-full items-center gap-2 md:max-w-md md:flex-1">
         <div className="relative min-w-0 flex-1">
           <Search
-            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-black"
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-900"
             aria-hidden
           />
           <Input
@@ -361,7 +361,7 @@ export function DashboardToolbar({
             onChange={(event) => patch({ search: event.target.value })}
             placeholder="Search documents"
             aria-label="Search documents"
-            className="h-10 border-zinc-200 bg-sidebar-muted/40 pl-9 text-sm font-medium text-black transition-colors duration-200 placeholder:text-black hover:border-zinc-400 hover:bg-zinc-50/50 md:text-sm"
+            className="h-10 border-zinc-200 bg-sidebar-muted/40 pl-9 text-sm font-medium text-neutral-900 transition-colors duration-200 placeholder:text-neutral-900 hover:border-zinc-400 hover:bg-zinc-50/50 md:text-sm"
           />
         </div>
         <MobileFiltersSheet value={value} onChange={patch} />

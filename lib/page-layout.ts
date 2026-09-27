@@ -35,7 +35,7 @@ export const NAV_UTILITY_BUTTON_CLASS =
 
 /** Static dashboard card chrome — flat white surface, subtle zinc border, no shadow. */
 export const DASHBOARD_CARD_CLASS =
-  "rounded-2xl border border-zinc-200 bg-white shadow-none";
+  "rounded-2xl border border-neutral-200 bg-white shadow-none";
 
 /**
  * Status KPI / audit telemetry cards — height hugs content (no fixed clip).
@@ -48,18 +48,11 @@ export const DASHBOARD_TRACK_CARD_HEIGHT_CLASS = "h-auto min-h-0";
 export const AUDIT_LAUNCHER_CARD_HEIGHT_CLASS = "h-auto min-h-0";
 
 /**
- * Shared responsive grid for 3-card strips (Audits featured launcher, etc.).
+ * Shared responsive grid for 3-card strips (KPI row, framework row, Audits featured).
  * Never 2-up — odd count of 3 orphans a card. Stack, then 3-across.
  */
 export const DASHBOARD_TRIPLE_CARD_GRID_CLASS =
   "grid grid-cols-1 items-stretch gap-6 md:grid-cols-3";
-
-/**
- * Dashboard telemetry strip — all six cards in one grid.
- * `sm`–`lg`: 2 columns (3 left / 3 right). `xl+`: 3 columns (two rows of three).
- */
-export const DASHBOARD_TELEMETRY_CARD_GRID_CLASS =
-  "grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 xl:grid-cols-3";
 
 /**
  * Recent Activity card — filter bar + table header + 3 body rows + pagination.
@@ -76,7 +69,7 @@ export const RECENT_ACTIVITY_CARD_HEIGHT_CLASS = "h-auto";
  * Compose with layout utilities (flex, group, etc.) as needed.
  */
 export const INTERACTIVE_CARD_CLASS =
-  "rounded-2xl border border-zinc-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30";
+  "rounded-2xl border border-neutral-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-neutral-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-neutral-900/30";
 
 /**
  * Card eyebrow — single style for every card header on Dashboard + Audits.
@@ -85,13 +78,13 @@ export const INTERACTIVE_CARD_CLASS =
  * (write “Policy Control”, not “POLICY CONTROL”).
  */
 export const CARD_EYEBROW_CLASS =
-  "m-0 text-[13px] font-medium uppercase tracking-wider text-black";
+  "m-0 text-[13px] font-medium uppercase tracking-wider text-neutral-900";
 
 /**
  * Top-right card corner label (SOP / YTD / etc.) — stacked under telemetry sparklines.
  */
 export const CARD_CORNER_LABEL_CLASS =
-  "m-0 shrink-0 font-mono text-xs font-medium uppercase tracking-wider text-muted-foreground";
+  "m-0 shrink-0 font-mono text-xs font-medium uppercase tracking-wider text-neutral-500";
 
 /**
  * @deprecated Use `CARD_EYEBROW_CLASS` — kept as an alias for one eyebrow system.
@@ -143,7 +136,7 @@ export const CARD_FOOTER_CLASS =
  * Parent must use `group`.
  */
 export const CARD_CTA_CLASS =
-  "inline-flex shrink-0 items-center gap-0.5 text-sm font-medium text-zinc-500 no-underline transition-colors duration-150 group-hover:text-zinc-900";
+  "inline-flex shrink-0 items-center gap-0.5 text-sm font-medium text-neutral-500 no-underline transition-colors duration-150 group-hover:text-neutral-900";
 
 export const CARD_CTA_ARROW_CLASS =
   "h-4 w-4 transition-transform duration-150 group-hover:translate-x-1";
@@ -152,13 +145,13 @@ export const CARD_CTA_ARROW_CLASS =
  * Shared right-hand metadata for telemetry cards (pipeline ETAs, feed timestamps).
  */
 export const TELEMETRY_META_CLASS =
-  "shrink-0 font-mono text-sm font-normal tabular-nums text-black whitespace-nowrap";
+  "shrink-0 font-mono text-sm font-normal tabular-nums text-neutral-700 whitespace-nowrap";
 
 /**
  * Shared agent/stage badge pill for telemetry rows.
  */
 export const TELEMETRY_PILL_CLASS =
-  "inline-flex shrink-0 items-center rounded-md border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 text-[11px] font-medium leading-none whitespace-nowrap text-zinc-700";
+  "inline-flex shrink-0 items-center rounded-md border border-neutral-200 bg-neutral-50 px-1.5 py-0.5 text-[11px] font-medium leading-none whitespace-nowrap text-neutral-700";
 
 /**
  * Shared telemetry list stack (pipeline jobs + activity feed).

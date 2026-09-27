@@ -4,8 +4,8 @@ import ScoreAnalysisView from "@/components/dashboard/score-analysis-view";
 export default function ScoreAnalysisPage() {
   return (
     <DashboardPageShell
-      title="Score Breakdown"
-      description="See category scores, the 30/90/365-day trend, and performance against the 85% GMP threshold."
+      title="Compliance Analytics"
+      description="Deep-dive scoring, department distribution, variance signals, and exportable compliance packets."
     >
       <ScoreAnalysisView />
     </DashboardPageShell>

@@ -1,5 +1,10 @@
 import SectionHeader from "@/components/section-header/section-header";
-import { PAGE_CONTENT_TOP_CLASS, PAGE_GUTTER_CLASS, PAGE_INNER_CLASS } from "@/lib/page-layout";
+import HelpWorkspace from "@/components/help/help-workspace";
+import {
+  PAGE_CONTENT_TOP_CLASS,
+  PAGE_GUTTER_CLASS,
+  PAGE_INNER_CLASS,
+} from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 export default function HelpPage() {
@@ -8,9 +13,10 @@ export default function HelpPage() {
       <section className={cn(PAGE_GUTTER_CLASS, PAGE_CONTENT_TOP_CLASS, "pb-4")}>
         <div className={cn(PAGE_INNER_CLASS, "flex w-full flex-col")}>
           <SectionHeader
-            title="Help"
-            description="On SOP, BPR, or FIR audit, choose a clause, upload a PDF (or an image for FIR), then click Run Audit. Reports are saved and listed under Reports."
+            title="Help & Support"
+            description="System status, compliance knowledge base, support tickets, and emergency escalation for live audits."
           />
+          <HelpWorkspace />
         </div>
       </section>
     </div>

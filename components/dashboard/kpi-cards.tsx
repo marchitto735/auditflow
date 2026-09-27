@@ -45,7 +45,7 @@ const KPI_CARDS: readonly KpiCardData[] = [
     eyebrow: "Total Audits",
     code: "YTD",
     metric: "142",
-    trend: [16, 22, 19, 28, 24, 12, 21],
+    trend: [118, 124, 129, 134, 138, 140, 142],
     status: "Synced",
     lastRun: "10m ago",
     volume: "142",
@@ -106,7 +106,7 @@ export function KpiCard({ card }: { card: KpiCardData }) {
                 className={cn(
                   CARD_TITLE_CLASS,
                   METRIC_VALUE_CLASS,
-                  "m-0 max-w-full break-words text-pretty text-black",
+                  "m-0 max-w-full break-words text-pretty text-neutral-900",
                 )}
               >
                 {card.metric}
@@ -131,7 +131,7 @@ export function KpiCard({ card }: { card: KpiCardData }) {
           </div>
 
           <p
-            className="text-body1 m-0 flex min-w-0 flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-black"
+            className="text-body1 m-0 flex min-w-0 flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-neutral-900"
             aria-label={`${card.eyebrow} status ${card.status}, last run ${card.lastRun}`}
           >
             <span
@@ -142,10 +142,10 @@ export function KpiCard({ card }: { card: KpiCardData }) {
               aria-hidden
             />
             <span className="shrink-0 font-medium">{card.status}</span>
-            <span className="shrink-0 text-black" aria-hidden>
+            <span className="shrink-0 text-neutral-900" aria-hidden>
               •
             </span>
-            <span className="min-w-0 break-words text-black">
+            <span className="min-w-0 break-words text-neutral-900">
               Last Run {card.lastRun}
             </span>
           </p>
@@ -154,24 +154,24 @@ export function KpiCard({ card }: { card: KpiCardData }) {
             className="mt-auto flex min-w-0 flex-wrap items-end justify-between gap-x-3 gap-y-1"
             aria-label={`${card.eyebrow} operational metrics`}
           >
-            <div className="flex min-w-0 flex-1 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-black">
+            <div className="flex min-w-0 flex-1 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-neutral-900">
               <span className="shrink-0 whitespace-nowrap">
-                <span className="text-black">Vol</span>{" "}
-                <span className="font-medium text-black">{card.volume}</span>
+                <span className="text-neutral-900">Vol</span>{" "}
+                <span className="font-medium text-neutral-900">{card.volume}</span>
               </span>
-              <span className="shrink-0 text-black" aria-hidden>
+              <span className="shrink-0 text-neutral-900" aria-hidden>
                 ·
               </span>
               <span className="shrink-0 whitespace-nowrap">
-                <span className="text-black">Δ</span>{" "}
-                <span className="font-medium text-black">{card.delta}</span>
+                <span className="text-neutral-900">Δ</span>{" "}
+                <span className="font-medium text-neutral-900">{card.delta}</span>
               </span>
-              <span className="shrink-0 text-black" aria-hidden>
+              <span className="shrink-0 text-neutral-900" aria-hidden>
                 ·
               </span>
               <span className="shrink-0 whitespace-nowrap">
-                <span className="text-black">Hit</span>{" "}
-                <span className="font-medium text-black">{card.hit}</span>
+                <span className="text-neutral-900">Hit</span>{" "}
+                <span className="font-medium text-neutral-900">{card.hit}</span>
               </span>
             </div>
             <p

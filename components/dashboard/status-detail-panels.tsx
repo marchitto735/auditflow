@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import {
   CardActionsMenu,
+  CHART_CARD_MENU_ACTIONS,
   DASHBOARD_MENU_CONTENT_CLASS,
   DASHBOARD_MENU_ITEM_CLASS,
   DASHBOARD_MENU_ITEM_SELECTED_CLASS,
+  TABLE_CARD_MENU_ACTIONS,
 } from "@/components/dashboard/card-actions-menu";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -62,12 +64,6 @@ const FINDINGS_TABLE_MIN_WIDTH_CLASS = "min-w-[36rem]";
 const FOOTER_FINDING_COL_WIDTH = "40%";
 const FOOTER_GRID_TEMPLATE = `${FOOTER_FINDING_COL_WIDTH} minmax(0,1fr)`;
 
-const FINDINGS_MENU_ACTIONS = [
-  "Export CSV",
-  "Export PDF",
-  "Refresh",
-] as const;
-
 const SORTED_FINDINGS = [...OPEN_FINDINGS].sort(
   (a, b) =>
     SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity),
@@ -114,10 +110,10 @@ function PageSizeSelector({
       ref={triggerRef}
       type="button"
       aria-label="Rows per page"
-      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-sidebar-muted/40 px-2 text-sm font-medium text-black transition-colors duration-200 hover:border-zinc-400 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-sidebar-muted/40 px-2 text-sm font-medium text-neutral-900 transition-colors duration-200 hover:border-zinc-400 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <span>{pageSize}</span>
-      <ChevronDown className="h-4 w-4 shrink-0 text-black" aria-hidden />
+      <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden />
     </button>
   );
 
@@ -184,7 +180,7 @@ function FindingsPaginationNav({
       <Button
         type="button"
         variant="ghost"
-        className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-500 shadow-none transition-colors duration-150 hover:bg-transparent hover:text-zinc-900"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-zinc-100 hover:text-neutral-900"
         disabled={currentPage <= 1}
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
       >
@@ -194,7 +190,7 @@ function FindingsPaginationNav({
         item === "ellipsis" ? (
           <span
             key={`ellipsis-${index}`}
-            className="inline-flex h-8 items-center px-1 text-sm text-black"
+            className="inline-flex h-8 items-center px-1 text-sm text-neutral-900"
             aria-hidden
           >
             …
@@ -207,8 +203,8 @@ function FindingsPaginationNav({
             className={cn(
               "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
               item === currentPage
-                ? "bg-zinc-500 text-white hover:bg-zinc-400 hover:text-white"
-                : "text-black hover:bg-zinc-100",
+                ? "bg-neutral-800 text-white hover:bg-neutral-800 hover:text-white"
+                : "text-neutral-900 hover:bg-zinc-100",
             )}
             aria-current={item === currentPage ? "page" : undefined}
             onClick={() => onPageChange(item)}
@@ -220,7 +216,7 @@ function FindingsPaginationNav({
       <Button
         type="button"
         variant="ghost"
-        className="h-8! min-h-8! px-2 text-sm font-medium text-zinc-500 shadow-none transition-colors duration-150 hover:bg-transparent hover:text-zinc-900"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-zinc-100 hover:text-neutral-900"
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
       >
@@ -287,14 +283,14 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
         <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Priority Findings</p>
-            <p className="text-body1 m-0 mt-1 text-zinc-600">
+            <p className="text-body1 m-0 mt-1 text-neutral-600">
               Highest-severity open items across active audits.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
               label="Priority Findings"
-              actions={FINDINGS_MENU_ACTIONS}
+              actions={TABLE_CARD_MENU_ACTIONS}
             />
           </div>
         </div>
@@ -433,12 +429,18 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
 export function CategoryBreakdownPanel({ className }: { className?: string }) {
   return (
     <Card className={cn(DASHBOARD_CARD_CLASS, "h-full", className)}>
-      <CardContent className="flex h-full flex-col gap-3 p-4">
-        <div>
+      <CardContent className="relative flex h-full flex-col gap-3 p-4">
+        <div className="min-w-0 pr-10">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Category Breakdown</p>
-          <p className="text-body1 m-0 mt-1 text-zinc-600">
+          <p className="text-body1 m-0 mt-1 text-neutral-600">
             GMP threshold {GMP_THRESHOLD}%.
           </p>
+        </div>
+        <div className="absolute top-3 right-3">
+          <CardActionsMenu
+            label="Category Breakdown"
+            actions={CHART_CARD_MENU_ACTIONS}
+          />
         </div>
         <div className="flex flex-col gap-3">
           {SCORE_CATEGORIES.map((category) => (
@@ -474,12 +476,18 @@ export function ComplianceTrendPanel({ className }: { className?: string }) {
 
   return (
     <Card className={cn(DASHBOARD_CARD_CLASS, "h-full", className)}>
-      <CardContent className="flex h-full flex-col gap-3 p-4">
-        <div>
+      <CardContent className="relative flex h-full flex-col gap-3 p-4">
+        <div className="min-w-0 pr-10">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance Trend</p>
-          <p className="text-body1 m-0 mt-1 text-zinc-600">
+          <p className="text-body1 m-0 mt-1 text-neutral-600">
             90-day score vs {GMP_THRESHOLD}% GMP standard.
           </p>
+        </div>
+        <div className="absolute top-3 right-3">
+          <CardActionsMenu
+            label="Compliance Trend"
+            actions={CHART_CARD_MENU_ACTIONS}
+          />
         </div>
         <div className="h-[200px] w-full">
           <ResponsiveContainer width="100%" height="100%">

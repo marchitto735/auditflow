@@ -14,7 +14,7 @@ import type { ActivityRow } from "@/components/activity-table/activity-table";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   DASHBOARD_SECTION_GAP_CLASS,
-  DASHBOARD_TELEMETRY_CARD_GRID_CLASS,
+  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -23,8 +23,8 @@ type DashboardGridProps = {
 };
 
 /**
- * Telemetry command center — static modules + nested deep-data panels.
- * Interactive audit launch remains on `/audits`.
+ * Telemetry command center — two-tier KPI header, full-width tables,
+ * and 50/50 modular pairs for feeds + analytics.
  */
 export default function DashboardGrid({
   activityRows = [],
@@ -39,24 +39,34 @@ export default function DashboardGrid({
       >
         <DashboardCommandHeader />
 
-        <div className={cn("w-full min-w-0", DASHBOARD_TELEMETRY_CARD_GRID_CLASS)}>
-          <AuditLauncherCard id="sop" />
-          <AuditLauncherCard id="bpr" />
-          <AuditLauncherCard id="fir" />
+        {/* Tier 1 — macro operational KPIs */}
+        <div className={cn("w-full min-w-0", DASHBOARD_TRIPLE_CARD_GRID_CLASS)}>
           <KpiCardItems />
         </div>
 
-        <div className="flex min-w-0 flex-col gap-6">
-          <FindingsSummaryPanel className="w-full min-w-0" />
-          <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
-            <CategoryBreakdownPanel />
-            <ComplianceTrendPanel />
-          </div>
+        {/* Tier 2 — core framework modules */}
+        <div className={cn("w-full min-w-0", DASHBOARD_TRIPLE_CARD_GRID_CLASS)}>
+          <AuditLauncherCard id="sop" />
+          <AuditLauncherCard id="bpr" />
+          <AuditLauncherCard id="fir" />
         </div>
 
-        <RecentActivity rows={activityRows} />
+        {/* Full-width — Priority Findings table */}
+        <FindingsSummaryPanel className="w-full min-w-0" />
 
-        <SystemTelemetrySection className="pb-16 md:pb-20" />
+        {/* 50/50 — Activity Feed matches Compliance Pipeline height */}
+        <SystemTelemetrySection />
+
+        {/* 50/50 — deep analytics */}
+        <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
+          <CategoryBreakdownPanel />
+          <ComplianceTrendPanel />
+        </div>
+
+        {/* Full-width — Audit History table */}
+        <div className="w-full min-w-0 pb-16 md:pb-20">
+          <RecentActivity rows={activityRows} />
+        </div>
       </div>
     </TooltipProvider>
   );

@@ -48,9 +48,9 @@ if (
 type FindingStatusValue = "compliant" | "non-compliant" | "partial";
 
 function statusDotClass(status: FindingStatusValue) {
-  if (status === "compliant") return "bg-emerald-500";
-  if (status === "partial") return "bg-amber-500";
-  return "bg-red-600";
+  if (status === "compliant") return "bg-neutral-900";
+  if (status === "partial") return "bg-neutral-500";
+  return "bg-neutral-800";
 }
 
 function statusLabel(status: FindingStatusValue) {
@@ -72,7 +72,7 @@ function FindingStatus({ status }: { status: FindingStatusValue }) {
 }
 
 const DOCUMENT_ACTIONS_TRIGGER_CLASS =
-  "inline-flex h-6 shrink-0 items-center gap-1 rounded-sm border border-zinc-200 bg-white px-2 text-sm font-medium leading-none text-foreground shadow-none transition-colors hover:border-zinc-400 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+  "inline-flex h-6 shrink-0 items-center gap-1 rounded-sm border border-zinc-200 bg-white px-2 text-sm font-medium leading-none text-foreground shadow-none transition-colors hover:border-zinc-400 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2";
 
 function DocumentActionsMenu({
   items,
@@ -396,8 +396,8 @@ export default function RemediationWorkspace() {
               className={cn(
                 "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold",
                 flaggedCount > 0
-                  ? "border-red-200 bg-red-50 text-red-700"
-                  : "border-emerald-200 bg-emerald-50 text-emerald-700",
+                  ? "border-neutral-400 bg-neutral-200 text-neutral-900"
+                  : "border-neutral-300 bg-neutral-100 text-neutral-900",
               )}
             >
               {flaggedCount > 0 ? (
@@ -414,7 +414,7 @@ export default function RemediationWorkspace() {
             <Button
               type="button"
               variant="black"
-              className="rounded-sm px-4 py-0 text-sm font-medium disabled:bg-zinc-200 disabled:text-zinc-400 disabled:opacity-100"
+              className="rounded-sm px-4 py-0 text-sm font-medium disabled:bg-zinc-200 disabled:text-neutral-400 disabled:opacity-100"
               disabled={flaggedCount > 0}
               onClick={finalize}
             >

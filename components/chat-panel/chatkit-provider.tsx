@@ -296,7 +296,7 @@ export function ChatKitProvider({ children }: { children: React.ReactNode }) {
           {showDomainKeyWarning ? (
             <div
               role="status"
-              className="mx-4 mb-2 shrink-0 rounded-2xl border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-left text-sm text-amber-950 dark:border-amber-400/35 dark:bg-amber-400/10 dark:text-amber-50"
+              className="mx-4 mb-2 shrink-0 rounded-2xl border border-neutral-300 bg-neutral-100 px-3 py-2 text-left text-sm text-neutral-900 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
             >
               {process.env.NODE_ENV === "development" ? (
                 <>

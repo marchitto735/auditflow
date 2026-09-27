@@ -51,7 +51,7 @@ import {
 } from "@/components/ui/tooltip";
 
 /** Shared section labels — text-sm, uniform weight. */
-const SECTION_LABEL = "mb-2 text-sm font-medium text-black";
+const SECTION_LABEL = "mb-2 text-sm font-medium text-neutral-900";
 
 /** Shared field shell for Frameworks / Clauses / Docs. */
 const FIELD_SURFACE_CLASS =
@@ -65,16 +65,16 @@ const PILL_AREA_CLASS =
 
 /** Inline selection / file pill token. */
 const PILL_CLASS =
-  "inline-flex h-auto max-w-full items-center gap-1 rounded-full border border-border/60 bg-zinc-50 py-2 pl-2.5 pr-1 text-sm font-medium leading-normal text-black";
+  "inline-flex h-auto max-w-full items-center gap-1 rounded-full border border-border/60 bg-zinc-50 py-2 pl-2.5 pr-1 text-sm font-medium leading-normal text-neutral-900";
 
 const PILL_REMOVE_CLASS =
-  "inline-flex size-5 shrink-0 items-center justify-center rounded-full text-zinc-500 transition-colors hover:bg-zinc-200 hover:text-black";
+  "inline-flex size-5 shrink-0 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-zinc-200 hover:text-neutral-900";
 
 const PLACEHOLDER_CLASS =
   "flex items-center py-0.5 text-sm leading-normal text-muted-foreground";
 
 const POPOVER_CLASS =
-  "z-[300] flex w-[var(--radix-popover-trigger-width)] max-h-[min(18rem,var(--radix-popover-content-available-height,18rem))] flex-col overflow-hidden rounded-lg border border-border/60 bg-white p-0 text-black shadow-sm";
+  "z-[300] flex w-[var(--radix-popover-trigger-width)] max-h-[min(18rem,var(--radix-popover-content-available-height,18rem))] flex-col overflow-hidden rounded-lg border border-border/60 bg-white p-0 text-neutral-900 shadow-sm";
 
 /** Always drop under the field; height is capped so content scrolls inside the modal. */
 const POPOVER_POSITION_PROPS = {
@@ -88,19 +88,19 @@ const DROPDOWN_FOOTER_CLASS =
 
 /** Overrides cmdk `h-full` so the shell respects the popover max-height. */
 const COMMAND_SHELL_CLASS =
-  "flex h-auto max-h-full min-h-0 flex-1 flex-col overflow-hidden bg-white text-black [&_[cmdk-list]]:max-h-60 [&_[cmdk-list]]:min-h-0 [&_[cmdk-list]]:overflow-y-auto [&_[cmdk-list]]:overscroll-contain";
+  "flex h-auto max-h-full min-h-0 flex-1 flex-col overflow-hidden bg-white text-neutral-900 [&_[cmdk-list]]:max-h-60 [&_[cmdk-list]]:min-h-0 [&_[cmdk-list]]:overflow-y-auto [&_[cmdk-list]]:overscroll-contain";
 
 const COMMAND_LIST_CLASS =
   "max-h-60 min-h-0 overflow-y-auto overscroll-contain";
 
 const COMMAND_ITEM_CLASS =
-  "cursor-pointer gap-2 rounded-md text-sm text-black data-[selected=true]:bg-zinc-100 data-[selected=true]:text-black";
+  "cursor-pointer gap-2 rounded-md text-sm text-neutral-900 data-[selected=true]:bg-zinc-100 data-[selected=true]:text-neutral-900";
 
 const DONE_BUTTON_CLASS =
-  "h-8 px-2 text-sm font-medium text-black hover:bg-zinc-100";
+  "h-8 px-2 text-sm font-medium text-neutral-900 hover:bg-zinc-100";
 
 const DROPDOWN_EMPTY_CLASS =
-  "px-3 py-6 text-center text-sm text-zinc-500";
+  "px-3 py-6 text-center text-sm text-neutral-500";
 
 type StagedFile = {
   id: string;
@@ -203,7 +203,7 @@ function FieldChevron() {
   return (
     <ChevronDown
       aria-hidden
-      className="pointer-events-none absolute right-3 top-1/2 size-4 shrink-0 -translate-y-1/2 text-zinc-500"
+      className="pointer-events-none absolute right-3 top-1/2 size-4 shrink-0 -translate-y-1/2 text-neutral-500"
     />
   );
 }
@@ -531,9 +531,9 @@ export function ConfigureAuditModal({
         onOpenAutoFocus={(event) => event.preventDefault()}
         className="fixed inset-0 z-50 flex items-center justify-center p-4 md:inset-auto md:left-1/2 md:top-1/2 md:max-h-[min(90vh,840px)] md:w-full md:max-w-xl md:p-0 md:-translate-x-1/2 md:-translate-y-1/2"
       >
-        <div className="flex max-h-[min(90vh,840px)] w-full flex-col overflow-hidden rounded-xl border border-border/60 bg-white text-black shadow-lg">
+        <div className="flex max-h-[min(90vh,840px)] w-full flex-col overflow-hidden rounded-xl border border-border/60 bg-white text-neutral-900 shadow-lg">
           <DialogHeader className="shrink-0 flex-row items-center gap-1.5 border-b border-border/60 p-4 text-left">
-            <DialogTitle className={cn(SECTION_HEADER_CLASS, "m-0 text-black")}>
+            <DialogTitle className={cn(SECTION_HEADER_CLASS, "m-0 text-neutral-900")}>
               New Audit
             </DialogTitle>
             <TooltipProvider delayDuration={200}>
@@ -541,7 +541,7 @@ export function ConfigureAuditModal({
                 <TooltipTrigger asChild>
                   <button
                     type="button"
-                    className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:bg-zinc-100 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30"
+                    className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:bg-zinc-100 hover:text-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30"
                     aria-label="About New Audit"
                     aria-expanded={helpOpen}
                     onClick={() => setHelpOpen(true)}
@@ -558,12 +558,12 @@ export function ConfigureAuditModal({
                   align="start"
                   sideOffset={6}
                   avoidCollisions={false}
-                  className="z-[80] max-w-[16rem] rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-left text-zinc-50 shadow-none"
+                  className="z-[80] max-w-[16rem] rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-left text-neutral-50 shadow-none"
                 >
                   <p className="m-0 text-xs font-medium tracking-tight">
                     New Audit
                   </p>
-                  <p className="m-0 mt-1 text-xs leading-snug text-zinc-300">
+                  <p className="m-0 mt-1 text-xs leading-snug text-neutral-300">
                     {helperText}
                   </p>
                 </TooltipContent>
@@ -616,7 +616,7 @@ export function ConfigureAuditModal({
                   >
                     <CommandInput
                       placeholder="Search audit types (SOP, BPR, FIR…)"
-                      className="shrink-0 text-sm text-black placeholder:text-zinc-400"
+                      className="shrink-0 text-sm text-neutral-900 placeholder:text-neutral-400"
                     />
                     <CommandList
                       className={COMMAND_LIST_CLASS}
@@ -648,7 +648,7 @@ export function ConfigureAuditModal({
                     </CommandList>
                   </Command>
                   <div className={DROPDOWN_FOOTER_CLASS}>
-                    <span className="text-sm text-zinc-600">
+                    <span className="text-sm text-neutral-600">
                       {auditType ? 1 : 0} selected
                     </span>
                     <Button
@@ -715,7 +715,7 @@ export function ConfigureAuditModal({
                   >
                     <CommandInput
                       placeholder="Search frameworks (ISO, FDA, NIST…)"
-                      className="shrink-0 text-sm text-black placeholder:text-zinc-400"
+                      className="shrink-0 text-sm text-neutral-900 placeholder:text-neutral-400"
                     />
                     <CommandList
                       className={COMMAND_LIST_CLASS}
@@ -747,7 +747,7 @@ export function ConfigureAuditModal({
                     </CommandList>
                   </Command>
                   <div className={DROPDOWN_FOOTER_CLASS}>
-                    <span className="text-sm text-zinc-600">
+                    <span className="text-sm text-neutral-600">
                       {frameworks.length} selected
                     </span>
                     <Button
@@ -817,7 +817,7 @@ export function ConfigureAuditModal({
                       value={clauseQuery}
                       onValueChange={setClauseQuery}
                       placeholder="Search clauses (e.g., 5.5.1 or 'training')."
-                      className="shrink-0 text-sm text-black placeholder:text-zinc-400"
+                      className="shrink-0 text-sm text-neutral-900 placeholder:text-neutral-400"
                     />
                     <CommandList
                       className={COMMAND_LIST_CLASS}
@@ -867,7 +867,7 @@ export function ConfigureAuditModal({
                     </CommandList>
                   </Command>
                   <div className={DROPDOWN_FOOTER_CLASS}>
-                    <span className="text-sm text-zinc-600">
+                    <span className="text-sm text-neutral-600">
                       {selectedClauseItems.length} selected
                     </span>
                     <Button
@@ -948,27 +948,27 @@ export function ConfigureAuditModal({
                   <div className="p-2">
                     <button
                       type="button"
-                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-black transition-colors hover:bg-zinc-100"
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-neutral-900 transition-colors hover:bg-zinc-100"
                       onClick={handleBrowseClick}
                     >
-                      <Upload className="size-4 shrink-0 text-zinc-500" aria-hidden />
+                      <Upload className="size-4 shrink-0 text-neutral-500" aria-hidden />
                       <span className="min-w-0 flex-1">
                         Upload {assessmentLabel ?? "audit"} PDF or documents…
                       </span>
                     </button>
-                    <p className="m-0 px-3 pb-2 pt-1 text-sm text-zinc-500">
+                    <p className="m-0 px-3 pb-2 pt-1 text-sm text-neutral-500">
                       Or drag files onto the field above. Multiple files
                       supported.
                     </p>
                   </div>
                   <div className={DROPDOWN_FOOTER_CLASS}>
-                    <span className="text-sm text-zinc-600">
+                    <span className="text-sm text-neutral-600">
                       {docCount} selected
                     </span>
                     <Button
                       type="button"
                       variant="ghost"
-                      className="h-8 px-2 text-sm font-medium text-black hover:bg-zinc-100"
+                      className="h-8 px-2 text-sm font-medium text-neutral-900 hover:bg-zinc-100"
                       onClick={() => setDocsOpen(false)}
                     >
                       Done
@@ -980,10 +980,10 @@ export function ConfigureAuditModal({
 
             {isBatchMode ? (
               <section className="rounded-lg border border-border/60 bg-zinc-50 px-4 py-3">
-                <h3 className="m-0 text-sm font-medium text-black">
+                <h3 className="m-0 text-sm font-medium text-neutral-900">
                   Batch Mapping Summary
                 </h3>
-                <p className="m-0 mt-1 text-sm text-zinc-600">
+                <p className="m-0 mt-1 text-sm text-neutral-600">
                   {frameworks.length} framework
                   {frameworks.length === 1 ? "" : "s"} × {docCount}{" "}
                   {assessmentLabel ?? "doc"}
@@ -991,12 +991,12 @@ export function ConfigureAuditModal({
                   {frameworks.length * Math.max(docCount, 1)} analysis path
                   {frameworks.length * Math.max(docCount, 1) === 1 ? "" : "s"}
                 </p>
-                <ul className="m-0 mt-2 space-y-1 p-0 text-sm text-zinc-700">
+                <ul className="m-0 mt-2 space-y-1 p-0 text-sm text-neutral-700">
                   {selectedFrameworkItems.map((item) => (
                     <li key={item.value} className="flex gap-2">
-                      <span className="shrink-0 text-zinc-400">•</span>
+                      <span className="shrink-0 text-neutral-400">•</span>
                       <span className="min-w-0">
-                        <span className="font-medium text-black">
+                        <span className="font-medium text-neutral-900">
                           {item.label}
                         </span>
                         {" → "}
@@ -1015,7 +1015,7 @@ export function ConfigureAuditModal({
 
           <DialogFooter className="shrink-0 flex-col gap-3 border-t border-border/60 p-4 sm:flex-col">
             {initError ? (
-              <p className="m-0 w-full text-sm text-black" role="alert">
+              <p className="m-0 w-full text-sm text-neutral-900" role="alert">
                 {initError}
               </p>
             ) : null}
@@ -1023,7 +1023,7 @@ export function ConfigureAuditModal({
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-lg border-zinc-800 bg-transparent px-4 text-sm font-medium text-black hover:bg-zinc-100"
+                className="rounded-lg border-zinc-800 bg-transparent px-4 text-sm font-medium text-neutral-900 hover:bg-zinc-100"
                 onClick={() => handleDialogOpenChange(false)}
                 disabled={isInitializing}
               >

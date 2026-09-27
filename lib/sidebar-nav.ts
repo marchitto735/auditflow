@@ -3,7 +3,6 @@ import {
   BookOpen,
   ClipboardList,
   CircleHelp,
-  Crosshair,
   FileText,
   Gauge,
   Layers,
@@ -49,12 +48,6 @@ export const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
         title: "Policies",
         href: "/policy-center",
         icon: FileText,
-      },
-      {
-        title: "New Audit",
-        href: "/audit/sop",
-        icon: Crosshair,
-        configureAudit: true,
       },
       {
         title: "Frameworks",

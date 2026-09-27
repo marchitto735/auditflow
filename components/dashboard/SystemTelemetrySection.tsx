@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * System Telemetry — equal 2-col desktop grid.
- * Pipeline hugs content; feed matches that height and scrolls internally.
+ * Pipeline hugs content; Activity Feed matches that height and scrolls internally.
  */
 export function SystemTelemetrySection({ className }: { className?: string }) {
   const pipelineRef = React.useRef<HTMLDivElement>(null);
@@ -46,14 +46,14 @@ export function SystemTelemetrySection({ className }: { className?: string }) {
   return (
     <section className={cn("flex min-w-0 flex-col", className)}>
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
-        <div ref={pipelineRef} className="min-w-0">
-          <CompliancePipelineCard />
-        </div>
         <div
           ref={feedRef}
-          className="flex min-h-0 min-w-0 flex-col overflow-hidden"
+          className="flex min-h-0 min-w-0 flex-col overflow-hidden lg:order-1"
         >
           <AgentFeedCard className="h-full min-h-0" />
+        </div>
+        <div ref={pipelineRef} className="min-w-0 lg:order-2">
+          <CompliancePipelineCard />
         </div>
       </div>
     </section>

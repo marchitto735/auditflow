@@ -10,7 +10,7 @@ export default function AuditResultsPage() {
         <div className={cn(PAGE_INNER_CLASS, "flex w-full flex-col")}>
           <Suspense
             fallback={
-              <p className="text-body1 m-0 text-black" role="status">
+              <p className="text-body1 m-0 text-neutral-900" role="status">
                 Loading audit report…
               </p>
             }

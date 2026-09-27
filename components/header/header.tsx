@@ -113,11 +113,13 @@ function ProfileMenu() {
 
 export default function Header() {
   const pathname = usePathname();
-  const { mobileOpen, setMobileOpen } = useSidebar();
+  const { mobileOpen, setMobileOpen, width } = useSidebar();
+  const [desktopRail, setDesktopRail] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia(DESKTOP_SIDEBAR_MQ);
     const sync = () => {
+      setDesktopRail(mq.matches);
       if (mq.matches) setMobileOpen(false);
     };
     sync();
@@ -128,10 +130,11 @@ export default function Header() {
   return (
     <>
       <header
+        style={desktopRail ? { left: width } : undefined}
         className={cn(
           APP_TOPBAR_HEIGHT_CLASS,
           // `fixed` — sticky is broken by html/body overflow-x:hidden in globals.css
-          "fixed top-0 right-0 left-0 z-30 flex w-auto items-center bg-[#F7F7F7]/95 backdrop-blur dark:bg-background/95 color:bg-background/95 xl:left-[var(--sidebar-width,16rem)]",
+          "fixed top-0 right-0 left-0 z-30 flex w-auto items-center bg-[#F7F7F7]/95 backdrop-blur transition-[left] duration-300 ease-in-out dark:bg-background/95 color:bg-background/95",
         )}
       >
         <div className={cn(PAGE_GUTTER_CLASS, "flex h-full w-full items-center")}>

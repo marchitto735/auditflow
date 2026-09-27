@@ -135,12 +135,12 @@ export function activityStatusLabel(status: string | null | undefined) {
 export function statusBadgeClass(status: string | null | undefined) {
   const label = activityStatusLabel(status);
   if (label === "Compliant" || label === "Pass") {
-    return "border-emerald-200 bg-emerald-50 text-emerald-800";
+    return "border-neutral-300 bg-neutral-100 text-neutral-900";
   }
   if (label === "Critical" || label === "Fail") {
-    return "border-red-200 bg-red-50 text-red-800";
+    return "border-neutral-400 bg-neutral-200 text-neutral-900";
   }
-  return "border-amber-200 bg-amber-50 text-amber-900";
+  return "border-neutral-200 bg-neutral-50 text-neutral-700";
 }
 
 export const STATUS_BADGE_CLASS =
@@ -148,11 +148,11 @@ export const STATUS_BADGE_CLASS =
 
 export function statusDotClass(status: string | null | undefined) {
   const label = activityStatusLabel(status);
-  if (label === "Compliant" || label === "Pass") return "bg-emerald-500";
-  if (label === "Critical" || label === "Fail") return "bg-red-600";
-  if (label === "Partial" || label === "Review") return "bg-amber-500";
+  if (label === "Compliant" || label === "Pass") return "bg-neutral-900";
+  if (label === "Critical" || label === "Fail") return "bg-neutral-800";
+  if (label === "Partial" || label === "Review") return "bg-neutral-500";
   if (label === "—") return "";
-  return "bg-slate-400";
+  return "bg-neutral-400";
 }
 
 export function ActivityStatus({

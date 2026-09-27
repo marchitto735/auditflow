@@ -23,7 +23,7 @@ export default function CartTrigger() {
       {itemCount > 0 ? (
         <Badge
           variant="default"
-          className="absolute top-0 right-0 h-4 min-w-4 justify-center border-0 bg-amber-700 px-1 py-0 text-[10px] text-white hover:bg-amber-700"
+          className="absolute top-0 right-0 h-4 min-w-4 justify-center border-0 bg-neutral-900 px-1 py-0 text-[10px] text-white hover:bg-neutral-900"
         >
           {itemCount > 9 ? "9+" : itemCount}
         </Badge>

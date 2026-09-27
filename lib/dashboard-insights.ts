@@ -237,3 +237,139 @@ export const SCORE_TRENDS = {
     { label: "Q3", score: 88 },
   ],
 } as const;
+
+export type DepartmentScoreRow = {
+  id: string;
+  department: string;
+  audits: number;
+  avgScore: number;
+  delta: string;
+  belowGmp: number;
+  status: "On Track" | "Watch" | "At Risk";
+};
+
+/** Department-level distribution for Compliance Analytics deep-dive. */
+export const DEPARTMENT_SCORES: DepartmentScoreRow[] = [
+  {
+    id: "dept-qa",
+    department: "Quality Assurance",
+    audits: 38,
+    avgScore: 91,
+    delta: "+2.1",
+    belowGmp: 2,
+    status: "On Track",
+  },
+  {
+    id: "dept-mfg",
+    department: "Manufacturing",
+    audits: 52,
+    avgScore: 86,
+    delta: "+0.8",
+    belowGmp: 5,
+    status: "On Track",
+  },
+  {
+    id: "dept-pkg",
+    department: "Packaging",
+    audits: 24,
+    avgScore: 83,
+    delta: "-1.4",
+    belowGmp: 4,
+    status: "Watch",
+  },
+  {
+    id: "dept-lab",
+    department: "QC Laboratory",
+    audits: 18,
+    avgScore: 89,
+    delta: "+1.0",
+    belowGmp: 1,
+    status: "On Track",
+  },
+  {
+    id: "dept-wh",
+    department: "Warehouse",
+    audits: 10,
+    avgScore: 78,
+    delta: "-3.2",
+    belowGmp: 3,
+    status: "At Risk",
+  },
+];
+
+export type VarianceLogRow = {
+  id: string;
+  date: string;
+  signal: string;
+  domain: string;
+  variance: string;
+  severity: "Critical" | "High" | "Medium" | "Low";
+};
+
+/** Historical variance / anomaly signals for Compliance Analytics. */
+export const VARIANCE_LOG: VarianceLogRow[] = [
+  {
+    id: "var-1",
+    date: "Sep 22, 2026",
+    signal: "Batch yield variance exceeded 2σ on BPR-204",
+    domain: "Batch Record Integrity",
+    variance: "-4.8 pts",
+    severity: "High",
+  },
+  {
+    id: "var-2",
+    date: "Sep 18, 2026",
+    signal: "Part 11 audit trail gap on SOP-QA-001 revision",
+    domain: "Data Integrity (Part 11)",
+    variance: "-6.1 pts",
+    severity: "Critical",
+  },
+  {
+    id: "var-3",
+    date: "Sep 12, 2026",
+    signal: "Facility sanitation score rebound after CAPA close",
+    domain: "Facility Sanitation",
+    variance: "+3.4 pts",
+    severity: "Low",
+  },
+  {
+    id: "var-4",
+    date: "Sep 5, 2026",
+    signal: "Training effectiveness dip in Packaging cohort",
+    domain: "Training Effectiveness",
+    variance: "-2.2 pts",
+    severity: "Medium",
+  },
+  {
+    id: "var-5",
+    date: "Aug 28, 2026",
+    signal: "SOP coverage lag vs scheduled policy cycle",
+    domain: "Standard Operating Procedure",
+    variance: "-1.7 pts",
+    severity: "Medium",
+  },
+  {
+    id: "var-6",
+    date: "Aug 21, 2026",
+    signal: "Warehouse temperature excursion trend week-over-week",
+    domain: "Facility Sanitation",
+    variance: "-2.9 pts",
+    severity: "High",
+  },
+  {
+    id: "var-7",
+    date: "Aug 14, 2026",
+    signal: "Label reconciliation cycle time above target",
+    domain: "Batch Record Integrity",
+    variance: "-1.1 pts",
+    severity: "Low",
+  },
+  {
+    id: "var-8",
+    date: "Aug 7, 2026",
+    signal: "QC lab OOS rate spike on assay suite B",
+    domain: "Data Integrity (Part 11)",
+    variance: "-3.6 pts",
+    severity: "Critical",
+  },
+];

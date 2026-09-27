@@ -255,7 +255,7 @@ export function AuditReportTable({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="inline-flex w-fit cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-medium text-zinc-900 transition-colors hover:opacity-70"
+                className="inline-flex w-fit cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-medium text-neutral-900 transition-colors hover:opacity-70"
               >
                 Compliance Breakdown
                 <ChevronDown

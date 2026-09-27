@@ -50,9 +50,9 @@ const FEATURED_TITLE_DISPLAY: Record<AuditWorkflowId, string> = {
 
 /** Dashboard compact titles — live counts for fleet telemetry. */
 const COMPACT_TITLE_DISPLAY: Record<AuditWorkflowId, string> = {
-  sop: "738",
-  bpr: "392",
-  fir: "846",
+  sop: "42",
+  bpr: "128",
+  fir: "14",
 };
 
 /** Feature bullets — Audits page (`featured`) only; never on Dashboard compact. */
@@ -76,6 +76,8 @@ const FEATURE_BULLETS: Record<AuditWorkflowId, readonly [string, string, string]
 
 type LauncherMetrics = {
   trend: number[];
+  /** Left-footer volume label (e.g. Clauses / Chunks). */
+  volumeLabel: string;
   chunks: string;
   latency: string;
   success: string;
@@ -86,25 +88,28 @@ type LauncherMetrics = {
 /** Dashboard Quick Launch only — not shown on the dedicated Audits page. */
 const LAUNCHER_METRICS: Record<AuditWorkflowId, LauncherMetrics> = {
   sop: {
-    trend: [86, 88, 84, 91, 89],
+    trend: [38, 40, 39, 41, 42],
+    volumeLabel: "Clauses",
     chunks: "1.4k",
     latency: "1.2s",
     success: "98%",
     throughput: "~1.2s/doc",
   },
   bpr: {
-    trend: [78, 82, 80, 85, 83],
+    trend: [112, 118, 121, 125, 128],
+    volumeLabel: "Chunks",
     chunks: "2.1k",
     latency: "1.8s",
     success: "94%",
-    throughput: "8.6 docs/min",
+    throughput: "~1.8s/doc",
   },
   fir: {
-    trend: [72, 70, 74, 76, 75],
+    trend: [11, 12, 13, 13, 14],
+    volumeLabel: "Chunks",
     chunks: "0.9k",
     latency: "0.9s",
     success: "91%",
-    throughput: "12.4 docs/min",
+    throughput: "~0.9s/doc",
   },
 };
 
@@ -209,7 +214,7 @@ export function AuditLauncherCard({
                 <h3
                   className={cn(
                     CARD_TITLE_CLASS,
-                    "m-0 max-w-full hyphens-auto break-words text-pretty text-black",
+                    "m-0 max-w-full hyphens-auto break-words text-pretty text-neutral-900",
                   )}
                 >
                   {title}
@@ -217,7 +222,7 @@ export function AuditLauncherCard({
               </div>
 
               {bullets ? (
-                <ul className="m-0 mt-1 flex list-disc flex-col gap-3 py-0 pl-4 text-base leading-snug text-black">
+                <ul className="m-0 mt-1 flex list-disc flex-col gap-3 py-0 pl-4 text-base leading-snug text-neutral-900">
                   {bullets.map((bullet) => (
                     <li key={bullet} className="pl-0.5">
                       {bullet}
@@ -274,7 +279,7 @@ export function AuditLauncherCard({
               <h3
                 className={cn(
                   CARD_TITLE_CLASS,
-                  "m-0 max-w-full break-words text-pretty text-black",
+                  "m-0 max-w-full break-words text-pretty text-neutral-900",
                 )}
               >
                 {title}
@@ -301,7 +306,7 @@ export function AuditLauncherCard({
           </div>
 
           <p
-            className="text-body1 m-0 flex min-w-0 flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-black"
+            className="text-body1 m-0 flex min-w-0 flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-neutral-900"
             aria-label={`${workflow.label} status ${workflow.status}, last run ${workflow.lastRun}`}
           >
             <span
@@ -312,10 +317,10 @@ export function AuditLauncherCard({
               aria-hidden
             />
             <span className="shrink-0 font-medium">{workflow.status}</span>
-            <span className="shrink-0 text-black" aria-hidden>
+            <span className="shrink-0 text-neutral-900" aria-hidden>
               •
             </span>
-            <span className="min-w-0 break-words text-black">
+            <span className="min-w-0 break-words text-neutral-900">
               Last Run {workflow.lastRun}
             </span>
           </p>
@@ -325,24 +330,24 @@ export function AuditLauncherCard({
               className="mt-auto flex min-w-0 flex-wrap items-end justify-between gap-x-3 gap-y-1"
               aria-label={`${workflow.label} operational metrics`}
             >
-              <div className="flex min-w-0 flex-1 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-black">
+              <div className="flex min-w-0 flex-1 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-neutral-900">
                 <span className="shrink-0 whitespace-nowrap">
-                  <span className="text-black">Chunks</span>{" "}
-                  <span className="font-medium text-black">{metrics.chunks}</span>
+                  <span className="text-neutral-900">{metrics.volumeLabel}</span>{" "}
+                  <span className="font-medium text-neutral-900">{metrics.chunks}</span>
                 </span>
-                <span className="shrink-0 text-black" aria-hidden>
+                <span className="shrink-0 text-neutral-900" aria-hidden>
                   ·
                 </span>
                 <span className="shrink-0 whitespace-nowrap">
-                  <span className="text-black">Latency</span>{" "}
-                  <span className="font-medium text-black">{metrics.latency}</span>
+                  <span className="text-neutral-900">Latency</span>{" "}
+                  <span className="font-medium text-neutral-900">{metrics.latency}</span>
                 </span>
-                <span className="shrink-0 text-black" aria-hidden>
+                <span className="shrink-0 text-neutral-900" aria-hidden>
                   ·
                 </span>
                 <span className="shrink-0 whitespace-nowrap">
-                  <span className="text-black">Success</span>{" "}
-                  <span className="font-medium text-black">{metrics.success}</span>
+                  <span className="text-neutral-900">Success</span>{" "}
+                  <span className="font-medium text-neutral-900">{metrics.success}</span>
                 </span>
               </div>
               <p

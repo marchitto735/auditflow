@@ -19,17 +19,39 @@ export const CARD_MENU_ACTIONS = [
 
 export type CardMenuAction = (typeof CARD_MENU_ACTIONS)[number];
 
+/** Table cards — Priority Findings, Audit History. */
+export const TABLE_CARD_MENU_ACTIONS = [
+  "Export CSV",
+  "Export PDF",
+  "Configure",
+  "Print",
+] as const;
+
+/** Chart cards — Category Breakdown, Compliance Trend. */
+export const CHART_CARD_MENU_ACTIONS = [
+  "Export CSV",
+  "Download PNG",
+  "Timeframe",
+] as const;
+
+/** Feed / pipeline cards — Activity Feed, Compliance Pipeline. */
+export const FEED_CARD_MENU_ACTIONS = [
+  "Filter",
+  "Export Log",
+  "Refresh",
+] as const;
+
 /** Shared meatball / filter dropdown panel chrome. */
 export const DASHBOARD_MENU_CONTENT_CLASS =
-  "min-w-[11.5rem] rounded-xl border border-zinc-200 bg-white p-1 text-zinc-950 shadow-sm";
+  "min-w-[11.5rem] rounded-xl border border-zinc-200 bg-white p-1 text-neutral-950 shadow-sm";
 
 /** Shared meatball / filter dropdown item — inset hover via parent p-1. */
 export const DASHBOARD_MENU_ITEM_CLASS =
-  "cursor-pointer rounded-lg px-2.5 py-2 text-sm font-medium text-zinc-800 focus:bg-zinc-100 focus:text-zinc-950";
+  "cursor-pointer rounded-lg px-2.5 py-2 text-sm font-medium text-neutral-800 focus:bg-zinc-100 focus:text-neutral-950";
 
 /** Selected filter option fill (sidebar active parity). */
 export const DASHBOARD_MENU_ITEM_SELECTED_CLASS =
-  "bg-[#F1F1F1] text-zinc-900 focus:bg-[#F1F1F1] focus:text-zinc-900";
+  "bg-[#F1F1F1] text-neutral-900 focus:bg-[#F1F1F1] focus:text-neutral-900";
 
 type CardActionsMenuProps = {
   label: string;
@@ -39,7 +61,7 @@ type CardActionsMenuProps = {
 };
 
 const TRIGGER_CLASS =
-  "inline-flex size-8 shrink-0 items-center justify-center rounded-md text-foreground transition-colors hover:bg-[#EDEDED] hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30";
+  "inline-flex size-8 shrink-0 items-center justify-center rounded-md text-foreground transition-colors hover:bg-[#EDEDED] hover:text-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30";
 
 /**
  * Shared Swiss bento card meatball menu — subtle trigger, zinc hover items.

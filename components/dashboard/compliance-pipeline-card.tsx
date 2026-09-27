@@ -1,5 +1,6 @@
 "use client";
 
+import { CardActionsMenu, FEED_CARD_MENU_ACTIONS } from "@/components/dashboard/card-actions-menu";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   CARD_CONTENT_CLASS,
@@ -70,12 +71,18 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
         className,
       )}
     >
-      <CardContent className={cn(CARD_CONTENT_CLASS, "h-auto gap-3")}>
-        <div className="shrink-0">
+      <CardContent className={cn(CARD_CONTENT_CLASS, "relative h-auto gap-3")}>
+        <div className="min-w-0 shrink-0 pr-10">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance Pipeline</p>
-          <p className="text-body1 m-0 mt-1 text-zinc-600">
+          <p className="text-body1 m-0 mt-1 text-neutral-600">
             Active document volume by stage from ingest through export.
           </p>
+        </div>
+        <div className="absolute top-3 right-3">
+          <CardActionsMenu
+            label="Compliance Pipeline"
+            actions={FEED_CARD_MENU_ACTIONS}
+          />
         </div>
 
         <ol
@@ -89,13 +96,13 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
                   "flex w-full min-w-0 flex-col gap-1 rounded-lg border border-zinc-200 bg-sidebar-muted/40 px-3 py-2 text-left",
                 )}
               >
-                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-black tabular-nums">
+                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-neutral-900 tabular-nums">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <span className="text-sm font-medium text-black">
+                <span className="text-sm font-medium text-neutral-900">
                   {stage.label}
                 </span>
-                <span className="text-body1 m-0 font-mono tabular-nums text-black">
+                <span className="text-body1 m-0 font-mono tabular-nums text-neutral-900">
                   {stage.count} active
                 </span>
               </div>
@@ -106,7 +113,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
         <ul className={cn(TELEMETRY_LIST_CLASS, "mt-2")} aria-label="Active pipeline jobs">
           {ACTIVE_JOBS.map((job) => (
             <li key={job.id} className={TELEMETRY_ROW_CLASS}>
-              <p className="text-base m-0 min-w-0 max-w-[65%] flex-1 truncate leading-snug text-black">
+              <p className="text-base m-0 min-w-0 max-w-[65%] flex-1 truncate leading-snug text-neutral-900">
                 {job.document}
               </p>
               <div className="flex shrink-0 items-center gap-2">

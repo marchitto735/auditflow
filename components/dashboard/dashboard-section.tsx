@@ -40,7 +40,7 @@ export function DashboardSectionHeader({
           <TooltipTrigger asChild>
             <button
               type="button"
-              className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:bg-zinc-100 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30"
+              className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:bg-zinc-100 hover:text-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30"
               aria-label={`About ${title}`}
             >
               <CircleHelp
@@ -55,10 +55,10 @@ export function DashboardSectionHeader({
             align="start"
             sideOffset={6}
             avoidCollisions={false}
-            className="max-w-[16rem] rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-left text-zinc-50 shadow-none"
+            className="max-w-[16rem] rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-left text-neutral-50 shadow-none"
           >
             <p className="m-0 text-xs font-medium tracking-tight">{title}</p>
-            <p className="m-0 mt-1 text-xs leading-snug text-zinc-300">
+            <p className="m-0 mt-1 text-xs leading-snug text-neutral-300">
               {description}
             </p>
           </TooltipContent>

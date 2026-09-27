@@ -1,34 +1,33 @@
 /**
- * Swiss SaaS chart + status palette — high-contrast jewel tones
- * matched to Active/Ready status indicators (emerald-500 / amber-500).
+ * Swiss SaaS chart + status palette — monochrome ink scale.
  * CSS mirrors live in `:root` as `--chart-*`.
  */
 
 export const CHART = {
-  /** Bright cobalt — bar series / trend lines */
-  primary: "oklch(58% 0.18 230)",
-  /** Punchy active bar fill */
-  structural: "oklch(55% 0.2 235)",
-  /** Softened but still vivid below-threshold bars */
-  structuralMuted: "oklch(72% 0.1 230)",
-  /** Vivid emerald-500 — matches Active sparkline / status pip */
-  gauge: "oklch(70% 0.17 162)",
-  /** Inactive tracks / background bars — slightly cooler zinc */
-  track: "oklch(90% 0.01 250)",
-  /** Quieter track — zinc-100 */
-  trackSoft: "oklch(96.5% 0.002 286)",
+  /** Primary series / trend lines */
+  primary: "oklch(35% 0 0)",
+  /** Active bar fill */
+  structural: "oklch(40% 0 0)",
+  /** Softened below-threshold bars */
+  structuralMuted: "oklch(72% 0 0)",
+  /** Gauge / high score fill */
+  gauge: "oklch(45% 0 0)",
+  /** Inactive tracks / background bars */
+  track: "oklch(90% 0 0)",
+  /** Quieter track */
+  trackSoft: "oklch(96.5% 0 0)",
   /** Grid lines */
-  grid: "oklch(94.5% 0.003 286)",
+  grid: "oklch(94.5% 0 0)",
   /** Reference / baseline dashed lines */
-  reference: "oklch(70% 0.01 286)",
-  /** Donut / severity — rich crimson */
-  critical: "oklch(55% 0.22 25)",
-  /** Vivid orange-500 — high severity ring segment */
-  high: "oklch(70% 0.19 45)",
-  /** Vivid amber-500 — medium severity / Ready status */
-  medium: "oklch(76% 0.17 75)",
-  /** Soft slate — low / secondary ring segment (inactive track) */
-  low: "oklch(70% 0.015 260)",
+  reference: "oklch(70% 0 0)",
+  /** Critical severity */
+  critical: "oklch(35% 0 0)",
+  /** High severity */
+  high: "oklch(45% 0 0)",
+  /** Medium severity */
+  medium: "oklch(55% 0 0)",
+  /** Low / secondary */
+  low: "oklch(70% 0 0)",
 } as const;
 
 /**
@@ -70,23 +69,22 @@ export function severityFill(severity: ChartSeverity): string {
   }
 }
 
-/** Tailwind class for severity pips (tables, legends). */
+/** Tailwind class for severity pips (tables, legends) — grayscale. */
 export function severityDotClass(severity: ChartSeverity): string {
   switch (severity) {
     case "Critical":
-      return "bg-red-600";
+      return "bg-neutral-900";
     case "High":
-      return "bg-orange-500";
+      return "bg-neutral-700";
     case "Medium":
-      return "bg-amber-500";
+      return "bg-neutral-500";
     default:
-      return "bg-slate-400";
+      return "bg-neutral-300";
   }
 }
 
 /**
- * Dashboard telemetry status → palette (sparkline + status pip).
- * Emerald / Amber / Slate / Sky / Red / Indigo — one pairing per card.
+ * Dashboard telemetry status → grayscale sparkline + status pip.
  */
 function workflowStatusTone(status: string): {
   spark: string;
@@ -94,20 +92,20 @@ function workflowStatusTone(status: string): {
 } {
   switch (status) {
     case "Active":
-      return { spark: "text-emerald-500", dot: "bg-emerald-500" }; // #10b981
+      return { spark: "text-neutral-900", dot: "bg-neutral-900" };
     case "Ready":
     case "Pending":
-      return { spark: "text-amber-500", dot: "bg-amber-500" }; // #f59e0b
+      return { spark: "text-neutral-600", dot: "bg-neutral-600" };
     case "Draft":
-      return { spark: "text-slate-500", dot: "bg-slate-500" }; // #64748b
+      return { spark: "text-neutral-400", dot: "bg-neutral-400" };
     case "Synced":
-      return { spark: "text-sky-500", dot: "bg-sky-500" }; // #0ea5e9
+      return { spark: "text-neutral-700", dot: "bg-neutral-700" };
     case "Flagged":
-      return { spark: "text-red-500", dot: "bg-red-500" }; // #ef4444
+      return { spark: "text-neutral-800", dot: "bg-neutral-800" };
     case "Verified":
-      return { spark: "text-indigo-500", dot: "bg-indigo-500" }; // #6366f1
+      return { spark: "text-neutral-900", dot: "bg-neutral-900" };
     default:
-      return { spark: "text-slate-500", dot: "bg-slate-500" };
+      return { spark: "text-neutral-500", dot: "bg-neutral-500" };
   }
 }
 
@@ -128,9 +126,9 @@ export function scoreSeriesColor(score: number): string {
   return CHART.gauge;
 }
 
-/** Tailwind bg utility for score progress fills. */
+/** Tailwind bg utility for score progress fills — grayscale. */
 export function scoreFillClass(score: number): string {
-  if (score < 70) return "bg-red-600";
-  if (score <= 85) return "bg-amber-500";
-  return "bg-emerald-600";
+  if (score < 70) return "bg-neutral-800";
+  if (score <= 85) return "bg-neutral-500";
+  return "bg-neutral-900";
 }

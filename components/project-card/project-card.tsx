@@ -286,7 +286,7 @@ export default function ProjectCard({
                     role="combobox"
                     aria-expanded={clausePickerOpen}
                     className={cn(
-                      "inline-flex h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] w-full items-center justify-between gap-2 rounded-lg border border-[oklch(0%_0_0)] bg-transparent px-4 py-3 text-button font-medium text-[oklch(0%_0_0)] shadow-none transition-colors hover:bg-[oklch(96%_0_0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0%_0_0)] focus-visible:ring-offset-2",
+                      "inline-flex h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] w-full items-center justify-between gap-2 rounded-lg border border-[oklch(0%_0_0)] bg-transparent px-4 py-3 text-button font-medium text-neutral-900 shadow-none transition-colors hover:bg-[oklch(96%_0_0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0%_0_0)] focus-visible:ring-offset-2",
                       clausePickerOpen && "bg-[oklch(96%_0_0)]",
                     )}
                   >
@@ -351,12 +351,12 @@ export default function ProjectCard({
 
             {selectedClause ? (
               <>
-                <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-4">
+                <p className="text-body1 text-neutral-900 m-0 mb-4">
                   {selectedClause.description}
                 </p>
 
                 <p
-                  className="text-body1 m-0 mb-3 text-[oklch(0%_0_0)]"
+                  className="text-body1 m-0 mb-3 text-neutral-900"
                   style={{ fontWeight: 600 }}
                 >
                   Documents needed for this clause:
@@ -380,7 +380,7 @@ export default function ProjectCard({
             ) : null}
 
             {selectedFile ? (
-              <p className="text-body2 text-[oklch(0%_0_0)] m-0 mb-3">
+              <p className="text-body2 text-neutral-900 m-0 mb-3">
                 Selected
                 {selectedDocType ? ` ${selectedDocType}` : ""}: {selectedFile.name}
               </p>
@@ -392,8 +392,8 @@ export default function ProjectCard({
                 className={cn(
                   "text-body2 m-0 mb-4",
                   auditStatus === "error"
-                    ? "text-[oklch(42%_0.16_25)]"
-                    : "text-[oklch(0%_0_0)]",
+                    ? "text-neutral-900"
+                    : "text-neutral-700",
                 )}
               >
                 {auditMessage}
@@ -413,7 +413,7 @@ export default function ProjectCard({
               variant="black"
               size="lg"
               className={cn(
-                "project-card-cta relative w-full overflow-hidden border-0 disabled:opacity-100 disabled:bg-[oklch(90%_0_0)] disabled:text-[oklch(62%_0_0)]",
+                "project-card-cta relative w-full overflow-hidden border-0 disabled:opacity-100 disabled:bg-[oklch(90%_0_0)] disabled:text-neutral-500",
                 auditStatus === "loading" && "pointer-events-none",
               )}
               onClick={handleRunAudit}
@@ -501,9 +501,9 @@ export default function ProjectCard({
           layout === "vertical" ? "p-4 md:p-4" : "p-4 md:p-4 lg:p-4",
         )}
       >
-        <h4 className="text-h4 text-[oklch(0%_0_0)] m-0 mb-2">{title}</h4>
+        <h4 className="text-h4 text-neutral-900 m-0 mb-2">{title}</h4>
 
-        <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-4">{description}</p>
+        <p className="text-body1 text-neutral-900 m-0 mb-4">{description}</p>
 
         <Button
           variant="black"
