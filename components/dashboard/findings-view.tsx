@@ -123,7 +123,7 @@ export default function FindingsView() {
                     <TableRow
                       key={row.id}
                       className={cn(
-                        "cursor-pointer hover:bg-[var(--interactive-hover)]",
+                        "cursor-pointer hover:bg-neutral-50",
                         active?.id === row.id && "bg-[oklch(97%_0_0)]",
                       )}
                       onClick={() => setActiveId(row.id)}

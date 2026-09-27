@@ -93,7 +93,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
             <li key={stage.id} className="flex min-w-0 flex-1">
               <div
                 className={cn(
-                  "flex w-full min-w-0 flex-col gap-1 rounded-lg border border-zinc-200 bg-sidebar-muted/40 px-3 py-2 text-left",
+                  "flex w-full min-w-0 cursor-default flex-col gap-1 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-left select-none",
                 )}
               >
                 <span className="font-mono text-xs font-semibold uppercase tracking-wider text-neutral-900 tabular-nums">

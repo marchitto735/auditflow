@@ -189,7 +189,8 @@ export function ActivityStatus({
   );
 }
 
-export const TECHNICAL_VALUE_CLASS = "font-mono tabular-nums";
+export const TECHNICAL_VALUE_CLASS =
+  "font-mono tabular-nums text-neutral-900";
 
 /** UUID / hash cells — names with spaces stay in Geist Sans. */
 export function isTechnicalId(value: string) {
@@ -212,7 +213,7 @@ function renderCellContent(
       return wrapped ? (
         <span
           className={cn(
-            "block whitespace-normal break-words",
+            "block whitespace-normal break-words text-neutral-900",
             isTechnicalId(row.document) && TECHNICAL_VALUE_CLASS,
           )}
         >
@@ -221,7 +222,7 @@ function renderCellContent(
       ) : (
         <span
           className={cn(
-            "block w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap",
+            "block w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-neutral-900",
             isTechnicalId(row.document) && TECHNICAL_VALUE_CLASS,
           )}
         >
@@ -377,7 +378,7 @@ export function ActivityTable({
                 <TableRow
                   className={cn(
                     BODY_ROW_CLASS,
-                    "hover:bg-[var(--interactive-hover)]",
+                    "hover:bg-neutral-50",
                     expandable && "cursor-pointer",
                   )}
                   onClick={() => handleRowClick(row)}
@@ -405,7 +406,7 @@ export function ActivityTable({
                 </TableRow>
                 {expandable && row.detail ? (
                   <TableRow
-                    className={cn("hover:bg-[var(--interactive-hover)]", !open && "hidden")}
+                    className={cn("hover:bg-neutral-50", !open && "hidden")}
                   >
                     <TableCell
                       colSpan={ACTIVITY_COLUMNS.length}

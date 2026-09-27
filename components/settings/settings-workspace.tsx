@@ -3,7 +3,6 @@
 import { useState, useTransition, type ReactNode } from "react";
 import { toast } from "sonner";
 import { saveOrganizationSettings } from "@/app/actions/settings-actions";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -33,7 +32,6 @@ import {
   SESSION_TIMEOUT_OPTIONS,
   TIMEZONE_OPTIONS,
   type DateFormat,
-  type IntegrationsSnapshot,
   type OrganizationSettings,
   type PasswordExpiry,
   type SessionTimeout,
@@ -119,10 +117,8 @@ function ToggleRow({
 
 export default function SettingsWorkspace({
   initialSettings,
-  integrations,
 }: {
   initialSettings: OrganizationSettings;
-  integrations: IntegrationsSnapshot;
 }) {
   const [settings, setSettings] = useState(initialSettings);
   const [pending, startTransition] = useTransition();
@@ -138,12 +134,6 @@ export default function SettingsWorkspace({
         toast.error(result.message);
         return;
       }
-      if (settings.openaiApiKeyInput.trim()) {
-        patch({
-          openaiApiKeyInput: "",
-          openaiApiKeyMasked: "••••••••••••rotated",
-        });
-      }
       toast.success(result.message);
     });
   }
@@ -154,8 +144,7 @@ export default function SettingsWorkspace({
         <div className="border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Workspace Settings</p>
           <p className="text-body1 m-0 mt-1 text-neutral-600">
-            Organization defaults, security posture, pipeline connections, and
-            alert preferences.
+            Organization defaults, security posture, and alert preferences.
           </p>
         </div>
 
@@ -169,7 +158,6 @@ export default function SettingsWorkspace({
                 [
                   ["general", "General"],
                   ["security", "Security"],
-                  ["integrations", "Integrations"],
                   ["notifications", "Notifications"],
                 ] as const
               ).map(([value, label]) => (
@@ -179,7 +167,7 @@ export default function SettingsWorkspace({
                   className={cn(
                     "rounded-md px-3 py-1.5 text-sm text-neutral-600 shadow-none",
                     "data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-primary-foreground",
-                    "data-[state=inactive]:hover:bg-[var(--interactive-hover)] data-[state=inactive]:hover:text-primary",
+                    "data-[state=inactive]:hover:bg-neutral-50 data-[state=inactive]:hover:text-neutral-900",
                   )}
                 >
                   {label}
@@ -352,102 +340,6 @@ export default function SettingsWorkspace({
                       ))}
                     </SelectContent>
                   </Select>
-                </FieldRow>
-              </div>
-            </SettingsSection>
-          </TabsContent>
-
-          <TabsContent value="integrations" className="m-0 p-4 md:p-6">
-            <SettingsSection
-              title="Integrations & Pipelines"
-              description="Backend connectivity and ingestion / LLM credentials for AuditFlow."
-            >
-              <div className="flex flex-col gap-5">
-                <div className="rounded-lg border border-neutral-200 bg-neutral-50/60 px-4 py-3">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="m-0 text-sm font-medium text-neutral-900">
-                        Supabase Backend
-                      </p>
-                      <p className="m-0 mt-1 font-mono text-xs text-neutral-600 break-all">
-                        {integrations.supabaseEndpoint}
-                      </p>
-                    </div>
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "border-neutral-300 bg-white font-medium",
-                        integrations.supabaseConnected
-                          ? "text-emerald-800"
-                          : "text-neutral-500",
-                      )}
-                    >
-                      <span
-                        className={cn(
-                          "mr-1.5 inline-block size-2 rounded-full",
-                          integrations.supabaseConnected
-                            ? "bg-status-success"
-                            : "bg-neutral-400",
-                        )}
-                        aria-hidden
-                      />
-                      {integrations.supabaseConnected
-                        ? "Connected"
-                        : "Not connected"}
-                    </Badge>
-                  </div>
-                </div>
-
-                <FieldRow
-                  label="n8n SOP webhook"
-                  htmlFor="n8n-webhook"
-                  hint="Master webhook URL for automated document ingestion."
-                >
-                  <Input
-                    id="n8n-webhook"
-                    type="url"
-                    placeholder="https://n8n.example.com/webhook/sop-parse"
-                    className="font-mono text-sm"
-                    value={settings.n8nWebhookUrl}
-                    onChange={(event) =>
-                      patch({ n8nWebhookUrl: event.target.value })
-                    }
-                  />
-                  {integrations.n8nWebhookConfigured &&
-                  !settings.n8nWebhookUrl ? (
-                    <p className="m-0 mt-1 text-xs text-muted-foreground">
-                      Env hint: {integrations.n8nWebhookHint}
-                    </p>
-                  ) : null}
-                </FieldRow>
-
-                <FieldRow
-                  label="OpenAI API key"
-                  htmlFor="openai-key"
-                  hint="Used for compliance gap analysis and embeddings. Leave blank to keep the current key."
-                >
-                  <div className="flex flex-col gap-2">
-                    {settings.openaiApiKeyMasked ? (
-                      <p className="m-0 font-mono text-xs text-neutral-500">
-                        Current: {settings.openaiApiKeyMasked}
-                      </p>
-                    ) : (
-                      <p className="m-0 text-xs text-muted-foreground">
-                        No key configured in environment.
-                      </p>
-                    )}
-                    <Input
-                      id="openai-key"
-                      type="password"
-                      autoComplete="off"
-                      placeholder="sk-… (paste to rotate)"
-                      className="font-mono text-sm"
-                      value={settings.openaiApiKeyInput}
-                      onChange={(event) =>
-                        patch({ openaiApiKeyInput: event.target.value })
-                      }
-                    />
-                  </div>
                 </FieldRow>
               </div>
             </SettingsSection>

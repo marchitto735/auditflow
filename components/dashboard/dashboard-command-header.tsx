@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -44,22 +43,20 @@ function formatUpdatedLabel(secondsAgo: number) {
 
 /**
  * Command-center chrome — time range, unit scope, live pulse, and freshness.
- * Built from shadcn ToggleGroup, Select, Button, and Badge.
+ * Built from shadcn ToggleGroup, Select, and Badge.
  */
 export function DashboardCommandHeader({ className }: { className?: string }) {
   const [range, setRange] = React.useState<TimeRange>("24h");
   const [unit, setUnit] = React.useState<UnitFilter>("all");
-  const [live, setLive] = React.useState(true);
   const [secondsAgo, setSecondsAgo] = React.useState(0);
 
   React.useEffect(() => {
-    if (!live) return;
     setSecondsAgo(0);
     const id = window.setInterval(() => {
       setSecondsAgo((prev) => prev + 1);
     }, 1000);
     return () => window.clearInterval(id);
-  }, [live]);
+  }, []);
 
   return (
     <div
@@ -90,7 +87,7 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
               className={cn(
                 "h-8 rounded-md border-0 px-3 shadow-none first:rounded-md last:rounded-md data-[spacing=0]:rounded-md data-[spacing=0]:first:rounded-md data-[spacing=0]:last:rounded-md",
                 "data-[state=on]:bg-primary data-[state=on]:font-semibold data-[state=on]:text-primary-foreground data-[state=on]:hover:bg-[var(--primary-hover)] data-[state=on]:hover:text-primary-foreground",
-                "data-[state=off]:bg-transparent data-[state=off]:font-medium data-[state=off]:text-neutral-500 data-[state=off]:hover:bg-[var(--interactive-hover)] data-[state=off]:hover:text-primary",
+                "data-[state=off]:bg-transparent data-[state=off]:font-medium data-[state=off]:text-neutral-500 data-[state=off]:hover:bg-neutral-50 data-[state=off]:hover:text-neutral-900",
                 "focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-0",
               )}
             >
@@ -108,7 +105,7 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
         >
           <SelectTrigger
             aria-label="Filter by unit"
-            className="h-9 w-auto min-w-[8.5rem] border-zinc-200 bg-white font-medium shadow-none"
+            className="h-9 w-auto min-w-[8.5rem] font-medium"
           >
             <SelectValue placeholder="All units" />
           </SelectTrigger>
@@ -121,29 +118,20 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
           </SelectContent>
         </Select>
 
-        <Button
-          type="button"
-          variant="outline"
-          aria-pressed={live}
-          aria-label={live ? "Pause live updates" : "Resume live updates"}
-          onClick={() => setLive((prev) => !prev)}
-          className="h-9 min-h-9 gap-2 border-zinc-200 bg-white px-3 text-sm font-medium text-neutral-600 shadow-none hover:bg-[var(--interactive-hover)]"
+        <span
+          className="inline-flex h-9 min-h-9 cursor-default items-center gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 shadow-none select-none"
+          aria-label="System status: live"
+          role="status"
         >
           <span
             className="relative flex size-2.5 shrink-0 items-center justify-center"
             aria-hidden
           >
-            {live ? (
-              <>
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-status-success/70" />
-                <span className="relative size-2.5 rounded-full bg-status-success" />
-              </>
-            ) : (
-              <span className="size-2.5 rounded-full bg-neutral-300" />
-            )}
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-status-success/70" />
+            <span className="relative size-2.5 rounded-full bg-status-success" />
           </span>
-          <span>{live ? "Live" : "Paused"}</span>
-        </Button>
+          <span>Live</span>
+        </span>
       </div>
 
       <Badge

@@ -40,7 +40,7 @@ const SelectStep = React.memo(function SelectStep({
                   "rounded-sm px-2.5 py-1 transition-colors text-[length:var(--text-button-size)] leading-[var(--line-height-button)] font-[var(--font-weight-button)] border",
                   timeFormat === "12h"
                     ? "border border-border dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] bg-muted dark:bg-[oklch(26%_0.01_264)] color:bg-[oklch(38%_0.035_165)] text-foreground dark:text-white color:text-white"
-                    : "bg-transparent text-neutral-500 border-transparent hover:bg-[var(--interactive-hover)] dark:hover:bg-[var(--interactive-hover)] color:hover:bg-[var(--interactive-hover)]"
+                    : "bg-transparent text-neutral-500 border-transparent hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50"
                 )}
               >
                 12h
@@ -51,7 +51,7 @@ const SelectStep = React.memo(function SelectStep({
                   "rounded-sm px-2.5 py-1 transition-colors text-[length:var(--text-button-size)] leading-[var(--line-height-button)] font-[var(--font-weight-button)] border",
                   timeFormat === "24h"
                     ? "border border-border dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] bg-muted dark:bg-[oklch(26%_0.01_264)] color:bg-[oklch(38%_0.035_165)] text-foreground dark:text-white color:text-white"
-                    : "bg-transparent text-neutral-500 border-transparent hover:bg-[var(--interactive-hover)] dark:hover:bg-[var(--interactive-hover)] color:hover:bg-[var(--interactive-hover)]"
+                    : "bg-transparent text-neutral-500 border-transparent hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50"
                 )}
               >
                 24h

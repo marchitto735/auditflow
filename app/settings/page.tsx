@@ -5,15 +5,11 @@ import {
   PAGE_GUTTER_CLASS,
   PAGE_INNER_CLASS,
 } from "@/lib/page-layout";
-import {
-  getIntegrationsSnapshot,
-  getOrganizationSettingsDraft,
-} from "@/lib/services/get-settings-snapshot";
+import { getOrganizationSettingsDraft } from "@/lib/services/get-settings-snapshot";
 import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
   const settings = getOrganizationSettingsDraft();
-  const integrations = getIntegrationsSnapshot();
 
   return (
     <div className="min-h-0 min-w-0 w-full flex-1 pb-0 md:pb-4">
@@ -21,12 +17,9 @@ export default function SettingsPage() {
         <div className={cn(PAGE_INNER_CLASS, "flex w-full flex-col")}>
           <SectionHeader
             title="Configuration"
-            description="Organization defaults, security controls, pipeline integrations, and notification preferences."
+            description="Organization defaults, security controls, and notification preferences."
           />
-          <SettingsWorkspace
-            initialSettings={settings}
-            integrations={integrations}
-          />
+          <SettingsWorkspace initialSettings={settings} />
         </div>
       </section>
     </div>

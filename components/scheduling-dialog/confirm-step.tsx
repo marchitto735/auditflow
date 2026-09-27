@@ -132,7 +132,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
               asChild
               variant="ghost"
               size="icon"
-              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-[var(--interactive-hover)] dark:hover:bg-[var(--interactive-hover)] color:hover:bg-[var(--interactive-hover)] transition-colors"
+              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50 transition-colors"
               aria-label="Google Calendar"
             >
               {googleCalendarUrl ? (
@@ -150,7 +150,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
               asChild
               variant="ghost"
               size="icon"
-              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-[var(--interactive-hover)] dark:hover:bg-[var(--interactive-hover)] color:hover:bg-[var(--interactive-hover)] transition-colors"
+              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50 transition-colors"
               aria-label="Outlook"
             >
               {outlookCalendarUrl ? (
@@ -168,7 +168,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
               asChild
               variant="ghost"
               size="icon"
-              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-[var(--interactive-hover)] dark:hover:bg-[var(--interactive-hover)] color:hover:bg-[var(--interactive-hover)] transition-colors"
+              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50 transition-colors"
               aria-label="Office 365"
             >
               {office365CalendarUrl ? (
@@ -186,7 +186,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
               asChild
               variant="ghost"
               size="icon"
-              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-[var(--interactive-hover)] dark:hover:bg-[var(--interactive-hover)] color:hover:bg-[var(--interactive-hover)] transition-colors"
+              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50 transition-colors"
               aria-label="ICS"
             >
               {icsUrl ? (

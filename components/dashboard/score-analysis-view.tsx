@@ -115,7 +115,7 @@ function PageSizeSelector({
       ref={triggerRef}
       type="button"
       aria-label="Rows per page"
-      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-zinc-200 bg-sidebar-muted/40 px-2 text-sm font-medium text-neutral-900 transition-colors duration-200 hover:border-primary/40 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-neutral-200 bg-white px-2 text-sm font-medium text-neutral-900 transition-colors duration-200 hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <span>{pageSize}</span>
       <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden />
@@ -187,7 +187,7 @@ function AnalyticsPaginationNav({
       <Button
         type="button"
         variant="ghost"
-        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-[var(--interactive-hover)] hover:text-primary"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-neutral-100 hover:text-neutral-900"
         disabled={currentPage <= 1}
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
       >
@@ -211,7 +211,7 @@ function AnalyticsPaginationNav({
               "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
               item === currentPage
                 ? "bg-primary text-primary-foreground hover:bg-[var(--primary-hover)] hover:text-primary-foreground"
-                : "text-neutral-900 hover:bg-[var(--interactive-hover)] hover:text-primary",
+                : "text-neutral-900 hover:bg-neutral-100 hover:text-neutral-900",
             )}
             aria-current={item === currentPage ? "page" : undefined}
             onClick={() => onPageChange(item)}
@@ -223,7 +223,7 @@ function AnalyticsPaginationNav({
       <Button
         type="button"
         variant="ghost"
-        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-[var(--interactive-hover)] hover:text-primary"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-neutral-100 hover:text-neutral-900"
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
       >
@@ -431,7 +431,7 @@ export default function ScoreAnalysisView() {
         >
           <SelectTrigger
             aria-label="Date range"
-            className="h-9 w-auto min-w-[10.5rem] border-zinc-200 bg-white text-sm font-medium text-neutral-700 shadow-none"
+            className="h-9 w-auto min-w-[10.5rem] text-sm font-medium"
           >
             <SelectValue />
           </SelectTrigger>
@@ -450,7 +450,7 @@ export default function ScoreAnalysisView() {
         >
           <SelectTrigger
             aria-label="Department"
-            className="h-9 w-auto min-w-[12rem] border-zinc-200 bg-white text-sm font-medium text-neutral-700 shadow-none"
+            className="h-9 w-auto min-w-[12rem] text-sm font-medium"
           >
             <SelectValue />
           </SelectTrigger>
@@ -531,7 +531,7 @@ export default function ScoreAnalysisView() {
                   {deptPaging.pageRows.map((row) => (
                     <TableRow
                       key={row.id}
-                      className="border-0 hover:bg-[var(--interactive-hover)]"
+                      className="border-0 hover:bg-neutral-50"
                     >
                       <TableCell className="border-t border-zinc-100 px-4 py-3">
                         <TruncatedText
@@ -628,7 +628,7 @@ export default function ScoreAnalysisView() {
                   {variancePaging.pageRows.map((row) => (
                     <TableRow
                       key={row.id}
-                      className="border-0 hover:bg-[var(--interactive-hover)]"
+                      className="border-0 hover:bg-neutral-50"
                     >
                       <TableCell className="border-t border-zinc-100 px-4 py-3 font-mono text-sm tabular-nums text-neutral-900">
                         {row.date}

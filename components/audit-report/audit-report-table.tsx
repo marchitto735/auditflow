@@ -55,7 +55,7 @@ const REPORT_GRID_CLASS = cn(
 const META_FIELD_CLASS = "flex min-w-0 flex-col gap-2";
 const META_VALUE_CLASS = "text-body1 text-foreground";
 const ACTION_ITEM_CLASS =
-  "cursor-pointer gap-2 text-sm hover:bg-[var(--interactive-hover)] focus:bg-[var(--interactive-hover)]";
+  "cursor-pointer gap-2 text-sm hover:bg-neutral-50 focus:bg-neutral-100";
 
 function HeaderLabel({
   label,
@@ -144,7 +144,7 @@ function AuditReportActionsMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="min-w-[13rem] rounded-2xl border border-zinc-200 bg-white p-1 shadow-lg"
+        className="min-w-[13rem] rounded-2xl border border-neutral-200 bg-white p-1 shadow-lg"
       >
         <DropdownMenuItem
           className={ACTION_ITEM_CLASS}

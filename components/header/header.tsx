@@ -51,9 +51,7 @@ function HeaderBreadcrumbs({ pathname }: { pathname: string }) {
               ) : null}
               <BreadcrumbItem>
                 {isLast || !crumb.href ? (
-                  <BreadcrumbPage className="font-medium">
-                    {crumb.label}
-                  </BreadcrumbPage>
+                  <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink asChild>
                     <Link href={crumb.href}>{crumb.label}</Link>

@@ -29,24 +29,48 @@ export const PAGE_CANVAS_CLASS = "bg-[#F7F7F7] dark:bg-background color:bg-backg
 /** Shared height for sidebar brand bar + main sticky navbar. */
 export const APP_TOPBAR_HEIGHT_CLASS = "h-16";
 
-/** Icon utility buttons — same radius as sidebar nav; Engineering Blue hover tint. */
+/** Icon utility buttons — same radius as sidebar nav; grayscale hover. */
 export const NAV_UTILITY_BUTTON_CLASS =
-  "nav-button flex h-9 w-9 min-h-9 min-w-9 items-center justify-center rounded-[6px] p-0! bg-transparent border-0 shadow-none transition-colors hover:bg-[var(--interactive-hover)] hover:text-primary dark:hover:bg-[var(--interactive-hover)] color:hover:bg-[var(--interactive-hover)] [&_svg]:size-5 [&_svg]:shrink-0";
+  "nav-button flex h-9 w-9 min-h-9 min-w-9 items-center justify-center rounded-[6px] p-0! bg-transparent border-0 shadow-none transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-zinc-700/40 color:hover:bg-white/10 [&_svg]:size-5 [&_svg]:shrink-0";
 
 /**
- * Soft Engineering Blue hover fill for ghost controls, pills, and nav items.
- * Prefer over hover:bg-neutral-100 / zinc-100.
+ * Resting surface for inputs, selects, and filter triggers — pure grayscale.
  */
-export const INTERACTIVE_HOVER_CLASS =
-  "transition-colors hover:bg-[var(--interactive-hover)] hover:text-primary";
+export const FIELD_SURFACE_CLASS =
+  "border border-neutral-200 bg-white text-neutral-900";
 
-/** Blue-tint hover for bordered filter triggers / selects. */
+/** Neutral hover / open for bordered filter triggers / selects. */
 export const INTERACTIVE_CONTROL_HOVER_CLASS =
-  "transition-colors hover:border-primary/40 hover:bg-[var(--interactive-hover)]";
+  "transition-colors hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50";
 
-/** Table body row hover — subtle brand tint, keeps chrome neutral at rest. */
+/**
+ * Shared dropdown / select trigger chrome — white at rest;
+ * refined neutral border/fill on hover, open, and focus (no brand blue).
+ */
+export const DROPDOWN_TRIGGER_CLASS =
+  "border border-neutral-200 bg-white text-neutral-900 shadow-none transition-colors duration-200 hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background [&_svg]:text-neutral-900";
+
+/** Shared input / textarea resting + engagement chrome — grayscale only. */
+export const FIELD_CONTROL_CLASS =
+  "border border-neutral-200 bg-white text-neutral-900 transition-colors placeholder:text-neutral-500 hover:border-neutral-400 hover:bg-neutral-50 focus-visible:outline-none focus-visible:border-neutral-400 focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+
+/** Soft neutral hover fill for ghost controls, pills, and secondary chrome. */
+export const INTERACTIVE_HOVER_CLASS =
+  "transition-colors hover:bg-neutral-100 hover:text-neutral-900";
+
+/** Table body row hover — subtle neutral tint. */
 export const TABLE_ROW_HOVER_CLASS =
-  "transition-colors hover:bg-[var(--interactive-hover)]";
+  "transition-colors hover:bg-neutral-50";
+
+/**
+ * Row meatball (`…`) column — fixed width, visible overflow (avoids default
+ * `text-ellipsis` phantom dots), and right padding inside the card edge.
+ */
+export const TABLE_ROW_ACTIONS_HEAD_CLASS =
+  "h-10 w-14 max-w-none overflow-visible px-2 pr-4 text-right text-sm font-medium text-clip text-neutral-900";
+
+export const TABLE_ROW_ACTIONS_CELL_CLASS =
+  "h-12 w-14 max-w-none overflow-visible px-2 pr-4 py-0 text-right text-clip align-middle";
 
 /** Static dashboard card chrome — flat white surface, subtle zinc border, no shadow. */
 export const DASHBOARD_CARD_CLASS =
@@ -84,7 +108,7 @@ export const RECENT_ACTIVITY_CARD_HEIGHT_CLASS = "h-auto";
  * Compose with layout utilities (flex, group, etc.) as needed.
  */
 export const INTERACTIVE_CARD_CLASS =
-  "rounded-2xl border border-neutral-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-primary/30 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-neutral-900/30";
+  "rounded-2xl border border-neutral-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-neutral-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-neutral-900/30";
 
 /**
  * Card eyebrow — single style for every card header on Dashboard + Audits.

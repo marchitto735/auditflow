@@ -228,7 +228,7 @@ export default function AuditLogView({
               </TableHeader>
               <TableBody>
                 {rows.length === 0 ? (
-                  <TableRow className="hover:bg-[var(--interactive-hover)]">
+                  <TableRow className="hover:bg-neutral-50">
                     <TableCell
                       colSpan={6}
                       className="max-w-none whitespace-normal px-4 py-4 text-muted-foreground"
@@ -239,7 +239,7 @@ export default function AuditLogView({
                   </TableRow>
                 ) : (
                   rows.map((row) => (
-                  <TableRow key={row.id} className="hover:bg-[var(--interactive-hover)]">
+                  <TableRow key={row.id} className="hover:bg-neutral-50">
                     <TableCell className="px-4">
                       <TruncatedText
                         className={cn(

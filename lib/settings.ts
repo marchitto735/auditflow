@@ -44,22 +44,9 @@ export type OrganizationSettings = {
   passwordMinLength: number;
   requireSpecialChars: boolean;
   passwordExpiry: PasswordExpiry;
-  n8nWebhookUrl: string;
-  openaiApiKeyMasked: string;
-  /** Empty unless the user enters a new key to rotate. */
-  openaiApiKeyInput: string;
   notifyCriticalFailures: boolean;
   notifyFrameworkUpdates: boolean;
   notifyPolicyDeadlines: boolean;
-};
-
-export type IntegrationsSnapshot = {
-  supabaseConnected: boolean;
-  supabaseEndpoint: string;
-  openaiConfigured: boolean;
-  openaiKeyHint: string;
-  n8nWebhookConfigured: boolean;
-  n8nWebhookHint: string;
 };
 
 export const DEFAULT_ORGANIZATION_SETTINGS: OrganizationSettings = {
@@ -72,17 +59,7 @@ export const DEFAULT_ORGANIZATION_SETTINGS: OrganizationSettings = {
   passwordMinLength: 12,
   requireSpecialChars: true,
   passwordExpiry: "90d",
-  n8nWebhookUrl: "",
-  openaiApiKeyMasked: "",
-  openaiApiKeyInput: "",
   notifyCriticalFailures: true,
   notifyFrameworkUpdates: true,
   notifyPolicyDeadlines: false,
 };
-
-export function maskSecret(value: string, visible = 4): string {
-  const trimmed = value.trim();
-  if (!trimmed) return "";
-  if (trimmed.length <= visible) return "•".repeat(trimmed.length);
-  return `${"•".repeat(Math.min(24, trimmed.length - visible))}${trimmed.slice(-visible)}`;
-}

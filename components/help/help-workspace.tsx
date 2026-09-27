@@ -81,19 +81,6 @@ function ticketStatusDotClass(status: SupportTicket["status"]) {
   }
 }
 
-function severityWeight(severity: TicketSeverity) {
-  switch (severity) {
-    case "Critical":
-      return "font-semibold text-status-critical";
-    case "High":
-      return "font-medium text-amber-700";
-    case "Medium":
-      return "text-primary";
-    default:
-      return "text-neutral-500";
-  }
-}
-
 function CardShell({
   eyebrow,
   description,
@@ -192,7 +179,7 @@ function SystemStatusStrip() {
                   <button
                     type="button"
                     onClick={() => copyValue(item.label, item.value)}
-                    className="flex w-full items-center justify-between gap-3 rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2 text-left transition-colors hover:border-primary/30 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
+                    className="flex w-full items-center justify-between gap-3 rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2 text-left transition-colors hover:border-neutral-300 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
                   >
                     <span className="min-w-0">
                       <span className="block text-xs text-neutral-500">
@@ -255,7 +242,7 @@ function KnowledgeBase() {
               <li key={article.id}>
                 <a
                   href={article.href}
-                  className="flex h-full flex-col gap-2 rounded-lg border border-neutral-200 bg-white p-4 no-underline transition-colors hover:border-primary/30 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
+                  className="flex h-full flex-col gap-2 rounded-lg border border-neutral-200 bg-white p-4 no-underline transition-colors hover:border-neutral-300 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <Badge
@@ -450,7 +437,7 @@ function ActiveTicketsTable() {
             {HELP_SUPPORT_TICKETS.map((ticket) => (
               <TableRow
                 key={ticket.id}
-                className="border-0 bg-white hover:bg-[var(--interactive-hover)]"
+                className="border-0 bg-white hover:bg-neutral-50"
               >
                 <TableCell className="h-12 px-4 py-0 font-mono text-sm text-neutral-900">
                   {ticket.id}
@@ -460,12 +447,7 @@ function ActiveTicketsTable() {
                     {ticket.subject}
                   </span>
                 </TableCell>
-                <TableCell
-                  className={cn(
-                    "h-12 px-4 py-0 text-sm",
-                    severityWeight(ticket.severity),
-                  )}
-                >
+                <TableCell className="h-12 px-4 py-0 text-sm text-neutral-700">
                   {ticket.severity}
                 </TableCell>
                 <TableCell className="h-12 px-4 py-0">
@@ -510,27 +492,30 @@ function EmergencyEscalation() {
   return (
     <Card
       className={cn(
-        "overflow-hidden border-status-critical bg-status-critical text-status-critical-foreground",
-        "rounded-2xl shadow-none",
+        "overflow-hidden border-l-4 border-l-status-critical",
+        DASHBOARD_CARD_CLASS,
       )}
     >
       <CardContent className="flex flex-col gap-4 p-4 md:flex-row md:items-start md:justify-between md:p-5">
         <div className="min-w-0 max-w-2xl">
           <div className="flex items-center gap-2">
-            <ShieldAlert className="size-5 shrink-0 text-white" aria-hidden />
-            <p className="m-0 text-[13px] font-medium uppercase tracking-wider text-red-100">
+            <ShieldAlert
+              className="size-5 shrink-0 text-status-critical"
+              aria-hidden
+            />
+            <p className={cn(CARD_SECTION_EYEBROW_CLASS, "tracking-wider")}>
               Emergency Escalation
             </p>
           </div>
-          <h3 className="m-0 mt-2 text-lg font-medium tracking-tight text-white">
+          <h3 className="m-0 mt-2 text-lg font-medium tracking-tight text-neutral-900">
             Active audit incident protocol
           </h3>
-          <p className="m-0 mt-2 text-sm leading-relaxed text-red-100">
+          <p className="m-0 mt-2 text-sm leading-relaxed text-neutral-600">
             For critical pipeline failures during a live inspection or third-party
             audit, contact the on-call compliance officer before altering production
             data. Do not re-run destructive remediations without dual control.
           </p>
-          <ul className="m-0 mt-3 list-disc space-y-1 pl-5 text-sm text-red-100">
+          <ul className="m-0 mt-3 list-disc space-y-1 pl-5 text-sm text-neutral-700">
             <li>Preserve session diagnostics and report IDs</li>
             <li>Escalate Critical tickets with severity Critical</li>
             <li>Compliance officer: Naomi Park · +1 (212) 555-0148</li>
@@ -539,8 +524,8 @@ function EmergencyEscalation() {
         <div className="flex shrink-0 flex-col gap-2">
           <Button
             type="button"
-            variant="outline"
-            className="h-9! min-h-9! border-white bg-white text-neutral-900 hover:bg-[var(--interactive-hover)] hover:text-primary"
+            variant="black"
+            className="h-9! min-h-9! rounded-md px-4 text-sm"
             onClick={() =>
               toast.message("Escalation hotline", {
                 description: "+1 (212) 555-0148 · on-call until 08:00 UTC",
@@ -552,8 +537,8 @@ function EmergencyEscalation() {
           </Button>
           <Button
             type="button"
-            variant="ghost"
-            className="h-9! min-h-9! text-white hover:bg-white/10 hover:text-white"
+            variant="outline"
+            className="h-9! min-h-9! rounded-md px-4 text-sm"
             onClick={async () => {
               const checklist = [
                 "1. Preserve session diagnostics and report IDs",

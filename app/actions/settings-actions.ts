@@ -22,7 +22,7 @@ function isOneOf<T extends string>(
 /**
  * Validate and accept organization settings.
  * Persists to `org_settings` when that table exists; otherwise acknowledges
- * the save for UI feedback (env secrets cannot be written from the app runtime).
+ * the save for UI feedback.
  */
 export async function saveOrganizationSettings(
   input: OrganizationSettings,
@@ -53,26 +53,6 @@ export async function saveOrganizationSettings(
     return {
       ok: false,
       message: "Password minimum length must be between 8 and 128.",
-    };
-  }
-
-  if (input.n8nWebhookUrl.trim()) {
-    try {
-      const parsed = new URL(input.n8nWebhookUrl.trim());
-      if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
-        return { ok: false, message: "Webhook URL must be http(s)." };
-      }
-    } catch {
-      return { ok: false, message: "Enter a valid n8n webhook URL." };
-    }
-  }
-
-  // Secrets rotation is accepted but only stored when a backend secrets table
-  // is available — never write into process.env from this action.
-  if (input.openaiApiKeyInput.trim() && input.openaiApiKeyInput.trim().length < 16) {
-    return {
-      ok: false,
-      message: "OpenAI API key looks too short. Paste a full key to rotate.",
     };
   }
 

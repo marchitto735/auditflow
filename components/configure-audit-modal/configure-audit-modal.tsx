@@ -55,7 +55,7 @@ const SECTION_LABEL = "mb-2 text-sm font-medium text-neutral-900";
 
 /** Shared field shell for Frameworks / Clauses / Docs. */
 const FIELD_SURFACE_CLASS =
-  "relative flex min-h-14 w-full cursor-pointer items-center gap-2 rounded-lg border border-zinc-200 bg-sidebar-muted/40 px-3 py-3 text-left shadow-none transition-colors duration-200 ease-in-out hover:border-primary/40 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
+  "relative flex min-h-14 w-full cursor-pointer items-center gap-2 rounded-lg border border-neutral-200 bg-white px-3 py-3 text-left shadow-none transition-colors duration-200 ease-in-out hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
 
 const FIELD_SURFACE_OPEN_CLASS = "border-border bg-zinc-50 shadow-sm";
 
@@ -68,7 +68,7 @@ const PILL_CLASS =
   "inline-flex h-auto max-w-full items-center gap-1 rounded-full border border-border/60 bg-zinc-50 py-2 pl-2.5 pr-1 text-sm font-medium leading-normal text-neutral-900";
 
 const PILL_REMOVE_CLASS =
-  "inline-flex size-5 shrink-0 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-[var(--interactive-hover)] hover:text-primary";
+  "inline-flex size-5 shrink-0 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900";
 
 const PLACEHOLDER_CLASS =
   "flex items-center py-0.5 text-sm leading-normal text-muted-foreground";
@@ -97,7 +97,7 @@ const COMMAND_ITEM_CLASS =
   "cursor-pointer gap-2 rounded-md text-sm text-neutral-900 data-[selected=true]:bg-zinc-100 data-[selected=true]:text-neutral-900";
 
 const DONE_BUTTON_CLASS =
-  "h-8 px-2 text-sm font-medium text-neutral-900 hover:bg-[var(--interactive-hover)] hover:text-primary";
+  "h-8 px-2 text-sm font-medium text-neutral-900 hover:bg-neutral-100 hover:text-neutral-900";
 
 const DROPDOWN_EMPTY_CLASS =
   "px-3 py-6 text-center text-sm text-neutral-500";
@@ -115,7 +115,7 @@ function MultiSelectCheck({ checked }: { checked: boolean }) {
       aria-hidden
       className={cn(
         "flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-black bg-white text-white transition-colors",
-        checked && "border-primary bg-primary",
+        checked && "border-neutral-900 bg-neutral-900",
       )}
     >
       <Check
@@ -541,7 +541,7 @@ export function ConfigureAuditModal({
                 <TooltipTrigger asChild>
                   <button
                     type="button"
-                    className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:bg-[var(--interactive-hover)] hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30"
+                    className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30"
                     aria-label="About New Audit"
                     aria-expanded={helpOpen}
                     onClick={() => setHelpOpen(true)}
@@ -948,7 +948,7 @@ export function ConfigureAuditModal({
                   <div className="p-2">
                     <button
                       type="button"
-                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-neutral-900 transition-colors hover:bg-[var(--interactive-hover)]"
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-neutral-900 transition-colors hover:bg-neutral-50"
                       onClick={handleBrowseClick}
                     >
                       <Upload className="size-4 shrink-0 text-neutral-500" aria-hidden />
@@ -968,7 +968,7 @@ export function ConfigureAuditModal({
                     <Button
                       type="button"
                       variant="ghost"
-                      className="h-8 px-2 text-sm font-medium text-neutral-900 hover:bg-[var(--interactive-hover)] hover:text-primary"
+                      className="h-8 px-2 text-sm font-medium text-neutral-900 hover:bg-neutral-100 hover:text-neutral-900"
                       onClick={() => setDocsOpen(false)}
                     >
                       Done
@@ -1023,7 +1023,7 @@ export function ConfigureAuditModal({
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-lg border-zinc-800 bg-transparent px-4 text-sm font-medium text-neutral-900 hover:bg-[var(--interactive-hover)] hover:text-primary"
+                className="rounded-lg border-zinc-800 bg-transparent px-4 text-sm font-medium text-neutral-900 hover:bg-neutral-100 hover:text-neutral-900"
                 onClick={() => handleDialogOpenChange(false)}
                 disabled={isInitializing}
               >

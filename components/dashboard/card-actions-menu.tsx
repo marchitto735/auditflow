@@ -43,15 +43,15 @@ export const FEED_CARD_MENU_ACTIONS = [
 
 /** Shared meatball / filter dropdown panel chrome. */
 export const DASHBOARD_MENU_CONTENT_CLASS =
-  "min-w-[11.5rem] rounded-xl border border-zinc-200 bg-white p-1 text-neutral-950 shadow-sm";
+  "min-w-[11.5rem] rounded-xl border border-neutral-200 bg-white p-1 text-neutral-950 shadow-sm";
 
 /** Shared meatball / filter dropdown item — inset hover via parent p-1. */
 export const DASHBOARD_MENU_ITEM_CLASS =
-  "cursor-pointer rounded-lg px-2.5 py-2 text-sm font-medium text-neutral-800 focus:bg-[var(--interactive-hover)] focus:text-primary";
+  "cursor-pointer rounded-lg px-2.5 py-2 text-sm font-medium text-neutral-800 focus:bg-neutral-100 focus:text-neutral-900";
 
 /** Selected filter option fill (sidebar active parity). */
 export const DASHBOARD_MENU_ITEM_SELECTED_CLASS =
-  "bg-[var(--primary-muted)] text-primary focus:bg-[var(--primary-muted)] focus:text-primary";
+  "bg-neutral-100 text-neutral-900 focus:bg-neutral-100 focus:text-neutral-900";
 
 type CardActionsMenuProps = {
   label: string;
@@ -61,7 +61,7 @@ type CardActionsMenuProps = {
 };
 
 const TRIGGER_CLASS =
-  "inline-flex size-8 shrink-0 items-center justify-center rounded-md text-foreground transition-colors hover:bg-[var(--interactive-hover)] hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-primary/30";
+  "inline-flex size-8 shrink-0 items-center justify-center rounded-md text-foreground transition-colors hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-neutral-900/30";
 
 /**
  * Shared Swiss bento card meatball menu — subtle trigger, zinc hover items.

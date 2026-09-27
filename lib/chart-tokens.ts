@@ -1,17 +1,17 @@
 /**
  * AuditFlow chart + status palette.
- * Neutrals for chrome; Engineering Blue for trends / interaction;
- * semantic emerald / amber / red only for status-driven signals.
+ * Neutrals for chrome and trend series; semantic emerald / amber / red
+ * only for status-driven signals.
  * CSS mirrors live in `:root` as `--chart-*` / `--status-*` / `--primary`.
  */
 
 export const CHART = {
-  /** Primary series / trend lines — Engineering Blue */
+  /** Primary series / trend lines — charcoal */
   primary: "var(--chart-primary)",
   /** Active bar fill */
   structural: "var(--chart-structural)",
   /** Softened below-threshold bars */
-  structuralMuted: "#8aadc4",
+  structuralMuted: "#737373",
   /** Gauge / high score fill */
   gauge: "var(--status-success)",
   /** Inactive tracks / background bars */
@@ -26,9 +26,9 @@ export const CHART = {
   critical: "var(--status-critical)",
   /** High severity / warning */
   high: "var(--status-warning)",
-  /** Medium — primary blue */
+  /** Medium — charcoal primary */
   medium: "var(--chart-primary)",
-  /** Low — softer blue */
+  /** Low — mid gray */
   low: "var(--chart-2)",
   /** Success / verified */
   success: "var(--status-success)",
@@ -92,7 +92,7 @@ export function severityDotClass(severity: ChartSeverity): string {
 /**
  * Dashboard telemetry status → sparkline + status pip.
  * Semantic colors only when the label represents that state;
- * in-progress / active operational series use Engineering Blue.
+ * in-progress / active operational series use charcoal primary.
  */
 function workflowStatusTone(status: string): {
   spark: string;

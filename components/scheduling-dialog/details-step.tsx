@@ -101,7 +101,7 @@ const DetailsStep = React.memo(function DetailsStep({
       <div className="flex gap-2 mt-4 justify-end">
         <Button
           variant="outline"
-          className="text-button flex-1 min-w-0 border-0 hover:bg-[var(--interactive-hover)] dark:hover:bg-[var(--interactive-hover)] color:hover:bg-[var(--interactive-hover)]"
+          className="text-button flex-1 min-w-0 border-0 hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50"
           onClick={onBack}
           disabled={isSubmitting}
         >
@@ -109,7 +109,7 @@ const DetailsStep = React.memo(function DetailsStep({
         </Button>
         <Button
           variant="black"
-          className="flex-1 min-w-0 text-[length:var(--text-button-size)] leading-[var(--line-height-button)] font-[var(--font-weight-button)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] dark:bg-white dark:hover:bg-[var(--interactive-hover)] color:bg-white color:hover:bg-[var(--interactive-hover)] dark:!text-neutral-900 color:!text-neutral-900"
+          className="flex-1 min-w-0 text-[length:var(--text-button-size)] leading-[var(--line-height-button)] font-[var(--font-weight-button)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] dark:bg-white dark:hover:bg-neutral-50 color:bg-white color:hover:bg-neutral-50 dark:!text-neutral-900 color:!text-neutral-900"
           onClick={onConfirm}
           disabled={isSubmitting}
           aria-busy={isSubmitting}

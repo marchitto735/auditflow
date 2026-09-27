@@ -89,7 +89,7 @@ type DashboardToolbarProps = {
 };
 
 const CONTROL_CLASS =
-  "inline-flex h-10 w-full min-w-[9.5rem] items-center justify-between gap-2 rounded-lg border border-zinc-200 bg-sidebar-muted/40 px-3 text-sm font-medium transition-colors duration-200 hover:border-primary/40 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background md:w-[10.5rem]";
+  "inline-flex h-10 w-full min-w-[9.5rem] items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium transition-colors duration-200 hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background md:w-[10.5rem]";
 
 function filterTriggerClass(extra?: string) {
   return cn(CONTROL_CLASS, "text-neutral-900", extra);
@@ -210,7 +210,7 @@ function MobileFilterSection<T extends string>({
       <p className="m-0 px-1 text-xs font-semibold tracking-wide text-neutral-500 uppercase">
         {title}
       </p>
-      <div className="flex flex-col gap-0.5 rounded-xl border border-zinc-200 bg-white p-1">
+      <div className="flex flex-col gap-0.5 rounded-xl border border-neutral-200 bg-white p-1">
         {options.map((option) => {
           const isSelected = option.value === value;
           return (
@@ -361,7 +361,7 @@ export function DashboardToolbar({
             onChange={(event) => patch({ search: event.target.value })}
             placeholder="Search documents"
             aria-label="Search documents"
-            className="h-10 border-zinc-200 bg-sidebar-muted/40 pl-9 text-sm font-medium text-neutral-900 transition-colors duration-200 placeholder:text-neutral-900 hover:border-primary/40 hover:bg-[var(--interactive-hover)] md:text-sm"
+            className="h-10 border-zinc-200 bg-sidebar-muted/40 pl-9 text-sm font-medium text-neutral-900 transition-colors duration-200 placeholder:text-neutral-900 hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 md:text-sm"
           />
         </div>
         <MobileFiltersSheet value={value} onChange={patch} />

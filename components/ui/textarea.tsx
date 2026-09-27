@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { FIELD_CONTROL_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 const Textarea = React.forwardRef<
@@ -9,8 +10,9 @@ const Textarea = React.forwardRef<
   return (
     <textarea
       className={cn(
-        "flex min-h-[80px] w-full rounded-lg border border-input bg-[oklch(97%_0_0)] px-3 py-2 text-body1 text-foreground transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 md:text-body2 resize-y",
-        className
+        "flex min-h-[80px] w-full resize-y rounded-lg px-3 py-2 text-body1 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-50 md:text-body2",
+        FIELD_CONTROL_CLASS,
+        className,
       )}
       ref={ref}
       {...props}

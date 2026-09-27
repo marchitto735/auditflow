@@ -130,7 +130,7 @@ function FilterSelect<T extends string>({
       ref={triggerRef}
       type="button"
       aria-label={label}
-      className="inline-flex h-9 min-w-[8rem] items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 transition-colors hover:border-primary/40 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
+      className="inline-flex h-9 min-w-[8rem] items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 transition-colors hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
     >
       <span className="truncate">{selected}</span>
       <ChevronDown className="size-4 shrink-0" aria-hidden />
@@ -197,7 +197,7 @@ function PageSizeSelector({
       ref={triggerRef}
       type="button"
       aria-label="Rows per page"
-      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-neutral-200 bg-sidebar-muted/40 px-2 text-sm font-medium text-neutral-900"
+      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-neutral-200 bg-white px-2 text-sm font-medium text-neutral-900 transition-colors duration-200 hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <span>{pageSize}</span>
       <ChevronDown className="h-4 w-4 shrink-0" aria-hidden />
@@ -264,7 +264,7 @@ function FrameworksPaginationNav({
       <Button
         type="button"
         variant="ghost"
-        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-[var(--interactive-hover)] hover:text-primary"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-neutral-100 hover:text-neutral-900"
         disabled={currentPage <= 1}
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
       >
@@ -288,7 +288,7 @@ function FrameworksPaginationNav({
               "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
               item === currentPage
                 ? "bg-primary text-primary-foreground hover:bg-[var(--primary-hover)] hover:text-primary-foreground"
-                : "text-neutral-900 hover:bg-[var(--interactive-hover)] hover:text-primary",
+                : "text-neutral-900 hover:bg-neutral-100 hover:text-neutral-900",
             )}
             aria-current={item === currentPage ? "page" : undefined}
             onClick={() => onPageChange(item)}
@@ -300,7 +300,7 @@ function FrameworksPaginationNav({
       <Button
         type="button"
         variant="ghost"
-        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-[var(--interactive-hover)] hover:text-primary"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-neutral-100 hover:text-neutral-900"
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
       >
@@ -406,7 +406,7 @@ function FrameworkOverviewCards({
               "rounded-2xl border bg-white p-4 text-left shadow-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30",
               active
                 ? "border-neutral-800"
-                : "border-neutral-200 hover:border-primary/30",
+                : "border-neutral-200 hover:border-neutral-300",
             )}
           >
             <div className="flex items-start justify-between gap-2">
@@ -611,7 +611,7 @@ function MappingTable({
                 {pageRows.map((row) => (
                   <TableRow
                     key={row.id}
-                    className="border-0 bg-white hover:bg-[var(--interactive-hover)]"
+                    className="border-0 bg-white hover:bg-neutral-50"
                   >
                     <TableCell className="h-12 px-4 py-0 font-mono text-sm text-neutral-900">
                       {row.article}
