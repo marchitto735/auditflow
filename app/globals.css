@@ -1143,13 +1143,13 @@
   /* Case study hero metadata tags: dark mode — same fill as schedule calendar unselected day cells. */
   html.dark .project-hero-metadata span,
   [data-theme="dark"] .project-hero-metadata span {
-    background-color: oklch(26% 0.01 264);
+    background-color: oklch(26% 0 0);
   }
 
   /* Case study hero metadata tags: color mode — same fill as schedule calendar unselected day cells. */
   html.color .project-hero-metadata span,
   [data-theme="color"] .project-hero-metadata span {
-    background-color: oklch(38% 0.035 165);
+    background-color: oklch(38% 0 0);
   }
 
   .audit-cta-dash {

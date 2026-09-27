@@ -17,7 +17,7 @@ export default function Dashboard({
       className={cn(
         PAGE_GUTTER_CLASS,
         PAGE_CONTENT_TOP_CLASS,
-        "flex min-h-0 w-full flex-1 flex-col pb-32",
+        "flex min-h-0 w-full flex-1 flex-col",
       )}
     >
       <div className={cn(PAGE_INNER_CLASS, "flex w-full min-w-0 flex-col")}>

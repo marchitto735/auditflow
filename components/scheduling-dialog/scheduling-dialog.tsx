@@ -24,7 +24,7 @@ import { SelectStep } from "./select-step";
 import { DetailsStep } from "./details-step";
 import { ConfirmStep } from "./confirm-step";
 
-const COLOR_THEME_BACKGROUND = "oklch(24% 0.035 165)";
+const COLOR_THEME_BACKGROUND = "oklch(24% 0 0)";
 
 /** IANA timezone → short abbreviation for display. Stored value remains IANA. */
 const TIMEZONE_ABBR: Record<string, string> = {
@@ -122,7 +122,7 @@ try {
         data-range-middle={modifiers.range_middle}
         style={colorStyle}
         className={cn(
-          "rdp-day-button border border-border dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] bg-muted hover:bg-neutral-50 dark:bg-[oklch(26%_0.01_264)] dark:hover:bg-neutral-50 color:bg-[oklch(38%_0.035_165)] color:hover:bg-neutral-50 data-[selected-single=true]:border-[oklch(22%_0_0)] color:data-[selected-single=true]:border-transparent inline-flex items-center justify-center rounded-lg transition-all disabled:pointer-events-none disabled:opacity-50 focus-visible:border-0 focus-visible:ring-0 focus-visible:outline-none text-button text-foreground data-[outside=true]:!border-transparent data-[outside=true]:!bg-transparent data-[outside=true]:!hover:bg-transparent color:data-[outside=true]:!text-white data-[selected-single=true]:!bg-primary data-[selected-single=true]:!text-primary-foreground data-[selected-single=true]:hover:!bg-[var(--primary-hover)] data-[selected-single=true]:dark:!bg-white data-[selected-single=true]:dark:!text-neutral-900 data-[selected-single=true]:color:!bg-white data-[selected-single=true]:color:!text-neutral-900 data-[selected-single=true]:rounded-lg data-[range-middle=true]:text-foreground data-[range-start=true]:text-white data-[range-end=true]:text-white group-data-[focused=true]/day:border-0 group-data-[focused=true]/day:ring-0 flex aspect-square size-auto w-full min-w-(--cell-size) leading-none group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 data-[range-end=true]:rounded-lg data-[range-end=true]:rounded-r-lg data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-lg data-[range-start=true]:rounded-l-lg px-0 py-0",
+          "rdp-day-button border border-border dark:border-[oklch(30%_0_0)] color:border-[oklch(44%_0_0)] bg-muted hover:bg-neutral-50 dark:bg-[oklch(26%_0_0)] dark:hover:bg-neutral-50 color:bg-[oklch(38%_0_0)] color:hover:bg-neutral-50 data-[selected-single=true]:border-[oklch(22%_0_0)] color:data-[selected-single=true]:border-transparent inline-flex items-center justify-center rounded-lg transition-all disabled:pointer-events-none disabled:opacity-50 focus-visible:border-0 focus-visible:ring-0 focus-visible:outline-none text-button text-foreground data-[outside=true]:!border-transparent data-[outside=true]:!bg-transparent data-[outside=true]:!hover:bg-transparent color:data-[outside=true]:!text-white data-[selected-single=true]:!bg-primary data-[selected-single=true]:!text-primary-foreground data-[selected-single=true]:hover:!bg-[var(--primary-hover)] data-[selected-single=true]:dark:!bg-white data-[selected-single=true]:dark:!text-neutral-900 data-[selected-single=true]:color:!bg-white data-[selected-single=true]:color:!text-neutral-900 data-[selected-single=true]:rounded-lg data-[range-middle=true]:text-foreground data-[range-start=true]:text-white data-[range-end=true]:text-white group-data-[focused=true]/day:border-0 group-data-[focused=true]/day:ring-0 flex aspect-square size-auto w-full min-w-(--cell-size) leading-none group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 data-[range-end=true]:rounded-lg data-[range-end=true]:rounded-r-lg data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-lg data-[range-start=true]:rounded-l-lg px-0 py-0",
           className
         )}
         {...props}
@@ -684,9 +684,9 @@ try {
           data-slot="scheduling-panel"
           data-theme={resolvedTheme}
           className={cn(
-            "relative flex min-h-screen max-h-[90vh] lg:min-h-0 lg:h-fit lg:max-h-[85vh] w-full max-w-full lg:max-w-[1000px] flex-col overflow-y-auto lg:overflow-x-visible lg:overflow-y-auto rounded-none lg:rounded-2xl border border-border dark:border-[oklch(30%_0.01_264)] color:border-[oklch(28%_0.035_165)] p-4 px-4 text-foreground",
+            "relative flex min-h-screen max-h-[90vh] lg:min-h-0 lg:h-fit lg:max-h-[85vh] w-full max-w-full lg:max-w-[1000px] flex-col overflow-y-auto lg:overflow-x-visible lg:overflow-y-auto rounded-none lg:rounded-2xl border border-border dark:border-[oklch(30%_0_0)] color:border-[oklch(28%_0_0)] p-4 px-4 text-foreground",
             (step === "date" || step === "time") && "pb-[88px]",
-            resolvedTheme === "color" && "!bg-[oklch(24%_0.035_165)]",
+            resolvedTheme === "color" && "!bg-[oklch(24%_0_0)]",
             step === "details" && "lg:w-fit",
             step === "confirm" && "!p-0 lg:max-w-[464px] pr-[56px]"
           )}
@@ -694,7 +694,7 @@ try {
             resolvedTheme === "color"
               ? { backgroundColor: COLOR_THEME_BACKGROUND }
               : resolvedTheme === "dark"
-                ? { backgroundColor: "oklch(20% 0.01 264)" }
+                ? { backgroundColor: "oklch(20% 0 0)" }
                 : { backgroundColor: "#ffffff" }
           }
         >
@@ -784,7 +784,7 @@ try {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent
                         align="start"
-                        className="w-[var(--radix-dropdown-menu-trigger-width)] max-w-[var(--radix-dropdown-menu-trigger-width)] max-h-[280px] overflow-y-auto color:bg-[oklch(24%_0.035_165)]"
+                        className="w-[var(--radix-dropdown-menu-trigger-width)] max-w-[var(--radix-dropdown-menu-trigger-width)] max-h-[280px] overflow-y-auto color:bg-[oklch(24%_0_0)]"
                       >
                         {TIME_ZONES.map((tz) => (
                           <DropdownMenuItem

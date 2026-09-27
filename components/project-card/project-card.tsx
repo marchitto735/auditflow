@@ -228,7 +228,7 @@ export default function ProjectCard({
               <button
                 type="button"
                 onClick={resetAudit}
-                className="flex size-9 shrink-0 items-center justify-center rounded-sm bg-transparent text-foreground hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]"
+                className="flex size-9 shrink-0 items-center justify-center rounded-sm bg-transparent text-foreground hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0_0)] color:hover:bg-[oklch(40%_0_0)]"
                 aria-label="Close report"
               >
                 <X className="size-5" />

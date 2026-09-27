@@ -170,7 +170,7 @@ export default function Header() {
               <Link
                 href="/help"
                 className={cn(NAV_UTILITY_BUTTON_CLASS, "text-foreground")}
-                aria-label="Help"
+                aria-label="Support"
               >
                 <CircleHelp className="size-5" />
               </Link>

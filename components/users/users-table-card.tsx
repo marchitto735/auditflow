@@ -35,7 +35,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -401,7 +400,6 @@ function UserRowActions({
         >
           Revoke Sessions
         </DropdownMenuItem>
-        <DropdownMenuSeparator className="mx-1 bg-zinc-200" />
         <DropdownMenuItem
           className={DASHBOARD_MENU_ITEM_CLASS}
           disabled={user.status === "Suspended"}

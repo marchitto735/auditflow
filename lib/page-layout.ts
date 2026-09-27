@@ -21,6 +21,13 @@ export const DASHBOARD_SECTION_GAP_CLASS = "gap-6";
 export const PAGE_CONTENT_TOP_CLASS = "pt-0";
 
 /**
+ * Uniform bottom breathing room under the last page content frame.
+ * Matches Dashboard’s historical inset: 64px (mobile) / 80px (md+).
+ * Used as a scroll-spacer height in the sidebar layout.
+ */
+export const PAGE_CONTENT_BOTTOM_CLASS = "h-16 md:h-20";
+
+/**
  * App canvas behind cards — neutral light grey (greyscale).
  * Prefer this (or `bg-background`) over hard-coded whites on page shells.
  */
@@ -31,7 +38,7 @@ export const APP_TOPBAR_HEIGHT_CLASS = "h-16";
 
 /** Icon utility buttons — same radius as sidebar nav; grayscale hover. */
 export const NAV_UTILITY_BUTTON_CLASS =
-  "nav-button flex h-9 w-9 min-h-9 min-w-9 items-center justify-center rounded-[6px] p-0! bg-transparent border-0 shadow-none transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-zinc-700/40 color:hover:bg-white/10 [&_svg]:size-5 [&_svg]:shrink-0";
+  "nav-button flex h-9 w-9 min-h-9 min-w-9 items-center justify-center rounded-[6px] p-0! bg-transparent border-0 shadow-none transition-colors hover:bg-[#e9e9e9] hover:text-neutral-900 dark:hover:bg-zinc-700/50 color:hover:bg-white/14 [&_svg]:size-5 [&_svg]:shrink-0";
 
 /**
  * Resting surface for inputs, selects, and filter triggers — pure grayscale.

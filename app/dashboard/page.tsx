@@ -7,7 +7,7 @@ export default async function DashboardPage() {
   const activityRows = reports.map(storedReportToActivityRow);
 
   return (
-    <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col pb-0">
+    <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col">
       <Dashboard activityRows={activityRows} />
     </div>
   );

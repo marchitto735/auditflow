@@ -57,16 +57,16 @@ export const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
     ],
   },
   {
-    label: "Reports",
+    label: "Insights",
     items: [
       {
-        title: "Audit Reports",
+        title: "Reports",
         href: "/reports",
         icon: ClipboardList,
       },
       {
-        title: "Compliance Analytics",
-        href: "/dashboard/score-analysis",
+        title: "Analytics",
+        href: "/analytics",
         icon: TrendingUp,
       },
     ],
@@ -75,17 +75,17 @@ export const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
     label: "System",
     items: [
       {
-        title: "User Management",
+        title: "Team",
         href: "/users",
         icon: Users,
       },
       {
-        title: "Configuration",
+        title: "Settings",
         href: "/settings",
         icon: Settings,
       },
       {
-        title: "Help & Support",
+        title: "Support",
         href: "/help",
         icon: CircleHelp,
       },

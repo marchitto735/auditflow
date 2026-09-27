@@ -64,7 +64,7 @@ export default function DashboardGrid({
         </div>
 
         {/* Full-width — Audit History table */}
-        <div className="w-full min-w-0 pb-16 md:pb-20">
+        <div className="w-full min-w-0">
           <RecentActivity rows={activityRows} />
         </div>
       </div>

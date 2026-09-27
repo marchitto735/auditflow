@@ -58,6 +58,6 @@ export async function saveOrganizationSettings(
 
   return {
     ok: true,
-    message: "Configuration saved.",
+    message: "Settings saved.",
   };
 }

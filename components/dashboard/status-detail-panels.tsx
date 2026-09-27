@@ -429,7 +429,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
 export function CategoryBreakdownPanel({ className }: { className?: string }) {
   return (
     <Card className={cn(DASHBOARD_CARD_CLASS, "h-full", className)}>
-      <CardContent className="relative flex h-full flex-col gap-3 p-4">
+      <CardContent className="relative flex h-full flex-col gap-3 p-4 pb-6">
         <div className="min-w-0 pr-10">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Category Breakdown</p>
           <p className="text-body1 m-0 mt-1 text-neutral-600">

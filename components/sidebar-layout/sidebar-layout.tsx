@@ -10,7 +10,7 @@ import { AppSidebarNav } from "@/components/sidebar-layout/app-sidebar-nav";
 import { ConfigureAuditProvider } from "@/components/configure-audit-modal/configure-audit-context";
 import Header from "@/components/header/header";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { PAGE_CANVAS_CLASS } from "@/lib/page-layout";
+import { PAGE_CANVAS_CLASS, PAGE_CONTENT_BOTTOM_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 function SidebarShell({ children }: { children: React.ReactNode }) {
@@ -43,13 +43,24 @@ function SidebarShell({ children }: { children: React.ReactNode }) {
           )}
         >
           <Header />
+          {/*
+            Primary scrollport. A dedicated spacer after page content
+            (h-16 / md:h-20) matches Dashboard breathing room — padding on
+            flex+overflow parents is unreliable and left tables flush.
+          */}
           <div
             className={cn(
-              "flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-x-clip overflow-y-auto",
+              "min-h-0 w-full min-w-0 flex-1 overflow-x-clip overflow-y-auto",
               PAGE_CANVAS_CLASS,
             )}
           >
-            {children}
+            <div className="flex w-full min-w-0 flex-col">
+              {children}
+              <div
+                className={cn("w-full shrink-0", PAGE_CONTENT_BOTTOM_CLASS)}
+                aria-hidden
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -9,11 +9,11 @@ import { cn } from "@/lib/utils";
 
 export default function HelpPage() {
   return (
-    <div className="min-h-0 min-w-0 w-full flex-1 pb-0 md:pb-4">
-      <section className={cn(PAGE_GUTTER_CLASS, PAGE_CONTENT_TOP_CLASS, "pb-4")}>
+    <div className="min-h-0 min-w-0 w-full flex-1">
+      <section className={cn(PAGE_GUTTER_CLASS, PAGE_CONTENT_TOP_CLASS)}>
         <div className={cn(PAGE_INNER_CLASS, "flex w-full flex-col")}>
           <SectionHeader
-            title="Help & Support"
+            title="Support"
             description="System status, compliance knowledge base, support tickets, and emergency escalation for live audits."
           />
           <HelpWorkspace />

@@ -55,7 +55,7 @@ const DetailsStep = React.memo(function DetailsStep({
             placeholder="Enter your name"
             value={name}
             onChange={onNameChange}
-            className="w-full !text-[0.875rem] leading-[1.45] border border-[oklch(92%_0_0)] color:border-[oklch(44%_0.035_165)] bg-muted color:bg-[oklch(30%_0.035_165)] text-foreground placeholder:text-muted-foreground color:text-neutral-400 color:placeholder:text-neutral-400 dark:bg-[oklch(26%_0.01_264)] dark:border-[oklch(30%_0.01_264)] dark:text-white dark:placeholder:text-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="w-full !text-[0.875rem] leading-[1.45] border border-[oklch(92%_0_0)] color:border-[oklch(44%_0_0)] bg-muted color:bg-[oklch(30%_0_0)] text-foreground placeholder:text-muted-foreground color:text-neutral-400 color:placeholder:text-neutral-400 dark:bg-[oklch(26%_0_0)] dark:border-[oklch(30%_0_0)] dark:text-white dark:placeholder:text-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
         <div>
@@ -66,7 +66,7 @@ const DetailsStep = React.memo(function DetailsStep({
             placeholder="Enter your email"
             value={email}
             onChange={onEmailChange}
-            className="w-full !text-[0.875rem] leading-[1.45] border border-[oklch(92%_0_0)] color:border-[oklch(44%_0.035_165)] bg-muted color:bg-[oklch(30%_0.035_165)] text-foreground placeholder:text-muted-foreground color:text-neutral-400 color:placeholder:text-neutral-400 dark:bg-[oklch(26%_0.01_264)] dark:border-[oklch(30%_0.01_264)] dark:text-white dark:placeholder:text-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="w-full !text-[0.875rem] leading-[1.45] border border-[oklch(92%_0_0)] color:border-[oklch(44%_0_0)] bg-muted color:bg-[oklch(30%_0_0)] text-foreground placeholder:text-muted-foreground color:text-neutral-400 color:placeholder:text-neutral-400 dark:bg-[oklch(26%_0_0)] dark:border-[oklch(30%_0_0)] dark:text-white dark:placeholder:text-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
         <div>
@@ -76,7 +76,7 @@ const DetailsStep = React.memo(function DetailsStep({
             placeholder="Please share anything that would be helpful for our meeting like context or topics to focus on."
             value={notes}
             onChange={onNotesChange}
-            className="w-full min-h-[80px] !text-[0.875rem] leading-[1.45] border border-[oklch(92%_0_0)] color:border-[oklch(44%_0.035_165)] bg-muted color:bg-[oklch(30%_0.035_165)] text-foreground placeholder:text-muted-foreground color:text-neutral-400 color:placeholder:text-neutral-400 dark:bg-[oklch(26%_0.01_264)] dark:border-[oklch(30%_0.01_264)] dark:text-white dark:placeholder:text-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="w-full min-h-[80px] !text-[0.875rem] leading-[1.45] border border-[oklch(92%_0_0)] color:border-[oklch(44%_0_0)] bg-muted color:bg-[oklch(30%_0_0)] text-foreground placeholder:text-muted-foreground color:text-neutral-400 color:placeholder:text-neutral-400 dark:bg-[oklch(26%_0_0)] dark:border-[oklch(30%_0_0)] dark:text-white dark:placeholder:text-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
         <button
@@ -93,7 +93,7 @@ const DetailsStep = React.memo(function DetailsStep({
               placeholder="Enter email"
               value={guestEmail}
               onChange={onGuestEmailChange}
-              className="w-full !text-[0.875rem] leading-[1.45] border border-[oklch(92%_0_0)] color:border-[oklch(44%_0.035_165)] bg-muted color:bg-[oklch(30%_0.035_165)] text-foreground placeholder:text-muted-foreground color:text-neutral-400 color:placeholder:text-neutral-400 dark:bg-[oklch(26%_0.01_264)] dark:border-[oklch(30%_0.01_264)] dark:text-white dark:placeholder:text-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="w-full !text-[0.875rem] leading-[1.45] border border-[oklch(92%_0_0)] color:border-[oklch(44%_0_0)] bg-muted color:bg-[oklch(30%_0_0)] text-foreground placeholder:text-muted-foreground color:text-neutral-400 color:placeholder:text-neutral-400 dark:bg-[oklch(26%_0_0)] dark:border-[oklch(30%_0_0)] dark:text-white dark:placeholder:text-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0"
             />
           </div>
         )}
@@ -109,7 +109,7 @@ const DetailsStep = React.memo(function DetailsStep({
         </Button>
         <Button
           variant="black"
-          className="flex-1 min-w-0 text-[length:var(--text-button-size)] leading-[var(--line-height-button)] font-[var(--font-weight-button)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] dark:bg-white dark:hover:bg-neutral-50 color:bg-white color:hover:bg-neutral-50 dark:!text-neutral-900 color:!text-neutral-900"
+          className="flex-1 min-w-0 text-[length:var(--text-button-size)] leading-[var(--line-height-button)] font-[var(--font-weight-button)] dark:border-[oklch(30%_0_0)] color:border-[oklch(44%_0_0)] dark:bg-white dark:hover:bg-neutral-50 color:bg-white color:hover:bg-neutral-50 dark:!text-neutral-900 color:!text-neutral-900"
           onClick={onConfirm}
           disabled={isSubmitting}
           aria-busy={isSubmitting}

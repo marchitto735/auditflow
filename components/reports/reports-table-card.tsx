@@ -804,7 +804,7 @@ export default function ReportsTableCard({
           <CardContent className="flex flex-col p-0">
             <div className="relative flex shrink-0 flex-col gap-3 border-b border-neutral-200 px-4 pt-[16px] pb-3">
               <div className="min-w-0 pr-10 md:pr-52">
-                <p className={CARD_SECTION_EYEBROW_CLASS}>Audit Reports</p>
+                <p className={CARD_SECTION_EYEBROW_CLASS}>Reports</p>
                 <p className="text-body1 m-0 mt-1 text-neutral-600">
                   Completed SOP, BPR, and FIR audits with scores, status, and
                   immutable export actions.
@@ -821,7 +821,7 @@ export default function ReportsTableCard({
                   Export Batch Package
                 </Button>
                 <CardActionsMenu
-                  label="Audit Reports"
+                  label="Reports"
                   actions={TABLE_CARD_MENU_ACTIONS}
                 />
               </div>

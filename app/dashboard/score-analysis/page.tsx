@@ -1,13 +1,6 @@
-import DashboardPageShell from "@/components/dashboard/dashboard-page-shell";
-import ScoreAnalysisView from "@/components/dashboard/score-analysis-view";
+import { redirect } from "next/navigation";
 
-export default function ScoreAnalysisPage() {
-  return (
-    <DashboardPageShell
-      title="Compliance Analytics"
-      description="Deep-dive scoring, department distribution, variance signals, and exportable compliance packets."
-    >
-      <ScoreAnalysisView />
-    </DashboardPageShell>
-  );
+/** Legacy path — Compliance Analytics moved to /analytics. */
+export default function ScoreAnalysisRedirectPage() {
+  redirect("/analytics");
 }

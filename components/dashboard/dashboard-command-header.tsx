@@ -1,18 +1,24 @@
 "use client";
 
 import * as React from "react";
+import { ChevronDown } from "lucide-react";
+import {
+  DASHBOARD_MENU_CONTENT_CLASS,
+  DASHBOARD_MENU_ITEM_CLASS,
+  DASHBOARD_MENU_ITEM_SELECTED_CLASS,
+} from "@/components/dashboard/card-actions-menu";
 import { Badge } from "@/components/ui/badge";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group";
+import { DROPDOWN_TRIGGER_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 const TIME_RANGES = [
@@ -41,9 +47,67 @@ function formatUpdatedLabel(secondsAgo: number) {
   return `Updated ${hours} h ago`;
 }
 
+function UnitFilterDropdown({
+  value,
+  onChange,
+}: {
+  value: UnitFilter;
+  onChange: (next: UnitFilter) => void;
+}) {
+  const [mounted, setMounted] = React.useState(false);
+  const selected =
+    UNIT_OPTIONS.find((option) => option.value === value)?.label ?? "All units";
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const trigger = (
+    <button
+      type="button"
+      aria-label="Filter by unit"
+      className={cn(
+        "inline-flex h-9 w-auto min-w-[8.5rem] items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-medium",
+        DROPDOWN_TRIGGER_CLASS,
+      )}
+    >
+      <span className="min-w-0 flex-1 truncate text-left">{selected}</span>
+      <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900 opacity-70" aria-hidden />
+    </button>
+  );
+
+  if (!mounted) return trigger;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="start"
+        sideOffset={6}
+        className={DASHBOARD_MENU_CONTENT_CLASS}
+      >
+        {UNIT_OPTIONS.map((option) => {
+          const isSelected = option.value === value;
+          return (
+            <DropdownMenuItem
+              key={option.value}
+              className={cn(
+                DASHBOARD_MENU_ITEM_CLASS,
+                isSelected && DASHBOARD_MENU_ITEM_SELECTED_CLASS,
+              )}
+              onSelect={() => onChange(option.value)}
+            >
+              {option.label}
+            </DropdownMenuItem>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 /**
  * Command-center chrome — time range, unit scope, live pulse, and freshness.
- * Built from shadcn ToggleGroup, Select, and Badge.
  */
 export function DashboardCommandHeader({ className }: { className?: string }) {
   const [range, setRange] = React.useState<TimeRange>("24h");
@@ -87,7 +151,7 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
               className={cn(
                 "h-8 rounded-md border-0 px-3 shadow-none first:rounded-md last:rounded-md data-[spacing=0]:rounded-md data-[spacing=0]:first:rounded-md data-[spacing=0]:last:rounded-md",
                 "data-[state=on]:bg-primary data-[state=on]:font-semibold data-[state=on]:text-primary-foreground data-[state=on]:hover:bg-[var(--primary-hover)] data-[state=on]:hover:text-primary-foreground",
-                "data-[state=off]:bg-transparent data-[state=off]:font-medium data-[state=off]:text-neutral-500 data-[state=off]:hover:bg-neutral-50 data-[state=off]:hover:text-neutral-900",
+                "data-[state=off]:bg-transparent data-[state=off]:font-medium data-[state=off]:text-neutral-500 data-[state=off]:hover:bg-neutral-200 data-[state=off]:hover:text-neutral-900",
                 "focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-0",
               )}
             >
@@ -96,27 +160,13 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
           ))}
         </ToggleGroup>
 
-        <Select
+        <UnitFilterDropdown
           value={unit}
-          onValueChange={(value) => {
-            setUnit(value as UnitFilter);
+          onChange={(next) => {
+            setUnit(next);
             setSecondsAgo(0);
           }}
-        >
-          <SelectTrigger
-            aria-label="Filter by unit"
-            className="h-9 w-auto min-w-[8.5rem] font-medium"
-          >
-            <SelectValue placeholder="All units" />
-          </SelectTrigger>
-          <SelectContent align="start">
-            {UNIT_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        />
 
         <span
           className="inline-flex h-9 min-h-9 cursor-default items-center gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 shadow-none select-none"

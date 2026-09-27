@@ -360,7 +360,7 @@ function usePagedRows<T>(rows: readonly T[], pageSize: number, page: number) {
 }
 
 /**
- * Compliance Analytics deep-dive — summary cards plus department distribution,
+ * Analytics deep-dive — summary cards plus department distribution,
  * variance log, and reporting filters.
  */
 export default function ScoreAnalysisView() {
@@ -422,7 +422,7 @@ export default function ScoreAnalysisView() {
   }
 
   return (
-    <div className={cn("flex flex-col pb-16 md:pb-20", DASHBOARD_GAP_CLASS)}>
+    <div className={cn("flex flex-col", DASHBOARD_GAP_CLASS)}>
       {/* Reporting controls */}
       <div className="flex w-full min-w-0 flex-wrap items-center gap-3">
         <Select

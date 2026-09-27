@@ -248,7 +248,7 @@ export type DepartmentScoreRow = {
   status: "On Track" | "Watch" | "At Risk";
 };
 
-/** Department-level distribution for Compliance Analytics deep-dive. */
+/** Department-level distribution for Analytics deep-dive. */
 export const DEPARTMENT_SCORES: DepartmentScoreRow[] = [
   {
     id: "dept-qa",
@@ -306,7 +306,7 @@ export type VarianceLogRow = {
   severity: "Critical" | "High" | "Medium" | "Low";
 };
 
-/** Historical variance / anomaly signals for Compliance Analytics. */
+/** Historical variance / anomaly signals for Analytics. */
 export const VARIANCE_LOG: VarianceLogRow[] = [
   {
     id: "var-1",
