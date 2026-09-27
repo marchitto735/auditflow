@@ -393,8 +393,8 @@ export default function RemediationWorkspace() {
               className={cn(
                 "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold",
                 flaggedCount > 0
-                  ? "border-neutral-400 bg-neutral-200 text-neutral-900"
-                  : "border-neutral-300 bg-neutral-100 text-neutral-900",
+                  ? "border-red-200 bg-red-50 text-red-700"
+                  : "border-emerald-200 bg-emerald-50 text-emerald-700",
               )}
             >
               {flaggedCount > 0 ? (
