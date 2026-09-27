@@ -15,7 +15,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -114,7 +113,7 @@ function SidebarProfileCard({
         sideOffset={8}
         className={cn(DASHBOARD_MENU_CONTENT_CLASS, "w-56")}
       >
-        <div className="px-2 py-1.5">
+        <div className="px-2.5 py-2">
           <p className="m-0 truncate text-sm font-medium text-neutral-900">
             {SIDEBAR_PROFILE.name}
           </p>
@@ -122,65 +121,68 @@ function SidebarProfileCard({
             {SIDEBAR_PROFILE.role}
           </p>
         </div>
-        <DropdownMenuSeparator className="mx-1 bg-zinc-200" />
-        <DropdownMenuItem
-          className={DASHBOARD_MENU_ITEM_CLASS}
-          onSelect={() => {
-            toast.message("Notifications", {
-              description: "You're caught up — no new alerts.",
-            });
-          }}
-        >
-          <Bell className="size-4 shrink-0" aria-hidden />
-          <span>Notifications</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild className={DASHBOARD_MENU_ITEM_CLASS}>
-          <Link
-            href="/help"
-            onClick={onNavigate}
-            className="flex cursor-pointer items-center gap-2 no-underline"
+        <div className="flex flex-col gap-0.5 pt-1">
+          <DropdownMenuItem
+            className={DASHBOARD_MENU_ITEM_CLASS}
+            onSelect={() => {
+              toast.message("Notifications", {
+                description: "You're caught up — no new alerts.",
+              });
+            }}
           >
-            <CircleHelp className="size-4 shrink-0" aria-hidden />
-            <span>Support</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild className={DASHBOARD_MENU_ITEM_CLASS}>
-          <Link
-            href="/settings"
-            onClick={onNavigate}
-            className="flex cursor-pointer items-center gap-2 no-underline"
-          >
-            <CircleUser className="size-4 shrink-0" aria-hidden />
-            <span>Settings</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator className="mx-1 bg-zinc-200" />
-        {SIDEBAR_PROFILE_LINKS.map((item) => {
-          const Icon = item.icon;
-          return (
-            <DropdownMenuItem
-              key={item.href}
-              asChild
-              className={DASHBOARD_MENU_ITEM_CLASS}
+            <Bell className="size-4 shrink-0" aria-hidden />
+            <span>Notifications</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className={DASHBOARD_MENU_ITEM_CLASS}>
+            <Link
+              href="/help"
+              onClick={onNavigate}
+              className="flex cursor-pointer items-center gap-2 no-underline"
             >
-              <Link
-                href={item.href}
-                onClick={onNavigate}
-                className="flex cursor-pointer items-center gap-2 no-underline"
+              <CircleHelp className="size-4 shrink-0" aria-hidden />
+              <span>Support</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className={DASHBOARD_MENU_ITEM_CLASS}>
+            <Link
+              href="/settings"
+              onClick={onNavigate}
+              className="flex cursor-pointer items-center gap-2 no-underline"
+            >
+              <CircleUser className="size-4 shrink-0" aria-hidden />
+              <span>Settings</span>
+            </Link>
+          </DropdownMenuItem>
+        </div>
+        <div className="flex flex-col gap-0.5 pt-1">
+          {SIDEBAR_PROFILE_LINKS.map((item) => {
+            const Icon = item.icon;
+            return (
+              <DropdownMenuItem
+                key={item.href}
+                asChild
+                className={DASHBOARD_MENU_ITEM_CLASS}
               >
-                <Icon className="size-4 shrink-0" aria-hidden />
-                <span>{item.title}</span>
-              </Link>
-            </DropdownMenuItem>
-          );
-        })}
-        <DropdownMenuSeparator className="mx-1 bg-zinc-200" />
-        <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
-          Preferences
-        </DropdownMenuItem>
-        <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
-          Log out
-        </DropdownMenuItem>
+                <Link
+                  href={item.href}
+                  onClick={onNavigate}
+                  className="flex cursor-pointer items-center gap-2 no-underline"
+                >
+                  <Icon className="size-4 shrink-0" aria-hidden />
+                  <span>{item.title}</span>
+                </Link>
+              </DropdownMenuItem>
+            );
+          })}
+        </div>
+        <div className="flex flex-col gap-0.5 pt-1">
+          <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
+            Preferences
+          </DropdownMenuItem>
+          <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
+            Log out
+          </DropdownMenuItem>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
