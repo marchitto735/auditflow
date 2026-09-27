@@ -64,7 +64,7 @@ import {
 } from "@/lib/users";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 3;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[56rem]";
 
 const INITIAL_FILTERS: UserDirectoryFilters = {

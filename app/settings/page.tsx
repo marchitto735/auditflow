@@ -17,7 +17,7 @@ export default function SettingsPage() {
         <div className={cn(PAGE_INNER_CLASS, "flex w-full flex-col")}>
           <SectionHeader
             title="Settings"
-            description="Organization defaults, security controls, and notification preferences."
+            description="Organization defaults, security controls, notifications, and system health."
           />
           <SettingsWorkspace initialSettings={settings} />
         </div>

@@ -81,7 +81,7 @@ const KPI_CARDS: readonly KpiCardData[] = [
   },
 ];
 
-/** Single KPI telemetry card — used in the unified dashboard 6-card grid. */
+/** Single KPI telemetry card — used in the dashboard primary KPI row. */
 export function KpiCard({ card }: { card: KpiCardData }) {
   return (
     <div data-kpi-card={card.id} className={CARD_CLASS}>

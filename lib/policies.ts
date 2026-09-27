@@ -304,3 +304,69 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
     ]),
   },
 ];
+
+export type PolicyKpis = {
+  totalDocuments: number;
+  activeCount: number;
+  readyCount: number;
+  pendingCount: number;
+  draftCount: number;
+  syncedCount: number;
+  queuedCount: number;
+  failedCount: number;
+  idleCount: number;
+};
+
+export function computePolicyKpis(policies: MasterPolicy[]): PolicyKpis {
+  let activeCount = 0;
+  let readyCount = 0;
+  let pendingCount = 0;
+  let draftCount = 0;
+  let syncedCount = 0;
+  let queuedCount = 0;
+  let failedCount = 0;
+  let idleCount = 0;
+
+  for (const policy of policies) {
+    switch (policy.status) {
+      case "Active":
+        activeCount += 1;
+        break;
+      case "Ready":
+        readyCount += 1;
+        break;
+      case "Pending":
+        pendingCount += 1;
+        break;
+      case "Draft":
+        draftCount += 1;
+        break;
+    }
+    switch (policy.n8nStatus) {
+      case "Synced":
+        syncedCount += 1;
+        break;
+      case "Queued":
+        queuedCount += 1;
+        break;
+      case "Failed":
+        failedCount += 1;
+        break;
+      case "Idle":
+        idleCount += 1;
+        break;
+    }
+  }
+
+  return {
+    totalDocuments: policies.length,
+    activeCount,
+    readyCount,
+    pendingCount,
+    draftCount,
+    syncedCount,
+    queuedCount,
+    failedCount,
+    idleCount,
+  };
+}

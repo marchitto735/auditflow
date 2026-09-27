@@ -28,6 +28,7 @@ import {
   DASHBOARD_MENU_ITEM_SELECTED_CLASS,
   TABLE_CARD_MENU_ACTIONS,
 } from "@/components/dashboard/card-actions-menu";
+import { CategoryBreakdownPanel } from "@/components/dashboard/status-detail-panels";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -67,6 +68,7 @@ import {
   CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
+  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
   TABLE_ROW_ACTIONS_CELL_CLASS,
   TABLE_ROW_ACTIONS_HEAD_CLASS,
 } from "@/lib/page-layout";
@@ -80,7 +82,7 @@ import {
 } from "@/lib/reports";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 3;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[56rem]";
 
 const STATUS_OPTIONS: { value: ReportStatusFilter; label: string }[] = [
@@ -255,8 +257,11 @@ function ReportsKpiHeader({ rows }: { rows: ReportRow[] }) {
     {
       eyebrow: "Completed Audits",
       value: String(kpis.totalCompleted),
-      meta: "Stored pipeline reports",
+      meta: kpis.lastAuditAt
+        ? `Last audit ${format(new Date(kpis.lastAuditAt), "MMM d")}`
+        : "Stored pipeline reports",
       icon: FileText,
+      monoMeta: Boolean(kpis.lastAuditAt),
     },
     {
       eyebrow: "Avg Compliance",
@@ -273,19 +278,10 @@ function ReportsKpiHeader({ rows }: { rows: ReportRow[] }) {
           : `${kpis.failedCount} failed`,
       icon: ShieldAlert,
     },
-    {
-      eyebrow: "Last Audit",
-      value: kpis.lastAuditAt
-        ? format(new Date(kpis.lastAuditAt), "MMM d")
-        : "—",
-      meta: kpis.lastAuditLabel,
-      icon: CalendarDays,
-      monoMeta: true,
-    },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className={DASHBOARD_TRIPLE_CARD_GRID_CLASS}>
       {cards.map((card) => {
         const Icon = card.icon;
         return (
@@ -640,6 +636,7 @@ export default function ReportsTableCard({
     <>
       <div className={cn("flex w-full flex-col", DASHBOARD_GAP_CLASS, className)}>
         <ReportsKpiHeader rows={rows} />
+        <CategoryBreakdownPanel className="w-full min-w-0" />
 
         <Card
           className={cn(

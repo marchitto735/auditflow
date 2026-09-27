@@ -15,7 +15,7 @@ export default function PolicyCenterPage() {
         <div className={cn(PAGE_INNER_CLASS, "flex w-full flex-col")}>
           <SectionHeader
             title="Policies"
-            description="Master SOP, BPR, and FIR library with parse status, chunk counts, and framework coverage."
+            description="Master document library with parse status, chunk counts, and framework coverage."
           />
           <PoliciesTableCard policies={DEMO_MASTER_POLICIES} />
         </div>

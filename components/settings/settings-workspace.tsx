@@ -22,6 +22,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import SystemHealthPanel from "@/components/settings/system-health-panel";
 import {
   CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
@@ -159,6 +160,7 @@ export default function SettingsWorkspace({
                   ["general", "General"],
                   ["security", "Security"],
                   ["notifications", "Notifications"],
+                  ["system-health", "System Health"],
                 ] as const
               ).map(([value, label]) => (
                 <TabsTrigger
@@ -379,6 +381,15 @@ export default function SettingsWorkspace({
                   }
                 />
               </div>
+            </SettingsSection>
+          </TabsContent>
+
+          <TabsContent value="system-health" className="m-0 p-4 md:p-6">
+            <SettingsSection
+              title="System Health"
+              description="Live infrastructure checks and tenant diagnostics for admin and engineering reference."
+            >
+              <SystemHealthPanel />
             </SettingsSection>
           </TabsContent>
         </Tabs>

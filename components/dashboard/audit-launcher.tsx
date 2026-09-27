@@ -10,11 +10,11 @@ import {
 } from "@/lib/audit-workflows";
 import {
   AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
+  CARD_BODY_CLASS,
   CARD_CONTENT_CLASS,
   CARD_CORNER_LABEL_CLASS,
   CARD_EYEBROW_MUTED_CLASS,
   CARD_FOOTER_CLASS,
-  CARD_HEADER_STACK_CLASS,
   CARD_TITLE_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
@@ -27,7 +27,7 @@ const FEATURED_CARD_CLASS = cn(
   "flex w-full min-w-0 shrink-0 flex-col text-left",
 );
 
-/** Regulatory domain eyebrows — Dashboard compact + Audits featured (CSS uppercase). */
+/** Regulatory domain eyebrows — compact telemetry KPI cards only. */
 const EYEBROW_DISPLAY: Record<AuditWorkflowId, string> = {
   sop: "Policy Control",
   bpr: "Production Log",
@@ -55,23 +55,11 @@ const COMPACT_TITLE_DISPLAY: Record<AuditWorkflowId, string> = {
   fir: "14",
 };
 
-/** Feature bullets — Audits page (`featured`) only; never on Dashboard compact. */
-const FEATURE_BULLETS: Record<AuditWorkflowId, readonly [string, string, string]> = {
-  sop: [
-    "Parses master process documentation against active workflows.",
-    "Automatically flags step-by-step deviations and clause gaps.",
-    "Generates comparative compliance audit logs.",
-  ],
-  bpr: [
-    "Cross-references batch yields and parameter logs.",
-    "Validates critical control point compliance.",
-    "Highlights historical variance and batch anomalies.",
-  ],
-  fir: [
-    "Audits environmental and safety checklist logs.",
-    "Summarizes open facility findings and recurring issues.",
-    "Tracks required corrective action timelines.",
-  ],
+/** Single-sentence pipeline summaries — Audits featured launch cards. */
+const FEATURE_DESCRIPTION: Record<AuditWorkflowId, string> = {
+  sop: "Parses master process docs against active workflows and flags deviations.",
+  bpr: "Cross-references batch yields and parameter logs to validate critical compliance.",
+  fir: "Audits facility checklist logs and tracks open findings through corrective action timelines.",
 };
 
 type LauncherMetrics = {
@@ -185,9 +173,9 @@ export function AuditLauncherCard({
   const title = featured
     ? FEATURED_TITLE_DISPLAY[id]
     : COMPACT_TITLE_DISPLAY[id];
-  /** Sparklines + ops metrics only on Dashboard compact Quick Launch. */
+  /** Sparklines + ops metrics on compact pipeline cards (Audits). */
   const metrics = featured ? null : LAUNCHER_METRICS[id];
-  const bullets = featured ? FEATURE_BULLETS[id] : null;
+  const description = featured ? FEATURE_DESCRIPTION[id] : null;
 
   function handleActivate() {
     openConfigureAudit(id);
@@ -197,7 +185,7 @@ export function AuditLauncherCard({
     return (
       <div
         data-audit-launcher-card={id}
-        className={cn(FEATURED_CARD_CLASS, "min-h-[280px] h-full", className)}
+        className={cn(FEATURED_CARD_CLASS, "min-h-0 h-full", className)}
       >
         <Card className="flex h-full w-full min-h-0 flex-col border-0 bg-transparent shadow-none">
           <CardContent
@@ -207,32 +195,28 @@ export function AuditLauncherCard({
             )}
           >
             <div className="flex min-w-0 flex-col gap-2">
-              <div className={CARD_HEADER_STACK_CLASS}>
-                <p className={cn(CARD_EYEBROW_MUTED_CLASS, "max-w-full")}>
-                  {eyebrow}
-                </p>
-                <h3
+              <h3
+                className={cn(
+                  CARD_TITLE_CLASS,
+                  "m-0 max-w-full hyphens-auto break-words text-pretty text-neutral-900",
+                )}
+              >
+                {title}
+              </h3>
+
+              {description ? (
+                <p
                   className={cn(
-                    CARD_TITLE_CLASS,
-                    "m-0 max-w-full hyphens-auto break-words text-pretty text-neutral-900",
+                    CARD_BODY_CLASS,
+                    "max-w-[36ch] text-pretty leading-snug text-neutral-600",
                   )}
                 >
-                  {title}
-                </h3>
-              </div>
-
-              {bullets ? (
-                <ul className="m-0 mt-1 flex list-disc flex-col gap-3 py-0 pl-4 text-base leading-snug text-neutral-900">
-                  {bullets.map((bullet) => (
-                    <li key={bullet} className="pl-0.5">
-                      {bullet}
-                    </li>
-                  ))}
-                </ul>
+                  {description}
+                </p>
               ) : null}
             </div>
 
-            <div className={cn(CARD_FOOTER_CLASS, "w-full justify-stretch pt-1")}>
+            <div className={cn(CARD_FOOTER_CLASS, "w-full justify-stretch pt-0")}>
               <Button
                 type="button"
                 variant="black"
@@ -366,15 +350,15 @@ export function AuditLauncherCard({
 
 /**
  * Audit launcher grid — SOP / BPR / FIR tiles.
- * Compact (Dashboard): score sparkline + ops metrics.
+ * Compact: score sparkline + ops metrics (pipeline context).
  * Featured (Audits page): benefit bullets + primary CTAs, no telemetry.
  */
 export default function AuditLauncher({
   className,
-  variant = "compact",
+  variant = "featured",
 }: {
   className?: string;
-  /** `featured` — dedicated Audits page: taller cards, primary CTAs, no telemetry. */
+  /** `featured` — Audits page: taller cards, primary CTAs, no telemetry. */
   variant?: "compact" | "featured";
 }) {
   const featured = variant === "featured";

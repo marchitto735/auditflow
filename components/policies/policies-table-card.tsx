@@ -2,7 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition, type FormEvent } from "react";
 import {
+  CheckCircle2,
   ChevronDown,
+  Clock3,
+  FileText,
   FileUp,
   Search,
   ShieldCheck,
@@ -58,12 +61,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  CARD_HEADER_STACK_CLASS,
+  CARD_METRIC_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
+  DASHBOARD_GAP_CLASS,
+  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
 } from "@/lib/page-layout";
 import {
   POLICY_DOC_TYPES,
   POLICY_STATUSES,
+  computePolicyKpis,
   filterMasterPolicies,
   formatPolicyTimestamp,
   uniquePolicyVersions,
@@ -74,7 +82,7 @@ import {
 } from "@/lib/policies";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 3;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[56rem]";
 
 const INITIAL_FILTERS: PolicyFilters = {
@@ -95,6 +103,69 @@ function statusBadgeVariant(status: PolicyStatus) {
     default:
       return "outline" as const;
   }
+}
+
+function PoliciesKpiHeader({ policies }: { policies: MasterPolicy[] }) {
+  const kpis = useMemo(() => computePolicyKpis(policies), [policies]);
+
+  const cards: Array<{
+    eyebrow: string;
+    value: string;
+    meta: string;
+    icon: typeof FileText;
+  }> = [
+    {
+      eyebrow: "Total Documents",
+      value: String(kpis.totalDocuments),
+      meta:
+        kpis.failedCount > 0
+          ? `${kpis.syncedCount} synced · ${kpis.failedCount} failed parse`
+          : "SOP · BPR · FIR in the master library",
+      icon: FileText,
+    },
+    {
+      eyebrow: "Active / Ready",
+      value: `${kpis.activeCount} / ${kpis.readyCount}`,
+      meta: `${kpis.activeCount + kpis.readyCount} production-ready policies`,
+      icon: CheckCircle2,
+    },
+    {
+      eyebrow: "Pending Reviews",
+      value: String(kpis.pendingCount),
+      meta:
+        kpis.draftCount > 0
+          ? `${kpis.draftCount} still in draft`
+          : "Awaiting compliance sign-off",
+      icon: Clock3,
+    },
+  ];
+
+  return (
+    <div className={DASHBOARD_TRIPLE_CARD_GRID_CLASS}>
+      {cards.map((card) => {
+        const Icon = card.icon;
+        return (
+          <Card
+            key={card.eyebrow}
+            className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}
+          >
+            <CardContent className="flex flex-col gap-3 p-4">
+              <div className="flex items-start justify-between gap-2">
+                <div className={cn(CARD_HEADER_STACK_CLASS, "min-w-0")}>
+                  <p className={CARD_SECTION_EYEBROW_CLASS}>{card.eyebrow}</p>
+                  <p className={cn(CARD_METRIC_CLASS, "m-0 text-neutral-900")}>
+                    {card.value}
+                  </p>
+                </div>
+                <Icon className="size-4 shrink-0 text-zinc-400" aria-hidden />
+              </div>
+              <p className="m-0 truncate text-xs text-neutral-500">{card.meta}</p>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
 }
 
 function n8nBadgeVariant(status: MasterPolicy["n8nStatus"]) {
@@ -482,13 +553,15 @@ export default function PoliciesTableCard({
 
   return (
     <>
-      <Card
-        className={cn(
-          "flex shrink-0 flex-col overflow-hidden",
-          DASHBOARD_CARD_CLASS,
-          className,
-        )}
-      >
+      <div className={cn("flex w-full flex-col", DASHBOARD_GAP_CLASS, className)}>
+        <PoliciesKpiHeader policies={policies} />
+
+        <Card
+          className={cn(
+            "flex shrink-0 flex-col overflow-hidden",
+            DASHBOARD_CARD_CLASS,
+          )}
+        >
         <CardContent className="flex flex-col p-0">
           <div className="relative flex shrink-0 flex-col gap-3 border-b border-neutral-200 px-4 pt-[16px] pb-3">
             <div className="min-w-0 pr-10">
@@ -660,6 +733,7 @@ export default function PoliciesTableCard({
           )}
         </CardContent>
       </Card>
+      </div>
 
       <UploadPolicyDialog open={uploadOpen} onOpenChange={setUploadOpen} />
       <PolicyInspectSheet

@@ -15,10 +15,10 @@ export const DASHBOARD_GAP_CLASS = "gap-6";
 export const DASHBOARD_SECTION_GAP_CLASS = "gap-6";
 
 /**
- * Space below the top nav before page content — shared with sidebar nav
- * so the first content row aligns. Kept flush for denser Swiss rhythm.
+ * Space above page headers / first content frame after the chrome-free desktop edge
+ * (mobile still uses a slim menu bar + spacer).
  */
-export const PAGE_CONTENT_TOP_CLASS = "pt-0";
+export const PAGE_CONTENT_TOP_CLASS = "pt-8";
 
 /**
  * Uniform bottom breathing room under the last page content frame.

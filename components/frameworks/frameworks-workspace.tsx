@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition, type FormEvent } from "react";
-import { ChevronDown, RefreshCw, Search } from "lucide-react";
+import {
+  AlertTriangle,
+  ChevronDown,
+  Layers,
+  Percent,
+  RefreshCw,
+  Search,
+} from "lucide-react";
 import { toast } from "sonner";
 import {
   CardActionsMenu,
@@ -36,7 +43,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Progress } from "@/components/ui/progress";
 import {
   Table,
   TableBody,
@@ -52,6 +58,7 @@ import {
   CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
+  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
 } from "@/lib/page-layout";
 import {
   DEMO_FRAMEWORK_CLAUSES,
@@ -66,7 +73,7 @@ import {
 } from "@/lib/frameworks";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 3;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[52rem]";
 
 const INITIAL_FILTERS: FrameworkFilters = {
@@ -235,94 +242,76 @@ function SyncFrameworkDialog({
   );
 }
 
-function FrameworkOverviewCards({
+function FrameworkKpiHeader({
   frameworks,
-  selectedId,
-  onSelect,
 }: {
   frameworks: FrameworkOverview[];
-  selectedId: string | "all";
-  onSelect: (id: string | "all") => void;
 }) {
+  const cards = useMemo(() => {
+    const total = frameworks.length;
+    const avgCoverage =
+      total === 0
+        ? 0
+        : Math.round(
+            frameworks.reduce((sum, fw) => sum + fw.coveragePercent, 0) / total,
+          );
+    const needsReview = frameworks.filter(
+      (fw) => fw.status === "Partial" || fw.status === "Review",
+    ).length;
+    const mappedCount = frameworks.filter((fw) => fw.status === "Mapped").length;
+
+    return [
+      {
+        eyebrow: "Active Frameworks",
+        value: String(total),
+        meta: `${mappedCount} fully mapped`,
+        icon: Layers,
+      },
+      {
+        eyebrow: "Avg Coverage",
+        value: `${avgCoverage}%`,
+        meta: "Mean clause mapping across packs",
+        icon: Percent,
+      },
+      {
+        eyebrow: "Needs Review",
+        value: String(needsReview),
+        meta:
+          needsReview > 0
+            ? "Partial or review status"
+            : "All frameworks mapped",
+        icon: AlertTriangle,
+      },
+    ] as const;
+  }, [frameworks]);
+
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {frameworks.map((fw) => {
-        const active = selectedId === fw.id;
+    <div className={DASHBOARD_TRIPLE_CARD_GRID_CLASS}>
+      {cards.map((card) => {
+        const Icon = card.icon;
         return (
-          <button
-            key={fw.id}
-            type="button"
-            onClick={() => onSelect(active ? "all" : fw.id)}
-            className={cn(
-              DASHBOARD_CARD_CLASS,
-              "flex flex-col gap-3 p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30",
-              active
-                ? "border-neutral-800"
-                : "hover:border-neutral-300",
-            )}
+          <Card
+            key={card.eyebrow}
+            className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}
           >
-            <div className={cn(CARD_HEADER_STACK_CLASS, "min-w-0")}>
-              <p className={CARD_SECTION_EYEBROW_CLASS}>{fw.shortName}</p>
-              <p
-                className={cn(
-                  CARD_METRIC_CLASS,
-                  "m-0 tabular-nums text-neutral-900",
-                )}
-              >
-                {fw.coveragePercent}%
-              </p>
-            </div>
-            <Progress
-              value={fw.coveragePercent}
-              className="h-1.5 bg-neutral-200"
-              indicatorClassName="bg-primary"
-            />
-            <p
-              className="text-base m-0 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 font-normal leading-snug text-foreground"
-              aria-label={`${fw.shortName} status ${fw.status}, ${fw.name}`}
-            >
-              <Badge
-                variant={mappingBadgeVariant(fw.status)}
-                className="shrink-0"
-              >
-                {fw.status}
-              </Badge>
-              <span className="shrink-0 text-neutral-900" aria-hidden>
-                •
-              </span>
-              <span className="min-w-0 truncate text-neutral-900">
-                {fw.name}
-              </span>
-            </p>
-            <div
-              className="mt-auto flex min-w-0 flex-wrap items-end justify-between gap-x-3 gap-y-1"
-              aria-label={`${fw.shortName} coverage metadata`}
-            >
-              <div className="flex min-w-0 flex-1 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-neutral-900">
-                <span className="shrink-0 whitespace-nowrap">
-                  <span className="text-neutral-900">Cov</span>{" "}
-                  <span className="font-medium tabular-nums text-neutral-900">
-                    {fw.coveragePercent}%
-                  </span>
-                </span>
-                <span className="shrink-0 text-neutral-900" aria-hidden>
-                  ·
-                </span>
-                <span className="shrink-0 whitespace-nowrap tabular-nums">
-                  <span className="text-neutral-900">Clauses</span>{" "}
-                  <span className="font-medium text-neutral-900">
-                    {fw.mappedPolicies}/{fw.totalClauses}
-                  </span>
-                </span>
+            <CardContent className="flex flex-col gap-3 p-4">
+              <div className="flex items-start justify-between gap-2">
+                <div className={cn(CARD_HEADER_STACK_CLASS, "min-w-0")}>
+                  <p className={CARD_SECTION_EYEBROW_CLASS}>{card.eyebrow}</p>
+                  <p
+                    className={cn(
+                      CARD_METRIC_CLASS,
+                      "m-0 tabular-nums text-neutral-900",
+                    )}
+                  >
+                    {card.value}
+                  </p>
+                </div>
+                <Icon className="size-4 shrink-0 text-zinc-400" aria-hidden />
               </div>
-              <p
-                className="m-0 max-w-full shrink-0 text-right text-xs font-medium tabular-nums tracking-wider text-muted-foreground"
-                aria-label={`${fw.shortName} version ${fw.version}`}
-              >
-                v{fw.version}
-              </p>
-            </div>
-          </button>
+              <p className="m-0 truncate text-xs text-neutral-500">{card.meta}</p>
+            </CardContent>
+          </Card>
         );
       })}
     </div>
@@ -565,11 +554,7 @@ export default function FrameworksWorkspace({
 
   return (
     <div className={cn("flex w-full flex-col", DASHBOARD_GAP_CLASS)}>
-      <FrameworkOverviewCards
-        frameworks={frameworks}
-        selectedId={filters.frameworkId}
-        onSelect={(frameworkId) => patchFilters({ frameworkId })}
-      />
+      <FrameworkKpiHeader frameworks={frameworks} />
       <MappingTable
         rows={clauses}
         frameworks={frameworks}

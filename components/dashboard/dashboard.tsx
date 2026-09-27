@@ -1,5 +1,5 @@
 import DashboardGrid from "@/components/dashboard/DashboardGrid";
-import type { ActivityRow } from "@/components/activity-table/activity-table";
+import SectionHeader from "@/components/section-header/section-header";
 import {
   PAGE_CONTENT_TOP_CLASS,
   PAGE_GUTTER_CLASS,
@@ -7,11 +7,7 @@ import {
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
-export default function Dashboard({
-  activityRows = [],
-}: {
-  activityRows?: ActivityRow[];
-}) {
+export default function Dashboard() {
   return (
     <section
       className={cn(
@@ -21,7 +17,11 @@ export default function Dashboard({
       )}
     >
       <div className={cn(PAGE_INNER_CLASS, "flex w-full min-w-0 flex-col")}>
-        <DashboardGrid activityRows={activityRows} />
+        <SectionHeader
+          title="Dashboard"
+          description="Live compliance telemetry, pipeline status, and operational oversight."
+        />
+        <DashboardGrid />
       </div>
     </section>
   );

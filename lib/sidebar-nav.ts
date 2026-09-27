@@ -2,12 +2,10 @@ import type { LucideIcon } from "lucide-react";
 import {
   BookOpen,
   ClipboardList,
-  CircleHelp,
   FileText,
   Gauge,
   Layers,
   Settings,
-  TrendingUp,
   Users,
 } from "lucide-react";
 
@@ -19,78 +17,66 @@ export type SidebarNavItem = {
   exact?: boolean;
   /**
    * When true, opens Configure Audit Parameters blank (no audit type preselected).
-   * `href` is kept for deep-link redirects and breadcrumb parent lookup.
+   * `href` is kept for deep-link redirects.
    */
   configureAudit?: boolean;
 };
 
+/** Primary rail — core workspace views only (Cursor-style minimal nav). */
+export const SIDEBAR_NAV_ITEMS: SidebarNavItem[] = [
+  {
+    title: "Dashboard",
+    href: "/dashboard",
+    icon: Gauge,
+  },
+  {
+    title: "Audits",
+    href: "/audits",
+    icon: Layers,
+    exact: true,
+  },
+  {
+    title: "Policies",
+    href: "/policy-center",
+    icon: FileText,
+  },
+  {
+    title: "Frameworks",
+    href: "/regulations",
+    icon: BookOpen,
+  },
+  {
+    title: "Reports",
+    href: "/reports",
+    icon: ClipboardList,
+  },
+];
+
+/** Secondary utilities — attached to the sidebar profile popover, not the rail. */
+export const SIDEBAR_PROFILE_LINKS: SidebarNavItem[] = [
+  {
+    title: "Team",
+    href: "/users",
+    icon: Users,
+  },
+  {
+    title: "Configuration",
+    href: "/settings",
+    icon: Settings,
+  },
+];
+
+/**
+ * @deprecated Prefer `SIDEBAR_NAV_ITEMS`. Kept so section-aware helpers keep compiling.
+ */
 export type SidebarNavSection = {
   label: string;
   items: SidebarNavItem[];
 };
 
+/** @deprecated Prefer `SIDEBAR_NAV_ITEMS`. */
 export const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
-  {
-    label: "Operations",
-    items: [
-      {
-        title: "Dashboard",
-        href: "/dashboard",
-        icon: Gauge,
-      },
-      {
-        title: "Audits",
-        href: "/audits",
-        icon: Layers,
-        exact: true,
-      },
-      {
-        title: "Policies",
-        href: "/policy-center",
-        icon: FileText,
-      },
-      {
-        title: "Frameworks",
-        href: "/regulations",
-        icon: BookOpen,
-      },
-    ],
-  },
-  {
-    label: "Insights",
-    items: [
-      {
-        title: "Reports",
-        href: "/reports",
-        icon: ClipboardList,
-      },
-      {
-        title: "Analytics",
-        href: "/analytics",
-        icon: TrendingUp,
-      },
-    ],
-  },
-  {
-    label: "System",
-    items: [
-      {
-        title: "Team",
-        href: "/users",
-        icon: Users,
-      },
-      {
-        title: "Settings",
-        href: "/settings",
-        icon: Settings,
-      },
-      {
-        title: "Support",
-        href: "/help",
-        icon: CircleHelp,
-      },
-    ],
-  },
+  { label: "Workspace", items: SIDEBAR_NAV_ITEMS },
 ];
 
 export const SIDEBAR_PROFILE = {
@@ -117,8 +103,7 @@ export type BreadcrumbSegment = {
 };
 
 /**
- * Nested routes that are not sidebar leaves but inherit a section + parent item.
- * Keep co-located with SIDEBAR_NAV_SECTIONS so labels stay consistent.
+ * Nested routes that are not sidebar leaves but inherit a parent item.
  */
 const BREADCRUMB_NESTED: Record<
   string,
@@ -140,17 +125,14 @@ const BREADCRUMB_NESTED: Record<
     parentHref: "/audits",
     title: "Standard Operating Procedure Audit",
   },
+  "/analytics": { parentHref: "/dashboard", title: "Analytics" },
+  "/users": { parentHref: "/dashboard", title: "Team" },
+  "/settings": { parentHref: "/dashboard", title: "Configuration" },
+  "/help": { parentHref: "/dashboard", title: "Support" },
 };
 
-function findSidebarNavEntry(href: string): {
-  section: SidebarNavSection;
-  item: SidebarNavItem;
-} | null {
-  for (const section of SIDEBAR_NAV_SECTIONS) {
-    const item = section.items.find((entry) => entry.href === href);
-    if (item) return { section, item };
-  }
-  return null;
+function findSidebarNavEntry(href: string): SidebarNavItem | null {
+  return SIDEBAR_NAV_ITEMS.find((entry) => entry.href === href) ?? null;
 }
 
 /** Best active sidebar item for a pathname (longest href wins). */
@@ -158,32 +140,25 @@ export function findSidebarNavMatch(pathname: string): {
   section: SidebarNavSection;
   item: SidebarNavItem;
 } | null {
-  let best: {
-    section: SidebarNavSection;
-    item: SidebarNavItem;
-    score: number;
-  } | null = null;
+  let best: { item: SidebarNavItem; score: number } | null = null;
 
-  for (const section of SIDEBAR_NAV_SECTIONS) {
-    for (const item of section.items) {
-      if (!isSidebarNavActive(pathname, item)) continue;
-      const score = item.href.length;
-      if (!best || score > best.score) {
-        best = { section, item, score };
-      }
+  for (const item of SIDEBAR_NAV_ITEMS) {
+    if (!isSidebarNavActive(pathname, item)) continue;
+    const score = item.href.length;
+    if (!best || score > best.score) {
+      best = { item, score };
     }
   }
 
-  return best ? { section: best.section, item: best.item } : null;
-}
-
-function sectionHomeHref(section: SidebarNavSection) {
-  return section.items[0]?.href ?? "/dashboard";
+  if (!best) return null;
+  return {
+    section: { label: "Workspace", items: SIDEBAR_NAV_ITEMS },
+    item: best.item,
+  };
 }
 
 /**
- * Breadcrumb trail from the sidebar hierarchy:
- * section label → active nav item (→ optional nested page).
+ * Breadcrumb trail helpers (legacy). Prefer page-local titles — top chrome no longer shows crumbs.
  */
 export function resolveBreadcrumbs(pathname: string): BreadcrumbSegment[] {
   const nested = BREADCRUMB_NESTED[pathname];
@@ -191,33 +166,17 @@ export function resolveBreadcrumbs(pathname: string): BreadcrumbSegment[] {
     const parent = findSidebarNavEntry(nested.parentHref);
     if (parent) {
       return [
-        {
-          label: parent.section.label,
-          href: sectionHomeHref(parent.section),
-        },
-        { label: parent.item.title, href: parent.item.href },
+        { label: parent.title, href: parent.href },
         { label: nested.title },
       ];
     }
+    return [{ label: nested.title }];
   }
 
   const match = findSidebarNavMatch(pathname);
   if (match) {
-    return [
-      {
-        label: match.section.label,
-        href: sectionHomeHref(match.section),
-      },
-      { label: match.item.title },
-    ];
+    return [{ label: match.item.title }];
   }
 
-  const auditing = SIDEBAR_NAV_SECTIONS[0];
-  return [
-    {
-      label: auditing?.label ?? "Operations",
-      href: auditing ? sectionHomeHref(auditing) : "/dashboard",
-    },
-    { label: "Audits" },
-  ];
+  return [{ label: "Audits", href: "/audits" }];
 }

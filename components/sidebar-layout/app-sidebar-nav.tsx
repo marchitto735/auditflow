@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { PanelLeftClose, PanelLeft, X } from "lucide-react";
+import { Bell, CircleHelp, CircleUser, PanelLeftClose, PanelLeft, X } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Avatar,
@@ -21,7 +22,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarLabel,
   SidebarMenu,
@@ -30,8 +30,9 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
-  SIDEBAR_NAV_SECTIONS,
+  SIDEBAR_NAV_ITEMS,
   SIDEBAR_PROFILE,
+  SIDEBAR_PROFILE_LINKS,
   isSidebarNavActive,
 } from "@/lib/sidebar-nav";
 import { useConfigureAudit } from "@/components/configure-audit-modal/configure-audit-context";
@@ -42,7 +43,6 @@ import {
 import {
   APP_TOPBAR_HEIGHT_CLASS,
   NAV_UTILITY_BUTTON_CLASS,
-  SECTION_LABEL_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 import {
@@ -60,7 +60,13 @@ type AppSidebarNavProps = {
 };
 
 /** Radix menu IDs differ across SSR/CSR — mount after hydrate with a matching placeholder. */
-function SidebarProfileCard({ compact }: { compact: boolean }) {
+function SidebarProfileCard({
+  compact,
+  onNavigate,
+}: {
+  compact: boolean;
+  onNavigate?: () => void;
+}) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -106,15 +112,72 @@ function SidebarProfileCard({ compact }: { compact: boolean }) {
         side={compact ? "right" : "top"}
         align={compact ? "end" : "start"}
         sideOffset={8}
-        className={cn(DASHBOARD_MENU_CONTENT_CLASS, "w-52")}
+        className={cn(DASHBOARD_MENU_CONTENT_CLASS, "w-56")}
       >
-        <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
-          Account Settings
+        <div className="px-2 py-1.5">
+          <p className="m-0 truncate text-sm font-medium text-neutral-900">
+            {SIDEBAR_PROFILE.name}
+          </p>
+          <p className="m-0 truncate text-xs text-neutral-500">
+            {SIDEBAR_PROFILE.role}
+          </p>
+        </div>
+        <DropdownMenuSeparator className="mx-1 bg-zinc-200" />
+        <DropdownMenuItem
+          className={DASHBOARD_MENU_ITEM_CLASS}
+          onSelect={() => {
+            toast.message("Notifications", {
+              description: "You're caught up — no new alerts.",
+            });
+          }}
+        >
+          <Bell className="size-4 shrink-0" aria-hidden />
+          <span>Notifications</span>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild className={DASHBOARD_MENU_ITEM_CLASS}>
+          <Link
+            href="/help"
+            onClick={onNavigate}
+            className="flex cursor-pointer items-center gap-2 no-underline"
+          >
+            <CircleHelp className="size-4 shrink-0" aria-hidden />
+            <span>Support</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild className={DASHBOARD_MENU_ITEM_CLASS}>
+          <Link
+            href="/settings"
+            onClick={onNavigate}
+            className="flex cursor-pointer items-center gap-2 no-underline"
+          >
+            <CircleUser className="size-4 shrink-0" aria-hidden />
+            <span>Settings</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator className="mx-1 bg-zinc-200" />
+        {SIDEBAR_PROFILE_LINKS.map((item) => {
+          const Icon = item.icon;
+          return (
+            <DropdownMenuItem
+              key={item.href}
+              asChild
+              className={DASHBOARD_MENU_ITEM_CLASS}
+            >
+              <Link
+                href={item.href}
+                onClick={onNavigate}
+                className="flex cursor-pointer items-center gap-2 no-underline"
+              >
+                <Icon className="size-4 shrink-0" aria-hidden />
+                <span>{item.title}</span>
+              </Link>
+            </DropdownMenuItem>
+          );
+        })}
+        <DropdownMenuSeparator className="mx-1 bg-zinc-200" />
         <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
           Preferences
         </DropdownMenuItem>
-        <DropdownMenuSeparator className="mx-1 bg-zinc-200" />
         <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
           Log out
         </DropdownMenuItem>
@@ -215,45 +278,60 @@ export function AppSidebarNav({
         <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col justify-between px-2 pb-8">
           <SidebarContent
             className={cn(
-              "min-h-0 flex-1 gap-4 overflow-y-auto pt-0 pb-1 mt-0.5",
+              "min-h-0 flex-1 gap-1 overflow-y-auto pt-0 pb-1 mt-0.5",
               compact && "items-center",
             )}
           >
-            {SIDEBAR_NAV_SECTIONS.map((section) => (
-              <SidebarGroup
-                key={section.label}
-                className={cn("gap-1", compact && "w-full items-center")}
+            <SidebarGroup
+              className={cn("gap-1", compact && "w-full items-center")}
+            >
+              <SidebarMenu
+                className={cn("gap-0.5", compact && "w-full items-center")}
               >
-                <SidebarGroupLabel
-                  visible={showLabels}
-                  className={cn(
-                    "overflow-hidden px-2.5 whitespace-nowrap",
-                    SECTION_LABEL_CLASS,
-                  )}
-                >
-                  {section.label}
-                </SidebarGroupLabel>                <SidebarMenu
-                  className={cn("gap-0.5", compact && "w-full items-center")}
-                >
-                  {section.items.map((item) => {
-                    const isConfigureAction = Boolean(item.configureAudit);
-                    const active = isConfigureAction
-                      ? open
-                      : isSidebarNavActive(pathname, item);
-                    const Icon = item.icon;
+                {SIDEBAR_NAV_ITEMS.map((item) => {
+                  const isConfigureAction = Boolean(item.configureAudit);
+                  const active = isConfigureAction
+                    ? open
+                    : isSidebarNavActive(pathname, item);
+                  const Icon = item.icon;
 
-                    const control = isConfigureAction ? (
-                      <SidebarMenuButton
-                        type="button"
-                        isActive={active}
-                        compact={compact}
-                        className="rounded-md"
-                        aria-current={active ? "true" : undefined}
+                  const control = isConfigureAction ? (
+                    <SidebarMenuButton
+                      type="button"
+                      isActive={active}
+                      compact={compact}
+                      className="rounded-md"
+                      aria-current={active ? "true" : undefined}
+                      aria-label={item.title}
+                      onClick={() => {
+                        openConfigureAudit(null);
+                        handleNavigate();
+                      }}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" size={16} aria-hidden />
+                      <SidebarLabel
+                        show={showLabels}
+                        className={cn(
+                          "text-left leading-snug",
+                          showLabels && "min-w-0 flex-1",
+                        )}
+                      >
+                        {item.title}
+                      </SidebarLabel>
+                    </SidebarMenuButton>
+                  ) : (
+                    <SidebarMenuButton
+                      asChild
+                      isActive={active}
+                      compact={compact}
+                      className="rounded-md"
+                    >
+                      <Link
+                        href={item.href}
+                        onClick={handleNavigate}
+                        className="no-underline"
+                        aria-current={active ? "page" : undefined}
                         aria-label={item.title}
-                        onClick={() => {
-                          openConfigureAudit(null);
-                          handleNavigate();
-                        }}
                       >
                         <Icon className="h-4 w-4 shrink-0" size={16} aria-hidden />
                         <SidebarLabel
@@ -265,56 +343,30 @@ export function AppSidebarNav({
                         >
                           {item.title}
                         </SidebarLabel>
-                      </SidebarMenuButton>
-                    ) : (
-                      <SidebarMenuButton
-                        asChild
-                        isActive={active}
-                        compact={compact}
-                        className="rounded-md"
-                      >
-                        <Link
-                          href={item.href}
-                          onClick={handleNavigate}
-                          className="no-underline"
-                          aria-current={active ? "page" : undefined}
-                          aria-label={item.title}
-                        >
-                          <Icon className="h-4 w-4 shrink-0" size={16} aria-hidden />
-                          <SidebarLabel
-                            show={showLabels}
-                            className={cn(
-                              "text-left leading-snug",
-                              showLabels && "min-w-0 flex-1",
-                            )}
-                          >
-                            {item.title}
-                          </SidebarLabel>
-                        </Link>
-                      </SidebarMenuButton>
-                    );
+                      </Link>
+                    </SidebarMenuButton>
+                  );
 
-                    return (
-                      <SidebarMenuItem
-                        key={item.href}
-                        className={cn(compact && "flex justify-center")}
-                      >
-                        {compact ? (
-                          <Tooltip>
-                            <TooltipTrigger asChild>{control}</TooltipTrigger>
-                            <TooltipContent side="right" sideOffset={8}>
-                              {item.title}
-                            </TooltipContent>
-                          </Tooltip>
-                        ) : (
-                          control
-                        )}
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroup>
-            ))}
+                  return (
+                    <SidebarMenuItem
+                      key={item.href}
+                      className={cn(compact && "flex justify-center")}
+                    >
+                      {compact ? (
+                        <Tooltip>
+                          <TooltipTrigger asChild>{control}</TooltipTrigger>
+                          <TooltipContent side="right" sideOffset={8}>
+                            {item.title}
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        control
+                      )}
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroup>
           </SidebarContent>
 
           <SidebarFooter
@@ -323,7 +375,7 @@ export function AppSidebarNav({
               compact && "flex items-center",
             )}
           >
-            <SidebarProfileCard compact={compact} />
+            <SidebarProfileCard compact={compact} onNavigate={handleNavigate} />
           </SidebarFooter>
         </div>
       </div>

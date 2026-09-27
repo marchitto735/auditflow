@@ -14,7 +14,7 @@ export default function HelpPage() {
         <div className={cn(PAGE_INNER_CLASS, "flex w-full flex-col")}>
           <SectionHeader
             title="Support"
-            description="System status, compliance knowledge base, support tickets, and emergency escalation for live audits."
+            description="Submit support tickets and track open cases across the audit pipeline."
           />
           <HelpWorkspace />
         </div>

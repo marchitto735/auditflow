@@ -1,7 +1,9 @@
 "use client";
 
 import ActiveExecutionQueue from "@/components/audits/active-execution-queue";
+import AuditsKpiHeader from "@/components/audits/audits-kpi-header";
 import AuditLauncher from "@/components/dashboard/audit-launcher";
+import SectionHeader from "@/components/section-header/section-header";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   DASHBOARD_SECTION_GAP_CLASS,
@@ -22,6 +24,10 @@ export default function AuditsPage() {
         )}
       >
         <div className={cn(PAGE_INNER_CLASS, "flex w-full min-w-0 flex-col")}>
+          <SectionHeader
+            title="Audits"
+            description="Launch document audits and track active executions across SOP, BPR, and FIR."
+          />
           <TooltipProvider delayDuration={200}>
             <div
               className={cn(
@@ -29,6 +35,7 @@ export default function AuditsPage() {
                 DASHBOARD_SECTION_GAP_CLASS,
               )}
             >
+              <AuditsKpiHeader />
               <AuditLauncher variant="featured" />
               <ActiveExecutionQueue />
             </div>

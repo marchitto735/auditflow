@@ -1,15 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition, type FormEvent, type ReactNode } from "react";
-import {
-  BookOpen,
-  Check,
-  Copy,
-  ExternalLink,
-  Phone,
-  Search,
-  ShieldAlert,
-} from "lucide-react";
+import { Phone, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { submitSupportTicket } from "@/app/actions/help-actions";
 import { Badge } from "@/components/ui/badge";
@@ -42,35 +34,15 @@ import {
   DASHBOARD_GAP_CLASS,
 } from "@/lib/page-layout";
 import {
-  HELP_DIAGNOSTICS,
-  HELP_KNOWLEDGE_ARTICLES,
   HELP_SUPPORT_TICKETS,
-  HELP_SYSTEM_STATUS,
   TICKET_CATEGORIES,
   TICKET_SEVERITIES,
-  filterKnowledgeArticles,
   formatHelpTimestamp,
   type SupportTicket,
-  type SystemServiceStatus,
   type TicketCategory,
   type TicketSeverity,
 } from "@/lib/help";
 import { cn } from "@/lib/utils";
-
-function serviceStatusBadgeVariant(
-  status: SystemServiceStatus["status"],
-) {
-  switch (status) {
-    case "Operational":
-      return "success" as const;
-    case "Degraded":
-      return "warning" as const;
-    case "Outage":
-      return "destructive" as const;
-    default:
-      return "outline" as const;
-  }
-}
 
 function ticketStatusBadgeVariant(status: SupportTicket["status"]) {
   switch (status) {
@@ -108,9 +80,7 @@ function CardShell({
           <div className={cn("min-w-0", headerAction && "pr-28")}>
             <p className={CARD_SECTION_EYEBROW_CLASS}>{eyebrow}</p>
             {description ? (
-              <p className={cn(CARD_BODY_CLASS, "mt-2")}>
-                {description}
-              </p>
+              <p className={cn(CARD_BODY_CLASS, "mt-2")}>{description}</p>
             ) : null}
           </div>
           {headerAction ? (
@@ -123,151 +93,42 @@ function CardShell({
   );
 }
 
-function SystemStatusStrip() {
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
-
-  async function copyValue(label: string, value: string) {
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopiedKey(label);
-      toast.success(`${label} copied`);
-      window.setTimeout(() => setCopiedKey(null), 1500);
-    } catch {
-      toast.error("Unable to copy to clipboard");
-    }
-  }
-
+function CriticalEscalationBanner() {
   return (
-    <CardShell
-      eyebrow="System Status"
-      description="Live infrastructure health and tenant diagnostics for support escalations."
+    <div
+      role="status"
+      className="flex flex-col gap-3 rounded-lg border border-neutral-900/15 bg-neutral-50 px-4 py-3 sm:flex-row sm:items-start sm:justify-between"
     >
-      <div className="grid gap-0 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-        <ul className="m-0 grid list-none gap-0 border-b border-neutral-200 p-0 md:border-b-0 md:border-r">
-          {HELP_SYSTEM_STATUS.map((service) => (
-            <li
-              key={service.id}
-              className="flex items-start justify-between gap-4 border-b border-neutral-200 px-4 py-3 last:border-b-0"
-            >
-              <div className="min-w-0">
-                <p className="m-0 text-base font-normal text-neutral-900">
-                  {service.label}
-                </p>
-                <p className="m-0 mt-0.5 text-xs text-neutral-500">
-                  {service.detail}
-                </p>
-              </div>
-              <Badge
-                variant={serviceStatusBadgeVariant(service.status)}
-                className="shrink-0"
-              >
-                {service.status}
-              </Badge>
-            </li>
-          ))}
-        </ul>
-
-        <div className="flex flex-col gap-2 p-4">
-          <p className="m-0 text-xs font-semibold uppercase tracking-wider text-neutral-500">
-            Diagnostic metadata
-          </p>
-          <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
-            {HELP_DIAGNOSTICS.map((item) => {
-              const copied = copiedKey === item.label;
-              return (
-                <li key={item.label}>
-                  <button
-                    type="button"
-                    onClick={() => copyValue(item.label, item.value)}
-                    className="flex w-full items-center justify-between gap-3 rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2 text-left transition-colors hover:border-neutral-300 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
-                  >
-                    <span className="min-w-0">
-                      <span className="block text-xs text-neutral-500">
-                        {item.label}
-                      </span>
-                      <span className="mt-0.5 block truncate font-mono text-sm text-neutral-900">
-                        {item.value}
-                      </span>
-                    </span>
-                    {copied ? (
-                      <Check className="size-4 shrink-0 text-neutral-900" />
-                    ) : (
-                      <Copy className="size-4 shrink-0 text-neutral-500" />
-                    )}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
-    </CardShell>
-  );
-}
-
-function KnowledgeBase() {
-  const [query, setQuery] = useState("");
-  const articles = useMemo(
-    () => filterKnowledgeArticles(HELP_KNOWLEDGE_ARTICLES, query),
-    [query],
-  );
-
-  return (
-    <CardShell
-      eyebrow="Knowledge Base"
-      description="CFR Part 11, ISO frameworks, and AuditFlow ingestion playbooks."
-    >
-      <div className="flex flex-col gap-4 p-4">
-        <div className="relative max-w-md">
-          <Search
-            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-900"
+      <div className="min-w-0">
+        <div className="flex items-center gap-2">
+          <ShieldAlert
+            className="size-4 shrink-0 text-neutral-900"
             aria-hidden
           />
-          <Input
-            type="search"
-            placeholder="Search SOP docs and frameworks"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            className="h-9 pl-9"
-          />
-        </div>
-
-        {articles.length === 0 ? (
-          <p className="m-0 text-sm text-muted-foreground">
-            No articles match “{query}”.
+          <p className="m-0 text-sm font-medium text-neutral-900">
+            Critical severity — escalate before submitting
           </p>
-        ) : (
-          <ul className="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 xl:grid-cols-3">
-            {articles.map((article) => (
-              <li key={article.id}>
-                <a
-                  href={article.href}
-                  className="flex h-full flex-col gap-2 rounded-lg border border-neutral-200 bg-white p-4 no-underline transition-colors hover:border-neutral-300 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <Badge variant="outline">{article.category}</Badge>
-                    <BookOpen
-                      className="size-4 shrink-0 text-neutral-500"
-                      aria-hidden
-                    />
-                  </div>
-                  <p className="m-0 text-base font-normal text-neutral-900">
-                    {article.title}
-                  </p>
-                  <p className="m-0 flex-1 text-base font-normal leading-snug text-neutral-600">
-                    {article.summary}
-                  </p>
-                  <span className="inline-flex items-center gap-1 text-xs font-medium text-neutral-900">
-                    Open article
-                    <ExternalLink className="size-3" aria-hidden />
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
+        </div>
+        <p className="m-0 mt-1.5 text-sm leading-snug text-neutral-600">
+          Preserve session diagnostics and report IDs. Contact the on-call
+          compliance officer (Naomi Park · +1 (212) 555-0148) before altering
+          production data or running destructive remediations.
+        </p>
       </div>
-    </CardShell>
+      <Button
+        type="button"
+        variant="outline"
+        className="h-9! min-h-9! shrink-0 rounded-md px-3 text-sm"
+        onClick={() =>
+          toast.message("Escalation hotline", {
+            description: "+1 (212) 555-0148 · on-call until 08:00 UTC",
+          })
+        }
+      >
+        <Phone className="size-4" aria-hidden />
+        Call on-call
+      </Button>
+    </div>
   );
 }
 
@@ -357,6 +218,8 @@ function TicketForm() {
             </Select>
           </div>
         </div>
+
+        {severity === "Critical" ? <CriticalEscalationBanner /> : null}
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="ticket-description">Description</Label>
@@ -454,9 +317,7 @@ function ActiveTicketsTable() {
                   {ticket.id}
                 </TableCell>
                 <TableCell className="h-12 max-w-0 px-4 py-0">
-                  <span className="block truncate">
-                    {ticket.subject}
-                  </span>
+                  <span className="block truncate">{ticket.subject}</span>
                 </TableCell>
                 <TableCell className="h-12 px-4 py-0">
                   {ticket.severity}
@@ -467,13 +328,9 @@ function ActiveTicketsTable() {
                   </Badge>
                 </TableCell>
                 <TableCell className="h-12 max-w-0 px-4 py-0">
-                  <span className="block truncate">
-                    {ticket.assignee}
-                  </span>
+                  <span className="block truncate">{ticket.assignee}</span>
                 </TableCell>
-                <TableCell className="h-12 px-4 py-0">
-                  {ticket.sla}
-                </TableCell>
+                <TableCell className="h-12 px-4 py-0">{ticket.sla}</TableCell>
                 <TableCell className="h-12 px-4 py-0 font-mono tabular-nums">
                   {formatHelpTimestamp(ticket.openedAt)}
                 </TableCell>
@@ -497,95 +354,10 @@ function ActiveTicketsTable() {
   );
 }
 
-function EmergencyEscalation() {
-  return (
-    <Card
-      className={cn(
-        "overflow-hidden border-l-4 border-l-neutral-900",
-        DASHBOARD_CARD_CLASS,
-      )}
-    >
-      <CardContent className="flex flex-col gap-4 p-4 md:flex-row md:items-start md:justify-between md:p-5">
-        <div className="min-w-0 max-w-2xl">
-          <div className="flex items-center gap-2">
-            <ShieldAlert
-              className="size-5 shrink-0 text-neutral-900"
-              aria-hidden
-            />
-            <p className={CARD_SECTION_EYEBROW_CLASS}>
-              Emergency Escalation
-            </p>
-          </div>
-          <h3 className="m-0 mt-2 text-lg font-medium tracking-tight text-neutral-900">
-            Active audit incident protocol
-          </h3>
-          <p className={cn(CARD_BODY_CLASS, "mt-2")}>
-            For critical pipeline failures during a live inspection or third-party
-            audit, contact the on-call compliance officer before altering production
-            data. Do not re-run destructive remediations without dual control.
-          </p>
-          <ul className="m-0 mt-3 list-disc space-y-1 pl-5 text-base font-normal text-neutral-700">
-            <li>Preserve session diagnostics and report IDs</li>
-            <li>Escalate Critical tickets with severity Critical</li>
-            <li>Compliance officer: Naomi Park · +1 (212) 555-0148</li>
-          </ul>
-        </div>
-        <div className="flex shrink-0 flex-col gap-2">
-          <Button
-            type="button"
-            variant="black"
-            className="h-9! min-h-9! rounded-md px-4 text-sm"
-            onClick={() =>
-              toast.message("Escalation hotline", {
-                description: "+1 (212) 555-0148 · on-call until 08:00 UTC",
-              })
-            }
-          >
-            <Phone className="size-4" aria-hidden />
-            Call compliance officer
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            className="h-9! min-h-9! rounded-md px-4 text-sm"
-            onClick={async () => {
-              const checklist = [
-                "1. Preserve session diagnostics and report IDs",
-                "2. Open Critical ticket (severity Critical)",
-                "3. Contact compliance officer: Naomi Park · +1 (212) 555-0148",
-                "4. Do not run destructive remediations without dual control",
-              ].join("\n");
-              try {
-                await navigator.clipboard.writeText(checklist);
-                toast.success("Escalation checklist copied");
-              } catch {
-                toast.error("Unable to copy checklist");
-              }
-            }}
-          >
-            <Copy className="size-4" aria-hidden />
-            Copy protocol checklist
-          </Button>
-        </div>
-      </CardContent>
-      <div className="border-t border-zinc-100 px-4 py-3 md:px-5">
-        <p className="m-0 text-xs text-zinc-500">
-          Incident Protocol v4.2 · On-call rotation active
-        </p>
-      </div>
-    </Card>
-  );
-}
-
 export default function HelpWorkspace() {
   return (
     <div className={cn("flex w-full flex-col", DASHBOARD_GAP_CLASS)}>
-      <SystemStatusStrip />
-      <KnowledgeBase />
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
-        <TicketForm />
-        <EmergencyEscalation />
-      </div>
+      <TicketForm />
       <ActiveTicketsTable />
     </div>
   );
