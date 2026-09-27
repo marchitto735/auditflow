@@ -25,7 +25,16 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { DASHBOARD_CARD_CLASS } from "@/lib/page-layout";
+import {
+  DASHBOARD_CARD_CLASS,
+  TABLE_TOOLBAR_ACTIONS_CLASS,
+  TABLE_TOOLBAR_FILTERS_CLASS,
+  TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
+  TABLE_TOOLBAR_ROW_CLASS,
+  TABLE_TOOLBAR_SEARCH_ICON_CLASS,
+  TABLE_TOOLBAR_SEARCH_INPUT_CLASS,
+  TABLE_TOOLBAR_SEARCH_WRAP_CLASS,
+} from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 export type DashboardTypeFilter = "all" | "SOP" | "BPR" | "FIR";
@@ -86,13 +95,16 @@ type DashboardToolbarProps = {
   className?: string;
   /** Embed inside another card (no nested card chrome). */
   embedded?: boolean;
+  /** Far-right primary action (e.g. Run next). */
+  action?: React.ReactNode;
 };
 
-const CONTROL_CLASS =
-  "inline-flex h-10 w-full min-w-[9.5rem] items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium transition-colors duration-200 hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background md:w-[10.5rem]";
-
 function filterTriggerClass(extra?: string) {
-  return cn(CONTROL_CLASS, "text-neutral-900", extra);
+  return cn(
+    TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
+    "w-full min-w-[9.5rem] md:w-[10.5rem]",
+    extra,
+  );
 }
 
 type FilterOption<T extends string> = {
@@ -129,7 +141,7 @@ function FilterDropdown<T extends string>({
       <span className="min-w-0 flex-1 truncate text-left">
         {selected?.label ?? label}
       </span>
-      <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden />
+      <ChevronDown className="h-4 w-4 shrink-0 text-zinc-900" aria-hidden />
     </button>
   );
 
@@ -261,7 +273,7 @@ function MobileFiltersSheet({
           {count}
         </span>
       ) : (
-        <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden />
+        <ChevronDown className="h-4 w-4 shrink-0 text-zinc-900" aria-hidden />
       )}
     </button>
   );
@@ -283,7 +295,7 @@ function MobileFiltersSheet({
             {count}
           </span>
         ) : (
-          <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden />
+          <ChevronDown className="h-4 w-4 shrink-0 text-zinc-900" aria-hidden />
         )}
       </button>
       <SheetContent
@@ -291,7 +303,7 @@ function MobileFiltersSheet({
         className="max-h-[85dvh] gap-0 rounded-t-2xl border-zinc-200 bg-[#F7F7F7] p-0"
       >
         <SheetHeader className="shrink-0 border-b border-zinc-200 px-4 py-4">
-          <SheetTitle className="text-left text-base font-medium text-neutral-900">
+          <SheetTitle className="text-left text-base font-medium text-zinc-900">
             Filters
           </SheetTitle>
         </SheetHeader>
@@ -334,6 +346,7 @@ export function DashboardToolbar({
   onChange,
   className,
   embedded = false,
+  action,
 }: DashboardToolbarProps) {
   function patch(partial: Partial<DashboardToolbarValues>) {
     onChange({ ...value, ...partial });
@@ -342,17 +355,17 @@ export function DashboardToolbar({
   const controls = (
     <div
       className={cn(
-        "flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4",
-        embedded && "px-4 py-3",
+        TABLE_TOOLBAR_ROW_CLASS,
+        embedded && "px-0 py-0",
         className,
       )}
       role="search"
       aria-label="Search and filter audits"
     >
-      <div className="flex min-w-0 w-full items-center gap-2 md:max-w-md md:flex-1">
-        <div className="relative min-w-0 flex-1">
+      <div className="flex min-w-0 w-full items-center gap-2 sm:w-auto sm:shrink-0">
+        <div className={cn(TABLE_TOOLBAR_SEARCH_WRAP_CLASS, "flex-1 sm:flex-none")}>
           <Search
-            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-900"
+            className={TABLE_TOOLBAR_SEARCH_ICON_CLASS}
             aria-hidden
           />
           <Input
@@ -361,13 +374,15 @@ export function DashboardToolbar({
             onChange={(event) => patch({ search: event.target.value })}
             placeholder="Search documents"
             aria-label="Search documents"
-            className="h-10 border-zinc-200 bg-sidebar-muted/40 pl-9 text-sm font-medium text-neutral-900 transition-colors duration-200 placeholder:text-neutral-900 hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 md:text-sm"
+            className={TABLE_TOOLBAR_SEARCH_INPUT_CLASS}
           />
         </div>
-        <MobileFiltersSheet value={value} onChange={patch} />
+        <div className="sm:hidden">
+          <MobileFiltersSheet value={value} onChange={patch} />
+        </div>
       </div>
 
-      <div className="hidden w-full flex-col gap-3 md:flex md:w-auto md:flex-row md:flex-wrap md:items-center md:justify-end md:gap-3">
+      <div className={cn(TABLE_TOOLBAR_FILTERS_CLASS, "hidden sm:flex")}>
         <FilterDropdown
           label="Filter by type"
           value={value.type}
@@ -387,6 +402,10 @@ export function DashboardToolbar({
           onChange={(dateRange) => patch({ dateRange })}
         />
       </div>
+
+      {action ? (
+        <div className={TABLE_TOOLBAR_ACTIONS_CLASS}>{action}</div>
+      ) : null}
     </div>
   );
 

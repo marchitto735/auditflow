@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { ChevronRight, Play } from "lucide-react";
+import { useConfigureAudit } from "@/components/configure-audit-modal/configure-audit-context";
 import { CardActionsMenu } from "@/components/dashboard/card-actions-menu";
 import {
   DashboardToolbar,
   type DashboardToolbarValues,
 } from "@/components/dashboard/dashboard-toolbar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -325,6 +328,7 @@ export default function ActiveExecutionQueue({
 }: {
   className?: string;
 }) {
+  const { openConfigureAudit } = useConfigureAudit();
   const [filters, setFilters] = useState<DashboardToolbarValues>(INITIAL_FILTERS);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [page, setPage] = useState(1);
@@ -386,6 +390,18 @@ export default function ActiveExecutionQueue({
             className="px-0 py-0"
             value={filters}
             onChange={setFilters}
+            action={
+              <Button
+                type="button"
+                variant="black"
+                className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
+                onClick={() => openConfigureAudit(null)}
+              >
+                <Play className="size-4" aria-hidden />
+                Run next
+                <ChevronRight className="size-4" aria-hidden />
+              </Button>
+            }
           />
         </div>
 

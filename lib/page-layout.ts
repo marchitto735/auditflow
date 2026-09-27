@@ -61,6 +61,41 @@ export const DROPDOWN_TRIGGER_CLASS =
 export const FIELD_CONTROL_CLASS =
   "border border-neutral-200 bg-white text-neutral-900 transition-colors placeholder:text-neutral-500 hover:border-neutral-400 hover:bg-neutral-50 focus-visible:outline-none focus-visible:border-neutral-400 focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
+/**
+ * Unified data-table toolbar anatomy:
+ * [Search — left] [Filters — middle] [Primary action — far right]
+ */
+export const TABLE_TOOLBAR_ROW_CLASS =
+  "flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-3";
+
+export const TABLE_TOOLBAR_SEARCH_WRAP_CLASS =
+  "relative min-w-0 w-full sm:w-[min(100%,20rem)] sm:shrink-0";
+
+export const TABLE_TOOLBAR_FILTERS_CLASS =
+  "flex min-w-0 flex-1 flex-wrap items-center gap-2";
+
+export const TABLE_TOOLBAR_ACTIONS_CLASS =
+  "flex w-full shrink-0 items-center gap-2 sm:ml-auto sm:w-auto sm:justify-end";
+
+/**
+ * Filter dropdown / date-picker trigger — same type as toolbar search.
+ * Uses `neutral-900` (not zinc) so Tailwind merge correctly overrides
+ * `FIELD_CONTROL_CLASS` placeholder tokens on shared Input.
+ */
+export const TABLE_TOOLBAR_FILTER_TRIGGER_CLASS =
+  "inline-flex h-9 items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 transition-colors hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30";
+
+/**
+ * Table toolbar search field — matches filter trigger typography
+ * (`text-sm font-medium text-neutral-900` for value and placeholder).
+ */
+export const TABLE_TOOLBAR_SEARCH_INPUT_CLASS =
+  "h-9 pl-9 text-sm font-medium text-neutral-900 placeholder:font-medium placeholder:text-neutral-900 md:text-sm";
+
+/** Search affordance icon inside toolbar search fields. */
+export const TABLE_TOOLBAR_SEARCH_ICON_CLASS =
+  "pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-900";
+
 /** Soft neutral hover fill for ghost controls, pills, and secondary chrome. */
 export const INTERACTIVE_HOVER_CLASS =
   "transition-colors hover:bg-neutral-100 hover:text-neutral-900";

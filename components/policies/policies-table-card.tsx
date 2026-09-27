@@ -67,6 +67,13 @@ import {
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
+  TABLE_TOOLBAR_ACTIONS_CLASS,
+  TABLE_TOOLBAR_FILTERS_CLASS,
+  TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
+  TABLE_TOOLBAR_ROW_CLASS,
+  TABLE_TOOLBAR_SEARCH_ICON_CLASS,
+  TABLE_TOOLBAR_SEARCH_INPUT_CLASS,
+  TABLE_TOOLBAR_SEARCH_WRAP_CLASS,
 } from "@/lib/page-layout";
 import {
   POLICY_DOC_TYPES,
@@ -211,7 +218,7 @@ function FilterSelect<T extends string>({
       ref={triggerRef}
       type="button"
       aria-label={label}
-      className="inline-flex h-9 min-w-[8rem] items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 transition-colors hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
+      className={cn(TABLE_TOOLBAR_FILTER_TRIGGER_CLASS, "min-w-[8rem]")}
     >
       <span className="truncate">{selected}</span>
       <ChevronDown className="size-4 shrink-0" aria-hidden />
@@ -571,16 +578,7 @@ export default function PoliciesTableCard({
                 framework coverage.
               </p>
             </div>
-            <div className="absolute top-3 right-3 flex items-center gap-2">
-              <Button
-                type="button"
-                variant="black"
-                className="h-9! min-h-9! gap-1.5 rounded-md px-3 text-sm"
-                onClick={() => setUploadOpen(true)}
-              >
-                <FileUp className="size-4" aria-hidden />
-                Upload document
-              </Button>
+            <div className="absolute top-3 right-3">
               <CardActionsMenu
                 label="Master Policy Library"
                 actions={TABLE_CARD_MENU_ACTIONS}
@@ -588,13 +586,13 @@ export default function PoliciesTableCard({
             </div>
 
             <div
-              className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4"
+              className={TABLE_TOOLBAR_ROW_CLASS}
               role="search"
               aria-label="Search and filter policies"
             >
-              <div className="relative min-w-0 w-full md:max-w-md md:flex-1">
+              <div className={TABLE_TOOLBAR_SEARCH_WRAP_CLASS}>
                 <Search
-                  className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-900"
+                  className={TABLE_TOOLBAR_SEARCH_ICON_CLASS}
                   aria-hidden
                 />
                 <Input
@@ -604,10 +602,10 @@ export default function PoliciesTableCard({
                   onChange={(event) =>
                     patchFilters({ search: event.target.value })
                   }
-                  className="h-9 pl-9"
+                  className={TABLE_TOOLBAR_SEARCH_INPUT_CLASS}
                 />
               </div>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className={TABLE_TOOLBAR_FILTERS_CLASS}>
                 <FilterSelect
                   label="Type"
                   value={filters.type}
@@ -629,6 +627,17 @@ export default function PoliciesTableCard({
                   menusMounted={menusMounted}
                   onChange={(version) => patchFilters({ version })}
                 />
+              </div>
+              <div className={TABLE_TOOLBAR_ACTIONS_CLASS}>
+                <Button
+                  type="button"
+                  variant="black"
+                  className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
+                  onClick={() => setUploadOpen(true)}
+                >
+                  <FileUp className="size-4" aria-hidden />
+                  Upload document
+                </Button>
               </div>
             </div>
           </div>
