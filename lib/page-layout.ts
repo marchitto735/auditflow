@@ -2,7 +2,7 @@
 export const PAGE_GUTTER_CLASS = "w-full min-w-0 px-6 md:px-8";
 
 /** Centered content rail — caps width on ultra-wide displays. */
-export const PAGE_INNER_CLASS = "mx-auto w-full max-w-[1400px]";
+export const PAGE_INNER_CLASS = "mx-auto w-full max-w-[1200px]";
 
 /**
  * Uniform dashboard grid gutter — 24px on both axes (row sections + card columns).
@@ -15,10 +15,11 @@ export const DASHBOARD_GAP_CLASS = "gap-6";
 export const DASHBOARD_SECTION_GAP_CLASS = "gap-6";
 
 /**
- * Space above page headers / first content frame after the chrome-free desktop edge
- * (mobile still uses a slim menu bar + spacer).
+ * Space above page titles — 20px from the top of the content scrollport
+ * (desktop aligns with the sidebar brand bar). Mobile still stacks below
+ * the slim menu-bar spacer in `Header`.
  */
-export const PAGE_CONTENT_TOP_CLASS = "pt-8";
+export const PAGE_CONTENT_TOP_CLASS = "pt-5";
 
 /**
  * Uniform bottom breathing room under the last page content frame.

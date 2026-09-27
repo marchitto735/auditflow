@@ -218,7 +218,7 @@ export function AppSidebarNav({
         >
           <div
             className={cn(
-              "flex h-full w-full min-w-0 items-center",
+              "flex h-full w-full min-w-0 -translate-y-px items-center",
               compact ? "justify-center" : "justify-between gap-2",
             )}
           >

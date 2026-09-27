@@ -442,6 +442,34 @@ export function CategoryBreakdownPanel({ className }: { className?: string }) {
   );
 }
 
+/** Y-axis ticks — right-aligned tabular nums flush to a fixed-width rail. */
+function ComplianceTrendYTick({
+  x,
+  y,
+  payload,
+}: {
+  x?: number;
+  y?: number;
+  payload?: { value?: number | string };
+}) {
+  if (x == null || y == null || payload?.value == null) return null;
+
+  return (
+    <text
+      x={x}
+      y={y}
+      dx={-2}
+      dy={4}
+      textAnchor="end"
+      fill={CHART.structuralMuted}
+      fontSize={12}
+      style={{ fontVariantNumeric: "tabular-nums" }}
+    >
+      {payload.value}
+    </text>
+  );
+}
+
 /** Read-only 90d compliance score trend for the command center. */
 export function ComplianceTrendPanel({ className }: { className?: string }) {
   const trend = SCORE_TRENDS[90];
@@ -465,7 +493,7 @@ export function ComplianceTrendPanel({ className }: { className?: string }) {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={[...trend]}
-              margin={{ top: 8, right: 12, left: 0, bottom: 0 }}
+              margin={{ top: 8, right: 12, left: 4, bottom: 0 }}
             >
               <CartesianGrid stroke={CHART.grid} vertical={false} />
               <XAxis
@@ -478,8 +506,9 @@ export function ComplianceTrendPanel({ className }: { className?: string }) {
                 domain={[70, 100]}
                 tickLine={false}
                 axisLine={false}
-                width={32}
-                tick={{ fill: CHART.structuralMuted, fontSize: 12 }}
+                width={36}
+                tick={<ComplianceTrendYTick />}
+                tickMargin={0}
               />
               <Tooltip
                 contentStyle={{
