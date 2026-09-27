@@ -176,6 +176,13 @@ export const CARD_CONTENT_CLASS =
   "flex h-full flex-col gap-2 p-4";
 
 /**
+ * Standard card body copy — 16px, regular weight, muted.
+ * Use for supporting descriptions under card eyebrows and in card bodies.
+ */
+export const CARD_BODY_CLASS =
+  "m-0 text-base font-normal leading-relaxed text-neutral-600";
+
+/**
  * Shared card footer — tight gap above CTA for Swiss density.
  */
 export const CARD_FOOTER_CLASS =

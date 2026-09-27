@@ -151,7 +151,7 @@ export default function RecentActivity({
         <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Audit History</p>
-            <p className="text-body1 m-0 mt-1 text-neutral-600">
+            <p className="m-0 mt-1 text-base font-normal text-neutral-600">
               Completed audits with scores, status, and document type.
             </p>
           </div>

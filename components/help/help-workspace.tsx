@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  CARD_BODY_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
@@ -107,7 +108,7 @@ function CardShell({
           <div className={cn("min-w-0", headerAction && "pr-28")}>
             <p className={CARD_SECTION_EYEBROW_CLASS}>{eyebrow}</p>
             {description ? (
-              <p className="text-body1 m-0 mt-1 text-neutral-600">
+              <p className={cn(CARD_BODY_CLASS, "mt-1")}>
                 {description}
               </p>
             ) : null}
@@ -149,7 +150,7 @@ function SystemStatusStrip() {
               className="flex items-start justify-between gap-4 border-b border-neutral-200 px-4 py-3 last:border-b-0"
             >
               <div className="min-w-0">
-                <p className="m-0 text-sm font-medium text-neutral-900">
+                <p className="m-0 text-base font-normal text-neutral-900">
                   {service.label}
                 </p>
                 <p className="m-0 mt-0.5 text-xs text-neutral-500">
@@ -250,10 +251,10 @@ function KnowledgeBase() {
                       aria-hidden
                     />
                   </div>
-                  <p className="m-0 text-sm font-medium text-neutral-900">
+                  <p className="m-0 text-base font-normal text-neutral-900">
                     {article.title}
                   </p>
-                  <p className="m-0 flex-1 text-sm leading-snug text-neutral-600">
+                  <p className="m-0 flex-1 text-base font-normal leading-snug text-neutral-600">
                     {article.summary}
                   </p>
                   <span className="inline-flex items-center gap-1 text-xs font-medium text-neutral-900">
@@ -518,12 +519,12 @@ function EmergencyEscalation() {
           <h3 className="m-0 mt-2 text-lg font-medium tracking-tight text-neutral-900">
             Active audit incident protocol
           </h3>
-          <p className="m-0 mt-2 text-sm leading-relaxed text-neutral-600">
+          <p className={cn(CARD_BODY_CLASS, "mt-2")}>
             For critical pipeline failures during a live inspection or third-party
             audit, contact the on-call compliance officer before altering production
             data. Do not re-run destructive remediations without dual control.
           </p>
-          <ul className="m-0 mt-3 list-disc space-y-1 pl-5 text-sm text-neutral-700">
+          <ul className="m-0 mt-3 list-disc space-y-1 pl-5 text-base font-normal text-neutral-700">
             <li>Preserve session diagnostics and report IDs</li>
             <li>Escalate Critical tickets with severity Critical</li>
             <li>Compliance officer: Naomi Park · +1 (212) 555-0148</li>

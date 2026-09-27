@@ -222,7 +222,7 @@ export default function ScoreAnalysisView() {
               <p className={CARD_SECTION_EYEBROW_CLASS}>
                 Department Distribution
               </p>
-              <p className="text-body1 m-0 mt-1 text-neutral-600">
+              <p className="m-0 mt-1 text-base font-normal text-neutral-600">
                 Score averages, audit volume, and GMP risk by department.
               </p>
             </div>
@@ -317,7 +317,7 @@ export default function ScoreAnalysisView() {
           <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
             <div className="min-w-0 pr-10">
               <p className={CARD_SECTION_EYEBROW_CLASS}>Variance Log</p>
-              <p className="text-body1 m-0 mt-1 text-neutral-600">
+              <p className="m-0 mt-1 text-base font-normal text-neutral-600">
                 Historical score anomalies and domain-level variance signals.
               </p>
             </div>

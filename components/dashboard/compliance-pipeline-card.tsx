@@ -72,7 +72,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
       <CardContent className={cn(CARD_CONTENT_CLASS, "relative h-auto gap-3")}>
         <div className="min-w-0 shrink-0 pr-10">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance Pipeline</p>
-          <p className="text-body1 m-0 mt-1 text-neutral-600">
+          <p className="m-0 mt-1 text-base font-normal text-neutral-600">
             Active document volume by stage from ingest through export.
           </p>
         </div>

@@ -143,7 +143,7 @@ export default function SettingsWorkspace({
       <CardContent className="flex flex-col p-0">
         <div className="border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Workspace Settings</p>
-          <p className="text-body1 m-0 mt-1 text-neutral-600">
+          <p className="m-0 mt-1 text-base font-normal text-neutral-600">
             Organization defaults, security posture, and alert preferences.
           </p>
         </div>

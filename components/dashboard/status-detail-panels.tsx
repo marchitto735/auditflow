@@ -100,7 +100,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
         <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Priority Findings</p>
-            <p className="text-body1 m-0 mt-1 text-neutral-600">
+            <p className="m-0 mt-1 text-base font-normal text-neutral-600">
               Highest-severity open items across active audits.
             </p>
           </div>
@@ -211,7 +211,7 @@ export function CategoryBreakdownPanel({ className }: { className?: string }) {
       <CardContent className="relative flex h-full flex-col gap-3 p-4 pb-6">
         <div className="min-w-0 pr-10">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Category Breakdown</p>
-          <p className="text-body1 m-0 mt-1 text-neutral-600">
+          <p className="m-0 mt-1 text-base font-normal text-neutral-600">
             GMP threshold {GMP_THRESHOLD}%.
           </p>
         </div>
@@ -258,7 +258,7 @@ export function ComplianceTrendPanel({ className }: { className?: string }) {
       <CardContent className="relative flex h-full flex-col gap-3 p-4">
         <div className="min-w-0 pr-10">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance Trend</p>
-          <p className="text-body1 m-0 mt-1 text-neutral-600">
+          <p className="m-0 mt-1 text-base font-normal text-neutral-600">
             90-day score vs {GMP_THRESHOLD}% GMP standard.
           </p>
         </div>

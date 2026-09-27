@@ -647,7 +647,7 @@ export default function ReportsTableCard({
             <div className="relative flex shrink-0 flex-col gap-3 border-b border-neutral-200 px-4 pt-[16px] pb-3">
               <div className="min-w-0 pr-10 md:pr-52">
                 <p className={CARD_SECTION_EYEBROW_CLASS}>Reports</p>
-                <p className="text-body1 m-0 mt-1 text-neutral-600">
+                <p className="m-0 mt-1 text-base font-normal text-neutral-600">
                   Completed SOP, BPR, and FIR audits with scores, status, and
                   immutable export actions.
                 </p>

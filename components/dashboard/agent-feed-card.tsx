@@ -168,7 +168,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
       >
         <div className="min-w-0 shrink-0 pr-10">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Activity Feed</p>
-          <p className="text-body1 m-0 mt-1 text-neutral-600">
+          <p className="m-0 mt-1 text-base font-normal text-neutral-600">
             Real-time agent events across validation, scoring, and export.
           </p>
         </div>
