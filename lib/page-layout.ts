@@ -79,9 +79,15 @@ export const TABLE_ROW_ACTIONS_HEAD_CLASS =
 export const TABLE_ROW_ACTIONS_CELL_CLASS =
   "h-12 w-14 max-w-none overflow-visible px-2 pr-4 py-0 text-right text-clip align-middle";
 
-/** Static dashboard card chrome — flat white surface, subtle zinc border, no shadow. */
+/** Static dashboard card chrome — flat white surface, subtle zinc border, no elevation. */
 export const DASHBOARD_CARD_CLASS =
   "rounded-2xl border border-neutral-200 bg-white shadow-none";
+
+/**
+ * Interactive card chrome — same as dashboard cards; border shift on hover only (no shadow).
+ */
+export const INTERACTIVE_CARD_CLASS =
+  "rounded-2xl border border-neutral-200 bg-white shadow-none transition-colors duration-200 ease-in-out hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-neutral-900/30";
 
 /**
  * Status KPI / audit telemetry cards — height hugs content (no fixed clip).
@@ -111,13 +117,6 @@ export const DASHBOARD_TRIPLE_CARD_GRID_CLASS =
 export const RECENT_ACTIVITY_CARD_HEIGHT_CLASS = "h-auto";
 
 /**
- * Interactive card chrome — flat at rest; soft border + shadow lift on hover.
- * Compose with layout utilities (flex, group, etc.) as needed.
- */
-export const INTERACTIVE_CARD_CLASS =
-  "rounded-2xl border border-neutral-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-neutral-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-neutral-900/30";
-
-/**
  * Shared section label — matches sidebar group headers (Operations, Insights, System).
  * All-caps, xs / semibold, tracked-out. Prefer title case in source copy;
  * CSS `uppercase` handles presentation.
@@ -142,9 +141,15 @@ export const CARD_CORNER_LABEL_CLASS =
 export const CARD_SECTION_EYEBROW_CLASS = CARD_EYEBROW_CLASS;
 
 /**
- * Eyebrow → title stack — 8px gap on every dashboard card header.
+ * Eyebrow → title / body stack — 8px gap on every card header.
  */
 export const CARD_HEADER_STACK_CLASS = "flex min-w-0 flex-col gap-2";
+
+/**
+ * Margin below an eyebrow when siblings are not wrapped in `CARD_HEADER_STACK_CLASS`.
+ * Matches the stack gap (8px).
+ */
+export const CARD_EYEBROW_OFFSET_CLASS = "mt-2";
 
 /**
  * Alias of `CARD_EYEBROW_CLASS` — single eyebrow style across the design system.

@@ -47,6 +47,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  CARD_HEADER_STACK_CLASS,
+  CARD_METRIC_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
@@ -252,47 +254,74 @@ function FrameworkOverviewCards({
             type="button"
             onClick={() => onSelect(active ? "all" : fw.id)}
             className={cn(
-              "rounded-2xl border bg-white p-4 text-left shadow-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30",
+              DASHBOARD_CARD_CLASS,
+              "flex flex-col gap-3 p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30",
               active
                 ? "border-neutral-800"
-                : "border-neutral-200 hover:border-neutral-300",
+                : "hover:border-neutral-300",
             )}
           >
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <p className="m-0 text-[13px] font-medium uppercase tracking-wider text-neutral-500">
-                  {fw.shortName}
-                </p>
-                <p className="m-0 mt-1 truncate text-sm font-medium text-neutral-900">
-                  {fw.name}
-                </p>
-              </div>
+            <div className={cn(CARD_HEADER_STACK_CLASS, "min-w-0")}>
+              <p className={CARD_SECTION_EYEBROW_CLASS}>{fw.shortName}</p>
+              <p
+                className={cn(
+                  CARD_METRIC_CLASS,
+                  "m-0 tabular-nums text-neutral-900",
+                )}
+              >
+                {fw.coveragePercent}%
+              </p>
+            </div>
+            <Progress
+              value={fw.coveragePercent}
+              className="h-1.5 bg-neutral-200"
+              indicatorClassName="bg-primary"
+            />
+            <p
+              className="text-base m-0 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 font-normal leading-snug text-foreground"
+              aria-label={`${fw.shortName} status ${fw.status}, ${fw.name}`}
+            >
               <Badge
                 variant={mappingBadgeVariant(fw.status)}
                 className="shrink-0"
               >
                 {fw.status}
               </Badge>
-            </div>
-            <div className="mt-4 flex items-end justify-between gap-2">
-              <div>
-                <p className="m-0 text-2xl font-bold tabular-nums tracking-tight text-neutral-900">
-                  {fw.coveragePercent}%
-                </p>
-                <p className="m-0 text-xs text-neutral-500">coverage</p>
+              <span className="shrink-0 text-neutral-900" aria-hidden>
+                •
+              </span>
+              <span className="min-w-0 truncate text-neutral-900">
+                {fw.name}
+              </span>
+            </p>
+            <div
+              className="mt-auto flex min-w-0 flex-wrap items-end justify-between gap-x-3 gap-y-1"
+              aria-label={`${fw.shortName} coverage metadata`}
+            >
+              <div className="flex min-w-0 flex-1 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-neutral-900">
+                <span className="shrink-0 whitespace-nowrap">
+                  <span className="text-neutral-900">Cov</span>{" "}
+                  <span className="font-medium tabular-nums text-neutral-900">
+                    {fw.coveragePercent}%
+                  </span>
+                </span>
+                <span className="shrink-0 text-neutral-900" aria-hidden>
+                  ·
+                </span>
+                <span className="shrink-0 whitespace-nowrap tabular-nums">
+                  <span className="text-neutral-900">Clauses</span>{" "}
+                  <span className="font-medium text-neutral-900">
+                    {fw.mappedPolicies}/{fw.totalClauses}
+                  </span>
+                </span>
               </div>
-              <div className="text-right text-xs text-neutral-600">
-                <p className="m-0 tabular-nums">
-                  {fw.mappedPolicies}/{fw.totalClauses} clauses
-                </p>
-                <p className="m-0 mt-0.5">v{fw.version}</p>
-              </div>
+              <p
+                className="m-0 max-w-full shrink-0 text-right text-xs font-medium tabular-nums tracking-wider text-muted-foreground"
+                aria-label={`${fw.shortName} version ${fw.version}`}
+              >
+                v{fw.version}
+              </p>
             </div>
-            <Progress
-              value={fw.coveragePercent}
-              className="mt-3 h-1.5 bg-neutral-100"
-              indicatorClassName="bg-primary"
-            />
           </button>
         );
       })}
@@ -359,7 +388,7 @@ function MappingTable({
         <div className="relative flex shrink-0 flex-col gap-3 border-b border-neutral-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Clause Mapping</p>
-            <p className="m-0 mt-1 text-base font-normal text-neutral-600">
+            <p className="m-0 mt-2 text-base font-normal text-neutral-600">
               Regulatory articles mapped to internal SOP / BPR / FIR controls.
             </p>
           </div>

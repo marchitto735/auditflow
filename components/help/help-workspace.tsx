@@ -108,7 +108,7 @@ function CardShell({
           <div className={cn("min-w-0", headerAction && "pr-28")}>
             <p className={CARD_SECTION_EYEBROW_CLASS}>{eyebrow}</p>
             {description ? (
-              <p className={cn(CARD_BODY_CLASS, "mt-1")}>
+              <p className={cn(CARD_BODY_CLASS, "mt-2")}>
                 {description}
               </p>
             ) : null}

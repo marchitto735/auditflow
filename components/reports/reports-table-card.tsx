@@ -62,6 +62,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  CARD_HEADER_STACK_CLASS,
   CARD_METRIC_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
@@ -294,14 +295,17 @@ function ReportsKpiHeader({ rows }: { rows: ReportRow[] }) {
           >
             <CardContent className="flex flex-col gap-3 p-4">
               <div className="flex items-start justify-between gap-2">
-                <p className={CARD_SECTION_EYEBROW_CLASS}>{card.eyebrow}</p>
-                <span className="inline-flex size-8 items-center justify-center rounded-md bg-[var(--primary-muted)] text-primary">
-                  <Icon className="size-4" aria-hidden />
-                </span>
+                <div className={cn(CARD_HEADER_STACK_CLASS, "min-w-0")}>
+                  <p className={CARD_SECTION_EYEBROW_CLASS}>{card.eyebrow}</p>
+                  <p className={cn(CARD_METRIC_CLASS, "m-0 text-neutral-900")}>
+                    {card.value}
+                  </p>
+                </div>
+                <Icon
+                  className="size-4 shrink-0 text-zinc-400"
+                  aria-hidden
+                />
               </div>
-              <p className={cn(CARD_METRIC_CLASS, "m-0 text-neutral-900")}>
-                {card.value}
-              </p>
               <p
                 className={cn(
                   "m-0 truncate text-xs text-neutral-500",
@@ -647,7 +651,7 @@ export default function ReportsTableCard({
             <div className="relative flex shrink-0 flex-col gap-3 border-b border-neutral-200 px-4 pt-[16px] pb-3">
               <div className="min-w-0 pr-10 md:pr-52">
                 <p className={CARD_SECTION_EYEBROW_CLASS}>Reports</p>
-                <p className="m-0 mt-1 text-base font-normal text-neutral-600">
+                <p className="m-0 mt-2 text-base font-normal text-neutral-600">
                   Completed SOP, BPR, and FIR audits with scores, status, and
                   immutable export actions.
                 </p>

@@ -366,7 +366,7 @@ export default function ActiveExecutionQueue({
         <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Execution Queue</p>
-            <p className="m-0 mt-1 text-base font-normal text-neutral-600">
+            <p className="m-0 mt-2 text-base font-normal text-neutral-600">
               Documents waiting to run, parsing, or pending upload.
             </p>
           </div>
