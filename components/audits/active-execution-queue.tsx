@@ -396,7 +396,7 @@ export default function ActiveExecutionQueue({
                 className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
                 onClick={() => openConfigureAudit(null)}
               >
-                Run next
+                New Audit
               </Button>
             }
           />

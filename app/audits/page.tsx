@@ -2,7 +2,6 @@
 
 import ActiveExecutionQueue from "@/components/audits/active-execution-queue";
 import AuditsKpiHeader from "@/components/audits/audits-kpi-header";
-import AuditLauncher from "@/components/dashboard/audit-launcher";
 import SectionHeader from "@/components/section-header/section-header";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
@@ -35,7 +34,6 @@ export default function AuditsPage() {
                 DASHBOARD_SECTION_GAP_CLASS,
               )}
             >
-              <AuditLauncher variant="featured" />
               <AuditsKpiHeader />
               <ActiveExecutionQueue />
             </div>
