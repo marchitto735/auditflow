@@ -1,33 +1,39 @@
 /**
- * Swiss SaaS chart + status palette — monochrome ink scale.
- * CSS mirrors live in `:root` as `--chart-*`.
+ * AuditFlow chart + status palette.
+ * Neutrals for chrome; Engineering Blue for trends / interaction;
+ * semantic emerald / amber / red only for status-driven signals.
+ * CSS mirrors live in `:root` as `--chart-*` / `--status-*` / `--primary`.
  */
 
 export const CHART = {
-  /** Primary series / trend lines */
-  primary: "oklch(35% 0 0)",
+  /** Primary series / trend lines — Engineering Blue */
+  primary: "var(--chart-primary)",
   /** Active bar fill */
-  structural: "oklch(40% 0 0)",
+  structural: "var(--chart-structural)",
   /** Softened below-threshold bars */
-  structuralMuted: "oklch(72% 0 0)",
+  structuralMuted: "#8aadc4",
   /** Gauge / high score fill */
-  gauge: "oklch(45% 0 0)",
+  gauge: "var(--status-success)",
   /** Inactive tracks / background bars */
-  track: "oklch(90% 0 0)",
+  track: "var(--chart-track)",
   /** Quieter track */
-  trackSoft: "oklch(96.5% 0 0)",
+  trackSoft: "#f5f5f5",
   /** Grid lines */
-  grid: "oklch(94.5% 0 0)",
+  grid: "#e5e5e5",
   /** Reference / baseline dashed lines */
-  reference: "oklch(70% 0 0)",
+  reference: "#a3a3a3",
   /** Critical severity */
-  critical: "oklch(35% 0 0)",
-  /** High severity */
-  high: "oklch(45% 0 0)",
-  /** Medium severity */
-  medium: "oklch(55% 0 0)",
-  /** Low / secondary */
-  low: "oklch(70% 0 0)",
+  critical: "var(--status-critical)",
+  /** High severity / warning */
+  high: "var(--status-warning)",
+  /** Medium — primary blue */
+  medium: "var(--chart-primary)",
+  /** Low — softer blue */
+  low: "var(--chart-2)",
+  /** Success / verified */
+  success: "var(--status-success)",
+  /** Caution / pending */
+  caution: "var(--status-warning)",
 } as const;
 
 /**
@@ -69,22 +75,24 @@ export function severityFill(severity: ChartSeverity): string {
   }
 }
 
-/** Tailwind class for severity pips (tables, legends) — grayscale. */
+/** Tailwind class for severity pips (tables, legends). */
 export function severityDotClass(severity: ChartSeverity): string {
   switch (severity) {
     case "Critical":
-      return "bg-neutral-900";
+      return "bg-status-critical";
     case "High":
-      return "bg-neutral-700";
+      return "bg-status-warning";
     case "Medium":
-      return "bg-neutral-500";
+      return "bg-primary";
     default:
-      return "bg-neutral-300";
+      return "bg-primary/50";
   }
 }
 
 /**
- * Dashboard telemetry status → grayscale sparkline + status pip.
+ * Dashboard telemetry status → sparkline + status pip.
+ * Semantic colors only when the label represents that state;
+ * in-progress / active operational series use Engineering Blue.
  */
 function workflowStatusTone(status: string): {
   spark: string;
@@ -92,20 +100,19 @@ function workflowStatusTone(status: string): {
 } {
   switch (status) {
     case "Active":
-      return { spark: "text-neutral-900", dot: "bg-neutral-900" };
+      return { spark: "text-primary", dot: "bg-primary" };
     case "Ready":
     case "Pending":
-      return { spark: "text-neutral-600", dot: "bg-neutral-600" };
+      return { spark: "text-status-warning", dot: "bg-status-warning" };
     case "Draft":
       return { spark: "text-neutral-400", dot: "bg-neutral-400" };
     case "Synced":
-      return { spark: "text-neutral-700", dot: "bg-neutral-700" };
-    case "Flagged":
-      return { spark: "text-neutral-800", dot: "bg-neutral-800" };
     case "Verified":
-      return { spark: "text-neutral-900", dot: "bg-neutral-900" };
+      return { spark: "text-status-success", dot: "bg-status-success" };
+    case "Flagged":
+      return { spark: "text-status-critical", dot: "bg-status-critical" };
     default:
-      return { spark: "text-neutral-500", dot: "bg-neutral-500" };
+      return { spark: "text-primary", dot: "bg-primary" };
   }
 }
 
@@ -119,16 +126,16 @@ export function workflowStatusSparkClass(status: string): string {
   return workflowStatusTone(status).spark;
 }
 
-/** Score → series fill (gauge, category bars). */
+/** Score → series fill (gauge, category bars) — status-driven. */
 export function scoreSeriesColor(score: number): string {
   if (score < 70) return CHART.critical;
-  if (score <= 85) return CHART.medium;
-  return CHART.gauge;
+  if (score <= 85) return CHART.caution;
+  return CHART.success;
 }
 
-/** Tailwind bg utility for score progress fills — grayscale. */
+/** Tailwind bg utility for score progress fills. */
 export function scoreFillClass(score: number): string {
-  if (score < 70) return "bg-neutral-800";
-  if (score <= 85) return "bg-neutral-500";
-  return "bg-neutral-900";
+  if (score < 70) return "bg-status-critical";
+  if (score <= 85) return "bg-status-warning";
+  return "bg-status-success";
 }

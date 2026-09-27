@@ -58,11 +58,11 @@ import { cn } from "@/lib/utils";
 function statusDotClass(status: SystemServiceStatus["status"]) {
   switch (status) {
     case "Operational":
-      return "bg-neutral-900";
+      return "bg-status-success";
     case "Degraded":
-      return "bg-neutral-500";
+      return "bg-status-warning";
     case "Outage":
-      return "bg-neutral-400";
+      return "bg-status-critical";
     default:
       return "bg-neutral-400";
   }
@@ -71,11 +71,11 @@ function statusDotClass(status: SystemServiceStatus["status"]) {
 function ticketStatusDotClass(status: SupportTicket["status"]) {
   switch (status) {
     case "Resolved":
-      return "bg-neutral-900";
+      return "bg-status-success";
     case "In Progress":
-      return "bg-neutral-700";
+      return "bg-primary";
     case "Waiting":
-      return "bg-neutral-500";
+      return "bg-status-warning";
     default:
       return "bg-neutral-400";
   }
@@ -84,11 +84,11 @@ function ticketStatusDotClass(status: SupportTicket["status"]) {
 function severityWeight(severity: TicketSeverity) {
   switch (severity) {
     case "Critical":
-      return "font-semibold text-neutral-900";
+      return "font-semibold text-status-critical";
     case "High":
-      return "font-medium text-neutral-900";
+      return "font-medium text-amber-700";
     case "Medium":
-      return "text-neutral-700";
+      return "text-primary";
     default:
       return "text-neutral-500";
   }
@@ -510,7 +510,7 @@ function EmergencyEscalation() {
   return (
     <Card
       className={cn(
-        "overflow-hidden border-neutral-800 bg-neutral-900 text-white",
+        "overflow-hidden border-status-critical bg-status-critical text-status-critical-foreground",
         "rounded-2xl shadow-none",
       )}
     >
@@ -518,19 +518,19 @@ function EmergencyEscalation() {
         <div className="min-w-0 max-w-2xl">
           <div className="flex items-center gap-2">
             <ShieldAlert className="size-5 shrink-0 text-white" aria-hidden />
-            <p className="m-0 text-[13px] font-medium uppercase tracking-wider text-neutral-300">
+            <p className="m-0 text-[13px] font-medium uppercase tracking-wider text-red-100">
               Emergency Escalation
             </p>
           </div>
           <h3 className="m-0 mt-2 text-lg font-medium tracking-tight text-white">
             Active audit incident protocol
           </h3>
-          <p className="m-0 mt-2 text-sm leading-relaxed text-neutral-300">
+          <p className="m-0 mt-2 text-sm leading-relaxed text-red-100">
             For critical pipeline failures during a live inspection or third-party
             audit, contact the on-call compliance officer before altering production
             data. Do not re-run destructive remediations without dual control.
           </p>
-          <ul className="m-0 mt-3 list-disc space-y-1 pl-5 text-sm text-neutral-300">
+          <ul className="m-0 mt-3 list-disc space-y-1 pl-5 text-sm text-red-100">
             <li>Preserve session diagnostics and report IDs</li>
             <li>Escalate Critical tickets with severity Critical</li>
             <li>Compliance officer: Naomi Park · +1 (212) 555-0148</li>

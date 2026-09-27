@@ -4,20 +4,24 @@ import { cn } from "@/lib/utils"
 import { Slot } from "radix-ui"
 
 const badgeVariants = cva(
-  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-sm border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:border-neutral-900 focus-visible:ring-[3px] focus-visible:ring-neutral-900/30 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3",
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-sm border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:border-primary focus-visible:ring-[3px] focus-visible:ring-primary/30 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3",
   {
     variants: {
       variant: {
         default:
-          "bg-black text-white [a&]:hover:bg-neutral-900",
+          "bg-primary text-primary-foreground [a&]:hover:bg-[var(--primary-hover)]",
         secondary:
           "bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
         destructive:
-          "bg-neutral-900 text-white focus-visible:ring-neutral-900/30 [a&]:hover:bg-neutral-800",
+          "bg-status-critical text-status-critical-foreground focus-visible:ring-status-critical/30 [a&]:hover:bg-red-700",
+        success:
+          "bg-status-success text-status-success-foreground [a&]:hover:bg-emerald-700",
+        warning:
+          "bg-status-warning text-status-warning-foreground [a&]:hover:bg-amber-600",
         outline:
           "border-border text-foreground [a&]:hover:bg-neutral-100 [a&]:hover:text-neutral-900",
         ghost: "[a&]:hover:bg-neutral-100 [a&]:hover:text-neutral-900",
-        link: "text-neutral-900 underline-offset-4 [a&]:hover:underline",
+        link: "text-primary underline-offset-4 [a&]:hover:underline",
       },
     },
     defaultVariants: {

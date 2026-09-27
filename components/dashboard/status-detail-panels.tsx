@@ -203,7 +203,7 @@ function FindingsPaginationNav({
             className={cn(
               "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
               item === currentPage
-                ? "bg-neutral-800 text-white hover:bg-neutral-800 hover:text-white"
+                ? "bg-primary text-primary-foreground hover:bg-[var(--primary-hover)] hover:text-primary-foreground"
                 : "text-neutral-900 hover:bg-zinc-100",
             )}
             aria-current={item === currentPage ? "page" : undefined}

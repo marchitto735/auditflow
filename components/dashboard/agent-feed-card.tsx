@@ -195,9 +195,9 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
             const isWarn = status === "warn";
             const isError = status === "error";
             const messageTone = isError
-              ? "text-neutral-900"
+              ? "text-status-critical"
               : isWarn
-                ? "text-neutral-700"
+                ? "text-amber-800"
                 : "text-neutral-900";
 
             return (
@@ -219,14 +219,14 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
                   <div className="flex shrink-0 items-center gap-2">
                     {isWarn ? (
                       <AlertTriangle
-                        className="size-3.5 shrink-0 text-neutral-600"
+                        className="size-3.5 shrink-0 text-status-warning"
                         aria-hidden
                         strokeWidth={2}
                       />
                     ) : null}
                     {isError ? (
                       <CircleAlert
-                        className="size-3.5 shrink-0 text-neutral-800"
+                        className="size-3.5 shrink-0 text-status-critical"
                         aria-hidden
                         strokeWidth={2}
                       />
@@ -238,9 +238,9 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
                       className={cn(
                         TELEMETRY_PILL_CLASS,
                         isError &&
-                          "border-neutral-400 bg-neutral-200 text-neutral-900",
+                          "border-red-200 bg-status-critical-muted text-red-800",
                         isWarn &&
-                          "border-neutral-300 bg-neutral-100 text-neutral-700",
+                          "border-amber-200 bg-status-warning-muted text-amber-900",
                       )}
                     >
                       {event.subsystem}

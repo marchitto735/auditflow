@@ -91,9 +91,9 @@ function buildPageItems(currentPage: number, totalPages: number) {
 function mappingStatusClass(status: MappingStatus) {
   switch (status) {
     case "Fully Mapped":
-      return "border-neutral-800 bg-neutral-800 text-white";
+      return "border-emerald-600 bg-status-success text-status-success-foreground";
     case "Partial Gap":
-      return "border-neutral-400 bg-neutral-200 text-neutral-800";
+      return "border-amber-200 bg-status-warning-muted text-amber-900";
     case "Under Review":
       return "border-neutral-300 bg-neutral-50 text-neutral-600";
     default:
@@ -287,7 +287,7 @@ function FrameworksPaginationNav({
             className={cn(
               "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
               item === currentPage
-                ? "bg-neutral-800 text-white hover:bg-neutral-800 hover:text-white"
+                ? "bg-primary text-primary-foreground hover:bg-[var(--primary-hover)] hover:text-primary-foreground"
                 : "text-neutral-900 hover:bg-neutral-100",
             )}
             aria-current={item === currentPage ? "page" : undefined}
@@ -442,7 +442,7 @@ function FrameworkOverviewCards({
             <Progress
               value={fw.coveragePercent}
               className="mt-3 h-1.5 bg-neutral-100"
-              indicatorClassName="bg-neutral-800"
+              indicatorClassName="bg-primary"
             />
           </button>
         );

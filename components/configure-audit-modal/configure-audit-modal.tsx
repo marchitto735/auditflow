@@ -115,7 +115,7 @@ function MultiSelectCheck({ checked }: { checked: boolean }) {
       aria-hidden
       className={cn(
         "flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-black bg-white text-white transition-colors",
-        checked && "border-black bg-black",
+        checked && "border-primary bg-primary",
       )}
     >
       <Check

@@ -1,18 +1,24 @@
 import SectionHeader from "@/components/section-header/section-header";
 import ReportsTableCard from "@/components/reports/reports-table-card";
-import { type ActivityRow } from "@/components/activity-table/activity-table";
-import { storedReportToActivityRow } from "@/lib/audit-report-rows";
 import {
   PAGE_CONTENT_TOP_CLASS,
   PAGE_GUTTER_CLASS,
   PAGE_INNER_CLASS,
 } from "@/lib/page-layout";
+import {
+  DEMO_AUDIT_REPORTS,
+  storedReportToReportRow,
+  type ReportRow,
+} from "@/lib/reports";
 import { listStoredAuditReports } from "@/lib/services/list-audit-reports";
 import { cn } from "@/lib/utils";
 
 export default async function ReportsPage() {
   const reports = await listStoredAuditReports(50);
-  const rows: ActivityRow[] = reports.map(storedReportToActivityRow);
+  const rows: ReportRow[] =
+    reports.length > 0
+      ? reports.map(storedReportToReportRow)
+      : DEMO_AUDIT_REPORTS;
 
   return (
     <div className="min-h-0 min-w-0 w-full flex-1 pb-0 md:pb-4">

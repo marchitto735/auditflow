@@ -210,7 +210,7 @@ function AnalyticsPaginationNav({
             className={cn(
               "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
               item === currentPage
-                ? "bg-neutral-800 text-white hover:bg-neutral-800 hover:text-white"
+                ? "bg-primary text-primary-foreground hover:bg-[var(--primary-hover)] hover:text-primary-foreground"
                 : "text-neutral-900 hover:bg-zinc-100",
             )}
             aria-current={item === currentPage ? "page" : undefined}
@@ -308,11 +308,11 @@ function TableFooterBar({
 function departmentStatusDotClass(status: DepartmentScoreRow["status"]) {
   switch (status) {
     case "On Track":
-      return "bg-neutral-900";
+      return "bg-status-success";
     case "Watch":
-      return "bg-neutral-500";
+      return "bg-status-warning";
     case "At Risk":
-      return "bg-neutral-700";
+      return "bg-status-critical";
     default:
       return "bg-neutral-400";
   }

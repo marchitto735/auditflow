@@ -178,7 +178,7 @@ export default function SettingsWorkspace({
                   value={value}
                   className={cn(
                     "rounded-md px-3 py-1.5 text-sm text-neutral-600 shadow-none",
-                    "data-[state=active]:bg-neutral-800 data-[state=active]:font-semibold data-[state=active]:text-white",
+                    "data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-primary-foreground",
                     "data-[state=inactive]:hover:bg-neutral-200/80 data-[state=inactive]:hover:text-neutral-900",
                   )}
                 >
@@ -378,7 +378,7 @@ export default function SettingsWorkspace({
                       className={cn(
                         "border-neutral-300 bg-white font-medium",
                         integrations.supabaseConnected
-                          ? "text-neutral-900"
+                          ? "text-emerald-800"
                           : "text-neutral-500",
                       )}
                     >
@@ -386,7 +386,7 @@ export default function SettingsWorkspace({
                         className={cn(
                           "mr-1.5 inline-block size-2 rounded-full",
                           integrations.supabaseConnected
-                            ? "bg-neutral-900"
+                            ? "bg-status-success"
                             : "bg-neutral-400",
                         )}
                         aria-hidden

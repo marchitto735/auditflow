@@ -48,9 +48,9 @@ if (
 type FindingStatusValue = "compliant" | "non-compliant" | "partial";
 
 function statusDotClass(status: FindingStatusValue) {
-  if (status === "compliant") return "bg-neutral-900";
-  if (status === "partial") return "bg-neutral-500";
-  return "bg-neutral-800";
+  if (status === "compliant") return "bg-status-success";
+  if (status === "partial") return "bg-status-warning";
+  return "bg-status-critical";
 }
 
 function statusLabel(status: FindingStatusValue) {
@@ -374,7 +374,7 @@ export default function RemediationWorkspace() {
                                 ) : null}
                                 <button
                                   type="button"
-                                  className="rounded-sm text-sm font-medium text-foreground underline-offset-2 hover:underline"
+                                  className="rounded-sm text-sm font-medium text-primary underline-offset-2 hover:text-[var(--primary-hover)] hover:underline"
                                   onClick={() => undoDecision(chunk.id)}
                                 >
                                   Undo

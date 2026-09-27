@@ -51,7 +51,7 @@ export const DASHBOARD_MENU_ITEM_CLASS =
 
 /** Selected filter option fill (sidebar active parity). */
 export const DASHBOARD_MENU_ITEM_SELECTED_CLASS =
-  "bg-[#F1F1F1] text-neutral-900 focus:bg-[#F1F1F1] focus:text-neutral-900";
+  "bg-[var(--primary-muted)] text-primary focus:bg-[var(--primary-muted)] focus:text-primary";
 
 type CardActionsMenuProps = {
   label: string;

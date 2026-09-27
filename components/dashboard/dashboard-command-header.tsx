@@ -89,7 +89,7 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
               value={option.value}
               className={cn(
                 "h-8 rounded-md border-0 px-3 shadow-none first:rounded-md last:rounded-md data-[spacing=0]:rounded-md data-[spacing=0]:first:rounded-md data-[spacing=0]:last:rounded-md",
-                "data-[state=on]:bg-neutral-800 data-[state=on]:font-semibold data-[state=on]:text-white data-[state=on]:hover:bg-neutral-800 data-[state=on]:hover:text-white",
+                "data-[state=on]:bg-primary data-[state=on]:font-semibold data-[state=on]:text-primary-foreground data-[state=on]:hover:bg-[var(--primary-hover)] data-[state=on]:hover:text-primary-foreground",
                 "data-[state=off]:bg-transparent data-[state=off]:font-medium data-[state=off]:text-neutral-500 data-[state=off]:hover:bg-neutral-200 data-[state=off]:hover:text-neutral-900",
                 "focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-0",
               )}
@@ -135,8 +135,8 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
           >
             {live ? (
               <>
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-neutral-400/70" />
-                <span className="relative size-2.5 rounded-full bg-neutral-900" />
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-status-success/70" />
+                <span className="relative size-2.5 rounded-full bg-status-success" />
               </>
             ) : (
               <span className="size-2.5 rounded-full bg-neutral-300" />

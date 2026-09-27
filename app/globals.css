@@ -72,6 +72,17 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+
+  /* Semantic status — badges, pips, alerts only (not UI chrome) */
+  --color-status-success: var(--status-success);
+  --color-status-success-foreground: var(--status-success-foreground);
+  --color-status-success-muted: var(--status-success-muted);
+  --color-status-warning: var(--status-warning);
+  --color-status-warning-foreground: var(--status-warning-foreground);
+  --color-status-warning-muted: var(--status-warning-muted);
+  --color-status-critical: var(--status-critical);
+  --color-status-critical-foreground: var(--status-critical-foreground);
+  --color-status-critical-muted: var(--status-critical-muted);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -193,21 +204,21 @@
     --sidebar-crown-outdent: calc(var(--sidebar-menu-text-inset, 0.25rem) - 2px);
     /* Theme icon row: 6px left of menu label text (outdent); clamp so inset can be smaller than 6px. */
     --sidebar-theme-outdent: max(0px, calc(var(--sidebar-menu-text-inset, 0.25rem) - 6px));
-    /* GRC high-contrast light theme: pure black type, pure white on black CTAs */
-    --text: #000000;
+    /* Neutral foundation + Engineering Blue accent */
+    --text: #171717;
 
     --palette-white: #ffffff;
     --palette-off-white: oklch(96.6% 0 0);
-    --palette-yellow: oklch(94.5% 0 0);
-    --palette-red: oklch(45% 0 0);
-    --palette-blue: oklch(45% 0 0);
+    --palette-yellow: #f59e0b;
+    --palette-red: #dc2626;
+    --palette-blue: #1a5f8a;
     --palette-gray: oklch(68.5% 0 0);
     --palette-gray-light: oklch(77.5% 0 0);
-    --palette-black: #000000;
+    --palette-black: #171717;
 
     --page-texture: url("/images/forest-6.png?v=21");
 
-    /* Canvas + surfaces — pure grayscale only */
+    /* Canvas + surfaces — Tailwind neutral scale */
     --background: #f7f7f7;
     --card: #ffffff;
     --popover: #ffffff;
@@ -220,48 +231,64 @@
     --accent-foreground: #171717;
     --sidebar-foreground: #171717;
 
-    --primary: #000000;
+    /* Engineering Blue — muted cool navy (primary interaction accent) */
+    --primary: #1a5f8a;
     --primary-foreground: #ffffff;
+    --primary-hover: #154d70;
+    --primary-active: #103c57;
+    --primary-muted: #e8f1f7;
+    --primary-soft: #d3e4ef;
 
     --secondary: #f5f5f5;
     --muted: #f5f5f5;
     --accent: #f0f0f0;
 
-    --destructive: #171717;
+    --destructive: #dc2626;
     --destructive-foreground: #ffffff;
+
+    /* Semantic status — functional signals only */
+    --status-success: #059669;
+    --status-success-foreground: #ffffff;
+    --status-success-muted: #ecfdf5;
+    --status-warning: #f59e0b;
+    --status-warning-foreground: #171717;
+    --status-warning-muted: #fffbeb;
+    --status-critical: #dc2626;
+    --status-critical-foreground: #ffffff;
+    --status-critical-muted: #fef2f2;
 
     --border: #e5e5e5;
     --input: #f0f0f0;
-    --ring: #171717;
+    --ring: #1a5f8a;
 
-    /* Chart series — kept for data viz; surfaces above stay mono */
-    --chart-1: oklch(45% 0 0);
-    --chart-2: oklch(55% 0 0);
-    --chart-3: oklch(35% 0 0);
-    --chart-4: oklch(65% 0 0);
-    --chart-5: oklch(90% 0 0);
+    /* Charts — monochromatic blue trends + semantic series */
+    --chart-1: #1a5f8a;
+    --chart-2: #3d7ea3;
+    --chart-3: #dc2626;
+    --chart-4: #f59e0b;
+    --chart-5: #e8f1f7;
     --chart-primary: var(--chart-1);
-    --chart-structural: oklch(40% 0 0);
-    --chart-alert: var(--chart-3);
-    --chart-caution: var(--chart-4);
-    --chart-track: var(--chart-5);
+    --chart-structural: #154d70;
+    --chart-alert: var(--status-critical);
+    --chart-caution: var(--status-warning);
+    --chart-track: #e5e5e5;
 
     --sidebar: var(--background);
     --sidebar-background: var(--background);
     --surface-sidebar-sheet: var(--background);
     --scheduling-toggle-track-bg: #f5f5f5;
-    --sidebar-primary: #000000;
+    --sidebar-primary: #1a5f8a;
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #f0f0f0;
-    --sidebar-accent-foreground: #000000;
+    --sidebar-accent: #e8f1f7;
+    --sidebar-accent-foreground: #1a5f8a;
     --sidebar-muted: #f5f5f5;
     --sidebar-muted-foreground: #737373;
     --sidebar-border: #e5e5e5;
-    --sidebar-ring: #525252;
+    --sidebar-ring: #1a5f8a;
     --sidebar-hover: #ededed;
 
-    --cta-bg: #000000;
-    --cta-bg-hover: oklch(28% 0 0);
+    --cta-bg: #1a5f8a;
+    --cta-bg-hover: #154d70;
     --cta-color: #ffffff;
     --cta-height: 48px;
 
@@ -373,8 +400,12 @@
     --popover: #141414;
     --popover-foreground: #fafafa;
 
-    --primary: #f5f5f5;
-    --primary-foreground: #141414;
+    --primary: #4a9bc9;
+    --primary-foreground: #0a1f2e;
+    --primary-hover: #6aafd4;
+    --primary-active: #8ac3de;
+    --primary-muted: #132a3a;
+    --primary-soft: #1a3a4f;
 
     --secondary: #262626;
     --secondary-foreground: #fafafa;
@@ -385,23 +416,33 @@
     --accent: #2e2e2e;
     --accent-foreground: #fafafa;
 
-    --destructive: #e5e5e5;
-    --destructive-foreground: #141414;
+    --destructive: #f87171;
+    --destructive-foreground: #1a0a0a;
+
+    --status-success: #34d399;
+    --status-success-foreground: #022c22;
+    --status-success-muted: #064e3b;
+    --status-warning: #fbbf24;
+    --status-warning-foreground: #1c1400;
+    --status-warning-muted: #78350f;
+    --status-critical: #f87171;
+    --status-critical-foreground: #1a0a0a;
+    --status-critical-muted: #7f1d1d;
 
     --border: #2e2e2e;
     --input: #3d3d3d;
-    --ring: #d4d4d4;
+    --ring: #4a9bc9;
 
-    --chart-1: oklch(62% 0 0);
-    --chart-2: oklch(55% 0 0);
-    --chart-3: oklch(45% 0 0);
-    --chart-4: oklch(70% 0 0);
-    --chart-5: oklch(32% 0 0);
+    --chart-1: #4a9bc9;
+    --chart-2: #6aafd4;
+    --chart-3: #f87171;
+    --chart-4: #fbbf24;
+    --chart-5: #1a3a4f;
     --chart-primary: var(--chart-1);
-    --chart-structural: oklch(58% 0 0);
-    --chart-alert: var(--chart-3);
-    --chart-caution: var(--chart-4);
-    --chart-track: var(--chart-5);
+    --chart-structural: #6aafd4;
+    --chart-alert: var(--status-critical);
+    --chart-caution: var(--status-warning);
+    --chart-track: #2e2e2e;
 
     --sidebar: var(--background);
     --sidebar-background: var(--background);
@@ -409,21 +450,21 @@
     --sidebar-foreground: #f5f5f5;
     --sidebar-muted: #262626;
     --sidebar-muted-foreground: #a3a3a3;
-    --sidebar-primary: #f5f5f5;
-    --sidebar-primary-foreground: #141414;
-    --sidebar-accent: #2e2e2e;
-    --sidebar-accent-foreground: #f5f5f5;
+    --sidebar-primary: #4a9bc9;
+    --sidebar-primary-foreground: #0a1f2e;
+    --sidebar-accent: #132a3a;
+    --sidebar-accent-foreground: #4a9bc9;
     --sidebar-border: #262626;
-    --sidebar-ring: #a3a3a3;
+    --sidebar-ring: #4a9bc9;
     --sidebar-hover: #333333;
 
-    --cta-bg: #ffffff;
-    --cta-bg-hover: #d4d4d4;
-    --cta-color: #000000;
+    --cta-bg: #4a9bc9;
+    --cta-bg-hover: #6aafd4;
+    --cta-color: #0a1f2e;
     --cta-height: 48px;
   }
 
-  /* Color theme surfaces forced to the same mono dark canvas */
+  /* Color theme — same dark canvas with Engineering Blue accent */
   html.color,
   .color {
     --text: #fafafa;
@@ -435,8 +476,12 @@
     --popover: #141414;
     --popover-foreground: #fafafa;
 
-    --primary: #f5f5f5;
-    --primary-foreground: #141414;
+    --primary: #4a9bc9;
+    --primary-foreground: #0a1f2e;
+    --primary-hover: #6aafd4;
+    --primary-active: #8ac3de;
+    --primary-muted: #132a3a;
+    --primary-soft: #1a3a4f;
 
     --secondary: #262626;
     --secondary-foreground: #fafafa;
@@ -447,12 +492,33 @@
     --accent: #2e2e2e;
     --accent-foreground: #fafafa;
 
-    --destructive: #e5e5e5;
-    --destructive-foreground: #141414;
+    --destructive: #f87171;
+    --destructive-foreground: #1a0a0a;
+
+    --status-success: #34d399;
+    --status-success-foreground: #022c22;
+    --status-success-muted: #064e3b;
+    --status-warning: #fbbf24;
+    --status-warning-foreground: #1c1400;
+    --status-warning-muted: #78350f;
+    --status-critical: #f87171;
+    --status-critical-foreground: #1a0a0a;
+    --status-critical-muted: #7f1d1d;
 
     --border: #2e2e2e;
     --input: #3d3d3d;
-    --ring: #d4d4d4;
+    --ring: #4a9bc9;
+
+    --chart-1: #4a9bc9;
+    --chart-2: #6aafd4;
+    --chart-3: #f87171;
+    --chart-4: #fbbf24;
+    --chart-5: #1a3a4f;
+    --chart-primary: var(--chart-1);
+    --chart-structural: #6aafd4;
+    --chart-alert: var(--status-critical);
+    --chart-caution: var(--status-warning);
+    --chart-track: #2e2e2e;
 
     --sidebar: var(--background);
     --sidebar-background: var(--background);
@@ -461,21 +527,21 @@
     --sidebar-foreground: #f5f5f5;
     --sidebar-muted: #262626;
     --sidebar-muted-foreground: #a3a3a3;
-    --sidebar-primary: #f5f5f5;
-    --sidebar-primary-foreground: #141414;
-    --sidebar-accent: #2e2e2e;
-    --sidebar-accent-foreground: #f5f5f5;
+    --sidebar-primary: #4a9bc9;
+    --sidebar-primary-foreground: #0a1f2e;
+    --sidebar-accent: #132a3a;
+    --sidebar-accent-foreground: #4a9bc9;
     --sidebar-border: #262626;
-    --sidebar-ring: #a3a3a3;
+    --sidebar-ring: #4a9bc9;
     --sidebar-hover: #333333;
     --color-button-hover: #262626;
 
-    --cta-bg: oklch(100% 0 0);
-    --cta-bg-hover: oklch(85% 0 0);
-    --cta-color: oklch(0% 0 0);
+    --cta-bg: #4a9bc9;
+    --cta-bg-hover: #6aafd4;
+    --cta-color: #0a1f2e;
     --cta-height: 48px;
 
-    /* Keep sidebar text/icons white on hover in color mode */
+    /* Keep sidebar text/icons on hover; active uses accent via component */
     [data-sidebar="menu-button"],
     [data-sidebar="menu-button"] svg {
       color: var(--sidebar-foreground);
@@ -484,6 +550,11 @@
     [data-sidebar="menu-button"]:hover,
     [data-sidebar="menu-button"]:hover svg {
       color: var(--sidebar-foreground);
+    }
+
+    [data-sidebar="menu-button"][data-active],
+    [data-sidebar="menu-button"][data-active] svg {
+      color: var(--sidebar-accent-foreground);
     }
 
     .sidebar-icon-btn,
@@ -537,18 +608,16 @@
       color: #737373;
     }
 
-    /* Pure white type on solid black CTAs / primary badges */
-    .bg-black,
+    /* White type on Engineering Blue CTAs / primary badges */
     .bg-primary,
-    .bg-neutral-900,
-    [data-variant="default"].bg-black,
+    .bg-black,
+    [data-variant="default"].bg-primary,
     [data-slot="badge"][data-variant="default"] {
       color: #ffffff;
     }
 
-    .bg-black *,
     .bg-primary *:not(svg),
-    .bg-neutral-900 *:not(svg) {
+    .bg-black *:not(svg) {
       color: inherit;
     }
   }

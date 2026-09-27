@@ -432,7 +432,7 @@ export default function ProjectCard({
                   rx="8"
                   ry="8"
                   fill="none"
-                  stroke="oklch(48% 0 0)"
+                  stroke="var(--primary)"
                   strokeWidth="2"
                 />
                 {auditStatus === "loading" ? (
@@ -445,7 +445,7 @@ export default function ProjectCard({
                     ry="8"
                     pathLength="100"
                     fill="none"
-                    stroke="oklch(78% 0 0)"
+                    stroke="var(--primary-soft)"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeDasharray="16 84"

@@ -121,6 +121,9 @@ export function activityStatusLabel(status: string | null | undefined) {
 
   const value = raw.toLowerCase();
   if (value.includes("critical")) return "Critical";
+  if (value.includes("non-compliant") || value.includes("non compliant")) {
+    return "Fail";
+  }
   if (value.includes("compliant") && !value.includes("partial")) {
     return "Compliant";
   }
@@ -135,10 +138,13 @@ export function activityStatusLabel(status: string | null | undefined) {
 export function statusBadgeClass(status: string | null | undefined) {
   const label = activityStatusLabel(status);
   if (label === "Compliant" || label === "Pass") {
-    return "border-neutral-300 bg-neutral-100 text-neutral-900";
+    return "border-emerald-200 bg-status-success-muted text-emerald-800";
   }
   if (label === "Critical" || label === "Fail") {
-    return "border-neutral-400 bg-neutral-200 text-neutral-900";
+    return "border-red-200 bg-status-critical-muted text-red-800";
+  }
+  if (label === "Partial" || label === "Review") {
+    return "border-amber-200 bg-status-warning-muted text-amber-900";
   }
   return "border-neutral-200 bg-neutral-50 text-neutral-700";
 }
@@ -148,9 +154,9 @@ export const STATUS_BADGE_CLASS =
 
 export function statusDotClass(status: string | null | undefined) {
   const label = activityStatusLabel(status);
-  if (label === "Compliant" || label === "Pass") return "bg-neutral-900";
-  if (label === "Critical" || label === "Fail") return "bg-neutral-800";
-  if (label === "Partial" || label === "Review") return "bg-neutral-500";
+  if (label === "Compliant" || label === "Pass") return "bg-status-success";
+  if (label === "Critical" || label === "Fail") return "bg-status-critical";
+  if (label === "Partial" || label === "Review") return "bg-status-warning";
   if (label === "—") return "";
   return "bg-neutral-400";
 }

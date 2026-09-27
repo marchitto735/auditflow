@@ -102,13 +102,13 @@ function buildPageItems(currentPage: number, totalPages: number) {
 function statusPillClass(status: PolicyStatus) {
   switch (status) {
     case "Active":
-      return "border-neutral-800 bg-neutral-800 text-white";
+      return "border-primary bg-primary text-primary-foreground";
     case "Ready":
-      return "border-neutral-700 bg-neutral-100 text-neutral-900";
+      return "border-emerald-200 bg-status-success-muted text-emerald-800";
     case "Draft":
       return "border-neutral-300 bg-neutral-50 text-neutral-600";
     case "Pending Review":
-      return "border-neutral-400 bg-neutral-200 text-neutral-800";
+      return "border-amber-200 bg-status-warning-muted text-amber-900";
     default:
       return "border-neutral-200 bg-neutral-50 text-neutral-700";
   }
@@ -117,11 +117,11 @@ function statusPillClass(status: PolicyStatus) {
 function n8nStatusClass(status: MasterPolicy["n8nStatus"]) {
   switch (status) {
     case "Synced":
-      return "text-neutral-900";
+      return "text-status-success";
     case "Queued":
-      return "text-neutral-600";
+      return "text-status-warning";
     case "Failed":
-      return "text-neutral-800 font-medium";
+      return "font-medium text-status-critical";
     default:
       return "text-neutral-500";
   }
@@ -313,7 +313,7 @@ function PoliciesPaginationNav({
             className={cn(
               "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
               item === currentPage
-                ? "bg-neutral-800 text-white hover:bg-neutral-800 hover:text-white"
+                ? "bg-primary text-primary-foreground hover:bg-[var(--primary-hover)] hover:text-primary-foreground"
                 : "text-neutral-900 hover:bg-neutral-100",
             )}
             aria-current={item === currentPage ? "page" : undefined}
