@@ -19,8 +19,8 @@ const badgeVariants = cva(
         warning:
           "bg-status-warning text-status-warning-foreground [a&]:hover:bg-amber-600",
         outline:
-          "border-border text-foreground [a&]:hover:bg-neutral-100 [a&]:hover:text-neutral-900",
-        ghost: "[a&]:hover:bg-neutral-100 [a&]:hover:text-neutral-900",
+          "border-border text-foreground [a&]:hover:bg-[var(--interactive-hover)] [a&]:hover:text-primary",
+        ghost: "[a&]:hover:bg-[var(--interactive-hover)] [a&]:hover:text-primary",
         link: "text-primary underline-offset-4 [a&]:hover:underline",
       },
     },

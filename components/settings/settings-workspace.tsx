@@ -179,7 +179,7 @@ export default function SettingsWorkspace({
                   className={cn(
                     "rounded-md px-3 py-1.5 text-sm text-neutral-600 shadow-none",
                     "data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-primary-foreground",
-                    "data-[state=inactive]:hover:bg-neutral-200/80 data-[state=inactive]:hover:text-neutral-900",
+                    "data-[state=inactive]:hover:bg-[var(--interactive-hover)] data-[state=inactive]:hover:text-primary",
                   )}
                 >
                   {label}

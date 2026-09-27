@@ -235,12 +235,14 @@ export const SidebarMenuButton = React.forwardRef<
   const { collapsed } = useSidebar();
   const compact = compactProp ?? collapsed;
   const baseClasses = cn(
-    "flex h-9 min-h-9 w-full min-w-0 items-center gap-2.5 rounded-md border-0 bg-transparent px-2.5 py-0 text-sm font-medium text-left no-underline outline-none ring-primary/30 transition-[background-color,color] duration-300 ease-in-out hover:bg-[#F7F7F7] hover:text-neutral-900 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 whitespace-nowrap [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0 [&_svg]:text-current hover:[&_svg]:text-neutral-900 [&_svg]:transition-colors dark:hover:bg-zinc-700/40 dark:hover:text-neutral-100 color:hover:bg-[oklch(100%_0_0_/0.09)]",
+    // Inactive: soft ghost wash — one step lighter than the active pill.
+    "flex h-9 min-h-9 w-full min-w-0 items-center gap-2.5 rounded-md border-0 bg-transparent px-2.5 py-0 text-sm font-medium text-left text-sidebar-foreground no-underline outline-none ring-neutral-900/30 transition-[background-color,color] duration-200 ease-in-out hover:bg-[#F7F7F7] hover:text-neutral-900 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 whitespace-nowrap [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0 [&_svg]:text-current hover:[&_svg]:text-neutral-900 [&_svg]:transition-colors dark:hover:bg-zinc-700/40 dark:hover:text-neutral-100 color:hover:bg-[oklch(100%_0_0_/0.09)] color:hover:text-[oklch(96%_0_0)]",
     // Collapsed: fixed square hit target, centered in the rail
     compact &&
       "mx-auto size-9! w-9! min-w-9! max-w-9! shrink-0 justify-center gap-0 overflow-hidden p-0!",
+    // Active: original subtle anchored fill — stable on hover (no CTA blue block).
     isActive &&
-      "border-0 bg-[var(--primary-muted)] text-primary shadow-none hover:bg-[var(--primary-muted)] hover:text-primary dark:bg-[var(--primary-muted)] dark:text-primary dark:hover:bg-[var(--primary-muted)] dark:hover:text-primary color:bg-[var(--primary-muted)] color:text-primary color:hover:bg-[var(--primary-muted)] color:hover:text-primary",
+      "border-0 bg-[#F1F1F1] text-neutral-900 shadow-none hover:bg-[#F1F1F1] hover:text-neutral-900 dark:bg-zinc-700/60 dark:text-neutral-100 dark:hover:bg-zinc-700/60 dark:hover:text-neutral-100 color:bg-[oklch(100%_0_0_/0.14)] color:text-[oklch(96%_0_0)] color:hover:bg-[oklch(100%_0_0_/0.14)] color:hover:text-[oklch(96%_0_0)] [&_svg]:text-current hover:[&_svg]:text-current",
   );
 
   if (asChild) {

@@ -71,9 +71,9 @@ function SidebarProfileCard({ compact }: { compact: boolean }) {
       type="button"
       aria-label="Open profile menu"
       className={cn(
-        "flex w-full min-w-0 items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-muted/40 px-2.5 py-2 text-left transition-[gap,padding,background-color,border-color] duration-300 ease-in-out hover:border-zinc-400 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-neutral-900/30 data-[state=open]:border-zinc-400 data-[state=open]:bg-zinc-50/50",
+        "flex w-full min-w-0 items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-muted/40 px-2.5 py-2 text-left transition-[gap,padding,background-color,border-color] duration-300 ease-in-out hover:border-primary/40 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-neutral-900/30 data-[state=open]:border-primary/40 data-[state=open]:bg-[var(--interactive-hover)]",
         compact &&
-          "mx-auto size-9 justify-center gap-0 rounded-md border-0 bg-transparent p-0 hover:border-transparent hover:bg-zinc-100/80 data-[state=open]:border-transparent data-[state=open]:bg-zinc-100/80",
+          "mx-auto size-9 justify-center gap-0 rounded-md border-0 bg-transparent p-0 hover:border-transparent hover:bg-[var(--interactive-hover)] data-[state=open]:border-transparent data-[state=open]:bg-[var(--interactive-hover)]",
       )}
     >
       <Avatar className={cn("size-9 shrink-0", compact && "size-9")}>
@@ -181,7 +181,7 @@ export function AppSidebarNav({
                 variant="ghost"
                 className={cn(
                   NAV_UTILITY_BUTTON_CLASS,
-                  "h-9! w-9! min-h-9! min-w-9! shrink-0 rounded-md text-sidebar-foreground [&_svg]:size-4 hover:bg-[#F7F7F7]!",
+                  "h-9! w-9! min-h-9! min-w-9! shrink-0 rounded-md text-sidebar-foreground [&_svg]:size-4 hover:bg-[var(--interactive-hover)]",
                 )}
                 aria-label="Close menu"
                 onClick={onNavigate}
@@ -194,7 +194,7 @@ export function AppSidebarNav({
                 variant="ghost"
                 className={cn(
                   NAV_UTILITY_BUTTON_CLASS,
-                  "h-9! w-9! min-h-9! min-w-9! shrink-0 rounded-md text-sidebar-foreground [&_svg]:size-4 hover:bg-[#F7F7F7]!",
+                  "h-9! w-9! min-h-9! min-w-9! shrink-0 rounded-md text-sidebar-foreground [&_svg]:size-4 hover:bg-[var(--interactive-hover)]",
                   !compact && "ml-auto",
                 )}
                 aria-label={compact ? "Expand sidebar" : "Collapse sidebar"}

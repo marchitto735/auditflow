@@ -156,7 +156,7 @@ function FilterSelect<T extends string>({
       ref={triggerRef}
       type="button"
       aria-label={label}
-      className="inline-flex h-9 min-w-[8rem] items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 transition-colors hover:border-neutral-400 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
+      className="inline-flex h-9 min-w-[8rem] items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 transition-colors hover:border-primary/40 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
     >
       <span className="truncate">{selected}</span>
       <ChevronDown className="size-4 shrink-0" aria-hidden />
@@ -290,7 +290,7 @@ function PoliciesPaginationNav({
       <Button
         type="button"
         variant="ghost"
-        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-neutral-100 hover:text-neutral-900"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-[var(--interactive-hover)] hover:text-primary"
         disabled={currentPage <= 1}
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
       >
@@ -314,7 +314,7 @@ function PoliciesPaginationNav({
               "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
               item === currentPage
                 ? "bg-primary text-primary-foreground hover:bg-[var(--primary-hover)] hover:text-primary-foreground"
-                : "text-neutral-900 hover:bg-neutral-100",
+                : "text-neutral-900 hover:bg-[var(--interactive-hover)] hover:text-primary",
             )}
             aria-current={item === currentPage ? "page" : undefined}
             onClick={() => onPageChange(item)}
@@ -326,7 +326,7 @@ function PoliciesPaginationNav({
       <Button
         type="button"
         variant="ghost"
-        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-neutral-100 hover:text-neutral-900"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-[var(--interactive-hover)] hover:text-primary"
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
       >
@@ -761,7 +761,7 @@ export default function PoliciesTableCard({
                   {pageRows.map((policy) => (
                     <TableRow
                       key={policy.id}
-                      className="cursor-pointer border-0 bg-white hover:bg-neutral-50"
+                      className="cursor-pointer border-0 bg-white hover:bg-[var(--interactive-hover)]"
                       onClick={() => setSelected(policy)}
                     >
                       <TableCell className="h-12 max-w-0 px-4 py-0 align-middle">

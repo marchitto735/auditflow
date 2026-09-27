@@ -81,7 +81,7 @@ const DetailsStep = React.memo(function DetailsStep({
         </div>
         <button
           type="button"
-          className="flex items-center gap-2 text-body2 text-foreground transition-colors hover:text-neutral-500 self-start"
+          className="flex items-center gap-2 text-body2 text-foreground transition-colors hover:text-primary self-start"
           onClick={onToggleAddGuest}
         >
           <UserPlus className="h-4 w-4 shrink-0" />
@@ -101,7 +101,7 @@ const DetailsStep = React.memo(function DetailsStep({
       <div className="flex gap-2 mt-4 justify-end">
         <Button
           variant="outline"
-          className="text-button flex-1 min-w-0 border-0 hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)]"
+          className="text-button flex-1 min-w-0 border-0 hover:bg-[var(--interactive-hover)] dark:hover:bg-[var(--interactive-hover)] color:hover:bg-[var(--interactive-hover)]"
           onClick={onBack}
           disabled={isSubmitting}
         >
@@ -109,7 +109,7 @@ const DetailsStep = React.memo(function DetailsStep({
         </Button>
         <Button
           variant="black"
-          className="flex-1 min-w-0 text-[length:var(--text-button-size)] leading-[var(--line-height-button)] font-[var(--font-weight-button)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] dark:bg-white dark:hover:bg-[oklch(92%_0_0)] color:bg-white color:hover:bg-[oklch(94%_0.03_160)] dark:!text-neutral-900 color:!text-neutral-900"
+          className="flex-1 min-w-0 text-[length:var(--text-button-size)] leading-[var(--line-height-button)] font-[var(--font-weight-button)] dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] dark:bg-white dark:hover:bg-[var(--interactive-hover)] color:bg-white color:hover:bg-[var(--interactive-hover)] dark:!text-neutral-900 color:!text-neutral-900"
           onClick={onConfirm}
           disabled={isSubmitting}
           aria-busy={isSubmitting}

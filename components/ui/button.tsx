@@ -17,12 +17,12 @@ const buttonVariants = cva(
         destructive:
           "bg-status-critical text-status-critical-foreground hover:bg-red-700 active:bg-red-800 focus-visible:ring-status-critical/30",
         outline:
-          "border border-[oklch(0%_0_0)] bg-transparent text-foreground hover:bg-neutral-100 dark:border-white color:border-white dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)]",
+          "border border-[oklch(0%_0_0)] bg-transparent text-foreground hover:bg-[var(--interactive-hover)] hover:text-primary dark:border-white color:border-white dark:hover:bg-[var(--interactive-hover)] color:hover:bg-[var(--interactive-hover)]",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/90 active:bg-secondary/80",
-        ghost: "text-foreground hover:bg-neutral-100",
+        ghost: "text-foreground hover:bg-[var(--interactive-hover)] hover:text-primary",
         muted:
-          "bg-zinc-200 text-foreground hover:bg-zinc-300 active:bg-zinc-400 disabled:bg-muted disabled:text-muted-foreground",
+          "bg-zinc-200 text-foreground hover:bg-[var(--interactive-hover-strong)] hover:text-primary active:bg-[var(--primary-soft)] disabled:bg-muted disabled:text-muted-foreground",
         link: "text-primary underline-offset-4 hover:underline hover:text-[var(--primary-hover)]",
       },
       size: {

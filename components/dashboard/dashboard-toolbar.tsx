@@ -89,7 +89,7 @@ type DashboardToolbarProps = {
 };
 
 const CONTROL_CLASS =
-  "inline-flex h-10 w-full min-w-[9.5rem] items-center justify-between gap-2 rounded-lg border border-zinc-200 bg-sidebar-muted/40 px-3 text-sm font-medium transition-colors duration-200 hover:border-zinc-400 hover:bg-zinc-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background md:w-[10.5rem]";
+  "inline-flex h-10 w-full min-w-[9.5rem] items-center justify-between gap-2 rounded-lg border border-zinc-200 bg-sidebar-muted/40 px-3 text-sm font-medium transition-colors duration-200 hover:border-primary/40 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background md:w-[10.5rem]";
 
 function filterTriggerClass(extra?: string) {
   return cn(CONTROL_CLASS, "text-neutral-900", extra);
@@ -318,7 +318,7 @@ function MobileFiltersSheet({
         <div className="shrink-0 border-t border-zinc-200 px-4 py-3">
           <button
             type="button"
-            className="inline-flex h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] w-full items-center justify-center rounded-lg bg-zinc-900 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+            className="inline-flex h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] w-full items-center justify-center rounded-lg bg-primary text-sm font-medium text-primary-foreground transition-colors hover:bg-[var(--primary-hover)]"
             onClick={() => setOpen(false)}
           >
             Done
@@ -361,7 +361,7 @@ export function DashboardToolbar({
             onChange={(event) => patch({ search: event.target.value })}
             placeholder="Search documents"
             aria-label="Search documents"
-            className="h-10 border-zinc-200 bg-sidebar-muted/40 pl-9 text-sm font-medium text-neutral-900 transition-colors duration-200 placeholder:text-neutral-900 hover:border-zinc-400 hover:bg-zinc-50/50 md:text-sm"
+            className="h-10 border-zinc-200 bg-sidebar-muted/40 pl-9 text-sm font-medium text-neutral-900 transition-colors duration-200 placeholder:text-neutral-900 hover:border-primary/40 hover:bg-[var(--interactive-hover)] md:text-sm"
           />
         </div>
         <MobileFiltersSheet value={value} onChange={patch} />

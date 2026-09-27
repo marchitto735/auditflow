@@ -47,7 +47,7 @@ export const DASHBOARD_MENU_CONTENT_CLASS =
 
 /** Shared meatball / filter dropdown item — inset hover via parent p-1. */
 export const DASHBOARD_MENU_ITEM_CLASS =
-  "cursor-pointer rounded-lg px-2.5 py-2 text-sm font-medium text-neutral-800 focus:bg-zinc-100 focus:text-neutral-950";
+  "cursor-pointer rounded-lg px-2.5 py-2 text-sm font-medium text-neutral-800 focus:bg-[var(--interactive-hover)] focus:text-primary";
 
 /** Selected filter option fill (sidebar active parity). */
 export const DASHBOARD_MENU_ITEM_SELECTED_CLASS =
@@ -61,7 +61,7 @@ type CardActionsMenuProps = {
 };
 
 const TRIGGER_CLASS =
-  "inline-flex size-8 shrink-0 items-center justify-center rounded-md text-foreground transition-colors hover:bg-[#EDEDED] hover:text-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30";
+  "inline-flex size-8 shrink-0 items-center justify-center rounded-md text-foreground transition-colors hover:bg-[var(--interactive-hover)] hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-primary/30";
 
 /**
  * Shared Swiss bento card meatball menu — subtle trigger, zinc hover items.

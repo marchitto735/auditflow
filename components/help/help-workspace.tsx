@@ -192,7 +192,7 @@ function SystemStatusStrip() {
                   <button
                     type="button"
                     onClick={() => copyValue(item.label, item.value)}
-                    className="flex w-full items-center justify-between gap-3 rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2 text-left transition-colors hover:border-neutral-300 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
+                    className="flex w-full items-center justify-between gap-3 rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2 text-left transition-colors hover:border-primary/30 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
                   >
                     <span className="min-w-0">
                       <span className="block text-xs text-neutral-500">
@@ -255,7 +255,7 @@ function KnowledgeBase() {
               <li key={article.id}>
                 <a
                   href={article.href}
-                  className="flex h-full flex-col gap-2 rounded-lg border border-neutral-200 bg-white p-4 no-underline transition-colors hover:border-neutral-300 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
+                  className="flex h-full flex-col gap-2 rounded-lg border border-neutral-200 bg-white p-4 no-underline transition-colors hover:border-primary/30 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <Badge
@@ -450,7 +450,7 @@ function ActiveTicketsTable() {
             {HELP_SUPPORT_TICKETS.map((ticket) => (
               <TableRow
                 key={ticket.id}
-                className="border-0 bg-white hover:bg-transparent"
+                className="border-0 bg-white hover:bg-[var(--interactive-hover)]"
               >
                 <TableCell className="h-12 px-4 py-0 font-mono text-sm text-neutral-900">
                   {ticket.id}
@@ -540,7 +540,7 @@ function EmergencyEscalation() {
           <Button
             type="button"
             variant="outline"
-            className="h-9! min-h-9! border-white bg-white text-neutral-900 hover:bg-neutral-100"
+            className="h-9! min-h-9! border-white bg-white text-neutral-900 hover:bg-[var(--interactive-hover)] hover:text-primary"
             onClick={() =>
               toast.message("Escalation hotline", {
                 description: "+1 (212) 555-0148 · on-call until 08:00 UTC",

@@ -29,9 +29,24 @@ export const PAGE_CANVAS_CLASS = "bg-[#F7F7F7] dark:bg-background color:bg-backg
 /** Shared height for sidebar brand bar + main sticky navbar. */
 export const APP_TOPBAR_HEIGHT_CLASS = "h-16";
 
-/** Icon utility buttons — same radius as sidebar nav; hover visible on canvas + white. */
+/** Icon utility buttons — same radius as sidebar nav; Engineering Blue hover tint. */
 export const NAV_UTILITY_BUTTON_CLASS =
-  "nav-button flex h-9 w-9 min-h-9 min-w-9 items-center justify-center rounded-[6px] p-0! bg-transparent border-0 shadow-none transition-colors hover:bg-[#EDEDED] dark:hover:bg-zinc-700/40 color:hover:bg-[oklch(100%_0_0_/0.09)] [&_svg]:size-5 [&_svg]:shrink-0";
+  "nav-button flex h-9 w-9 min-h-9 min-w-9 items-center justify-center rounded-[6px] p-0! bg-transparent border-0 shadow-none transition-colors hover:bg-[var(--interactive-hover)] hover:text-primary dark:hover:bg-[var(--interactive-hover)] color:hover:bg-[var(--interactive-hover)] [&_svg]:size-5 [&_svg]:shrink-0";
+
+/**
+ * Soft Engineering Blue hover fill for ghost controls, pills, and nav items.
+ * Prefer over hover:bg-neutral-100 / zinc-100.
+ */
+export const INTERACTIVE_HOVER_CLASS =
+  "transition-colors hover:bg-[var(--interactive-hover)] hover:text-primary";
+
+/** Blue-tint hover for bordered filter triggers / selects. */
+export const INTERACTIVE_CONTROL_HOVER_CLASS =
+  "transition-colors hover:border-primary/40 hover:bg-[var(--interactive-hover)]";
+
+/** Table body row hover — subtle brand tint, keeps chrome neutral at rest. */
+export const TABLE_ROW_HOVER_CLASS =
+  "transition-colors hover:bg-[var(--interactive-hover)]";
 
 /** Static dashboard card chrome — flat white surface, subtle zinc border, no shadow. */
 export const DASHBOARD_CARD_CLASS =
@@ -69,7 +84,7 @@ export const RECENT_ACTIVITY_CARD_HEIGHT_CLASS = "h-auto";
  * Compose with layout utilities (flex, group, etc.) as needed.
  */
 export const INTERACTIVE_CARD_CLASS =
-  "rounded-2xl border border-neutral-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-neutral-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-neutral-900/30";
+  "rounded-2xl border border-neutral-200 bg-white shadow-none transition-all duration-200 ease-in-out hover:border-primary/30 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-neutral-900/30";
 
 /**
  * Card eyebrow — single style for every card header on Dashboard + Audits.

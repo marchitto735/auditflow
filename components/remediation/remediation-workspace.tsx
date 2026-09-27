@@ -72,7 +72,7 @@ function FindingStatus({ status }: { status: FindingStatusValue }) {
 }
 
 const DOCUMENT_ACTIONS_TRIGGER_CLASS =
-  "inline-flex h-6 shrink-0 items-center gap-1 rounded-sm border border-zinc-200 bg-white px-2 text-sm font-medium leading-none text-foreground shadow-none transition-colors hover:border-zinc-400 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2";
+  "inline-flex h-6 shrink-0 items-center gap-1 rounded-sm border border-zinc-200 bg-white px-2 text-sm font-medium leading-none text-foreground shadow-none transition-colors hover:border-primary/40 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2";
 
 function DocumentActionsMenu({
   items,

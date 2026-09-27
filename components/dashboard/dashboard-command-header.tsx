@@ -90,7 +90,7 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
               className={cn(
                 "h-8 rounded-md border-0 px-3 shadow-none first:rounded-md last:rounded-md data-[spacing=0]:rounded-md data-[spacing=0]:first:rounded-md data-[spacing=0]:last:rounded-md",
                 "data-[state=on]:bg-primary data-[state=on]:font-semibold data-[state=on]:text-primary-foreground data-[state=on]:hover:bg-[var(--primary-hover)] data-[state=on]:hover:text-primary-foreground",
-                "data-[state=off]:bg-transparent data-[state=off]:font-medium data-[state=off]:text-neutral-500 data-[state=off]:hover:bg-neutral-200 data-[state=off]:hover:text-neutral-900",
+                "data-[state=off]:bg-transparent data-[state=off]:font-medium data-[state=off]:text-neutral-500 data-[state=off]:hover:bg-[var(--interactive-hover)] data-[state=off]:hover:text-primary",
                 "focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-0",
               )}
             >
@@ -127,7 +127,7 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
           aria-pressed={live}
           aria-label={live ? "Pause live updates" : "Resume live updates"}
           onClick={() => setLive((prev) => !prev)}
-          className="h-9 min-h-9 gap-2 border-zinc-200 bg-white px-3 text-sm font-medium text-neutral-600 shadow-none hover:bg-zinc-50/80"
+          className="h-9 min-h-9 gap-2 border-zinc-200 bg-white px-3 text-sm font-medium text-neutral-600 shadow-none hover:bg-[var(--interactive-hover)]"
         >
           <span
             className="relative flex size-2.5 shrink-0 items-center justify-center"

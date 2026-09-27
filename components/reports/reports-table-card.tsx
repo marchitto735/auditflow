@@ -131,7 +131,7 @@ function FilterSelect<T extends string>({
       ref={triggerRef}
       type="button"
       aria-label={label}
-      className="inline-flex h-9 min-w-[8.5rem] items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 transition-colors hover:border-neutral-400 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+      className="inline-flex h-9 min-w-[8.5rem] items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 transition-colors hover:border-primary/40 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
     >
       <span className="truncate">{selected}</span>
       <ChevronDown className="size-4 shrink-0 text-neutral-900" aria-hidden />
@@ -201,7 +201,7 @@ function DateRangePicker({
         <button
           type="button"
           aria-label="Filter by date range"
-          className="inline-flex h-9 min-w-[11rem] items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 transition-colors hover:border-neutral-400 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+          className="inline-flex h-9 min-w-[11rem] items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-900 transition-colors hover:border-primary/40 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
         >
           <span className="inline-flex min-w-0 items-center gap-2 truncate">
             <CalendarDays className="size-4 shrink-0 text-neutral-600" aria-hidden />
@@ -274,7 +274,7 @@ function PageSizeSelector({
       ref={triggerRef}
       type="button"
       aria-label="Rows per page"
-      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-neutral-200 bg-sidebar-muted/40 px-2 text-sm font-medium text-neutral-900 transition-colors duration-200 hover:border-neutral-400 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-neutral-200 bg-sidebar-muted/40 px-2 text-sm font-medium text-neutral-900 transition-colors duration-200 hover:border-primary/40 hover:bg-[var(--interactive-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <span>{pageSize}</span>
       <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden />
@@ -344,7 +344,7 @@ function ReportsPaginationNav({
       <Button
         type="button"
         variant="ghost"
-        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-neutral-100 hover:text-neutral-900"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-[var(--interactive-hover)] hover:text-primary"
         disabled={currentPage <= 1}
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
       >
@@ -368,7 +368,7 @@ function ReportsPaginationNav({
               "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
               item === currentPage
                 ? "bg-primary text-primary-foreground hover:bg-[var(--primary-hover)] hover:text-primary-foreground"
-                : "text-neutral-900 hover:bg-neutral-100",
+                : "text-neutral-900 hover:bg-[var(--interactive-hover)] hover:text-primary",
             )}
             aria-current={item === currentPage ? "page" : undefined}
             onClick={() => onPageChange(item)}
@@ -380,7 +380,7 @@ function ReportsPaginationNav({
       <Button
         type="button"
         variant="ghost"
-        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-neutral-100 hover:text-neutral-900"
+        className="h-8! min-h-8! rounded-md px-2 text-sm font-medium text-neutral-500 shadow-none hover:bg-[var(--interactive-hover)] hover:text-primary"
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
       >
@@ -912,7 +912,7 @@ export default function ReportsTableCard({
                     {pageRows.map((row) => (
                       <TableRow
                         key={row.id}
-                        className="border-0 bg-white hover:bg-transparent"
+                        className="border-0 bg-white hover:bg-[var(--interactive-hover)]"
                       >
                         <TableCell className="h-12 max-w-0 px-4 py-0 align-middle">
                           <button

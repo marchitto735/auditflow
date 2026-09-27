@@ -377,7 +377,7 @@ export function ActivityTable({
                 <TableRow
                   className={cn(
                     BODY_ROW_CLASS,
-                    "hover:bg-transparent",
+                    "hover:bg-[var(--interactive-hover)]",
                     expandable && "cursor-pointer",
                   )}
                   onClick={() => handleRowClick(row)}
@@ -405,7 +405,7 @@ export function ActivityTable({
                 </TableRow>
                 {expandable && row.detail ? (
                   <TableRow
-                    className={cn("hover:bg-transparent", !open && "hidden")}
+                    className={cn("hover:bg-[var(--interactive-hover)]", !open && "hidden")}
                   >
                     <TableCell
                       colSpan={ACTIVITY_COLUMNS.length}
