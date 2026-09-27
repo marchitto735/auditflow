@@ -458,7 +458,7 @@ function ActiveTicketsTable() {
                   </span>
                 </TableCell>
                 <TableCell className="h-12 px-4 py-0">
-                  {ticket.priority}
+                  {ticket.severity}
                 </TableCell>
                 <TableCell className="h-12 px-4 py-0">
                   <Badge variant={ticketStatusBadgeVariant(ticket.status)}>
