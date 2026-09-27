@@ -28,7 +28,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { CHART, scoreFillClass, severityBadgeVariant } from "@/lib/chart-tokens";
+import { CHART, severityBadgeVariant } from "@/lib/chart-tokens";
 import {
   GMP_THRESHOLD,
   OPEN_FINDINGS,
@@ -234,10 +234,7 @@ export function CategoryBreakdownPanel({ className }: { className?: string }) {
               </div>
               <div className="h-1.5 overflow-hidden rounded-none bg-zinc-200">
                 <div
-                  className={cn(
-                    "h-full rounded-none",
-                    scoreFillClass(category.score),
-                  )}
+                  className="h-full rounded-none bg-neutral-900"
                   style={{ width: `${category.score}%` }}
                 />
               </div>
