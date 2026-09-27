@@ -113,15 +113,7 @@ function SidebarProfileCard({
         sideOffset={8}
         className={cn(DASHBOARD_MENU_CONTENT_CLASS, "w-56")}
       >
-        <div className="px-2.5 py-2">
-          <p className="m-0 truncate text-sm font-medium text-neutral-900">
-            {SIDEBAR_PROFILE.name}
-          </p>
-          <p className="m-0 truncate text-xs text-neutral-500">
-            {SIDEBAR_PROFILE.role}
-          </p>
-        </div>
-        <div className="flex flex-col gap-0.5 pt-1">
+        <div className="flex flex-col gap-0.5">
           <DropdownMenuItem
             className={DASHBOARD_MENU_ITEM_CLASS}
             onSelect={() => {

@@ -26,7 +26,7 @@ export default function AuditsPage() {
         <div className={cn(PAGE_INNER_CLASS, "flex w-full min-w-0 flex-col")}>
           <SectionHeader
             title="Audits"
-            description="Launch document audits and track active executions across SOP, BPR, and FIR."
+            description="Run document audits and track active executions across SOP, BPR, and FIR."
           />
           <TooltipProvider delayDuration={200}>
             <div
