@@ -64,6 +64,7 @@ import {
   CARD_HEADER_STACK_CLASS,
   CARD_METRIC_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
+  SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
@@ -72,6 +73,7 @@ import {
   TABLE_TOOLBAR_ACTIONS_CLASS,
   TABLE_TOOLBAR_FILTERS_CLASS,
   TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
+  TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS,
   TABLE_TOOLBAR_ROW_CLASS,
   TABLE_TOOLBAR_SEARCH_ICON_CLASS,
   TABLE_TOOLBAR_SEARCH_INPUT_CLASS,
@@ -652,7 +654,7 @@ export default function ReportsTableCard({
             <div className="relative flex shrink-0 flex-col gap-3 border-b border-neutral-200 px-4 pt-[16px] pb-3">
               <div className="min-w-0 pr-10">
                 <p className={CARD_SECTION_EYEBROW_CLASS}>Reports</p>
-                <p className="m-0 mt-2 text-base font-normal text-neutral-600">
+                <p className={SECTION_DESCRIPTION_CLASS}>
                   Completed SOP, BPR, and FIR audits with scores, status, and
                   immutable export actions.
                 </p>
@@ -702,10 +704,10 @@ export default function ReportsTableCard({
                   <Button
                     type="button"
                     variant="black"
-                    className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
+                    className={TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS}
                     onClick={exportBatch}
                   >
-                    Export Batch Package
+                    Export Reports
                   </Button>
                 </div>
               </div>

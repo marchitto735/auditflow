@@ -14,6 +14,7 @@ import { TablePaginationBar } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import {
   CARD_SECTION_EYEBROW_CLASS,
+  SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   RECENT_ACTIVITY_CARD_HEIGHT_CLASS,
 } from "@/lib/page-layout";
@@ -151,7 +152,7 @@ export default function RecentActivity({
         <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Audit History</p>
-            <p className="m-0 mt-2 text-base font-normal text-neutral-600">
+            <p className={SECTION_DESCRIPTION_CLASS}>
               Completed audits with scores, status, and document type.
             </p>
           </div>

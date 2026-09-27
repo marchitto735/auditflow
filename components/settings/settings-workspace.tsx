@@ -25,6 +25,7 @@ import {
 import SystemHealthPanel from "@/components/settings/system-health-panel";
 import {
   CARD_SECTION_EYEBROW_CLASS,
+  SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
 } from "@/lib/page-layout";
 import {
@@ -144,7 +145,7 @@ export default function SettingsWorkspace({
       <CardContent className="flex flex-col p-0">
         <div className="border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Workspace Settings</p>
-          <p className="m-0 mt-2 text-base font-normal text-neutral-600">
+          <p className={SECTION_DESCRIPTION_CLASS}>
             Organization defaults, security posture, and alert preferences.
           </p>
         </div>

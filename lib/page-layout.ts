@@ -79,6 +79,13 @@ export const TABLE_TOOLBAR_ACTIONS_CLASS =
   "flex w-full shrink-0 items-center gap-2 sm:ml-auto sm:w-auto sm:justify-end";
 
 /**
+ * Primary table-header CTA — fixed width so New Audit / New Policy / Sync /
+ * Export / View All buttons align across pages; label stays centered.
+ */
+export const TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS =
+  "h-9! min-h-9! w-[12rem] shrink-0 justify-center rounded-md px-3 text-sm";
+
+/**
  * Filter dropdown / date-picker trigger — same type as toolbar search.
  * Uses `neutral-900` (not zinc) so Tailwind merge correctly overrides
  * `FIELD_CONTROL_CLASS` placeholder tokens on shared Input.
@@ -199,6 +206,13 @@ export const SECTION_HEADER_CLASS =
   "text-lg font-medium leading-tight tracking-tight";
 
 /**
+ * Supporting description under page titles and card section eyebrows —
+ * matches `SectionHeader` metadata (`text-sm` / muted).
+ */
+export const SECTION_DESCRIPTION_CLASS =
+  "m-0 mt-1 text-sm font-normal text-muted-foreground";
+
+/**
  * Primary card title (26px / bold) — audit fleet metric titles, etc.
  */
 export const CARD_TITLE_CLASS =
@@ -217,11 +231,10 @@ export const CARD_CONTENT_CLASS =
   "flex h-full flex-col gap-2 p-4";
 
 /**
- * Standard card body copy — 16px, regular weight, muted.
- * Use for supporting descriptions under card eyebrows and in card bodies.
+ * Standard card body / subtitle copy — same metadata scale as page descriptions.
  */
 export const CARD_BODY_CLASS =
-  "m-0 text-base font-normal leading-relaxed text-neutral-600";
+  "m-0 text-sm font-normal leading-snug text-muted-foreground";
 
 /**
  * Shared card footer — tight gap above CTA for Swiss density.

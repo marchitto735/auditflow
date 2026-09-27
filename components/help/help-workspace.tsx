@@ -28,10 +28,10 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  CARD_BODY_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
+  SECTION_DESCRIPTION_CLASS,
 } from "@/lib/page-layout";
 import {
   HELP_SUPPORT_TICKETS,
@@ -80,7 +80,7 @@ function CardShell({
           <div className={cn("min-w-0", headerAction && "pr-28")}>
             <p className={CARD_SECTION_EYEBROW_CLASS}>{eyebrow}</p>
             {description ? (
-              <p className={cn(CARD_BODY_CLASS, "mt-2")}>{description}</p>
+              <p className={SECTION_DESCRIPTION_CLASS}>{description}</p>
             ) : null}
           </div>
           {headerAction ? (

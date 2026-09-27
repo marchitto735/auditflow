@@ -23,7 +23,9 @@ import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   CARD_SECTION_EYEBROW_CLASS,
+  SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
+  TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -369,7 +371,7 @@ export default function ActiveExecutionQueue({
         <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Execution Queue</p>
-            <p className="m-0 mt-2 text-base font-normal text-neutral-600">
+            <p className={SECTION_DESCRIPTION_CLASS}>
               Documents waiting to run, parsing, or pending upload.
             </p>
           </div>
@@ -393,7 +395,7 @@ export default function ActiveExecutionQueue({
               <Button
                 type="button"
                 variant="black"
-                className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
+                className={TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS}
                 onClick={() => openConfigureAudit(null)}
               >
                 New Audit

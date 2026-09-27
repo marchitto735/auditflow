@@ -106,7 +106,7 @@ function UnitFilterDropdown({
 }
 
 /**
- * Command-center chrome — time range, unit scope, live pulse, and freshness.
+ * Command-center chrome — time range, unit scope, live status, and freshness.
  */
 export function DashboardCommandHeader({ className }: { className?: string }) {
   const [range, setRange] = React.useState<TimeRange>("24h");
@@ -173,12 +173,9 @@ export function DashboardCommandHeader({ className }: { className?: string }) {
           role="status"
         >
           <span
-            className="relative flex size-2.5 shrink-0 items-center justify-center"
+            className="size-2.5 shrink-0 rounded-full bg-emerald-600"
             aria-hidden
-          >
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400/70" />
-            <span className="relative size-2.5 rounded-full bg-emerald-600" />
-          </span>
+          />
           <span>Live</span>
         </span>
       </div>

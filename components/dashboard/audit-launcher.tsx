@@ -207,7 +207,7 @@ export function AuditLauncherCard({
                 <p
                   className={cn(
                     CARD_BODY_CLASS,
-                    "max-w-[36ch] text-pretty leading-snug text-neutral-600",
+                    "max-w-[36ch] text-pretty",
                   )}
                 >
                   {description}

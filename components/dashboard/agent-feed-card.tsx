@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   CARD_CONTENT_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
+  SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   TELEMETRY_META_CLASS,
 } from "@/lib/page-layout";
@@ -168,7 +169,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
       >
         <div className="min-w-0 shrink-0 pr-10">
           <p className={CARD_SECTION_EYEBROW_CLASS}>Activity Feed</p>
-          <p className="m-0 mt-2 text-base font-normal text-neutral-600">
+          <p className={SECTION_DESCRIPTION_CLASS}>
             Real-time agent events across validation, scoring, and export.
           </p>
         </div>

@@ -46,6 +46,7 @@ import {
 } from "@/components/ui/table";
 import {
   CARD_SECTION_EYEBROW_CLASS,
+  SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   TABLE_ROW_ACTIONS_CELL_CLASS,
   TABLE_ROW_ACTIONS_HEAD_CLASS,
@@ -339,7 +340,7 @@ export default function UsersTableCard({
           <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
             <div className="min-w-0 pr-10">
               <p className={CARD_SECTION_EYEBROW_CLASS}>User Directory</p>
-              <p className="m-0 mt-2 text-base font-normal text-neutral-600">
+              <p className={SECTION_DESCRIPTION_CLASS}>
                 Organization members, RBAC roles, MFA posture, and session
                 controls.
               </p>
