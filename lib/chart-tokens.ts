@@ -1,33 +1,39 @@
 /**
- * Swiss SaaS chart + status palette — saturated mineral / jewel tones
- * with quiet zinc tracks. CSS mirrors live in `:root` as `--chart-*`.
+ * AuditFlow chart + status palette.
+ * Neutrals for chrome and trend series; semantic emerald / amber / red
+ * only for status-driven signals.
+ * CSS mirrors live in `:root` as `--chart-*` / `--status-*` / `--primary`.
  */
 
 export const CHART = {
-  /** Luminous cobalt-teal — bar series / trend lines */
-  primary: "oklch(52% 0.12 215)",
-  /** Active bar fill (slightly deeper cobalt) */
-  structural: "oklch(48% 0.13 220)",
-  /** Softer cobalt for below-threshold bars */
-  structuralMuted: "oklch(68% 0.06 220)",
-  /** Polished forest emerald — healthy gauge / high scores */
-  gauge: "oklch(52% 0.14 155)",
-  /** Inactive tracks / background bars — zinc-200 */
-  track: "oklch(92% 0.004 286)",
-  /** Quieter track — zinc-100 */
-  trackSoft: "oklch(96.5% 0.002 286)",
+  /** Primary series / trend lines — charcoal */
+  primary: "var(--chart-primary)",
+  /** Active bar fill */
+  structural: "var(--chart-structural)",
+  /** Softened below-threshold bars */
+  structuralMuted: "#737373",
+  /** Gauge / high score fill */
+  gauge: "var(--status-success)",
+  /** Inactive tracks / background bars */
+  track: "var(--chart-track)",
+  /** Quieter track */
+  trackSoft: "#f5f5f5",
   /** Grid lines */
-  grid: "oklch(94.5% 0.003 286)",
+  grid: "#e5e5e5",
   /** Reference / baseline dashed lines */
-  reference: "oklch(70% 0.01 286)",
-  /** Donut / severity — rich crimson */
-  critical: "oklch(52% 0.18 25)",
-  /** Burnt orange */
-  high: "oklch(62% 0.16 45)",
-  /** Warm ochre / amber */
-  medium: "oklch(72% 0.14 75)",
-  /** Slate — low / quiet */
-  low: "oklch(58% 0.02 260)",
+  reference: "#a3a3a3",
+  /** Critical severity */
+  critical: "var(--status-critical)",
+  /** High severity / warning */
+  high: "var(--status-warning)",
+  /** Medium — charcoal primary */
+  medium: "var(--chart-primary)",
+  /** Low — mid gray */
+  low: "var(--chart-2)",
+  /** Success / verified */
+  success: "var(--status-success)",
+  /** Caution / pending */
+  caution: "var(--status-warning)",
 } as const;
 
 /**
@@ -36,9 +42,9 @@ export const CHART = {
  */
 export const CHART_GEOMETRY = {
   /** Ring / arc stroke width (px) */
-  stroke: 8,
+  stroke: 12,
   /** Max active bar column width (px) — same optical weight as linear tracks */
-  barMaxSize: 8,
+  barMaxSize: 12,
   /** Horizontal breathing room between bar columns */
   barCategoryGap: "28%",
   /** Top corner radius for columns — square tops */
@@ -47,7 +53,14 @@ export const CHART_GEOMETRY = {
 
 export type ChartSeverity = "Critical" | "High" | "Medium" | "Low";
 
-export type WorkflowStatus = "Active" | "Ready" | "Draft" | "Pending";
+export type WorkflowStatus =
+  | "Active"
+  | "Ready"
+  | "Draft"
+  | "Pending"
+  | "Synced"
+  | "Flagged"
+  | "Verified";
 
 export function severityFill(severity: ChartSeverity): string {
   switch (severity) {
@@ -66,40 +79,78 @@ export function severityFill(severity: ChartSeverity): string {
 export function severityDotClass(severity: ChartSeverity): string {
   switch (severity) {
     case "Critical":
-      return "bg-red-600";
+      return "bg-status-critical";
     case "High":
-      return "bg-orange-500";
+      return "bg-status-warning";
     case "Medium":
-      return "bg-amber-500";
+      return "bg-primary";
     default:
-      return "bg-slate-400";
+      return "bg-primary/50";
   }
 }
 
-/** Audit launcher / workflow status pips. */
-export function workflowStatusDotClass(status: string): string {
+/** Unified Badge tone for severity chips in tables. */
+export function severityBadgeVariant(
+  severity: ChartSeverity,
+): "destructive" | "warning" | "outline" {
+  switch (severity) {
+    case "Critical":
+      return "destructive";
+    case "High":
+    case "Medium":
+      return "warning";
+    default:
+      return "outline";
+  }
+}
+
+/**
+ * Dashboard telemetry status → sparkline + status pip.
+ * Semantic colors only when the label represents that state;
+ * in-progress / active operational series use charcoal primary.
+ */
+function workflowStatusTone(status: string): {
+  spark: string;
+  dot: string;
+} {
   switch (status) {
     case "Active":
-      return "bg-emerald-500";
+      return { spark: "text-primary", dot: "bg-primary" };
     case "Ready":
     case "Pending":
-      return "bg-amber-500";
+      return { spark: "text-status-warning", dot: "bg-status-warning" };
     case "Draft":
+      return { spark: "text-neutral-400", dot: "bg-neutral-400" };
+    case "Synced":
+    case "Verified":
+      return { spark: "text-status-success", dot: "bg-status-success" };
+    case "Flagged":
+      return { spark: "text-status-critical", dot: "bg-status-critical" };
     default:
-      return "bg-zinc-400";
+      return { spark: "text-primary", dot: "bg-primary" };
   }
 }
 
-/** Score → series fill (gauge, category bars). */
+/** Audit launcher / KPI status pips. */
+export function workflowStatusDotClass(status: string): string {
+  return workflowStatusTone(status).dot;
+}
+
+/** Sparkline stroke color — matches status pip for the same label. */
+export function workflowStatusSparkClass(status: string): string {
+  return workflowStatusTone(status).spark;
+}
+
+/** Score → series fill (gauge, category bars) — status-driven. */
 export function scoreSeriesColor(score: number): string {
   if (score < 70) return CHART.critical;
-  if (score <= 85) return CHART.medium;
-  return CHART.gauge;
+  if (score <= 85) return CHART.caution;
+  return CHART.success;
 }
 
 /** Tailwind bg utility for score progress fills. */
 export function scoreFillClass(score: number): string {
-  if (score < 70) return "bg-red-600";
-  if (score <= 85) return "bg-amber-500";
-  return "bg-emerald-600";
+  if (score < 70) return "bg-status-critical";
+  if (score <= 85) return "bg-status-warning";
+  return "bg-status-success";
 }

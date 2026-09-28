@@ -23,6 +23,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 import {
   OPEN_FINDINGS,
   type FindingRow,
@@ -30,7 +31,7 @@ import {
   type FindingStatus,
 } from "@/lib/dashboard-insights";
 import { DASHBOARD_CARD_CLASS, DASHBOARD_GAP_CLASS, CARD_EYEBROW_MUTED_CLASS } from "@/lib/page-layout";
-import { severityDotClass } from "@/lib/chart-tokens";
+import { severityBadgeVariant } from "@/lib/chart-tokens";
 import { cn } from "@/lib/utils";
 
 const SEVERITY_ORDER: FindingSeverity[] = [
@@ -42,9 +43,21 @@ const SEVERITY_ORDER: FindingSeverity[] = [
 
 const STATUS_SHORT_LABEL: Record<FindingStatus, string> = {
   Open: "Open",
-  "In Remediation": "Remediation",
-  "Pending Verification": "Pending",
+  Remediation: "Remediation",
+  "Pending verification": "Pending verification",
 };
+
+function findingStatusBadgeVariant(status: FindingStatus) {
+  switch (status) {
+    case "Open":
+    case "Remediation":
+      return "warning" as const;
+    case "Pending verification":
+      return "success" as const;
+    default:
+      return "outline" as const;
+  }
+}
 
 function sortFindings(rows: FindingRow[]) {
   return [...rows].sort(
@@ -54,15 +67,7 @@ function sortFindings(rows: FindingRow[]) {
 }
 
 function SeverityStatus({ severity }: { severity: FindingSeverity }) {
-  return (
-    <span className="inline-flex max-w-full min-w-0 items-center gap-2 text-foreground">
-      <span
-        className={cn("size-2.5 shrink-0 rounded-full", severityDotClass(severity))}
-        aria-hidden
-      />
-      <span className="min-w-0 truncate">{severity}</span>
-    </span>
-  );
+  return <Badge variant={severityBadgeVariant(severity)}>{severity}</Badge>;
 }
 
 export default function FindingsView() {
@@ -92,7 +97,7 @@ export default function FindingsView() {
     setRows((current) =>
       current.map((row) =>
         row.id === active.id
-          ? { ...row, owner: owner.trim(), status: "In Remediation" }
+          ? { ...row, owner: owner.trim(), status: "Remediation" }
           : row,
       ),
     );
@@ -123,7 +128,7 @@ export default function FindingsView() {
                     <TableRow
                       key={row.id}
                       className={cn(
-                        "cursor-pointer hover:bg-transparent",
+                        "cursor-pointer hover:bg-neutral-50",
                         active?.id === row.id && "bg-[oklch(97%_0_0)]",
                       )}
                       onClick={() => setActiveId(row.id)}
@@ -138,7 +143,10 @@ export default function FindingsView() {
                         <SeverityStatus severity={row.severity} />
                       </TableCell>
                       <TableCell>
-                        <TruncatedText text={row.citation} />
+                        <TruncatedText
+                          className="font-mono tabular-nums"
+                          text={row.citation}
+                        />
                       </TableCell>
                       <TableCell>
                         <TruncatedText text={row.owner} />
@@ -154,20 +162,24 @@ export default function FindingsView() {
                           }
                         >
                           <SelectTrigger
-                            className="h-9 w-full min-w-0 rounded-lg"
+                            className="h-9 w-full min-w-0 rounded-lg border-0 bg-transparent px-0 shadow-none focus:ring-0"
                             title={row.status}
                           >
                             <SelectValue>
-                              {STATUS_SHORT_LABEL[row.status]}
+                              <Badge
+                                variant={findingStatusBadgeVariant(row.status)}
+                              >
+                                {STATUS_SHORT_LABEL[row.status]}
+                              </Badge>
                             </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="Open">Open</SelectItem>
-                            <SelectItem value="In Remediation">
-                              In Remediation
+                            <SelectItem value="Remediation">
+                              Remediation
                             </SelectItem>
-                            <SelectItem value="Pending Verification">
-                              Pending Verification
+                            <SelectItem value="Pending verification">
+                              Pending verification
                             </SelectItem>
                           </SelectContent>
                         </Select>

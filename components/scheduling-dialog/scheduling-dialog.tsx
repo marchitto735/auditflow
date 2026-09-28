@@ -24,7 +24,7 @@ import { SelectStep } from "./select-step";
 import { DetailsStep } from "./details-step";
 import { ConfirmStep } from "./confirm-step";
 
-const COLOR_THEME_BACKGROUND = "oklch(24% 0.035 165)";
+const COLOR_THEME_BACKGROUND = "oklch(24% 0 0)";
 
 /** IANA timezone → short abbreviation for display. Stored value remains IANA. */
 const TIMEZONE_ABBR: Record<string, string> = {
@@ -122,7 +122,7 @@ try {
         data-range-middle={modifiers.range_middle}
         style={colorStyle}
         className={cn(
-          "rdp-day-button border border-border dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] bg-muted hover:bg-[oklch(92%_0_0)] dark:bg-[oklch(26%_0.01_264)] dark:hover:bg-[oklch(30%_0.01_264)] color:bg-[oklch(38%_0.035_165)] color:hover:bg-[oklch(48%_0.035_165)] data-[selected-single=true]:border-[oklch(22%_0_0)] color:data-[selected-single=true]:border-transparent inline-flex items-center justify-center rounded-lg transition-all disabled:pointer-events-none disabled:opacity-50 focus-visible:border-0 focus-visible:ring-0 focus-visible:outline-none text-button text-foreground data-[outside=true]:!border-transparent data-[outside=true]:!bg-transparent data-[outside=true]:!hover:bg-transparent color:data-[outside=true]:!text-white data-[selected-single=true]:!bg-black data-[selected-single=true]:!text-white data-[selected-single=true]:hover:!bg-black data-[selected-single=true]:dark:!bg-white data-[selected-single=true]:dark:!text-black data-[selected-single=true]:color:!bg-white data-[selected-single=true]:color:!text-[oklch(24%_0.035_165)] data-[selected-single=true]:rounded-lg data-[range-middle=true]:text-foreground data-[range-start=true]:text-white data-[range-end=true]:text-white group-data-[focused=true]/day:border-0 group-data-[focused=true]/day:ring-0 flex aspect-square size-auto w-full min-w-(--cell-size) leading-none group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 data-[range-end=true]:rounded-lg data-[range-end=true]:rounded-r-lg data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-lg data-[range-start=true]:rounded-l-lg px-0 py-0",
+          "rdp-day-button border border-border dark:border-[oklch(30%_0_0)] color:border-[oklch(44%_0_0)] bg-muted hover:bg-neutral-50 dark:bg-[oklch(26%_0_0)] dark:hover:bg-neutral-50 color:bg-[oklch(38%_0_0)] color:hover:bg-neutral-50 data-[selected-single=true]:border-[oklch(22%_0_0)] color:data-[selected-single=true]:border-transparent inline-flex items-center justify-center rounded-lg transition-all disabled:pointer-events-none disabled:opacity-50 focus-visible:border-0 focus-visible:ring-0 focus-visible:outline-none text-button text-foreground data-[outside=true]:!border-transparent data-[outside=true]:!bg-transparent data-[outside=true]:!hover:bg-transparent color:data-[outside=true]:!text-white data-[selected-single=true]:!bg-primary data-[selected-single=true]:!text-primary-foreground data-[selected-single=true]:hover:!bg-[var(--primary-hover)] data-[selected-single=true]:dark:!bg-white data-[selected-single=true]:dark:!text-neutral-900 data-[selected-single=true]:color:!bg-white data-[selected-single=true]:color:!text-neutral-900 data-[selected-single=true]:rounded-lg data-[range-middle=true]:text-foreground data-[range-start=true]:text-white data-[range-end=true]:text-white group-data-[focused=true]/day:border-0 group-data-[focused=true]/day:ring-0 flex aspect-square size-auto w-full min-w-(--cell-size) leading-none group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 data-[range-end=true]:rounded-lg data-[range-end=true]:rounded-r-lg data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-lg data-[range-start=true]:rounded-l-lg px-0 py-0",
           className
         )}
         {...props}
@@ -575,7 +575,7 @@ try {
         text: title,
         dates: `${startGoogle}/${endGoogle}`,
         details,
-        location: meetingUrl || "Video Call",
+        location: meetingUrl || "Video call",
       });
       return `https://calendar.google.com/calendar/render?${qs.toString()}`;
     }, [confirmation, notes]);
@@ -601,7 +601,7 @@ try {
         startdt: startTime,
         enddt: endTime,
         body,
-        location: meetingUrl || "Video Call",
+        location: meetingUrl || "Video call",
       });
       return `https://outlook.live.com/calendar/0/deeplink/compose?${qs.toString()}`;
     }, [confirmation, notes]);
@@ -627,7 +627,7 @@ try {
         startdt: startTime,
         enddt: endTime,
         body,
-        location: meetingUrl || "Video Call",
+        location: meetingUrl || "Video call",
       });
       return `https://outlook.office.com/calendar/0/deeplink/compose?${qs.toString()}`;
     }, [confirmation, notes]);
@@ -673,7 +673,7 @@ try {
 
         {/* Close button: fixed top-right of viewport, above overlay */}
         <DialogClose
-          className="fixed right-4 top-4 z-[100] flex size-12 min-h-12 min-w-12 items-center justify-center rounded-sm border-0 bg-transparent text-foreground dark:text-white color:text-white opacity-90 transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-offset-0 ring-0 ring-offset-0 scheduling-dialog-close lg:text-white"
+          className="fixed right-4 top-4 z-[100] flex size-12 min-h-12 min-w-12 items-center justify-center rounded-sm border-0 bg-transparent text-foreground dark:text-white color:text-white opacity-90 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 ring-0 ring-offset-0 scheduling-dialog-close lg:text-white"
           aria-label="Close"
         >
           <XIcon className="size-6 shrink-0 text-foreground dark:text-white color:text-white lg:text-white" />
@@ -684,9 +684,9 @@ try {
           data-slot="scheduling-panel"
           data-theme={resolvedTheme}
           className={cn(
-            "relative flex min-h-screen max-h-[90vh] lg:min-h-0 lg:h-fit lg:max-h-[85vh] w-full max-w-full lg:max-w-[1000px] flex-col overflow-y-auto lg:overflow-x-visible lg:overflow-y-auto rounded-none lg:rounded-2xl border border-border dark:border-[oklch(30%_0.01_264)] color:border-[oklch(28%_0.035_165)] p-4 px-4 text-foreground",
+            "relative flex min-h-screen max-h-[90vh] lg:min-h-0 lg:h-fit lg:max-h-[85vh] w-full max-w-full lg:max-w-[1000px] flex-col overflow-y-auto lg:overflow-x-visible lg:overflow-y-auto rounded-none lg:rounded-2xl border border-border dark:border-[oklch(30%_0_0)] color:border-[oklch(28%_0_0)] p-4 px-4 text-foreground",
             (step === "date" || step === "time") && "pb-[88px]",
-            resolvedTheme === "color" && "!bg-[oklch(24%_0.035_165)]",
+            resolvedTheme === "color" && "!bg-[oklch(24%_0_0)]",
             step === "details" && "lg:w-fit",
             step === "confirm" && "!p-0 lg:max-w-[464px] pr-[56px]"
           )}
@@ -694,7 +694,7 @@ try {
             resolvedTheme === "color"
               ? { backgroundColor: COLOR_THEME_BACKGROUND }
               : resolvedTheme === "dark"
-                ? { backgroundColor: "oklch(20% 0.01 264)" }
+                ? { backgroundColor: "oklch(20% 0 0)" }
                 : { backgroundColor: "#ffffff" }
           }
         >
@@ -733,7 +733,7 @@ try {
                   <CardHeader className="scheduling-left-header mb-1 gap-0 space-y-0 pb-0 px-0 pt-0.5">
                     <div className="flex flex-col gap-5">
                       <CardTitle className="scheduling-left-title mt-0 shrink-0 text-subtitle1 font-medium text-foreground">
-                        Introduction Call
+                        Introduction call
                       </CardTitle>
                       <span className="scheduling-left-name block text-subtitle2 text-foreground">
                         Mike Marchitto
@@ -750,7 +750,7 @@ try {
                     </div>
                     <div className="scheduling-left-detail-row flex items-center gap-2 text-body2 text-foreground">
                       <Video className="h-4 w-4 shrink-0" />
-                      <span>Video Call</span>
+                      <span>Video call</span>
                     </div>
                     <DropdownMenu
                       onOpenChange={(open) => {
@@ -769,7 +769,7 @@ try {
                         <button
                           type="button"
                           style={{ paddingTop: 8, paddingBottom: 8 }}
-                          className="-ml-2 -mt-[6px] flex items-center justify-between gap-2 rounded-lg px-2 leading-normal text-body2 text-foreground transition-colors hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)]"
+                          className="-ml-2 -mt-[6px] flex items-center justify-between gap-2 rounded-lg px-2 leading-normal text-body2 text-foreground transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50"
                         >
                           <Globe className="h-4 w-4 shrink-0 self-center" />
                           <span className="max-w-[180px] min-w-0 flex-1 truncate text-left">
@@ -784,7 +784,7 @@ try {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent
                         align="start"
-                        className="w-[var(--radix-dropdown-menu-trigger-width)] max-w-[var(--radix-dropdown-menu-trigger-width)] max-h-[280px] overflow-y-auto color:bg-[oklch(24%_0.035_165)]"
+                        className="w-[var(--radix-dropdown-menu-trigger-width)] max-w-[var(--radix-dropdown-menu-trigger-width)] max-h-[280px] overflow-y-auto color:bg-[oklch(24%_0_0)]"
                       >
                         {TIME_ZONES.map((tz) => (
                           <DropdownMenuItem
@@ -792,8 +792,8 @@ try {
                             ref={tz === timeZone ? selectedRef : null}
                             onSelect={() => setTimeZone(tz)}
                             className={cn(
-                              "flex items-center gap-2 rounded-sm py-2 pl-0.5 leading-normal hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)] focus:bg-[oklch(92%_0_0)] dark:focus:bg-[oklch(30%_0.01_264)] color:focus:bg-[oklch(48%_0.035_165)]",
-                              timeZone === tz && "!bg-white !text-black dark:!bg-transparent dark:!text-white color:!bg-transparent color:!text-white"
+                              "flex items-center gap-2 rounded-sm py-2 pl-0.5 leading-normal hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50 focus:bg-neutral-100 dark:focus:bg-neutral-100 color:focus:bg-neutral-100",
+                              timeZone === tz && "!bg-white !text-neutral-900 dark:!bg-transparent dark:!text-white color:!bg-transparent color:!text-white"
                             )}
                           >
                             <span className="flex h-4 w-4 shrink-0 items-center justify-center">
@@ -857,7 +857,7 @@ try {
                           {selectedLabel}
                         </span>
                       </div>
-                      <p className="text-body2 text-red-500 mt-[38px]">{availabilityError}</p>
+                      <p className="text-body2 text-neutral-900 mt-[38px]">{availabilityError}</p>
                     </div>
                   ) : (
                     <SelectStep
@@ -901,7 +901,7 @@ try {
                   <CardHeader className="scheduling-left-header mb-1 gap-0 space-y-0 pb-0 px-0 pt-0.5">
                     <div className="flex flex-col gap-5">
                       <CardTitle className="scheduling-left-title mt-0 shrink-0 text-subtitle1 font-medium text-foreground">
-                        Introduction Call
+                        Introduction call
                       </CardTitle>
                       <span className="scheduling-left-name block text-subtitle2 text-foreground">
                         Mike Marchitto
@@ -924,7 +924,7 @@ try {
                     </div>
                     <div className="scheduling-left-detail-row flex items-center gap-2 text-body2 text-foreground">
                       <Video className="h-4 w-4 shrink-0" />
-                      <span>Video Call</span>
+                      <span>Video call</span>
                     </div>
                     <div className="scheduling-left-detail-row flex items-center gap-2 text-body2 text-foreground pointer-events-none">
                       <Globe className="h-4 w-4 shrink-0" />

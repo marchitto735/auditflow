@@ -2,10 +2,10 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { FileText, ChevronDown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { useCart } from "@/components/cart/cart-context";
 import SectionHeader from "@/components/section-header/section-header";
 import {
   Command,
@@ -39,7 +39,6 @@ import {
   type AuditWorkflowId,
   type DocumentType,
 } from "@/lib/audit-workflows";
-import { goldStandardCatalogItem } from "@/lib/cart";
 import {
   AuditReportTable,
 } from "@/components/audit-report/audit-report-table";
@@ -64,7 +63,7 @@ export type ProjectCardProps = {
   description: string;
   image: string;
   href?: string;
-  /** Default: “See Case Study”. */
+  /** Default: “See case study”. */
   ctaLabel?: string;
   /** When true, CTA uploads a file and POSTs to /api/audit/run. */
   runAudit?: boolean;
@@ -79,12 +78,13 @@ export default function ProjectCard({
   description,
   image,
   href,
-  ctaLabel = "See Case Study",
+  ctaLabel = "See case study",
   runAudit: isAuditCard = false,
   auditWorkflow = "sop",
   layout = "horizontal",
 }: ProjectCardProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
   const pendingDocTypeRef = useRef<DocumentType | null>(null);
   const documentTypes = documentTypesForWorkflow(auditWorkflow);
   const [auditStatus, setAuditStatus] = useState<
@@ -100,10 +100,8 @@ export default function ProjectCard({
 
   const [processedAt, setProcessedAt] = useState<Date | null>(null);
   const [sopReport, setSopReport] = useState<SopAuditReport | null>(null);
-  const [addedToCart, setAddedToCart] = useState(false);
   const selectedClause = getGmpClause(selectedClauseId);
   const canRunAudit = Boolean(selectedClause && selectedFile);
-  const { addItem } = useCart();
   const runWorkflow: AuditWorkflowId =
     workflowFromDocumentType(selectedDocType) ?? auditWorkflow;
   const runLabel = AUDIT_WORKFLOWS[runWorkflow].label;
@@ -132,16 +130,6 @@ export default function ProjectCard({
     link.download = `audit-report-clause-${selectedClause?.id ?? AUDIT_CLAUSE_ID}.txt`;
     link.click();
     URL.revokeObjectURL(url);
-  }
-
-  function addCompliantSopToCart() {
-    const clause =
-      selectedClause ??
-      getGmpClause(sopReport?.clause_id) ??
-      getGmpClause(AUDIT_CLAUSE_ID);
-    addItem(goldStandardCatalogItem(clause, selectedDocType));
-    setAddedToCart(true);
-    window.setTimeout(() => setAddedToCart(false), 1600);
   }
 
   async function handleRunAudit() {
@@ -234,13 +222,13 @@ export default function ProjectCard({
       return (
         <div className="w-full min-w-0">
           <SectionHeader
-            title="Audit Report"
+            title="Audit report"
             description="Review your compliance breakdown and instantly resolve vulnerabilities by upgrading to a fully compliant SOP version."
             actions={
               <button
                 type="button"
                 onClick={resetAudit}
-                className="flex size-9 shrink-0 items-center justify-center rounded-sm bg-transparent text-foreground hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(40%_0.035_165)]"
+                className="flex size-9 shrink-0 items-center justify-center rounded-sm bg-transparent text-foreground hover:bg-[var(--sidebar-hover)] dark:hover:bg-[oklch(30%_0_0)] color:hover:bg-[oklch(40%_0_0)]"
                 aria-label="Close report"
               >
                 <X className="size-5" />
@@ -255,39 +243,30 @@ export default function ProjectCard({
                   fileName={fileName}
                   documentType={selectedDocType ?? runLabel}
                   clauseLabel={clauseLabel}
-                  timestamp={processedAt ?? new Date()}
+                  timestamp={processedAt}
                   onDownloadReport={downloadReport}
                   onRerunAudit={resetAudit}
                 />
               </CardContent>
-              <CardFooter className="flex w-full justify-end px-4 pt-4 pb-4">
+              <CardFooter className="flex w-full items-center justify-end gap-2 px-4 pt-4 pb-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="text-button"
+                  onClick={downloadReport}
+                >
+                  Download report
+                </Button>
                 <Button
                   type="button"
                   variant="black"
                   className="text-button"
-                  onClick={downloadReport}
+                  onClick={() => router.push("/audit/remediate")}
                 >
-                  Download Report
+                  Start compliance validation
                 </Button>
               </CardFooter>
             </Card>
-          </div>
-
-          <div className="relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-zinc-200 bg-white px-4 py-4 shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm">
-            <div
-              aria-hidden
-              className="absolute inset-y-0 left-0 w-1.5 rounded-l-2xl bg-zinc-800"
-            />
-            <p className="m-0 text-center text-[14px] leading-5 text-black">
-              Resolve findings by uploading revised documentation.{" "}
-              <button
-                type="button"
-                className="inline text-[14px] leading-5 font-medium text-black underline decoration-solid underline-offset-2 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800 focus-visible:ring-offset-2"
-                onClick={addCompliantSopToCart}
-              >
-                {addedToCart ? "Added to cart" : "Upgrade documentation"}
-              </button>
-            </p>
           </div>
         </div>
       );
@@ -307,7 +286,7 @@ export default function ProjectCard({
                     role="combobox"
                     aria-expanded={clausePickerOpen}
                     className={cn(
-                      "inline-flex h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] w-full items-center justify-between gap-2 rounded-lg border border-[oklch(0%_0_0)] bg-transparent px-4 py-3 text-button font-medium text-[oklch(0%_0_0)] shadow-none transition-colors hover:bg-[oklch(96%_0_0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0%_0_0)] focus-visible:ring-offset-2",
+                      "inline-flex h-[length:var(--cta-height)] min-h-[length:var(--cta-height)] w-full items-center justify-between gap-2 rounded-lg border border-[oklch(0%_0_0)] bg-transparent px-4 py-3 text-button font-medium text-neutral-900 shadow-none transition-colors hover:bg-[oklch(96%_0_0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0%_0_0)] focus-visible:ring-offset-2",
                       clausePickerOpen && "bg-[oklch(96%_0_0)]",
                     )}
                   >
@@ -317,7 +296,7 @@ export default function ProjectCard({
                         !selectedClause && "text-muted-foreground",
                       )}
                     >
-                      {selectedClause?.label ?? "Select Clause..."}
+                      {selectedClause?.label ?? "Select clause..."}
                     </span>
                     <ChevronDown
                       aria-hidden
@@ -372,12 +351,12 @@ export default function ProjectCard({
 
             {selectedClause ? (
               <>
-                <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-4">
+                <p className="text-body1 text-neutral-900 m-0 mb-4">
                   {selectedClause.description}
                 </p>
 
                 <p
-                  className="text-body1 m-0 mb-3 text-[oklch(0%_0_0)]"
+                  className="text-body1 m-0 mb-3 text-neutral-900"
                   style={{ fontWeight: 600 }}
                 >
                   Documents needed for this clause:
@@ -401,7 +380,7 @@ export default function ProjectCard({
             ) : null}
 
             {selectedFile ? (
-              <p className="text-body2 text-[oklch(0%_0_0)] m-0 mb-3">
+              <p className="text-body2 text-neutral-900 m-0 mb-3">
                 Selected
                 {selectedDocType ? ` ${selectedDocType}` : ""}: {selectedFile.name}
               </p>
@@ -413,8 +392,8 @@ export default function ProjectCard({
                 className={cn(
                   "text-body2 m-0 mb-4",
                   auditStatus === "error"
-                    ? "text-[oklch(42%_0.16_25)]"
-                    : "text-[oklch(0%_0_0)]",
+                    ? "text-neutral-900"
+                    : "text-neutral-700",
                 )}
               >
                 {auditMessage}
@@ -434,7 +413,7 @@ export default function ProjectCard({
               variant="black"
               size="lg"
               className={cn(
-                "project-card-cta relative w-full overflow-hidden border-0 disabled:opacity-100 disabled:bg-[oklch(90%_0_0)] disabled:text-[oklch(62%_0_0)]",
+                "project-card-cta relative w-full overflow-hidden border-0 disabled:opacity-100 disabled:bg-[oklch(90%_0_0)] disabled:text-neutral-500",
                 auditStatus === "loading" && "pointer-events-none",
               )}
               onClick={handleRunAudit}
@@ -453,7 +432,7 @@ export default function ProjectCard({
                   rx="8"
                   ry="8"
                   fill="none"
-                  stroke="oklch(48% 0 0)"
+                  stroke="var(--primary)"
                   strokeWidth="2"
                 />
                 {auditStatus === "loading" ? (
@@ -466,7 +445,7 @@ export default function ProjectCard({
                     ry="8"
                     pathLength="100"
                     fill="none"
-                    stroke="oklch(78% 0 0)"
+                    stroke="var(--primary-soft)"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeDasharray="16 84"
@@ -522,9 +501,9 @@ export default function ProjectCard({
           layout === "vertical" ? "p-4 md:p-4" : "p-4 md:p-4 lg:p-4",
         )}
       >
-        <h4 className="text-h4 text-[oklch(0%_0_0)] m-0 mb-2">{title}</h4>
+        <h4 className="text-h4 text-neutral-900 m-0 mb-2">{title}</h4>
 
-        <p className="text-body1 text-[oklch(0%_0_0)] m-0 mb-4">{description}</p>
+        <p className="text-body1 text-neutral-900 m-0 mb-4">{description}</p>
 
         <Button
           variant="black"

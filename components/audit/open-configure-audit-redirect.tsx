@@ -9,7 +9,7 @@ type OpenConfigureAuditRedirectProps = {
   workflowId: AuditWorkflowId;
 };
 
-/** Deep-link entry: open the shared modal, then return to the dashboard. */
+/** Deep-link entry: open the shared modal, then return to Audits. */
 export function OpenConfigureAuditRedirect({
   workflowId,
 }: OpenConfigureAuditRedirectProps) {
@@ -18,7 +18,7 @@ export function OpenConfigureAuditRedirect({
 
   React.useEffect(() => {
     openConfigureAudit(workflowId);
-    router.replace("/");
+    router.replace("/audits");
   }, [openConfigureAudit, router, workflowId]);
 
   return null;

@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState, type MouseEvent, type ReactNode } from "react";
+import { Badge, type BadgeVariant } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import {
   Table,
@@ -12,11 +13,25 @@ import {
 } from "@/components/ui/table";
 import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
 
-/** Uniform horizontal inset on every header/cell for a Swiss vertical grid. */
-const CELL_PAD_CLASS = "px-4 py-2";
+/** Horizontal inset shared by header + body cells. */
+const CELL_X_PAD_CLASS = "px-4";
 
+/**
+ * Locked row metrics for consistent History row sizing.
+ * Internal separators use `divide-y` on `tbody` (not per-row `border-b`).
+ */
+export const ACTIVITY_TABLE_HEADER_HEIGHT = "2.5rem"; // h-10
+export const ACTIVITY_TABLE_ROW_HEIGHT = "3rem"; // h-12
+
+const HEADER_CELL_CLASS = cn(CELL_X_PAD_CLASS, "h-10");
+const BODY_CELL_CLASS = cn(CELL_X_PAD_CLASS, "h-12 py-0");
+const BODY_ROW_CLASS = "h-12 border-0";
+/** 1px bottom hairline — shadow avoids stacking with row/footer borders while sticky. */
+const STICKY_HEADER_DIVIDER_CLASS =
+  "border-b-0 shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0";
 type CellOverflow = "truncate" | "nowrap";
 
 /**
@@ -29,41 +44,47 @@ export const ACTIVITY_COLUMNS = [
     key: "document",
     label: "Document",
     width: "30%",
-    widthClass: "w-[30%]",
+    minWidth: "10rem",
+    widthClass: "w-[30%] min-w-[10rem]",
     overflow: "truncate",
   },
   {
     key: "type",
     label: "Type",
     width: "12%",
-    widthClass: "w-[12%]",
+    minWidth: "4.5rem",
+    widthClass: "w-[12%] min-w-[4.5rem]",
     overflow: "truncate",
   },
   {
     key: "date",
     label: "Timestamp",
     width: "28%",
-    widthClass: "w-[28%]",
+    minWidth: "11rem",
+    widthClass: "w-[28%] min-w-[11rem]",
     overflow: "nowrap",
   },
   {
     key: "score",
     label: "Score",
     width: "12%",
-    widthClass: "w-[12%]",
+    minWidth: "4rem",
+    widthClass: "w-[12%] min-w-[4rem]",
     overflow: "truncate",
   },
   {
     key: "status",
     label: "Status",
     width: "18%",
-    widthClass: "w-[18%]",
+    minWidth: "6.5rem",
+    widthClass: "w-[18%] min-w-[6.5rem]",
     overflow: "truncate",
   },
 ] as const satisfies ReadonlyArray<{
   key: string;
   label: string;
   width: string;
+  minWidth: string;
   widthClass: string;
   overflow: CellOverflow;
 }>;
@@ -80,60 +101,46 @@ export type ActivityRow = {
   detail?: string;
 };
 
-function toTitleCase(value: string) {
-  return value
-    .trim()
-    .split(/([\s/_-]+)/)
-    .map((part) => {
-      if (/^[\s/_-]+$/.test(part)) return part;
-      return part
-        .split("")
-        .map((char, index) =>
-          index === 0 ? char.toUpperCase() : char.toLowerCase(),
-        )
-        .join("");
-    })
-    .join("");
-}
-
 export function activityStatusLabel(status: string | null | undefined) {
   const raw = (status ?? "").trim();
   if (!raw) return "—";
 
   const value = raw.toLowerCase();
   if (value.includes("critical")) return "Critical";
+  if (value.includes("non-compliant") || value.includes("non compliant")) {
+    return "Non-compliant";
+  }
   if (value.includes("compliant") && !value.includes("partial")) {
     return "Compliant";
   }
   if (value.includes("partial")) return "Partial";
   if (value === "pass" || value === "passed") return "Pass";
-  if (value === "fail" || value === "failed") return "Fail";
+  if (value === "fail" || value === "failed") return "Failed";
   if (value === "review") return "Review";
+  if (value === "in remediation" || value === "remediation") {
+    return "Remediation";
+  }
 
-  return toTitleCase(raw);
+  return toSentenceCase(raw);
 }
 
-export function statusBadgeClass(status: string | null | undefined) {
-  const label = activityStatusLabel(status);
-  if (label === "Compliant" || label === "Pass") {
-    return "border-emerald-200 bg-emerald-50 text-emerald-800";
-  }
-  if (label === "Critical" || label === "Fail") {
-    return "border-red-200 bg-red-50 text-red-800";
-  }
-  return "border-amber-200 bg-amber-50 text-amber-900";
-}
+export type StatusBadgeVariant = BadgeVariant;
 
-export const STATUS_BADGE_CLASS =
-  "h-auto min-h-0 border-0 px-3 py-1 text-xs font-medium leading-none";
-
-export function statusDotClass(status: string | null | undefined) {
+export function statusBadgeVariant(
+  status: string | null | undefined,
+): StatusBadgeVariant {
   const label = activityStatusLabel(status);
-  if (label === "Compliant" || label === "Pass") return "bg-emerald-500";
-  if (label === "Critical" || label === "Fail") return "bg-red-600";
-  if (label === "Partial" || label === "Review") return "bg-amber-500";
-  if (label === "—") return "";
-  return "bg-slate-400";
+  if (label === "Compliant" || label === "Pass") return "success";
+  if (
+    label === "Critical" ||
+    label === "Fail" ||
+    label === "Failed" ||
+    label === "Non-compliant"
+  ) {
+    return "destructive";
+  }
+  if (label === "Partial" || label === "Review") return "warning";
+  return "outline";
 }
 
 export function ActivityStatus({
@@ -149,19 +156,20 @@ export function ActivityStatus({
   }
 
   return (
-    <span
-      className={cn(
-        "inline-flex max-w-full min-w-0 items-center gap-2 text-foreground",
-        className,
-      )}
-    >
-      <span
-        className={cn("size-2.5 shrink-0 rounded-full", statusDotClass(status))}
-        aria-hidden
-      />
-      <span className="min-w-0 truncate">{label}</span>
-    </span>
+    <Badge variant={statusBadgeVariant(status)} className={className}>
+      {label}
+    </Badge>
   );
+}
+
+export const TECHNICAL_VALUE_CLASS =
+  "font-mono text-base font-normal tabular-nums text-foreground";
+
+/** UUID / hash cells — names with spaces stay in Geist Sans. */
+export function isTechnicalId(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed || trimmed === "—" || /\s/.test(trimmed)) return false;
+  return /[0-9a-f]{4,}/i.test(trimmed);
 }
 
 function cellKey(rowId: string, column: ActivityColumnKey) {
@@ -176,11 +184,21 @@ function renderCellContent(
   switch (column) {
     case "document":
       return wrapped ? (
-        <span className="block whitespace-normal break-words">
+        <span
+          className={cn(
+            "block whitespace-normal break-words text-foreground",
+            isTechnicalId(row.document) && TECHNICAL_VALUE_CLASS,
+          )}
+        >
           {row.document}
         </span>
       ) : (
-        <span className="block w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+        <span
+          className={cn(
+            "block w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-foreground",
+            isTechnicalId(row.document) && TECHNICAL_VALUE_CLASS,
+          )}
+        >
           {row.document}
         </span>
       );
@@ -191,9 +209,13 @@ function renderCellContent(
         <TruncatedText text={row.type} />
       );
     case "date":
-      return <span className="block whitespace-nowrap">{row.date}</span>;
+      return (
+        <span className={cn("block whitespace-nowrap", TECHNICAL_VALUE_CLASS)}>
+          {row.date}
+        </span>
+      );
     case "score":
-      return <span className="tabular-nums">{row.score}</span>;
+      return <span className={TECHNICAL_VALUE_CLASS}>{row.score}</span>;
     case "status":
       return row.status === "—" ? (
         "—"
@@ -270,21 +292,33 @@ export function ActivityTable({
 
   return (
     <TooltipProvider delayDuration={150}>
-      <Table className="w-full table-fixed">
+      <Table
+        className="w-full min-w-[42rem] table-fixed border-separate border-spacing-0"
+        containerClassName="overflow-visible"
+      >
         <colgroup>
           {ACTIVITY_COLUMNS.map((column) => (
-            <col key={column.key} className={column.widthClass} style={{ width: column.width }} />
+            <col
+              key={column.key}
+              className={column.widthClass}
+              style={{ width: column.width, minWidth: column.minWidth }}
+            />
           ))}
         </colgroup>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
+        <TableHeader
+          className={cn(
+            "sticky top-0 z-20 bg-white",
+            STICKY_HEADER_DIVIDER_CLASS,
+          )}
+        >
+          <TableRow className="border-0 bg-white hover:bg-transparent">
             {ACTIVITY_COLUMNS.map((column) => (
               <TableHead
                 key={column.key}
                 className={cn(
-                  CELL_PAD_CLASS,
+                  HEADER_CELL_CLASS,
                   column.widthClass,
-                  "text-left",
+                  "sticky top-0 z-20 border-b-0 bg-white text-left",
                   cellOverflowClass(column.overflow),
                   expandable && "cursor-pointer select-none",
                 )}
@@ -302,14 +336,22 @@ export function ActivityTable({
             ))}
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody
+          className={cn(
+            // divide-y = no trailing border after the last row (footer-safe).
+            // border-separate ignores tr borders, so paint the same rule on tds.
+            "divide-y divide-border border-b-0",
+            "[&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
+          )}
+        >
           {rows.map((row) => {
             const open = openRows.has(row.id);
             return (
               <Fragment key={row.id}>
                 <TableRow
                   className={cn(
-                    "hover:bg-transparent",
+                    BODY_ROW_CLASS,
+                    "hover:bg-neutral-50",
                     expandable && "cursor-pointer",
                   )}
                   onClick={() => handleRowClick(row)}
@@ -318,7 +360,7 @@ export function ActivityTable({
                     <TableCell
                       key={column.key}
                       className={cn(
-                        CELL_PAD_CLASS,
+                        BODY_CELL_CLASS,
                         column.widthClass,
                         "text-left",
                         cellOverflowClass(column.overflow),
@@ -337,7 +379,7 @@ export function ActivityTable({
                 </TableRow>
                 {expandable && row.detail ? (
                   <TableRow
-                    className={cn("hover:bg-transparent", !open && "hidden")}
+                    className={cn("hover:bg-neutral-50", !open && "hidden")}
                   >
                     <TableCell
                       colSpan={ACTIVITY_COLUMNS.length}

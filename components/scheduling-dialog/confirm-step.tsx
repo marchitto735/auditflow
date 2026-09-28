@@ -42,7 +42,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
   return (
     <div className="flex w-full flex-col text-left">
       <div className="shrink-0 mb-[16px]">
-        <CheckCircle2 className="h-6 w-6 text-green-600" aria-hidden />
+        <CheckCircle2 className="h-6 w-6 text-neutral-900" aria-hidden />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
         <h2 className="text-subtitle1 text-foreground dark:text-white color:text-white pt-0">This meeting is scheduled</h2>
@@ -50,7 +50,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
         <dl className="flex flex-col gap-4 text-body2 mt-[32px] items-start">
           <div className="w-full">
             <dt className="text-foreground dark:text-white color:text-white font-medium">What</dt>
-            <dd className="text-foreground dark:text-white color:text-white mt-0.5">Introduction Call between {name || "Guest"} and Mike Marchitto</dd>
+            <dd className="text-foreground dark:text-white color:text-white mt-0.5">Introduction call between {name || "Guest"} and Mike Marchitto</dd>
           </div>
           <div className="w-full">
             <dt className="text-foreground dark:text-white color:text-white font-medium">When</dt>
@@ -64,7 +64,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
             <dt className="text-foreground dark:text-white color:text-white font-medium">Who</dt>
             <dd className="text-foreground dark:text-white color:text-white mt-0.5">
               <span className="inline-flex items-center gap-1">
-                Mike Marchitto <span className="rounded border border-border dark:border-white color:border-white bg-transparent text-black dark:text-white color:text-white text-xs px-1.5 py-0.5">Host</span>
+                Mike Marchitto <span className="rounded border border-border dark:border-white color:border-white bg-transparent text-neutral-900 dark:text-white color:text-white text-xs px-1.5 py-0.5">Host</span>
               </span>
               <br />
               {email}
@@ -106,7 +106,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
               href={rescheduleUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-body2 text-foreground no-underline mr-4 transition-colors hover:text-[oklch(50%_0_0)] color:hover:text-[oklch(48%_0.035_165)]"
+              className="text-body2 text-foreground no-underline mr-4 transition-colors hover:text-primary color:hover:text-primary"
             >
               Reschedule
             </a>
@@ -119,7 +119,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
               href={cancelUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-body2 text-foreground no-underline transition-colors hover:text-[oklch(50%_0_0)] color:hover:text-[oklch(48%_0.035_165)]"
+              className="text-body2 text-foreground no-underline transition-colors hover:text-primary color:hover:text-primary"
             >
               Cancel
             </a>
@@ -132,7 +132,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
               asChild
               variant="ghost"
               size="icon"
-              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)] transition-colors"
+              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50 transition-colors"
               aria-label="Google Calendar"
             >
               {googleCalendarUrl ? (
@@ -150,7 +150,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
               asChild
               variant="ghost"
               size="icon"
-              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)] transition-colors"
+              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50 transition-colors"
               aria-label="Outlook"
             >
               {outlookCalendarUrl ? (
@@ -168,7 +168,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
               asChild
               variant="ghost"
               size="icon"
-              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)] transition-colors"
+              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50 transition-colors"
               aria-label="Office 365"
             >
               {office365CalendarUrl ? (
@@ -186,7 +186,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
               asChild
               variant="ghost"
               size="icon"
-              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)] transition-colors"
+              className="!h-11 !min-h-11 !w-11 !min-w-11 !p-3.5 shrink-0 rounded-sm border-0 bg-transparent hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50 transition-colors"
               aria-label="ICS"
             >
               {icsUrl ? (

@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/table";
 import {
   ActivityStatus,
+  isTechnicalId,
+  TECHNICAL_VALUE_CLASS,
 } from "@/components/activity-table/activity-table";
 import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -127,7 +129,7 @@ export default function AuditLogView({
 
   function exportPdf() {
     const lines = [
-      "AuditFlow Audit Log",
+      "AuditFlow audit log",
       `Filter: ${typeFilter}`,
       `Pass rate: ${passRate}% · Fail rate: ${failRate}%`,
       "",
@@ -226,7 +228,7 @@ export default function AuditLogView({
               </TableHeader>
               <TableBody>
                 {rows.length === 0 ? (
-                  <TableRow className="hover:bg-transparent">
+                  <TableRow className="hover:bg-neutral-50">
                     <TableCell
                       colSpan={6}
                       className="max-w-none whitespace-normal px-4 py-4 text-muted-foreground"
@@ -237,18 +239,29 @@ export default function AuditLogView({
                   </TableRow>
                 ) : (
                   rows.map((row) => (
-                  <TableRow key={row.id} className="hover:bg-transparent">
+                  <TableRow key={row.id} className="hover:bg-neutral-50">
                     <TableCell className="px-4">
-                      <TruncatedText text={row.document} />
+                      <TruncatedText
+                        className={cn(
+                          isTechnicalId(row.document) && TECHNICAL_VALUE_CLASS,
+                        )}
+                        text={row.document}
+                      />
                     </TableCell>
                     <TableCell>
                       <TruncatedText text={row.type} />
                     </TableCell>
                     <TableCell>
-                      <TruncatedText text={row.date} />
+                      <TruncatedText
+                        className={TECHNICAL_VALUE_CLASS}
+                        text={row.date}
+                      />
                     </TableCell>
                     <TableCell>
-                      <TruncatedText text={String(row.score)} />
+                      <TruncatedText
+                        className={TECHNICAL_VALUE_CLASS}
+                        text={String(row.score)}
+                      />
                     </TableCell>
                     <TableCell>
                       <TruncatedText text={row.auditor} />

@@ -39,8 +39,8 @@ const SelectStep = React.memo(function SelectStep({
                 className={cn(
                   "rounded-sm px-2.5 py-1 transition-colors text-[length:var(--text-button-size)] leading-[var(--line-height-button)] font-[var(--font-weight-button)] border",
                   timeFormat === "12h"
-                    ? "border border-border dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] bg-muted dark:bg-[oklch(26%_0.01_264)] color:bg-[oklch(38%_0.035_165)] text-foreground dark:text-white color:text-white"
-                    : "bg-transparent text-[oklch(55%_0_0)] border-transparent hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)]"
+                    ? "border border-border dark:border-[oklch(30%_0_0)] color:border-[oklch(44%_0_0)] bg-muted dark:bg-[oklch(26%_0_0)] color:bg-[oklch(38%_0_0)] text-foreground dark:text-white color:text-white"
+                    : "bg-transparent text-neutral-500 border-transparent hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50"
                 )}
               >
                 12h
@@ -50,8 +50,8 @@ const SelectStep = React.memo(function SelectStep({
                 className={cn(
                   "rounded-sm px-2.5 py-1 transition-colors text-[length:var(--text-button-size)] leading-[var(--line-height-button)] font-[var(--font-weight-button)] border",
                   timeFormat === "24h"
-                    ? "border border-border dark:border-[oklch(30%_0.01_264)] color:border-[oklch(44%_0.035_165)] bg-muted dark:bg-[oklch(26%_0.01_264)] color:bg-[oklch(38%_0.035_165)] text-foreground dark:text-white color:text-white"
-                    : "bg-transparent text-[oklch(55%_0_0)] border-transparent hover:bg-[oklch(92%_0_0)] dark:hover:bg-[oklch(30%_0.01_264)] color:hover:bg-[oklch(48%_0.035_165)]"
+                    ? "border border-border dark:border-[oklch(30%_0_0)] color:border-[oklch(44%_0_0)] bg-muted dark:bg-[oklch(26%_0_0)] color:bg-[oklch(38%_0_0)] text-foreground dark:text-white color:text-white"
+                    : "bg-transparent text-neutral-500 border-transparent hover:bg-neutral-50 dark:hover:bg-neutral-50 color:hover:bg-neutral-50"
                 )}
               >
                 24h
@@ -60,7 +60,7 @@ const SelectStep = React.memo(function SelectStep({
           </div>
         </Tabs>
       </div>
-      <span className="text-subtitle2 font-medium text-foreground dark:text-white color:text-white mt-1.5 mb-5 shrink-0 block w-full text-center">Time Slot</span>
+      <span className="text-subtitle2 font-medium text-foreground dark:text-white color:text-white mt-1.5 mb-5 shrink-0 block w-full text-center">Time slot</span>
       <div className="-mt-3 flex flex-col overflow-y-auto min-w-0 flex-1 min-h-0 lg:max-h-[272px]" data-slot="scheduling-time-slots">
         <div className="flex flex-col gap-2 pt-0 pb-4 lg:pb-4">
           {slots.map(({ value, label }) => (

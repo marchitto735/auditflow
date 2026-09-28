@@ -7,9 +7,9 @@ export const DOCUMENT_TYPES = [
   "BPR",
   "FIR",
   "Policy",
-  "Work Instruction",
+  "Work instruction",
   "Form",
-  "Training Record",
+  "Training record",
 ] as const;
 
 export type DocumentType = (typeof DOCUMENT_TYPES)[number];
@@ -29,32 +29,32 @@ export const AUDIT_WORKFLOWS: Record<AuditWorkflowId, AuditWorkflow> = {
   sop: {
     id: "sop",
     label: "SOP",
-    title: "SOP Audit",
-    description: "Standard Operating Procedure",
+    title: "SOP audit",
+    description: "Standard operating procedure",
     href: "/audit/sop",
     status: "Active",
     lastRun: "10m ago",
-    cta: "Launch SOP Audit",
+    cta: "Launch SOP audit",
   },
   bpr: {
     id: "bpr",
     label: "BPR",
-    title: "BPR Audit",
-    description: "Batch Production Record",
+    title: "BPR audit",
+    description: "Batch production record",
     href: "/audit/bpr",
     status: "Ready",
     lastRun: "2h ago",
-    cta: "Launch BPR Audit",
+    cta: "Launch BPR audit",
   },
   fir: {
     id: "fir",
     label: "FIR",
-    title: "FIR Audit",
-    description: "Facility Inspection Report",
+    title: "FIR audit",
+    description: "Facility inspection report",
     href: "/audit/fir",
     status: "Draft",
     lastRun: "—",
-    cta: "Launch FIR Audit",
+    cta: "Launch FIR audit",
   },
 };
 

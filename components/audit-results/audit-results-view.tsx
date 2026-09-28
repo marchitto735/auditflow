@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { X } from "lucide-react";
 import SectionHeader from "@/components/section-header/section-header";
 import { AuditReportTable } from "@/components/audit-report/audit-report-table";
-import { useCart } from "@/components/cart/cart-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { getAuditFramework } from "@/lib/audit-frameworks";
@@ -14,7 +13,6 @@ import {
   getAuditWorkflow,
   type AuditWorkflowId,
 } from "@/lib/audit-workflows";
-import { goldStandardCatalogItem } from "@/lib/cart";
 import { getGmpClause } from "@/lib/gmp-clauses";
 import {
   formatSopReportDownload,
@@ -32,6 +30,7 @@ function buildInitializedReport(input: {
   workflowLabel: string;
   documentName: string;
   strictness: number;
+  createdAt: string | null;
 }): SopAuditReport {
   const primary = getGmpClause(input.clauseIds[0]);
   const clauseCount = Math.max(input.clauseIds.length, 1);
@@ -65,17 +64,20 @@ function buildInitializedReport(input: {
     recommendation:
       status === "Pass"
         ? "Proceed with CAPA closure for minor documentation gaps and archive this report for the next certification cycle."
-        : "Prioritize remediation on the listed clause gaps, then re-run Initialize Audit Analysis with the updated controlled document.",
+        : "Prioritize remediation on the listed clause gaps, then re-run audit analysis with the updated controlled document.",
     findings,
-    created_at: new Date().toISOString(),
+    created_at: input.createdAt,
   };
 }
 
 export default function AuditResultsView() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { addItem } = useCart();
-  const [addedToCart, setAddedToCart] = React.useState(false);
+  const [createdAt, setCreatedAt] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    setCreatedAt(new Date().toISOString());
+  }, []);
 
   const workflowId = resolveWorkflowId(searchParams.get("workflow"));
   const workflow = AUDIT_WORKFLOWS[workflowId];
@@ -102,8 +104,9 @@ export default function AuditResultsView() {
         workflowLabel: workflow.label,
         documentName,
         strictness: Number.isFinite(strictness) ? strictness : 50,
+        createdAt,
       }),
-    [clauseIds, documentName, framework?.label, strictness, workflow.label],
+    [clauseIds, createdAt, documentName, framework?.label, strictness, workflow.label],
   );
 
   const primaryClause = getGmpClause(report.clause_id);
@@ -114,9 +117,7 @@ export default function AuditResultsView() {
         ? `${primaryClause.label} (${primaryClause.shortName})`
         : `Clause ${report.clause_id}`;
 
-  const timestamp = report.created_at
-    ? new Date(report.created_at)
-    : new Date();
+  const timestamp = createdAt ? new Date(createdAt) : null;
 
   function downloadReport() {
     const body = formatSopReportDownload(report, documentName);
@@ -129,21 +130,15 @@ export default function AuditResultsView() {
     URL.revokeObjectURL(url);
   }
 
-  function upgradeDocument() {
-    addItem(goldStandardCatalogItem(primaryClause, workflow.label));
-    setAddedToCart(true);
-    window.setTimeout(() => setAddedToCart(false), 1600);
-  }
-
   return (
     <div className="w-full min-w-0">
       <SectionHeader
-        title="Audit Report"
+        title="Audit report"
         description="Review your compliance breakdown and instantly resolve vulnerabilities by upgrading to a fully compliant document version."
         actions={
           <button
             type="button"
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/audits")}
             className="flex size-9 shrink-0 items-center justify-center rounded-sm bg-transparent text-foreground hover:bg-[var(--sidebar-hover)]"
             aria-label="Close report"
           >
@@ -162,37 +157,20 @@ export default function AuditResultsView() {
               clauseLabel={clauseLabel}
               timestamp={timestamp}
               onDownloadReport={downloadReport}
-              onRerunAudit={() => router.push("/")}
+              onRerunAudit={() => router.push("/audits")}
             />
           </CardContent>
-          <CardFooter className="flex w-full justify-end px-4 pt-4 pb-4">
+          <CardFooter className="flex w-full items-center justify-end gap-2 px-4 pt-4 pb-4">
             <Button
               type="button"
               variant="black"
               className="text-button"
-              onClick={downloadReport}
+              onClick={() => router.push("/audit/remediate")}
             >
-              Download Report
+              Start compliance validation
             </Button>
           </CardFooter>
         </Card>
-      </div>
-
-      <div className="relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-zinc-200 bg-white px-4 py-4 shadow-none transition-all duration-200 ease-in-out hover:border-zinc-300 hover:shadow-sm">
-        <div
-          aria-hidden
-          className="absolute inset-y-0 left-0 w-1.5 rounded-l-2xl bg-zinc-800"
-        />
-        <p className="m-0 text-center text-[14px] leading-5 text-black">
-          Resolve findings by uploading revised documentation.{" "}
-          <button
-            type="button"
-            className="inline text-[14px] leading-5 font-medium text-black underline decoration-solid underline-offset-2 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800 focus-visible:ring-offset-2"
-            onClick={upgradeDocument}
-          >
-            {addedToCart ? "Added to cart" : "Upgrade documentation"}
-          </button>
-        </p>
       </div>
     </div>
   );

@@ -17,8 +17,6 @@ import {
   type CartCatalogItem,
   type CartLineItem,
 } from "@/lib/cart";
-import CartDrawer from "@/components/cart/cart-drawer";
-
 type CartView = "cart" | "checkout" | "success";
 
 type CartContextValue = {
@@ -150,10 +148,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <CartContext.Provider value={value}>
-      {children}
-      <CartDrawer />
-    </CartContext.Provider>
+    <CartContext.Provider value={value}>{children}</CartContext.Provider>
   );
 }
 

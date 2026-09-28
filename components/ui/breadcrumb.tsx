@@ -12,7 +12,7 @@ function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
     <ol
       data-slot="breadcrumb-list"
       className={cn(
-        "flex flex-wrap items-center gap-1.5 text-sm break-words text-black sm:gap-2.5",
+        "flex flex-wrap items-center gap-1.5 text-sm break-words text-neutral-900 sm:gap-2.5",
         className
       )}
       {...props}
@@ -42,7 +42,10 @@ function BreadcrumbLink({
   return (
     <Comp
       data-slot="breadcrumb-link"
-      className={cn("transition-colors hover:text-foreground", className)}
+      className={cn(
+        "text-neutral-500 no-underline transition-colors hover:text-neutral-900 hover:no-underline",
+        className,
+      )}
       {...props}
     />
   )
@@ -52,10 +55,11 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
   return (
     <span
       data-slot="breadcrumb-page"
-      role="link"
-      aria-disabled="true"
       aria-current="page"
-      className={cn("font-normal text-foreground", className)}
+      className={cn(
+        "cursor-default font-medium text-neutral-900 pointer-events-none select-none",
+        className,
+      )}
       {...props}
     />
   )
@@ -71,7 +75,7 @@ function BreadcrumbSeparator({
       data-slot="breadcrumb-separator"
       role="presentation"
       aria-hidden="true"
-      className={cn("[&>svg]:size-3.5", className)}
+      className={cn("text-neutral-400 [&>svg]:size-3.5", className)}
       {...props}
     >
       {children ?? <ChevronRight />}

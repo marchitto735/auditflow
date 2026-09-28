@@ -1,42 +1,27 @@
-import KpiCards from "@/components/dashboard/kpi-cards";
-import RecentActivity from "@/components/dashboard/recent-activity";
-import AuditLauncher from "@/components/dashboard/audit-launcher";
+import DashboardGrid from "@/components/dashboard/DashboardGrid";
 import SectionHeader from "@/components/section-header/section-header";
-import type { ActivityRow } from "@/components/activity-table/activity-table";
-import { DASHBOARD_SECTION_GAP_CLASS, PAGE_CONTENT_TOP_CLASS, PAGE_GUTTER_CLASS, PAGE_INNER_CLASS } from "@/lib/page-layout";
+import {
+  PAGE_CONTENT_TOP_CLASS,
+  PAGE_GUTTER_CLASS,
+  PAGE_INNER_CLASS,
+} from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
-export default function Dashboard({
-  activityRows = [],
-}: {
-  activityRows?: ActivityRow[];
-}) {
+export default function Dashboard() {
   return (
-    <section className={cn(PAGE_GUTTER_CLASS, PAGE_CONTENT_TOP_CLASS, "pb-4")}>
-      <div className={cn(PAGE_INNER_CLASS, "flex flex-col", DASHBOARD_SECTION_GAP_CLASS)}>
-        <div>
-          <SectionHeader
-            title="Compliance Snapshot"
-            description="Performance metrics across active audits, findings, and compliance scores."
-          />
-          <KpiCards />
-        </div>
-
-        <div>
-          <SectionHeader
-            title="Audit Launcher"
-            description="Launch an SOP, BPR, or FIR audit, choose a regulatory clause, get your report."
-          />
-          <AuditLauncher />
-        </div>
-
-        <div>
-          <SectionHeader
-            title="Recent Activity"
-            description="Review recent SOP, BPR, and FIR audits, scores, and compliance status."
-          />
-          <RecentActivity rows={activityRows} />
-        </div>
+    <section
+      className={cn(
+        PAGE_GUTTER_CLASS,
+        PAGE_CONTENT_TOP_CLASS,
+        "flex min-h-0 w-full flex-1 flex-col",
+      )}
+    >
+      <div className={cn(PAGE_INNER_CLASS, "flex w-full min-w-0 flex-col")}>
+        <SectionHeader
+          title="Dashboard"
+          description="Live compliance telemetry, pipeline status, and operational oversight."
+        />
+        <DashboardGrid />
       </div>
     </section>
   );

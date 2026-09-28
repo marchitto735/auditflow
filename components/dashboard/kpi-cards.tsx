@@ -1,270 +1,209 @@
 "use client";
 
-import type { ReactNode } from "react";
-import { useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ChevronRight } from "lucide-react";
-import {
-  Bar,
-  BarChart,
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-} from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
+import { TrendSparkline } from "@/components/dashboard/audit-launcher";
 import {
-  CHART,
-  CHART_GEOMETRY,
-  scoreSeriesColor,
-  severityFill,
+  workflowStatusDotClass,
+  workflowStatusSparkClass,
 } from "@/lib/chart-tokens";
 import {
+  AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
   CARD_CONTENT_CLASS,
-  CARD_CTA_ARROW_CLASS,
-  CARD_CTA_CLASS,
-  CARD_EYEBROW_CLASS,
-  CARD_FOOTER_CLASS,
-  DASHBOARD_GAP_CLASS,
-  INTERACTIVE_CARD_CLASS,
-  KPI_VALUE_CLASS,
+  CARD_CORNER_LABEL_CLASS,
+  CARD_EYEBROW_MUTED_CLASS,
+  CARD_TITLE_CLASS,
+  DASHBOARD_CARD_CLASS,
+  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
 } from "@/lib/page-layout";
+import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
 
-const AUDIT_THRESHOLD = 20;
-const AVG_SCORE = 88;
-const AUDITS_HREF = "/dashboard/audits";
+const METRIC_VALUE_CLASS = "font-sans tabular-nums";
 
 const CARD_CLASS = cn(
-  INTERACTIVE_CARD_CLASS,
-  "group flex h-full flex-col text-inherit no-underline",
+  DASHBOARD_CARD_CLASS,
+  AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
+  "flex w-full min-w-0 flex-col overflow-hidden",
 );
 
-function KpiCard({
-  href,
-  cta,
-  children,
-}: {
-  href: string;
-  cta: string;
-  children: ReactNode;
-}) {
-  const router = useRouter();
+type KpiCardData = {
+  id: string;
+  eyebrow: string;
+  code: string;
+  metric: string;
+  trend: number[];
+  status: string;
+  lastRun: string;
+  volume: string;
+  delta: string;
+  hit: string;
+  throughput: string;
+};
 
+const KPI_CARDS: readonly KpiCardData[] = [
+  {
+    id: "total-audits",
+    eyebrow: "Total audits",
+    code: "YTD",
+    metric: "142",
+    trend: [118, 124, 129, 134, 138, 140, 142],
+    status: "Synced",
+    lastRun: "10m ago",
+    volume: "142",
+    delta: "+4%",
+    hit: "118%",
+    throughput: "4.8 audits/day",
+  },
+  {
+    id: "open-findings",
+    eyebrow: "Open findings",
+    code: "ALL",
+    metric: "8",
+    trend: [11, 10, 9, 10, 8, 9, 8],
+    status: "Flagged",
+    lastRun: "22m ago",
+    volume: "8",
+    delta: "-2",
+    hit: "62%",
+    throughput: "1.1 closed/day",
+  },
+  {
+    id: "average-score",
+    eyebrow: "Average score",
+    code: "AVG",
+    metric: "88%",
+    trend: [84, 85, 86, 87, 86, 88, 88],
+    status: "Verified",
+    lastRun: "1h ago",
+    volume: "142",
+    delta: "+1.2",
+    hit: "85%",
+    throughput: "~1.2s/doc",
+  },
+];
+
+/** Single KPI telemetry card — used in the dashboard primary KPI row. */
+export function KpiCard({ card }: { card: KpiCardData }) {
   return (
-    <Link
-      href={href}
-      prefetch
-      className={CARD_CLASS}
-      onMouseEnter={() => router.prefetch(href)}
-      onFocus={() => router.prefetch(href)}
-    >
-      <Card className="h-full border-0 bg-transparent shadow-none">
-        <CardContent className={CARD_CONTENT_CLASS}>
-          {children}
-          <div className={CARD_FOOTER_CLASS}>
-            <span className={CARD_CTA_CLASS}>
-              <span>{cta}</span>
-              <ChevronRight className={CARD_CTA_ARROW_CLASS} aria-hidden />
+    <div data-kpi-card={card.id} className={CARD_CLASS}>
+      <Card className="flex h-auto w-full min-h-0 min-w-0 flex-col border-0 bg-transparent shadow-none">
+        <CardContent
+          className={cn(
+            CARD_CONTENT_CLASS,
+            "flex h-auto w-full min-h-0 min-w-0 flex-col gap-3 overflow-hidden px-4 pt-4 pb-[16px] text-left",
+          )}
+        >
+          <div className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 sm:gap-x-3">
+            <div className="flex min-w-0 flex-col gap-2 overflow-hidden">
+              <p
+                className={cn(
+                  CARD_EYEBROW_MUTED_CLASS,
+                  "min-w-0 max-w-full truncate",
+                )}
+              >
+                {card.eyebrow}
+              </p>
+              <h3
+                className={cn(
+                  CARD_TITLE_CLASS,
+                  METRIC_VALUE_CLASS,
+                  "m-0 max-w-full break-words text-pretty text-neutral-900",
+                )}
+              >
+                {card.metric}
+              </h3>
+            </div>
+            <div className="flex w-[3.75rem] max-w-full shrink-0 flex-col items-center justify-start gap-1 sm:w-[4.75rem]">
+              <TrendSparkline
+                values={card.trend}
+                label={`${card.eyebrow} trend`}
+                className={cn(
+                  "max-w-full",
+                  workflowStatusSparkClass(card.status),
+                )}
+              />
+              <p
+                className={CARD_CORNER_LABEL_CLASS}
+                aria-label={`${card.eyebrow} scope ${card.code}`}
+              >
+                {card.code}
+              </p>
+            </div>
+          </div>
+
+          <p
+            className="text-body1 m-0 flex min-w-0 flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-neutral-900"
+            aria-label={`${card.eyebrow} status ${card.status}, last run ${card.lastRun}`}
+          >
+            <span
+              className={cn(
+                "size-2 shrink-0 rounded-full",
+                workflowStatusDotClass(card.status),
+              )}
+              aria-hidden
+            />
+            <span className="shrink-0 font-normal text-foreground">
+              {toSentenceCase(card.status)}
             </span>
+            <span className="shrink-0 text-neutral-900" aria-hidden>
+              •
+            </span>
+            <span className="min-w-0 break-words text-neutral-900">
+              Last run {card.lastRun}
+            </span>
+          </p>
+
+          <div
+            className="mt-auto flex min-w-0 flex-wrap items-end justify-between gap-x-3 gap-y-1"
+            aria-label={`${card.eyebrow} operational metrics`}
+          >
+            <div className="flex min-w-0 flex-1 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-neutral-900">
+              <span className="shrink-0 whitespace-nowrap">
+                <span className="text-neutral-900">Vol</span>{" "}
+                <span className="font-medium text-neutral-900">{card.volume}</span>
+              </span>
+              <span className="shrink-0 text-neutral-900" aria-hidden>
+                ·
+              </span>
+              <span className="shrink-0 whitespace-nowrap">
+                <span className="text-neutral-900">Δ</span>{" "}
+                <span className="font-medium text-neutral-900">{card.delta}</span>
+              </span>
+              <span className="shrink-0 text-neutral-900" aria-hidden>
+                ·
+              </span>
+              <span className="shrink-0 whitespace-nowrap">
+                <span className="text-neutral-900">Hit</span>{" "}
+                <span className="font-medium text-neutral-900">{card.hit}</span>
+              </span>
+            </div>
+            <p
+              className="m-0 max-w-full shrink-0 text-right text-xs font-medium tabular-nums tracking-wider break-words text-muted-foreground"
+              aria-label={`${card.eyebrow} throughput ${card.throughput}`}
+            >
+              {card.throughput}
+            </p>
           </div>
         </CardContent>
       </Card>
-    </Link>
-  );
-}
-
-const AUDIT_VOLUME = [
-  { day: "Mon", audits: 16 },
-  { day: "Tue", audits: 22 },
-  { day: "Wed", audits: 19 },
-  { day: "Thu", audits: 28 },
-  { day: "Fri", audits: 24 },
-  { day: "Sat", audits: 12 },
-  { day: "Sun", audits: 21 },
-];
-
-const FINDINGS_BY_SEVERITY = [
-  { name: "Critical" as const, value: 2 },
-  { name: "High" as const, value: 3 },
-  { name: "Medium" as const, value: 2 },
-  { name: "Low" as const, value: 1 },
-].map((entry) => ({
-  ...entry,
-  color: severityFill(entry.name),
-}));
-
-const FINDINGS_TOTAL = FINDINGS_BY_SEVERITY.reduce(
-  (sum, item) => sum + item.value,
-  0,
-);
-
-function TotalAuditsChart() {
-  return (
-    <div
-      className="pointer-events-none h-12 w-full outline-none [&_*]:outline-none"
-      aria-hidden
-    >
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={AUDIT_VOLUME}
-          margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-          barCategoryGap={CHART_GEOMETRY.barCategoryGap}
-          style={{ outline: "none" }}
-        >
-          <Bar
-            dataKey="audits"
-            radius={CHART_GEOMETRY.barRadius}
-            maxBarSize={CHART_GEOMETRY.barMaxSize}
-            background={{ fill: CHART.track }}
-            isAnimationActive={false}
-          >
-            {AUDIT_VOLUME.map((entry) => (
-              <Cell
-                key={entry.day}
-                fill={
-                  entry.audits >= AUDIT_THRESHOLD
-                    ? CHART.structural
-                    : CHART.structuralMuted
-                }
-              />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
     </div>
   );
 }
 
-function OpenFindingsChart() {
-  const outer = 40;
-  const inner = outer - CHART_GEOMETRY.stroke;
-
+/** Status KPI strip — same compact telemetry anatomy as audit launcher cards. */
+export default function KpiCards({ className }: { className?: string }) {
   return (
     <div
-      className="pointer-events-none relative mx-auto size-[84px] outline-none [&_*]:outline-none"
-      aria-hidden
+      className={cn(DASHBOARD_TRIPLE_CARD_GRID_CLASS, "items-stretch", className)}
     >
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart style={{ outline: "none" }}>
-          <Pie
-            data={FINDINGS_BY_SEVERITY}
-            dataKey="value"
-            nameKey="name"
-            innerRadius={inner}
-            outerRadius={outer}
-            stroke="none"
-            paddingAngle={2}
-            startAngle={90}
-            endAngle={-270}
-            isAnimationActive={false}
-          >
-            {FINDINGS_BY_SEVERITY.map((entry) => (
-              <Cell key={entry.name} fill={entry.color} />
-            ))}
-          </Pie>
-        </PieChart>
-      </ResponsiveContainer>
-      <p
-        className={cn(
-          KPI_VALUE_CLASS,
-          "pointer-events-none absolute inset-0 m-0 flex items-center justify-center leading-none",
-        )}
-      >
-        {FINDINGS_TOTAL}
-      </p>
+      {KPI_CARDS.map((card) => (
+        <KpiCard key={card.id} card={card} />
+      ))}
     </div>
   );
 }
 
-function AvgScoreGauge() {
-  const remainder = 100 - AVG_SCORE;
-  const fill = scoreSeriesColor(AVG_SCORE);
-  const data = [
-    { name: "score", value: AVG_SCORE },
-    { name: "rest", value: remainder },
-  ];
-  const outer = 52;
-  const inner = outer - CHART_GEOMETRY.stroke;
-
-  return (
-    <div
-      className="pointer-events-none relative mx-auto h-[84px] w-[148px] outline-none [&_*]:outline-none"
-      aria-hidden
-    >
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart style={{ outline: "none" }}>
-          <Pie
-            data={data}
-            dataKey="value"
-            startAngle={180}
-            endAngle={0}
-            innerRadius={inner}
-            outerRadius={outer}
-            stroke="none"
-            paddingAngle={0}
-            cx="50%"
-            cy="94%"
-            isAnimationActive={false}
-          >
-            <Cell fill={fill} />
-            <Cell fill={CHART.track} />
-          </Pie>
-        </PieChart>
-      </ResponsiveContainer>
-      {/* Sit in the open bowl of the semicircle — optically centered in the ring */}
-      <p
-        className={cn(
-          KPI_VALUE_CLASS,
-          "pointer-events-none absolute inset-x-0 bottom-[18%] m-0 text-center leading-none",
-        )}
-      >
-        {AVG_SCORE}%
-      </p>
-    </div>
-  );
-}
-
-export default function KpiCards() {
-  const router = useRouter();
-
-  // Warm the Audit Log route as soon as the dashboard paints so click lands ready.
-  useEffect(() => {
-    router.prefetch(AUDITS_HREF);
-  }, [router]);
-
-  return (
-    <div
-      className={cn(
-        "grid grid-cols-1 items-stretch md:grid-cols-3",
-        DASHBOARD_GAP_CLASS,
-      )}
-    >
-      <KpiCard href={AUDITS_HREF} cta="View Audit Log">
-        <p className={CARD_EYEBROW_CLASS}>Total Audits</p>
-        <p className={cn(KPI_VALUE_CLASS, "m-0")}>142</p>
-        <div className="flex min-h-0 flex-1 flex-col justify-center">
-          <TotalAuditsChart />
-        </div>
-        <p className="text-body1 m-0 shrink-0 text-black">+4% this week</p>
-      </KpiCard>
-
-      <KpiCard href="/dashboard/findings" cta="Inspect Findings">
-        <p className={CARD_EYEBROW_CLASS}>Open Findings</p>
-        <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
-          <OpenFindingsChart />
-        </div>
-        <p className="text-body1 m-0 shrink-0 text-black">−2 this week</p>
-      </KpiCard>
-
-      <KpiCard href="/dashboard/score-analysis" cta="Score Breakdown">
-        <p className={CARD_EYEBROW_CLASS}>Average Score</p>
-        <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
-          <AvgScoreGauge />
-        </div>
-        <p className="text-body1 m-0 shrink-0 text-black">+1.2 pts this week</p>
-      </KpiCard>
-    </div>
-  );
+/** KPI cards without a grid wrapper — compose into a parent telemetry grid. */
+export function KpiCardItems() {
+  return KPI_CARDS.map((card) => <KpiCard key={card.id} card={card} />);
 }

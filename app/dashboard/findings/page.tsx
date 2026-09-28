@@ -4,7 +4,7 @@ import FindingsView from "@/components/dashboard/findings-view";
 export default function FindingsPage() {
   return (
     <DashboardPageShell
-      title="Open Findings"
+      title="Open findings"
       description="Triage findings by severity, track remediation status, and log a CAPA with an assigned owner."
     >
       <FindingsView />

@@ -1,48 +1,93 @@
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import { Slot } from "radix-ui"
 
-const badgeVariants = cva(
-  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-sm border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3",
-  {
-    variants: {
-      variant: {
-        default:
-          "bg-black text-white [a&]:hover:bg-neutral-900",
-        secondary:
-          "bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
-        destructive:
-          "bg-destructive text-white focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40 [a&]:hover:bg-destructive/90",
-        outline:
-          "border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
-        ghost: "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 [a&]:hover:underline",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
+/**
+ * Universal status indicator — borderless dot + label (KPI-card style).
+ * No pill chrome, fills, pulse, or glow.
+ */
+export type BadgeTone = "success" | "warning" | "danger" | "neutral"
+
+const TONE_DOT: Record<BadgeTone, string> = {
+  success: "bg-emerald-600",
+  warning: "bg-amber-500",
+  danger: "bg-rose-600",
+  neutral: "bg-zinc-400",
+}
+
+/** @deprecated Prefer `tone`. Kept so existing call sites keep compiling. */
+export type BadgeVariant =
+  | "default"
+  | "success"
+  | "warning"
+  | "destructive"
+  | "outline"
+  | "success-outline"
+
+function toneFromVariant(variant: BadgeVariant | null | undefined): BadgeTone {
+  switch (variant) {
+    case "success":
+    case "success-outline":
+    case "default":
+      return "success"
+    case "warning":
+      return "warning"
+    case "destructive":
+      return "danger"
+    case "outline":
+    default:
+      return "neutral"
   }
+}
+
+const BADGE_SHELL_CLASS =
+  "inline-flex w-fit shrink-0 items-center gap-1.5 overflow-visible border-0 bg-transparent p-0 leading-none text-base font-normal whitespace-nowrap text-foreground shadow-none [&>svg]:pointer-events-none [&>svg]:size-3"
+
+/** @deprecated Shell is universal; kept for typed helpers that imported cva variants. */
+const badgeVariants = Object.assign(
+  () => BADGE_SHELL_CLASS,
+  { raw: BADGE_SHELL_CLASS },
 )
 
 function Badge({
   className,
-  variant = "default",
+  tone,
+  variant = "outline",
+  showDot = true,
   asChild = false,
+  children,
   ...props
-}: React.ComponentProps<"span"> &
-  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+}: React.ComponentProps<"span"> & {
+  asChild?: boolean
+  /** Semantic indicator tone — preferred over legacy `variant`. */
+  tone?: BadgeTone
+  /** Legacy alias mapped onto `tone`. */
+  variant?: BadgeVariant
+  /** When false, omit the leading status dot (e.g. cart count). */
+  showDot?: boolean
+}) {
   const Comp = asChild ? Slot.Root : "span"
+  const resolvedTone = tone ?? toneFromVariant(variant)
 
   return (
     <Comp
       data-slot="badge"
-      data-variant={variant}
-      className={cn(badgeVariants({ variant }), className)}
+      data-tone={resolvedTone}
+      className={cn(BADGE_SHELL_CLASS, className)}
       {...props}
-    />
+    >
+      {showDot ? (
+        <span
+          className={cn(
+            "size-2 shrink-0 self-center rounded-full",
+            TONE_DOT[resolvedTone],
+          )}
+          aria-hidden
+        />
+      ) : null}
+      {children}
+    </Comp>
   )
 }
 
-export { Badge, badgeVariants }
+export { Badge, badgeVariants, TONE_DOT, toneFromVariant }

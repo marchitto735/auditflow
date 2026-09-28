@@ -18,7 +18,7 @@ export default function TestPage() {
       <button
         type="button"
         onClick={pingReports}
-        className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white"
+        className="rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground"
       >
         Load stored reports
       </button>

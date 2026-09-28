@@ -23,7 +23,6 @@ import {
 import {
   ActivityStatus,
   activityStatusLabel,
-  statusBadgeClass,
 } from "@/components/activity-table/activity-table";
 import {
   Tooltip,
@@ -35,14 +34,14 @@ import type { SopAuditReport } from "@/lib/sop-report";
 import { NAV_UTILITY_BUTTON_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
-export { statusBadgeClass };
+export { ActivityStatus };
 
 type AuditReportTableProps = {
   report: SopAuditReport | null;
   fileName: string;
   documentType: string;
   clauseLabel: string;
-  timestamp: Date;
+  timestamp: Date | null;
   onDownloadReport?: () => void;
   onRerunAudit?: () => void;
 };
@@ -55,7 +54,7 @@ const REPORT_GRID_CLASS = cn(
 const META_FIELD_CLASS = "flex min-w-0 flex-col gap-2";
 const META_VALUE_CLASS = "text-body1 text-foreground";
 const ACTION_ITEM_CLASS =
-  "cursor-pointer gap-2 text-sm hover:bg-slate-100 focus:bg-slate-100";
+  "cursor-pointer gap-2 text-sm hover:bg-neutral-50 focus:bg-neutral-100";
 
 function HeaderLabel({
   label,
@@ -144,20 +143,20 @@ function AuditReportActionsMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="min-w-[13rem] rounded-2xl border border-slate-200 bg-white p-1 shadow-lg"
+        className="min-w-[13rem] rounded-2xl border border-neutral-200 bg-white p-1 shadow-lg"
       >
         <DropdownMenuItem
           className={ACTION_ITEM_CLASS}
           onSelect={() => onDownloadReport?.()}
         >
           <Download className="size-4" />
-          Download Report
+          Download report
         </DropdownMenuItem>
         <DropdownMenuItem className={ACTION_ITEM_CLASS} onSelect={copyAuditId}>
           <Copy className="size-4" />
-          Copy Audit ID
+          Copy audit ID
         </DropdownMenuItem>
-        <DropdownMenuSeparator className="bg-slate-200" />
+        <DropdownMenuSeparator className="bg-zinc-200" />
         <DropdownMenuItem
           className={ACTION_ITEM_CLASS}
           onSelect={() => onRerunAudit?.()}
@@ -181,7 +180,7 @@ export function AuditReportTable({
 }: AuditReportTableProps) {
   const [detailsOpen, setDetailsOpen] = useState(false);
 
-  const date = timestamp.toLocaleString();
+  const date = timestamp ? timestamp.toLocaleString() : "—";
   const score = report?.score != null ? String(report.score) : "—";
   const status = activityStatusLabel(report?.status);
   const auditId = report?.clause_id
@@ -197,7 +196,7 @@ export function AuditReportTable({
   return (
     <TooltipProvider delayDuration={0}>
       <div className="min-w-0 w-full">
-        <div className="relative border-b border-border bg-muted px-4 pt-4 pb-4">
+        <div className="relative border-b border-border bg-white px-4 pt-4 pb-4">
           <div className="absolute top-4 right-4 z-10">
             <AuditReportActionsMenu
               auditId={auditId}
@@ -255,9 +254,9 @@ export function AuditReportTable({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="inline-flex w-fit cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-medium text-slate-900 transition-colors hover:opacity-70"
+                className="inline-flex w-fit cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-medium text-primary transition-colors hover:text-[var(--primary-hover)] hover:underline"
               >
-                Compliance Breakdown
+                Compliance breakdown
                 <ChevronDown
                   className={cn(
                     "size-4 shrink-0 transition-transform duration-300",

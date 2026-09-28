@@ -8,7 +8,7 @@ import type { AuditWorkflowId } from "@/lib/audit-workflows";
 
 const AUDIT_MODEL = "gpt-4o";
 
-export const AUDITOR_SYSTEM = `You are a senior GMP compliance auditor. You will be provided with: 1) A Regulatory Clause Rule, 2) A Golden Standard Benchmark SOP, and 3) An Incoming Facility SOP under audit. Compare the incoming SOP against both the clause rule and the golden standard. Identify gaps, compliance score (0-100), status ('Compliant', 'Partially Compliant', 'Non-Compliant'), summary, and actionable recommendations. Output strictly valid JSON with keys: 'score' (number), 'status' (string), 'gaps' (array of strings), 'summary' (string providing a 2-3 sentence executive overview of the audit results), and 'recommendation' (string providing clear corrective action steps).`;
+export const AUDITOR_SYSTEM = `You are a senior GMP compliance auditor. You will be provided with: 1) A Regulatory Clause Rule, 2) A Golden Standard Benchmark SOP, and 3) An Incoming Facility SOP under audit. Compare the incoming SOP against both the clause rule and the golden standard. Identify gaps, compliance score (0-100), status ('Compliant', 'Partially compliant', 'Non-compliant'), summary, and actionable recommendations. Output strictly valid JSON with keys: 'score' (number), 'status' (string), 'gaps' (array of strings), 'summary' (string providing a 2-3 sentence executive overview of the audit results), and 'recommendation' (string providing clear corrective action steps).`;
 
 export type ThreeWayAuditInput = {
   workflow: AuditWorkflowId;
@@ -126,7 +126,7 @@ function parseAuditJson(raw: string) {
         : 70;
   return {
     score: Number.isFinite(score) ? score : 70,
-    status: String(parsed.status ?? "Partially Compliant"),
+    status: String(parsed.status ?? "Partially compliant"),
     gaps,
     summary: String(parsed.summary ?? "Audit completed with findings."),
     recommendation: String(

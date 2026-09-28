@@ -30,9 +30,9 @@ export const AUDIT_FRAMEWORKS: AuditFramework[] = [
     keywords: ["iso", "9001", "2015", "qms", "quality"],
     matches: (clause) =>
       sectionIncludes(clause, [
-        "Quality Management",
+        "Quality management",
         "Corrective and Preventive",
-        "Supplier Qualification",
+        "Supplier qualification",
         "Administration and Regulatory",
         "GMP Certification",
       ]) || textIncludes(clause, ["quality", "management review", "capa"]),
@@ -43,10 +43,10 @@ export const AUDIT_FRAMEWORKS: AuditFramework[] = [
     keywords: ["iso", "13485", "2016", "medical", "device"],
     matches: (clause) =>
       sectionIncludes(clause, [
-        "Quality Management",
+        "Quality management",
         "Corrective and Preventive",
-        "Supplier Qualification",
-        "Laboratory Controls",
+        "Supplier qualification",
+        "Laboratory controls",
         "Production and Process Controls",
       ]) || textIncludes(clause, ["device", "steril", "validation", "design"]),
   },
@@ -71,9 +71,9 @@ export const AUDIT_FRAMEWORKS: AuditFramework[] = [
     matches: (clause) =>
       sectionIncludes(clause, [
         "Production and Process Controls",
-        "Laboratory Controls",
+        "Laboratory controls",
         "Corrective and Preventive",
-        "Quality Management",
+        "Quality management",
         "Warehouse and Distribution",
       ]) || textIncludes(clause, ["820", "device", "production", "process control"]),
   },
@@ -84,9 +84,9 @@ export const AUDIT_FRAMEWORKS: AuditFramework[] = [
     matches: (clause) =>
       sectionIncludes(clause, [
         "Facilities",
-        "Product Safety",
+        "Product safety",
         "Production and Process Controls",
-        "Laboratory Controls",
+        "Laboratory controls",
       ]) ||
       textIncludes(clause, [
         "steril",
@@ -103,9 +103,9 @@ export const AUDIT_FRAMEWORKS: AuditFramework[] = [
     keywords: ["ich", "q10", "pharmaceutical", "quality system"],
     matches: (clause) =>
       sectionIncludes(clause, [
-        "Quality Management",
+        "Quality management",
         "Corrective and Preventive",
-        "Supplier Qualification",
+        "Supplier qualification",
         "GMP Certification",
       ]) || textIncludes(clause, ["pharmaceutical", "product quality", "lifecycle"]),
   },
@@ -116,7 +116,7 @@ export const AUDIT_FRAMEWORKS: AuditFramework[] = [
     matches: (clause) =>
       sectionIncludes(clause, [
         "Administration and Regulatory",
-        "Quality Management",
+        "Quality management",
       ]) ||
       textIncludes(clause, [
         "electronic",
@@ -135,9 +135,9 @@ export const AUDIT_FRAMEWORKS: AuditFramework[] = [
     matches: (clause) =>
       sectionIncludes(clause, [
         "Administration and Regulatory",
-        "Quality Management",
+        "Quality management",
         "Corrective and Preventive",
-        "Supplier Qualification",
+        "Supplier qualification",
       ]) ||
       textIncludes(clause, [
         "security",

@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PanelLeftClose, PanelLeft, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Bell, CircleHelp, CircleUser, PanelLeftClose, PanelLeft, X } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Avatar,
@@ -10,33 +12,43 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
+  SidebarLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
-  SIDEBAR_NAV_SECTIONS,
+  SIDEBAR_NAV_ITEMS,
   SIDEBAR_PROFILE,
+  SIDEBAR_PROFILE_LINKS,
   isSidebarNavActive,
 } from "@/lib/sidebar-nav";
 import { useConfigureAudit } from "@/components/configure-audit-modal/configure-audit-context";
+import {
+  DASHBOARD_MENU_CONTENT_CLASS,
+  DASHBOARD_MENU_ITEM_CLASS,
+} from "@/components/dashboard/card-actions-menu";
 import {
   APP_TOPBAR_HEIGHT_CLASS,
   NAV_UTILITY_BUTTON_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type AppSidebarNavProps = {
   /** Mobile sheet: close after navigate. */
@@ -45,6 +57,161 @@ type AppSidebarNavProps = {
   forceExpanded?: boolean;
   className?: string;
 };
+
+/** Radix menu IDs differ across SSR/CSR — mount after hydrate with a matching placeholder. */
+function SidebarProfileCard({
+  compact,
+  onNavigate,
+}: {
+  compact: boolean;
+  onNavigate?: () => void;
+}) {
+  const [mounted, setMounted] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [menuWidth, setMenuWidth] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || compact) {
+      setMenuWidth(undefined);
+      return;
+    }
+
+    const el = triggerRef.current;
+    if (!el) return;
+
+    const syncWidth = () => {
+      setMenuWidth(el.getBoundingClientRect().width);
+    };
+
+    syncWidth();
+    const observer = new ResizeObserver(syncWidth);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [mounted, compact]);
+
+  const trigger = (
+    <button
+      ref={triggerRef}
+      type="button"
+      aria-label="Open profile menu"
+      className={cn(
+        "flex w-full min-w-0 items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-muted/40 px-2.5 py-2 text-left transition-[gap,padding,background-color,border-color] duration-300 ease-in-out hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-neutral-900/30",
+        compact &&
+          "mx-auto size-9 justify-center gap-0 rounded-md border-0 bg-transparent p-0 hover:border-transparent hover:bg-neutral-50 data-[state=open]:border-transparent data-[state=open]:bg-neutral-50",
+      )}
+    >
+      <Avatar className={cn("size-9 shrink-0", compact && "size-9")}>
+        <AvatarImage
+          src={SIDEBAR_PROFILE.imageSrc}
+          alt={SIDEBAR_PROFILE.name}
+        />
+        <AvatarFallback>{SIDEBAR_PROFILE.initials}</AvatarFallback>
+      </Avatar>
+      <SidebarLabel show={!compact} className="min-w-0 flex-1">
+        <span className="block">
+          <span className="text-button m-0 block truncate font-medium text-sidebar-foreground">
+            {SIDEBAR_PROFILE.name}
+          </span>
+          <span className="text-caption m-0 block truncate text-neutral-900">
+            {SIDEBAR_PROFILE.role}
+          </span>
+        </span>
+      </SidebarLabel>
+    </button>
+  );
+
+  if (!mounted) return trigger;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuContent
+        side={compact ? "right" : "top"}
+        align={compact ? "end" : "start"}
+        sideOffset={8}
+        alignOffset={0}
+        style={
+          !compact && menuWidth != null
+            ? { width: menuWidth, minWidth: menuWidth, maxWidth: menuWidth }
+            : undefined
+        }
+        className={cn(
+          DASHBOARD_MENU_CONTENT_CLASS,
+          compact ? "w-56" : "min-w-0",
+        )}
+      >
+        <div className="flex flex-col gap-0.5">
+          <DropdownMenuItem
+            className={DASHBOARD_MENU_ITEM_CLASS}
+            onSelect={() => {
+              toast.message("Notifications", {
+                description: "You're caught up — no new alerts.",
+              });
+            }}
+          >
+            <Bell className="size-4 shrink-0" aria-hidden />
+            <span>Notifications</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className={DASHBOARD_MENU_ITEM_CLASS}>
+            <Link
+              href="/help"
+              onClick={onNavigate}
+              className="flex cursor-pointer items-center gap-2 no-underline"
+            >
+              <CircleHelp className="size-4 shrink-0" aria-hidden />
+              <span>Support</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className={DASHBOARD_MENU_ITEM_CLASS}>
+            <Link
+              href="/settings"
+              onClick={onNavigate}
+              className="flex cursor-pointer items-center gap-2 no-underline"
+            >
+              <CircleUser className="size-4 shrink-0" aria-hidden />
+              <span>Settings</span>
+            </Link>
+          </DropdownMenuItem>
+        </div>
+        <div className="flex flex-col gap-0.5 pt-1">
+          {SIDEBAR_PROFILE_LINKS.map((item) => {
+            const Icon = item.icon;
+            return (
+              <DropdownMenuItem
+                key={item.href}
+                asChild
+                className={DASHBOARD_MENU_ITEM_CLASS}
+              >
+                <Link
+                  href={item.href}
+                  onClick={onNavigate}
+                  className="flex cursor-pointer items-center gap-2 no-underline"
+                >
+                  <Icon className="size-4 shrink-0" aria-hidden />
+                  <span>{item.title}</span>
+                </Link>
+              </DropdownMenuItem>
+            );
+          })}
+        </div>
+        <div className="flex flex-col gap-0.5 pt-1">
+          <DropdownMenuItem asChild className={DASHBOARD_MENU_ITEM_CLASS}>
+            <Link
+              href="/auth/sign-out"
+              className="flex cursor-pointer items-center gap-2 no-underline"
+            >
+              Log out
+            </Link>
+          </DropdownMenuItem>
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export function AppSidebarNav({
   onNavigate,
@@ -55,43 +222,49 @@ export function AppSidebarNav({
   const { collapsed, toggleCollapsed } = useSidebar();
   const { open, openConfigureAudit } = useConfigureAudit();
   const compact = collapsed && !forceExpanded;
-  const railPad = compact ? "px-2" : "px-4";
+  const showLabels = !compact;
 
   function handleNavigate() {
     onNavigate?.();
   }
 
   return (
-    <TooltipProvider delayDuration={200}>
-      <div
-        className={cn(
-          "flex h-full min-h-0 w-full flex-col",
-          className,
-        )}
-      >
+    <div
+      className={cn(
+        "flex h-full min-h-0 w-full min-w-0 flex-col",
+        className,
+      )}
+    >
         {/* Full-bleed brand bar — matches main sticky header height & top edge */}
         <SidebarHeader
           className={cn(
             APP_TOPBAR_HEIGHT_CLASS,
             "shrink-0",
-            railPad,
+            compact ? "px-2" : "pr-2 pl-3",
           )}
         >
           <div
             className={cn(
-              "flex h-full w-full items-center gap-2",
-              compact ? "justify-center" : "justify-between",
+              "flex h-full w-full min-w-0 -translate-y-px items-center",
+              compact ? "justify-center" : "justify-between gap-2",
             )}
           >
-            {!compact ? (
+            <SidebarLabel
+              show={showLabels}
+              className={cn(
+                "min-w-0",
+                showLabels && "max-w-none! flex-1",
+              )}
+            >
               <Link
-                href="/"
+                href="/dashboard"
                 onClick={handleNavigate}
-                  className="m-0 min-w-0 flex-1 truncate pl-3 text-xl font-bold tracking-tight text-black no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring rounded-lg dark:text-neutral-100 color:text-sidebar-foreground"
+                tabIndex={showLabels ? undefined : -1}
+                className="m-0 block truncate pl-1 text-xl font-bold tracking-tight text-neutral-900 no-underline whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 rounded-lg dark:text-neutral-100 color:text-sidebar-foreground"
               >
                 AuditFlow
               </Link>
-            ) : null}
+            </SidebarLabel>
 
             {onNavigate ? (
               <Button
@@ -99,8 +272,7 @@ export function AppSidebarNav({
                 variant="ghost"
                 className={cn(
                   NAV_UTILITY_BUTTON_CLASS,
-                  "text-sidebar-foreground [&_svg]:size-4 hover:bg-[#F7F7F7]!",
-                  !compact && "-mr-1",
+                  "h-9! w-9! min-h-9! min-w-9! shrink-0 rounded-md text-sidebar-foreground [&_svg]:size-4 hover:bg-neutral-50",
                 )}
                 aria-label="Close menu"
                 onClick={onNavigate}
@@ -113,8 +285,8 @@ export function AppSidebarNav({
                 variant="ghost"
                 className={cn(
                   NAV_UTILITY_BUTTON_CLASS,
-                  "text-sidebar-foreground [&_svg]:size-4 hover:bg-[#F7F7F7]!",
-                  !compact && "-mr-1",
+                  "h-9! w-9! min-h-9! min-w-9! shrink-0 rounded-md text-sidebar-foreground [&_svg]:size-4 hover:bg-neutral-50",
+                  !compact && "ml-auto",
                 )}
                 aria-label={compact ? "Expand sidebar" : "Collapse sidebar"}
                 aria-pressed={compact}
@@ -130,124 +302,109 @@ export function AppSidebarNav({
           </div>
         </SidebarHeader>
 
-        <div
-          className={cn(
-            "flex min-h-0 w-full min-w-0 flex-1 flex-col justify-between pb-4",
-            railPad,
-          )}
-        >
-          <SidebarContent className="min-h-0 flex-1 gap-4 overflow-y-auto overflow-x-hidden pt-1 pb-1">
-            {SIDEBAR_NAV_SECTIONS.map((section) => (
-              <SidebarGroup key={section.label} className="gap-1">
-                {!compact ? (
-                  <SidebarGroupLabel className="mb-1 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-black">
-                    {section.label}
-                  </SidebarGroupLabel>
-                ) : null}
-                <SidebarMenu className="gap-0.5">
-                  {section.items.map((item) => {
-                    const isConfigureAction = Boolean(item.configureAudit);
-                    const active = isConfigureAction
-                      ? open
-                      : isSidebarNavActive(pathname, item);
-                    const Icon = item.icon;
+        <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col justify-between px-2 pb-8">
+          <SidebarContent
+            className={cn(
+              "min-h-0 flex-1 gap-1 overflow-y-auto pt-0 pb-1 mt-0.5",
+              compact && "items-center",
+            )}
+          >
+            <SidebarGroup
+              className={cn("gap-1", compact && "w-full items-center")}
+            >
+              <SidebarMenu
+                className={cn("gap-0.5", compact && "w-full items-center")}
+              >
+                {SIDEBAR_NAV_ITEMS.map((item) => {
+                  const isConfigureAction = Boolean(item.configureAudit);
+                  const active = isConfigureAction
+                    ? open
+                    : isSidebarNavActive(pathname, item);
+                  const Icon = item.icon;
 
-                    const control = isConfigureAction ? (
-                      <SidebarMenuButton
-                        type="button"
-                        isActive={active}
-                        compact={compact}
-                        className="rounded-[6px]"
-                        aria-current={active ? "true" : undefined}
-                        aria-label={compact ? item.title : undefined}
-                        onClick={() => {
-                          openConfigureAudit(null);
-                          handleNavigate();
-                        }}
+                  const control = isConfigureAction ? (
+                    <SidebarMenuButton
+                      type="button"
+                      isActive={active}
+                      compact={compact}
+                      className="rounded-md"
+                      aria-current={active ? "true" : undefined}
+                      aria-label={item.title}
+                      onClick={() => {
+                        openConfigureAudit(null);
+                        handleNavigate();
+                      }}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" size={16} aria-hidden />
+                      <SidebarLabel
+                        show={showLabels}
+                        className={cn(
+                          "text-left leading-snug",
+                          showLabels && "min-w-0 flex-1",
+                        )}
+                      >
+                        {item.title}
+                      </SidebarLabel>
+                    </SidebarMenuButton>
+                  ) : (
+                    <SidebarMenuButton
+                      asChild
+                      isActive={active}
+                      compact={compact}
+                      className="rounded-md"
+                    >
+                      <Link
+                        href={item.href}
+                        onClick={handleNavigate}
+                        className="no-underline"
+                        aria-current={active ? "page" : undefined}
+                        aria-label={item.title}
                       >
                         <Icon className="h-4 w-4 shrink-0" size={16} aria-hidden />
-                        {!compact ? (
-                          <span className="min-w-0 flex-1 truncate text-left leading-snug">
-                            {item.title}
-                          </span>
-                        ) : (
-                          <span className="sr-only">{item.title}</span>
-                        )}
-                      </SidebarMenuButton>
-                    ) : (
-                      <SidebarMenuButton
-                        asChild
-                        isActive={active}
-                        compact={compact}
-                        className="rounded-[6px]"
-                      >
-                        <Link
-                          href={item.href}
-                          onClick={handleNavigate}
-                          className="no-underline"
-                          aria-current={active ? "page" : undefined}
-                          aria-label={compact ? item.title : undefined}
-                        >
-                          <Icon className="h-4 w-4 shrink-0" size={16} aria-hidden />
-                          {!compact ? (
-                            <span className="min-w-0 flex-1 truncate text-left leading-snug">
-                              {item.title}
-                            </span>
-                          ) : (
-                            <span className="sr-only">{item.title}</span>
+                        <SidebarLabel
+                          show={showLabels}
+                          className={cn(
+                            "text-left leading-snug",
+                            showLabels && "min-w-0 flex-1",
                           )}
-                        </Link>
-                      </SidebarMenuButton>
-                    );
+                        >
+                          {item.title}
+                        </SidebarLabel>
+                      </Link>
+                    </SidebarMenuButton>
+                  );
 
-                    return (
-                      <SidebarMenuItem key={item.href}>
-                        {compact ? (
-                          <Tooltip>
-                            <TooltipTrigger asChild>{control}</TooltipTrigger>
-                            <TooltipContent side="right" sideOffset={8}>
-                              {item.title}
-                            </TooltipContent>
-                          </Tooltip>
-                        ) : (
-                          control
-                        )}
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroup>
-            ))}
+                  return (
+                    <SidebarMenuItem
+                      key={item.href}
+                      className={cn(compact && "flex justify-center")}
+                    >
+                      {compact ? (
+                        <Tooltip>
+                          <TooltipTrigger asChild>{control}</TooltipTrigger>
+                          <TooltipContent side="right" sideOffset={8}>
+                            {item.title}
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        control
+                      )}
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroup>
           </SidebarContent>
 
-          <SidebarFooter className="mt-auto shrink-0 pt-3">
-            <div
-              className={cn(
-                "flex items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-muted/40 px-2.5 py-2",
-                compact && "justify-center border-0 bg-transparent px-0",
-              )}
-            >
-              <Avatar className="size-9 shrink-0">
-                <AvatarImage
-                  src={SIDEBAR_PROFILE.imageSrc}
-                  alt={SIDEBAR_PROFILE.name}
-                />
-                <AvatarFallback>{SIDEBAR_PROFILE.initials}</AvatarFallback>
-              </Avatar>
-              {!compact ? (
-                <div className="min-w-0 flex-1">
-                  <p className="text-button m-0 truncate font-medium text-sidebar-foreground">
-                    {SIDEBAR_PROFILE.name}
-                  </p>
-                  <p className="text-caption m-0 truncate text-black">
-                    {SIDEBAR_PROFILE.role}
-                  </p>
-                </div>
-              ) : null}
-            </div>
+          <SidebarFooter
+            className={cn(
+              "mt-auto shrink-0 pt-3",
+              compact && "flex items-center",
+            )}
+          >
+            <SidebarProfileCard compact={compact} onNavigate={handleNavigate} />
           </SidebarFooter>
         </div>
       </div>
-    </TooltipProvider>
   );
 }

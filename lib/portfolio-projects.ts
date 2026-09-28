@@ -3,7 +3,7 @@ export type HomeProjectCard = {
   description: string;
   image: string;
   href?: string;
-  /** Overrides default “See Case Study” CTA (e.g. Coming Soon when no case study yet). */
+  /** Overrides default “See case study” CTA (e.g. Coming Soon when no case study yet). */
   ctaLabel?: string;
   /** When true, CTA uploads a file and POSTs to /api/audit/run. */
   runAudit?: boolean;
@@ -17,7 +17,7 @@ export const HOME_PROJECT_CARDS: HomeProjectCard[] = [
       "Good documentation practices shall be established and followed concerning paper and electronic documents and records.",
     image: "/images/glorifi-thumb.png",
     href: "/projects/glorifi",
-    ctaLabel: "Run Audit",
+    ctaLabel: "Run audit",
     runAudit: true,
   },
   {
