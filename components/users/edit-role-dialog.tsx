@@ -74,7 +74,7 @@ export function EditRoleDialog({
         showCloseButton
       >
         <form onSubmit={handleSubmit}>
-          <DialogHeader className="border-b border-border/60 p-4 text-left">
+          <DialogHeader className="border-b border-neutral-200 p-4 pr-12 text-left">
             <DialogTitle className="m-0 text-lg font-medium text-neutral-900">
               Edit role
             </DialogTitle>
@@ -111,7 +111,7 @@ export function EditRoleDialog({
             ) : null}
           </div>
 
-          <DialogFooter className="gap-2 border-t border-border/60 p-4 sm:justify-end">
+          <DialogFooter className="border-t border-neutral-200 p-4">
             <Button
               type="button"
               variant="outline"

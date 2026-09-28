@@ -655,12 +655,7 @@ try {
       <DialogContent
         showCloseButton={false}
         centerInViewport
-        overlayClassName={cn(
-          "scheduling-dialog-overlay",
-          resolvedTheme === "light" && "!bg-black/25",
-          resolvedTheme === "dark" && "!bg-black/60",
-          resolvedTheme === "color" && "!bg-black/40"
-        )}
+        overlayClassName="scheduling-dialog-overlay bg-black/50"
         className={cn(
           "scheduling-dialog-shell gap-0 fixed inset-y-0 right-0 w-full",
           "max-lg:data-[state=open]:animate-in max-lg:data-[state=closed]:animate-out",

@@ -6,7 +6,6 @@ import {
   Camera,
   Check,
   ChevronDown,
-  CircleHelp,
   Loader2,
   Upload,
   X,
@@ -20,6 +19,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Command,
   CommandEmpty,
@@ -42,21 +42,36 @@ import {
   getAuditFramework,
   getClausesForFramework,
 } from "@/lib/audit-frameworks";
+import { DROPDOWN_TRIGGER_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
-import { SECTION_HEADER_CLASS } from "@/lib/page-layout";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
-/** Shared section labels — text-sm, uniform weight. */
-const SECTION_LABEL = "mb-2 text-sm font-medium text-neutral-900";
+/** Primary standard workflow when New audit opens without a card prefill. */
+const DEFAULT_AUDIT_TYPE: AuditWorkflowId = "sop";
 
-/** Shared field shell for Frameworks / Clauses / Docs. */
-const FIELD_SURFACE_CLASS =
-  "relative flex min-h-14 w-full cursor-pointer items-center gap-2 rounded-lg border border-neutral-200 bg-white px-3 py-3 text-left shadow-none transition-colors duration-200 ease-in-out hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-800/30";
+/** One in-scope framework so dependent fields open already populated. */
+const DEFAULT_FRAMEWORK_BY_TYPE: Record<AuditWorkflowId, string> = {
+  sop: "iso-9001-2015",
+  bpr: "fda-21-cfr-820",
+  fir: "eu-gmp-annex-1",
+};
+
+const DEFAULT_CLAUSE_COUNT = 3;
+
+function defaultFrameworkFor(workflowId: AuditWorkflowId) {
+  return DEFAULT_FRAMEWORK_BY_TYPE[workflowId];
+}
+
+function defaultClauseIds(frameworkValue: string) {
+  return getClausesForFramework(frameworkValue)
+    .slice(0, DEFAULT_CLAUSE_COUNT)
+    .map((clause) => clause.id);
+}
+
+/** Shared field shell — same resting chrome as the upload/sync selects. */
+const FIELD_SURFACE_CLASS = cn(
+  DROPDOWN_TRIGGER_CLASS,
+  "relative flex min-h-9 w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-left text-sm text-neutral-900",
+);
 
 const FIELD_SURFACE_OPEN_CLASS = "border-border bg-zinc-50 shadow-sm";
 
@@ -66,7 +81,7 @@ const PILL_AREA_CLASS =
 
 /** Inline selection / file pill token. */
 const PILL_CLASS =
-  "inline-flex h-auto max-w-full items-center gap-1 rounded-full border border-border/60 bg-zinc-50 py-2 pl-2.5 pr-1 text-sm font-medium leading-normal text-neutral-900";
+  "inline-flex h-6 max-w-full items-center gap-1 rounded-full border border-neutral-200 bg-neutral-50 py-0 pl-2 pr-0.5 text-sm font-medium leading-none text-neutral-900";
 
 const PILL_REMOVE_CLASS =
   "inline-flex size-5 shrink-0 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900";
@@ -204,7 +219,7 @@ function FieldChevron() {
   return (
     <ChevronDown
       aria-hidden
-      className="pointer-events-none absolute right-3 top-1/2 size-4 shrink-0 -translate-y-1/2 text-neutral-500"
+      className="pointer-events-none absolute right-3 top-1/2 size-4 shrink-0 -translate-y-1/2 text-neutral-900 opacity-70"
     />
   );
 }
@@ -216,22 +231,18 @@ function FieldComboboxTrigger({
   className,
   children,
   onKeyDown,
-  disabled = false,
   ...props
 }: React.ComponentProps<"div"> & {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  disabled?: boolean;
 }) {
   return (
     <div
       role="combobox"
-      tabIndex={disabled ? -1 : 0}
+      tabIndex={0}
       aria-expanded={open}
-      aria-disabled={disabled || undefined}
       {...props}
       onKeyDown={(event) => {
-        if (disabled) return;
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
           onOpenChange(!open);
@@ -242,8 +253,6 @@ function FieldComboboxTrigger({
         FIELD_SURFACE_CLASS,
         "pr-10",
         open && FIELD_SURFACE_OPEN_CLASS,
-        disabled &&
-          "pointer-events-none cursor-not-allowed opacity-60 hover:border-zinc-200 hover:bg-sidebar-muted/40",
         className,
       )}
     >
@@ -267,20 +276,26 @@ export function ConfigureAuditModal({
 }: ConfigureAuditModalProps) {
   const router = useRouter();
 
-  const [auditType, setAuditType] = React.useState<AuditWorkflowId | null>(
-    null,
+  const [auditType, setAuditType] = React.useState<AuditWorkflowId>(
+    () => initialWorkflowId ?? DEFAULT_AUDIT_TYPE,
   );
   const [auditTypeOpen, setAuditTypeOpen] = React.useState(false);
-  const [frameworks, setFrameworks] = React.useState<string[]>([]);
+  const [frameworks, setFrameworks] = React.useState<string[]>(() => [
+    defaultFrameworkFor(initialWorkflowId ?? DEFAULT_AUDIT_TYPE),
+  ]);
   const [frameworkOpen, setFrameworkOpen] = React.useState(false);
   const [clauseOpen, setClauseOpen] = React.useState(false);
   const [docsOpen, setDocsOpen] = React.useState(false);
-  const [helpOpen, setHelpOpen] = React.useState(false);
   const [attachedFiles, setAttachedFiles] = React.useState<StagedFile[]>([]);
   const [evidenceFiles, setEvidenceFiles] = React.useState<StagedFile[]>([]);
   const [clauseQuery, setClauseQuery] = React.useState("");
   const [selectedClauses, setSelectedClauses] = React.useState<Set<string>>(
-    () => new Set(),
+    () =>
+      new Set(
+        defaultClauseIds(
+          defaultFrameworkFor(initialWorkflowId ?? DEFAULT_AUDIT_TYPE),
+        ),
+      ),
   );
   const [isInitializing, setIsInitializing] = React.useState(false);
   const [initError, setInitError] = React.useState<string | null>(null);
@@ -288,44 +303,45 @@ export function ConfigureAuditModal({
   const evidenceInputRef = React.useRef<HTMLInputElement>(null);
   const cameraInputRef = React.useRef<HTMLInputElement>(null);
 
-  const hasAuditType = auditType != null;
   const isFirAudit = auditType === "fir";
   const selectedAuditTypeOption = AUDIT_TYPE_OPTIONS.find(
     (item) => item.value === auditType,
   );
 
-  function resetDependentFields() {
-    setFrameworks([]);
-    setFrameworkOpen(false);
-    setClauseOpen(false);
+  function clearStagedFiles() {
     setDocsOpen(false);
     setAttachedFiles([]);
     setEvidenceFiles([]);
-    setClauseQuery("");
-    setSelectedClauses(new Set());
     if (fileInputRef.current) fileInputRef.current.value = "";
     if (evidenceInputRef.current) evidenceInputRef.current.value = "";
     if (cameraInputRef.current) cameraInputRef.current.value = "";
   }
 
+  function applyWorkflowDefaults(workflowId: AuditWorkflowId) {
+    const framework = defaultFrameworkFor(workflowId);
+    setFrameworks([framework]);
+    setFrameworkOpen(false);
+    setClauseOpen(false);
+    setClauseQuery("");
+    setSelectedClauses(new Set(defaultClauseIds(framework)));
+    clearStagedFiles();
+  }
+
   React.useEffect(() => {
     if (!open) return;
-    setAuditType(initialWorkflowId);
+    const workflowId = initialWorkflowId ?? DEFAULT_AUDIT_TYPE;
+    setAuditType(workflowId);
     setAuditTypeOpen(false);
-    resetDependentFields();
+    applyWorkflowDefaults(workflowId);
     setIsInitializing(false);
     setInitError(null);
   }, [open, initialWorkflowId]);
 
-  function toggleAuditType(value: AuditWorkflowId) {
-    const next = auditType === value ? null : value;
-    setAuditType(next);
-    resetDependentFields();
-  }
-
-  function removeAuditType() {
-    setAuditType(null);
-    resetDependentFields();
+  function selectAuditType(value: AuditWorkflowId) {
+    setAuditTypeOpen(false);
+    if (value === auditType) return;
+    setAuditType(value);
+    applyWorkflowDefaults(value);
   }
 
   const selectedFrameworkItems = React.useMemo(
@@ -411,12 +427,10 @@ export function ConfigureAuditModal({
   }
 
   function handleFrameworkOpenChange(nextOpen: boolean) {
-    if (nextOpen && !hasAuditType) return;
     setFrameworkOpen(nextOpen);
   }
 
   function handleClauseOpenChange(nextOpen: boolean) {
-    if (nextOpen && !hasAuditType) return;
     setClauseOpen(nextOpen);
     if (!nextOpen) setClauseQuery("");
   }
@@ -507,16 +521,11 @@ export function ConfigureAuditModal({
 
   function handleDialogOpenChange(nextOpen: boolean) {
     if (isInitializing && !nextOpen) return;
-    if (!nextOpen) setHelpOpen(false);
     onOpenChange(nextOpen);
   }
 
   async function handleInitialize() {
     if (isInitializing) return;
-    if (!auditType) {
-      setInitError("Select an audit type before initializing.");
-      return;
-    }
     if (frameworks.length === 0) {
       setInitError("Select at least one framework before initializing.");
       return;
@@ -564,14 +573,8 @@ export function ConfigureAuditModal({
     }
   }
 
-  const assessmentLabel = auditType
-    ? AUDIT_WORKFLOWS[auditType].label
-    : null;
-  const helperText = `Choose audit type, framework(s), select clauses, and link target documentation${
-    assessmentLabel
-      ? ` for the ${assessmentLabel} compliance assessment.`
-      : " for the compliance assessment."
-  }`;
+  const assessmentLabel = AUDIT_WORKFLOWS[auditType].label;
+  const helperText = `Choose audit type, framework(s), select clauses, and link target documentation for the ${assessmentLabel} compliance assessment.`;
 
   const submitLabel =
     docCount > 1
@@ -581,57 +584,23 @@ export function ConfigureAuditModal({
   return (
     <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogContent
-        showCloseButton={false}
-        centerInViewport
-        overlayClassName="bg-black/60 backdrop-blur-sm"
+        showCloseButton
         onOpenAutoFocus={(event) => event.preventDefault()}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 md:inset-auto md:left-1/2 md:top-1/2 md:max-h-[min(90vh,840px)] md:w-full md:max-w-xl md:p-0 md:-translate-x-1/2 md:-translate-y-1/2"
+        className="gap-0 overflow-hidden p-0 md:max-h-[min(90vh,840px)] md:max-w-md"
       >
-        <div className="flex max-h-[min(90vh,840px)] w-full flex-col overflow-hidden rounded-xl border border-border/60 bg-white text-neutral-900 shadow-lg">
-          <DialogHeader className="shrink-0 flex-row items-center gap-1.5 border-b border-border/60 p-4 text-left">
-            <DialogTitle className={cn(SECTION_HEADER_CLASS, "m-0 text-neutral-900")}>
+        <div className="flex max-h-[min(90vh,840px)] w-full flex-col overflow-hidden bg-white text-neutral-900">
+          <DialogHeader className="shrink-0 border-b border-neutral-200 p-4 pr-12 text-left">
+            <DialogTitle className="m-0 text-lg font-medium text-neutral-900">
               New audit
             </DialogTitle>
-            <TooltipProvider delayDuration={200}>
-              <Tooltip open={helpOpen} onOpenChange={setHelpOpen}>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-zinc-800/30"
-                    aria-label="About new audit"
-                    aria-expanded={helpOpen}
-                    onClick={() => setHelpOpen(true)}
-                  >
-                    <CircleHelp
-                      className="size-3.5"
-                      strokeWidth={1.75}
-                      aria-hidden
-                    />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent
-                  side="bottom"
-                  align="start"
-                  sideOffset={6}
-                  avoidCollisions={false}
-                  className="z-[80] max-w-[16rem] rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-left text-neutral-50 shadow-none"
-                >
-                  <p className="m-0 text-xs font-medium tracking-tight">
-                    New audit
-                  </p>
-                  <p className="m-0 mt-1 text-xs leading-snug text-neutral-300">
-                    {helperText}
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <DialogDescription className="sr-only">{helperText}</DialogDescription>
+            <DialogDescription className="m-0 mt-1 text-sm text-muted-foreground">
+              {helperText}
+            </DialogDescription>
           </DialogHeader>
 
-          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-4">
-            {/* Audit Type */}
-            <section>
-              <h3 className={SECTION_LABEL}>Audit type</h3>
+          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4">
+            <div className="flex flex-col gap-1.5">
+              <Label>Audit type</Label>
               <Popover
                 modal
                 open={auditTypeOpen}
@@ -646,16 +615,14 @@ export function ConfigureAuditModal({
                       className={PILL_AREA_CLASS}
                       onWheel={(event) => event.stopPropagation()}
                     >
-                      {!selectedAuditTypeOption ? (
+                      {selectedAuditTypeOption ? (
+                        <span className="min-w-0 flex-1 truncate text-sm text-neutral-900">
+                          {selectedAuditTypeOption.label}
+                        </span>
+                      ) : (
                         <span className={PLACEHOLDER_CLASS}>
                           Select audit type…
                         </span>
-                      ) : (
-                        <SelectionPill
-                          label={selectedAuditTypeOption.label}
-                          removeLabel={`Remove ${selectedAuditTypeOption.label}`}
-                          onRemove={removeAuditType}
-                        />
                       )}
                     </div>
                   </FieldComboboxTrigger>
@@ -687,7 +654,7 @@ export function ConfigureAuditModal({
                               key={item.value}
                               value={item.label}
                               keywords={item.keywords}
-                              onSelect={() => toggleAuditType(item.value)}
+                              onSelect={() => selectAuditType(item.value)}
                               className={cn(
                                 COMMAND_ITEM_CLASS,
                                 isSelected && "bg-zinc-100",
@@ -705,7 +672,7 @@ export function ConfigureAuditModal({
                   </Command>
                   <div className={DROPDOWN_FOOTER_CLASS}>
                     <span className="text-sm text-neutral-600">
-                      {auditType ? 1 : 0} selected
+                      1 selected
                     </span>
                     <Button
                       type="button"
@@ -718,11 +685,10 @@ export function ConfigureAuditModal({
                   </div>
                 </PopoverContent>
               </Popover>
-            </section>
+            </div>
 
-            {/* Framework Selection */}
-            <section>
-              <h3 className={SECTION_LABEL}>Framework selection</h3>
+            <div className="flex flex-col gap-1.5">
+              <Label>Framework selection</Label>
               <Popover
                 modal
                 open={frameworkOpen}
@@ -732,17 +698,12 @@ export function ConfigureAuditModal({
                   <FieldComboboxTrigger
                     open={frameworkOpen}
                     onOpenChange={handleFrameworkOpenChange}
-                    disabled={!hasAuditType}
                   >
                     <div
                       className={PILL_AREA_CLASS}
                       onWheel={(event) => event.stopPropagation()}
                     >
-                      {!hasAuditType ? (
-                        <span className={PLACEHOLDER_CLASS}>
-                          Select an audit type first…
-                        </span>
-                      ) : selectedFrameworkItems.length === 0 ? (
+                      {selectedFrameworkItems.length === 0 ? (
                         <span className={PLACEHOLDER_CLASS}>
                           Select frameworks…
                         </span>
@@ -817,11 +778,10 @@ export function ConfigureAuditModal({
                   </div>
                 </PopoverContent>
               </Popover>
-            </section>
+            </div>
 
-            {/* Clause Selection */}
-            <section>
-              <h3 className={SECTION_LABEL}>Clause selection</h3>
+            <div className="flex flex-col gap-1.5">
+              <Label>Clause selection</Label>
               <Popover
                 modal
                 open={clauseOpen}
@@ -831,17 +791,12 @@ export function ConfigureAuditModal({
                   <FieldComboboxTrigger
                     open={clauseOpen}
                     onOpenChange={handleClauseOpenChange}
-                    disabled={!hasAuditType}
                   >
                     <div
                       className={PILL_AREA_CLASS}
                       onWheel={(event) => event.stopPropagation()}
                     >
-                      {!hasAuditType ? (
-                        <span className={PLACEHOLDER_CLASS}>
-                          Select an audit type first…
-                        </span>
-                      ) : selectedClauseItems.length === 0 ? (
+                      {selectedClauseItems.length === 0 ? (
                         <span className={PLACEHOLDER_CLASS}>
                           Select clauses…
                         </span>
@@ -937,11 +892,10 @@ export function ConfigureAuditModal({
                   </div>
                 </PopoverContent>
               </Popover>
-            </section>
+            </div>
 
-            {/* Target Documentation */}
-            <section>
-              <h3 className={SECTION_LABEL}>Target documentation</h3>
+            <div className="flex flex-col gap-1.5">
+              <Label>Target documentation</Label>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -978,7 +932,7 @@ export function ConfigureAuditModal({
                     >
                       {attachedFiles.length === 0 ? (
                         <span className={PLACEHOLDER_CLASS}>
-                          Drag & drop target {assessmentLabel ?? "audit"} PDFs…
+                          Drag & drop target {assessmentLabel} PDFs…
                         </span>
                       ) : (
                         attachedFiles.map((item) => {
@@ -1009,7 +963,7 @@ export function ConfigureAuditModal({
                     >
                       <Upload className="size-4 shrink-0 text-neutral-500" aria-hidden />
                       <span className="min-w-0 flex-1">
-                        Upload {assessmentLabel ?? "audit"} PDF or documents…
+                        Upload {assessmentLabel} PDF or documents…
                       </span>
                     </button>
                     <p className="m-0 px-3 pb-2 pt-1 text-sm text-neutral-500">
@@ -1032,12 +986,12 @@ export function ConfigureAuditModal({
                   </div>
                 </PopoverContent>
               </Popover>
-            </section>
+            </div>
 
             {isFirAudit ? (
-              <section>
-                <h3 className={SECTION_LABEL}>Field Evidence & Scans</h3>
-                <p className="m-0 mb-3 text-sm text-muted-foreground">
+              <div className="flex flex-col gap-1.5">
+                <Label>Field evidence and scans</Label>
+                <p className="m-0 text-sm text-muted-foreground">
                   Capture or upload equipment photos, asset tags, and physical
                   inspection logs.
                 </p>
@@ -1121,7 +1075,7 @@ export function ConfigureAuditModal({
                     })}
                   </div>
                 ) : null}
-              </section>
+              </div>
             ) : null}
 
             {isBatchMode ? (
@@ -1132,7 +1086,7 @@ export function ConfigureAuditModal({
                 <p className="m-0 mt-1 text-sm text-neutral-600">
                   {frameworks.length} framework
                   {frameworks.length === 1 ? "" : "s"} × {docCount}{" "}
-                  {assessmentLabel ?? "doc"}
+                  {assessmentLabel}
                   {docCount === 1 ? "" : "s"} →{" "}
                   {frameworks.length * Math.max(docCount, 1)} analysis path
                   {frameworks.length * Math.max(docCount, 1) === 1 ? "" : "s"}
@@ -1159,48 +1113,45 @@ export function ConfigureAuditModal({
             ) : null}
           </div>
 
-          <DialogFooter className="shrink-0 flex-col gap-3 border-t border-border/60 p-4 sm:flex-col">
+          <div className="shrink-0 border-t border-neutral-200">
             {initError ? (
-              <p className="m-0 w-full text-sm text-neutral-900" role="alert">
+              <p className="m-0 px-4 pt-4 text-sm text-neutral-900" role="alert">
                 {initError}
               </p>
             ) : null}
-            <div className="flex w-full flex-row items-center justify-between gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-lg border-zinc-800 bg-transparent px-4 text-sm font-medium text-neutral-900 hover:bg-neutral-100 hover:text-neutral-900"
-                onClick={() => handleDialogOpenChange(false)}
-                disabled={isInitializing}
-              >
-                Back
-              </Button>
-              <Button
-                type="button"
-                variant="black"
-                className="rounded-lg px-5 text-sm font-medium"
-                onClick={() => {
-                  void handleInitialize();
-                }}
-                disabled={
-                  !hasAuditType ||
-                  selectedClauses.size === 0 ||
-                  frameworks.length === 0 ||
-                  isInitializing
-                }
-                aria-busy={isInitializing}
-              >
-                {isInitializing ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" aria-hidden />
-                    Initializing…
-                  </>
-                ) : (
-                  submitLabel
-                )}
-              </Button>
-            </div>
+          <DialogFooter className="p-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleDialogOpenChange(false)}
+              disabled={isInitializing}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="black"
+              onClick={() => {
+                void handleInitialize();
+              }}
+              disabled={
+                selectedClauses.size === 0 ||
+                frameworks.length === 0 ||
+                isInitializing
+              }
+              aria-busy={isInitializing}
+            >
+              {isInitializing ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" aria-hidden />
+                  Initializing…
+                </>
+              ) : (
+                submitLabel
+              )}
+            </Button>
           </DialogFooter>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

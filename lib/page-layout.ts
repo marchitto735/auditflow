@@ -83,7 +83,7 @@ export const TABLE_TOOLBAR_ACTIONS_CLASS =
  * Sync / Export buttons align across pages; label stays centered.
  */
 export const TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS =
-  "h-[length:var(--cta-height)]! min-h-[length:var(--cta-height)]! w-[12rem] shrink-0 justify-center rounded-md px-3 text-sm";
+  "h-[length:var(--cta-height)]! min-h-[length:var(--cta-height)]! w-[200px] shrink-0 justify-center rounded-md px-3 text-sm";
 
 /** Page-level primary action in the SectionHeader actions slot. */
 export const PAGE_HEADER_PRIMARY_BUTTON_CLASS =
