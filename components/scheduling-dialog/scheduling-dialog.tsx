@@ -575,7 +575,7 @@ try {
         text: title,
         dates: `${startGoogle}/${endGoogle}`,
         details,
-        location: meetingUrl || "Video Call",
+        location: meetingUrl || "Video call",
       });
       return `https://calendar.google.com/calendar/render?${qs.toString()}`;
     }, [confirmation, notes]);
@@ -601,7 +601,7 @@ try {
         startdt: startTime,
         enddt: endTime,
         body,
-        location: meetingUrl || "Video Call",
+        location: meetingUrl || "Video call",
       });
       return `https://outlook.live.com/calendar/0/deeplink/compose?${qs.toString()}`;
     }, [confirmation, notes]);
@@ -627,7 +627,7 @@ try {
         startdt: startTime,
         enddt: endTime,
         body,
-        location: meetingUrl || "Video Call",
+        location: meetingUrl || "Video call",
       });
       return `https://outlook.office.com/calendar/0/deeplink/compose?${qs.toString()}`;
     }, [confirmation, notes]);
@@ -733,7 +733,7 @@ try {
                   <CardHeader className="scheduling-left-header mb-1 gap-0 space-y-0 pb-0 px-0 pt-0.5">
                     <div className="flex flex-col gap-5">
                       <CardTitle className="scheduling-left-title mt-0 shrink-0 text-subtitle1 font-medium text-foreground">
-                        Introduction Call
+                        Introduction call
                       </CardTitle>
                       <span className="scheduling-left-name block text-subtitle2 text-foreground">
                         Mike Marchitto
@@ -750,7 +750,7 @@ try {
                     </div>
                     <div className="scheduling-left-detail-row flex items-center gap-2 text-body2 text-foreground">
                       <Video className="h-4 w-4 shrink-0" />
-                      <span>Video Call</span>
+                      <span>Video call</span>
                     </div>
                     <DropdownMenu
                       onOpenChange={(open) => {
@@ -901,7 +901,7 @@ try {
                   <CardHeader className="scheduling-left-header mb-1 gap-0 space-y-0 pb-0 px-0 pt-0.5">
                     <div className="flex flex-col gap-5">
                       <CardTitle className="scheduling-left-title mt-0 shrink-0 text-subtitle1 font-medium text-foreground">
-                        Introduction Call
+                        Introduction call
                       </CardTitle>
                       <span className="scheduling-left-name block text-subtitle2 text-foreground">
                         Mike Marchitto
@@ -924,7 +924,7 @@ try {
                     </div>
                     <div className="scheduling-left-detail-row flex items-center gap-2 text-body2 text-foreground">
                       <Video className="h-4 w-4 shrink-0" />
-                      <span>Video Call</span>
+                      <span>Video call</span>
                     </div>
                     <div className="scheduling-left-detail-row flex items-center gap-2 text-body2 text-foreground pointer-events-none">
                       <Globe className="h-4 w-4 shrink-0" />

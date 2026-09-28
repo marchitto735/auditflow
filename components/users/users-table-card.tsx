@@ -226,7 +226,7 @@ function UserRowActions({
           className={DASHBOARD_MENU_ITEM_CLASS}
           onSelect={() => onEditRole(user)}
         >
-          Edit Role
+          Edit role
         </DropdownMenuItem>
         <DropdownMenuItem
           className={DASHBOARD_MENU_ITEM_CLASS}
@@ -237,7 +237,7 @@ function UserRowActions({
             });
           }}
         >
-          Reset Password
+          Reset password
         </DropdownMenuItem>
         <DropdownMenuItem
           className={DASHBOARD_MENU_ITEM_CLASS}
@@ -248,7 +248,7 @@ function UserRowActions({
             });
           }}
         >
-          Revoke Sessions
+          Revoke sessions
         </DropdownMenuItem>
         <DropdownMenuItem
           className={DASHBOARD_MENU_ITEM_CLASS}
@@ -261,7 +261,7 @@ function UserRowActions({
             });
           }}
         >
-          Deactivate User
+          Deactivate user
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -339,7 +339,7 @@ export default function UsersTableCard({
         <CardContent className="flex flex-col p-0">
           <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
             <div className="min-w-0 pr-10">
-              <p className={CARD_SECTION_EYEBROW_CLASS}>User Directory</p>
+              <p className={CARD_SECTION_EYEBROW_CLASS}>User directory</p>
               <p className={SECTION_DESCRIPTION_CLASS}>
                 Organization members, RBAC roles, MFA posture, and session
                 controls.
@@ -347,7 +347,7 @@ export default function UsersTableCard({
             </div>
             <div className="absolute top-3 right-3">
               <CardActionsMenu
-                label="User Directory"
+                label="User directory"
                 actions={TABLE_CARD_MENU_ACTIONS}
               />
             </div>
@@ -395,7 +395,7 @@ export default function UsersTableCard({
                   className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
                   onClick={() => setInviteOpen(true)}
                 >
-                  Invite User
+                  Invite user
                 </Button>
               </div>
             </div>
@@ -435,7 +435,7 @@ export default function UsersTableCard({
                       Email
                     </TableHead>
                     <TableHead className="h-10 w-[18%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Assigned Role
+                      Assigned role
                     </TableHead>
                     <TableHead className="h-10 w-[12%] px-4 text-left text-sm font-medium text-neutral-900">
                       MFA
@@ -444,7 +444,7 @@ export default function UsersTableCard({
                       Status
                     </TableHead>
                     <TableHead className="h-10 w-[12%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Last Active
+                      Last active
                     </TableHead>
                     <TableHead className={TABLE_ROW_ACTIONS_HEAD_CLASS}>
                       <span className="sr-only">Actions</span>

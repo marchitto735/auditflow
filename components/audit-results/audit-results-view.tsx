@@ -64,7 +64,7 @@ function buildInitializedReport(input: {
     recommendation:
       status === "Pass"
         ? "Proceed with CAPA closure for minor documentation gaps and archive this report for the next certification cycle."
-        : "Prioritize remediation on the listed clause gaps, then re-run Initialize Audit Analysis with the updated controlled document.",
+        : "Prioritize remediation on the listed clause gaps, then re-run audit analysis with the updated controlled document.",
     findings,
     created_at: input.createdAt,
   };
@@ -133,7 +133,7 @@ export default function AuditResultsView() {
   return (
     <div className="w-full min-w-0">
       <SectionHeader
-        title="Audit Report"
+        title="Audit report"
         description="Review your compliance breakdown and instantly resolve vulnerabilities by upgrading to a fully compliant document version."
         actions={
           <button
@@ -167,7 +167,7 @@ export default function AuditResultsView() {
               className="text-button"
               onClick={() => router.push("/audit/remediate")}
             >
-              Start Compliance Validation
+              Start compliance validation
             </Button>
           </CardFooter>
         </Card>

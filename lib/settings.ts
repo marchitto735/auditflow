@@ -8,10 +8,10 @@ export const SESSION_TIMEOUT_OPTIONS = [
 export type SessionTimeout = (typeof SESSION_TIMEOUT_OPTIONS)[number]["value"];
 
 export const TIMEZONE_OPTIONS = [
-  { value: "America/New_York", label: "Eastern Time (US)" },
-  { value: "America/Chicago", label: "Central Time (US)" },
-  { value: "America/Denver", label: "Mountain Time (US)" },
-  { value: "America/Los_Angeles", label: "Pacific Time (US)" },
+  { value: "America/New_York", label: "Eastern time (US)" },
+  { value: "America/Chicago", label: "Central time (US)" },
+  { value: "America/Denver", label: "Mountain time (US)" },
+  { value: "America/Los_Angeles", label: "Pacific time (US)" },
   { value: "UTC", label: "UTC" },
   { value: "Europe/London", label: "London" },
   { value: "Europe/Berlin", label: "Berlin" },

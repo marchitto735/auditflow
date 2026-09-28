@@ -270,19 +270,19 @@ function FrameworkKpiHeader({
 
     return [
       {
-        eyebrow: "Active Frameworks",
+        eyebrow: "Active frameworks",
         value: String(total),
         meta: `${mappedCount} fully mapped`,
         icon: Layers,
       },
       {
-        eyebrow: "Avg Coverage",
+        eyebrow: "Avg coverage",
         value: `${avgCoverage}%`,
         meta: "Mean clause mapping across packs",
         icon: Percent,
       },
       {
-        eyebrow: "Needs Review",
+        eyebrow: "Needs review",
         value: String(needsReview),
         meta:
           needsReview > 0
@@ -384,14 +384,14 @@ function MappingTable({
       <CardContent className="flex flex-col p-0">
         <div className="relative flex shrink-0 flex-col gap-3 border-b border-neutral-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
-            <p className={CARD_SECTION_EYEBROW_CLASS}>Clause Mapping</p>
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Clause mapping</p>
             <p className={SECTION_DESCRIPTION_CLASS}>
               Regulatory articles mapped to internal SOP / BPR / FIR controls.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
-              label="Clause Mapping"
+              label="Clause mapping"
               actions={TABLE_CARD_MENU_ACTIONS}
             />
           </div>
@@ -446,7 +446,7 @@ function MappingTable({
                 className={TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS}
                 onClick={onOpenSync}
               >
-                Sync Framework
+                Sync framework
               </Button>
             </div>
           </div>

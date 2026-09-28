@@ -150,11 +150,11 @@ function AuditReportActionsMenu({
           onSelect={() => onDownloadReport?.()}
         >
           <Download className="size-4" />
-          Download Report
+          Download report
         </DropdownMenuItem>
         <DropdownMenuItem className={ACTION_ITEM_CLASS} onSelect={copyAuditId}>
           <Copy className="size-4" />
-          Copy Audit ID
+          Copy audit ID
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-zinc-200" />
         <DropdownMenuItem
@@ -256,7 +256,7 @@ export function AuditReportTable({
                 type="button"
                 className="inline-flex w-fit cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-medium text-primary transition-colors hover:text-[var(--primary-hover)] hover:underline"
               >
-                Compliance Breakdown
+                Compliance breakdown
                 <ChevronDown
                   className={cn(
                     "size-4 shrink-0 transition-transform duration-300",

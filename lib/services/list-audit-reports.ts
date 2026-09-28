@@ -9,6 +9,7 @@ export type StoredAuditReport = SopAuditReport & {
   id: string;
   workflow: AuditWorkflowId;
   document_id: string | null;
+  file_name: string | null;
 };
 
 const REPORT_TABLES: { workflow: AuditWorkflowId; table: string; idField: string }[] =
@@ -34,6 +35,10 @@ function mapRow(
     workflow,
     document_id:
       row[idField] == null ? null : String(row[idField]),
+    file_name:
+      row.file_name == null && row.fileName == null
+        ? null
+        : String(row.file_name ?? row.fileName),
   };
 }
 

@@ -81,7 +81,7 @@ export function InviteUserDialog({
         <form onSubmit={handleSubmit}>
           <DialogHeader className="border-b border-border/60 p-4 text-left">
             <DialogTitle className="m-0 text-lg font-medium text-neutral-900">
-              Invite User
+              Invite user
             </DialogTitle>
             <DialogDescription className="m-0 mt-1 text-sm text-muted-foreground">
               Send a Supabase Auth invitation with an assigned AuditFlow role.

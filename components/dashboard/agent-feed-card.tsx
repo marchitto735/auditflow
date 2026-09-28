@@ -61,7 +61,7 @@ const FEED_EVENTS: FeedEvent[] = [
   {
     time: "10:05 AM",
     subsystem: "Classifier",
-    message: "Document typed as Standard Operating Procedure.",
+    message: "Document typed as standard operating procedure.",
   },
   {
     time: "10:04 AM",
@@ -168,14 +168,14 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
         )}
       >
         <div className="min-w-0 shrink-0 pr-10">
-          <p className={CARD_SECTION_EYEBROW_CLASS}>Activity Feed</p>
+          <p className={CARD_SECTION_EYEBROW_CLASS}>Activity feed</p>
           <p className={SECTION_DESCRIPTION_CLASS}>
             Real-time agent events across validation, scoring, and export.
           </p>
         </div>
         <div className="absolute top-3 right-3">
           <CardActionsMenu
-            label="Activity Feed"
+            label="Activity feed"
             actions={FEED_CARD_MENU_ACTIONS}
           />
         </div>

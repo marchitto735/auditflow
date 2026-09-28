@@ -219,7 +219,7 @@ function MobileFilterSection<T extends string>({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <p className="m-0 px-1 text-xs font-semibold tracking-wide text-neutral-500 uppercase">
+      <p className="m-0 px-1 text-sm font-semibold tracking-normal text-neutral-500">
         {title}
       </p>
       <div className="flex flex-col gap-0.5 rounded-xl border border-neutral-200 bg-white p-1">

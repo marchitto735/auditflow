@@ -1,12 +1,14 @@
 import type { ActivityRow } from "@/components/activity-table/activity-table";
 import type { AuditWorkflowId } from "@/lib/audit-workflows";
 import type { AuditLogRow } from "@/lib/dashboard-insights";
+import { formatReportDocumentLabel } from "@/lib/reports";
 import type { SopAuditReport } from "@/lib/sop-report";
 
 type StoredReport = SopAuditReport & {
   id: string;
   workflow: AuditWorkflowId;
   document_id: string | null;
+  file_name?: string | null;
 };
 
 function logStatus(status: string | null): AuditLogRow["status"] {
@@ -25,8 +27,11 @@ export function storedReportToActivityRow(report: StoredReport): ActivityRow {
 
   return {
     id: report.id,
-    document:
-      report.document_id || `${report.workflow.toUpperCase()} report`,
+    document: formatReportDocumentLabel(
+      report.workflow,
+      report.document_id,
+      report.file_name,
+    ),
     type: report.workflow.toUpperCase(),
     date: report.created_at
       ? new Date(report.created_at).toLocaleString()
@@ -42,8 +47,11 @@ export function storedReportToActivityRow(report: StoredReport): ActivityRow {
 export function storedReportToAuditLogRow(report: StoredReport): AuditLogRow {
   return {
     id: report.id,
-    document:
-      report.document_id || `${report.workflow.toUpperCase()} report`,
+    document: formatReportDocumentLabel(
+      report.workflow,
+      report.document_id,
+      report.file_name,
+    ),
     type: report.workflow.toUpperCase() as AuditLogRow["type"],
     date: report.created_at
       ? new Date(report.created_at).toLocaleString()

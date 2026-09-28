@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
 
 /** Horizontal inset shared by header + body cells. */
@@ -100,22 +101,6 @@ export type ActivityRow = {
   detail?: string;
 };
 
-function toTitleCase(value: string) {
-  return value
-    .trim()
-    .split(/([\s/_-]+)/)
-    .map((part) => {
-      if (/^[\s/_-]+$/.test(part)) return part;
-      return part
-        .split("")
-        .map((char, index) =>
-          index === 0 ? char.toUpperCase() : char.toLowerCase(),
-        )
-        .join("");
-    })
-    .join("");
-}
-
 export function activityStatusLabel(status: string | null | undefined) {
   const raw = (status ?? "").trim();
   if (!raw) return "—";
@@ -123,17 +108,17 @@ export function activityStatusLabel(status: string | null | undefined) {
   const value = raw.toLowerCase();
   if (value.includes("critical")) return "Critical";
   if (value.includes("non-compliant") || value.includes("non compliant")) {
-    return "Fail";
+    return "Non-compliant";
   }
   if (value.includes("compliant") && !value.includes("partial")) {
     return "Compliant";
   }
   if (value.includes("partial")) return "Partial";
   if (value === "pass" || value === "passed") return "Pass";
-  if (value === "fail" || value === "failed") return "Fail";
+  if (value === "fail" || value === "failed") return "Failed";
   if (value === "review") return "Review";
 
-  return toTitleCase(raw);
+  return toSentenceCase(raw);
 }
 
 export type StatusBadgeVariant = BadgeVariant;
@@ -143,7 +128,14 @@ export function statusBadgeVariant(
 ): StatusBadgeVariant {
   const label = activityStatusLabel(status);
   if (label === "Compliant" || label === "Pass") return "success";
-  if (label === "Critical" || label === "Fail") return "destructive";
+  if (
+    label === "Critical" ||
+    label === "Fail" ||
+    label === "Failed" ||
+    label === "Non-compliant"
+  ) {
+    return "destructive";
+  }
   if (label === "Partial" || label === "Review") return "warning";
   return "outline";
 }

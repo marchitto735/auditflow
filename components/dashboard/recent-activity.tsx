@@ -151,14 +151,14 @@ export default function RecentActivity({
       <CardContent className="flex flex-col p-0">
         <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
-            <p className={CARD_SECTION_EYEBROW_CLASS}>Audit History</p>
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Audit history</p>
             <p className={SECTION_DESCRIPTION_CLASS}>
               Completed audits with scores, status, and document type.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
-              label="Audit History"
+              label="Audit history"
               actions={TABLE_CARD_MENU_ACTIONS}
             />
           </div>

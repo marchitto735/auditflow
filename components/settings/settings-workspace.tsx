@@ -144,7 +144,7 @@ export default function SettingsWorkspace({
     <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
       <CardContent className="flex flex-col p-0">
         <div className="border-b border-zinc-200 px-4 pt-[16px] pb-3">
-          <p className={CARD_SECTION_EYEBROW_CLASS}>Workspace Settings</p>
+          <p className={CARD_SECTION_EYEBROW_CLASS}>Workspace settings</p>
           <p className={SECTION_DESCRIPTION_CLASS}>
             Organization defaults, security posture, and alert preferences.
           </p>
@@ -161,7 +161,7 @@ export default function SettingsWorkspace({
                   ["general", "General"],
                   ["security", "Security"],
                   ["notifications", "Notifications"],
-                  ["system-health", "System Health"],
+                  ["system-health", "System health"],
                 ] as const
               ).map(([value, label]) => (
                 <TabsTrigger
@@ -181,7 +181,7 @@ export default function SettingsWorkspace({
 
           <TabsContent value="general" className="m-0 p-4 md:p-6">
             <SettingsSection
-              title="General Settings"
+              title="General settings"
               description="Organization identity and audit timestamp defaults."
             >
               <div className="flex flex-col gap-5">
@@ -258,7 +258,7 @@ export default function SettingsWorkspace({
 
           <TabsContent value="security" className="m-0 p-4 md:p-6">
             <SettingsSection
-              title="Security & Access Control"
+              title="Security & access control"
               description="MFA enforcement, session lifetime, and password policy."
             >
               <div className="flex flex-col gap-5">
@@ -387,7 +387,7 @@ export default function SettingsWorkspace({
 
           <TabsContent value="system-health" className="m-0 p-4 md:p-6">
             <SettingsSection
-              title="System Health"
+              title="System health"
               description="Live infrastructure checks and tenant diagnostics for admin and engineering reference."
             >
               <SystemHealthPanel />

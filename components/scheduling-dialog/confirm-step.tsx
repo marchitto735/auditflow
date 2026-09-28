@@ -50,7 +50,7 @@ const ConfirmStep = React.memo(function ConfirmStep({
         <dl className="flex flex-col gap-4 text-body2 mt-[32px] items-start">
           <div className="w-full">
             <dt className="text-foreground dark:text-white color:text-white font-medium">What</dt>
-            <dd className="text-foreground dark:text-white color:text-white mt-0.5">Introduction Call between {name || "Guest"} and Mike Marchitto</dd>
+            <dd className="text-foreground dark:text-white color:text-white mt-0.5">Introduction call between {name || "Guest"} and Mike Marchitto</dd>
           </div>
           <div className="w-full">
             <dt className="text-foreground dark:text-white color:text-white font-medium">When</dt>

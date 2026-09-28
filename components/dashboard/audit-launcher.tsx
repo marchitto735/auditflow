@@ -19,6 +19,7 @@ import {
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
 } from "@/lib/page-layout";
 import { workflowStatusDotClass, workflowStatusSparkClass } from "@/lib/chart-tokens";
+import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
 
 const FEATURED_CARD_CLASS = cn(
@@ -28,9 +29,9 @@ const FEATURED_CARD_CLASS = cn(
 
 /** Regulatory domain eyebrows — compact telemetry KPI cards only. */
 const EYEBROW_DISPLAY: Record<AuditWorkflowId, string> = {
-  sop: "Policy Control",
-  bpr: "Production Log",
-  fir: "Site Audit",
+  sop: "Policy control",
+  bpr: "Production log",
+  fir: "Site audit",
 };
 
 /** Dashboard compact telemetry — shorthand acronym in the card corner. */
@@ -42,9 +43,9 @@ const WORKFLOW_ACRONYM: Record<AuditWorkflowId, string> = {
 
 /** Featured Audits page titles — full document type names. */
 const FEATURED_TITLE_DISPLAY: Record<AuditWorkflowId, string> = {
-  sop: "Standard Operating Procedure (SOP)",
-  bpr: "Batch Production Record (BPR)",
-  fir: "Facility Inspection Report (FIR)",
+  sop: "Standard operating procedure (SOP)",
+  bpr: "Batch production record (BPR)",
+  fir: "Facility inspection report (FIR)",
 };
 
 /** Dashboard compact titles — live counts for fleet telemetry. */
@@ -222,7 +223,7 @@ export function AuditLauncherCard({
                 className="w-full"
                 onClick={handleActivate}
               >
-                Run Audit
+                Run audit
               </Button>
             </div>
           </CardContent>
@@ -293,17 +294,19 @@ export function AuditLauncherCard({
           >
             <span
               className={cn(
-                "size-2.5 shrink-0 rounded-full",
+                "size-2 shrink-0 rounded-full",
                 workflowStatusDotClass(workflow.status),
               )}
               aria-hidden
             />
-            <span className="shrink-0 font-normal text-foreground">{workflow.status}</span>
+            <span className="shrink-0 font-normal text-foreground">
+              {toSentenceCase(workflow.status)}
+            </span>
             <span className="shrink-0 text-neutral-900" aria-hidden>
               •
             </span>
             <span className="min-w-0 break-words text-neutral-900">
-              Last Run {workflow.lastRun}
+              Last run {workflow.lastRun}
             </span>
           </p>
 

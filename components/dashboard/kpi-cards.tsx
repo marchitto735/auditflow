@@ -15,6 +15,7 @@ import {
   DASHBOARD_CARD_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
 } from "@/lib/page-layout";
+import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
 
 const METRIC_VALUE_CLASS = "font-sans tabular-nums";
@@ -42,7 +43,7 @@ type KpiCardData = {
 const KPI_CARDS: readonly KpiCardData[] = [
   {
     id: "total-audits",
-    eyebrow: "Total Audits",
+    eyebrow: "Total audits",
     code: "YTD",
     metric: "142",
     trend: [118, 124, 129, 134, 138, 140, 142],
@@ -55,7 +56,7 @@ const KPI_CARDS: readonly KpiCardData[] = [
   },
   {
     id: "open-findings",
-    eyebrow: "Open Findings",
+    eyebrow: "Open findings",
     code: "ALL",
     metric: "8",
     trend: [11, 10, 9, 10, 8, 9, 8],
@@ -68,7 +69,7 @@ const KPI_CARDS: readonly KpiCardData[] = [
   },
   {
     id: "average-score",
-    eyebrow: "Average Score",
+    eyebrow: "Average score",
     code: "AVG",
     metric: "88%",
     trend: [84, 85, 86, 87, 86, 88, 88],
@@ -136,17 +137,19 @@ export function KpiCard({ card }: { card: KpiCardData }) {
           >
             <span
               className={cn(
-                "size-2.5 shrink-0 rounded-full",
+                "size-2 shrink-0 rounded-full",
                 workflowStatusDotClass(card.status),
               )}
               aria-hidden
             />
-            <span className="shrink-0 font-normal text-foreground">{card.status}</span>
+            <span className="shrink-0 font-normal text-foreground">
+              {toSentenceCase(card.status)}
+            </span>
             <span className="shrink-0 text-neutral-900" aria-hidden>
               •
             </span>
             <span className="min-w-0 break-words text-neutral-900">
-              Last Run {card.lastRun}
+              Last run {card.lastRun}
             </span>
           </p>
 

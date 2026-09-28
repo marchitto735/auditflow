@@ -43,6 +43,7 @@ import {
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
 } from "@/lib/page-layout";
+import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
 
 const DATE_RANGES = [
@@ -68,11 +69,11 @@ const DEFAULT_PAGE_SIZE = 3;
 
 function departmentBadgeVariant(status: DepartmentScoreRow["status"]) {
   switch (status) {
-    case "On Track":
+    case "On track":
       return "success" as const;
     case "Watch":
       return "warning" as const;
-    case "At Risk":
+    case "At risk":
       return "destructive" as const;
     default:
       return "outline" as const;
@@ -80,7 +81,11 @@ function departmentBadgeVariant(status: DepartmentScoreRow["status"]) {
 }
 
 function DepartmentStatus({ status }: { status: DepartmentScoreRow["status"] }) {
-  return <Badge variant={departmentBadgeVariant(status)}>{status}</Badge>;
+  return (
+    <Badge variant={departmentBadgeVariant(status)}>
+      {toSentenceCase(status)}
+    </Badge>
+  );
 }
 
 function VarianceSeverity({
@@ -200,7 +205,7 @@ export default function ScoreAnalysisView() {
         </Select>
 
         <Button type="button" variant="black" className="h-9 min-h-9">
-          Export Packet
+          Export packet
         </Button>
       </div>
 
@@ -221,7 +226,7 @@ export default function ScoreAnalysisView() {
           <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
             <div className="min-w-0 pr-10">
               <p className={CARD_SECTION_EYEBROW_CLASS}>
-                Department Distribution
+                Department distribution
               </p>
               <p className={SECTION_DESCRIPTION_CLASS}>
                 Score averages, audit volume, and GMP risk by department.
@@ -229,7 +234,7 @@ export default function ScoreAnalysisView() {
             </div>
             <div className="absolute top-3 right-3">
               <CardActionsMenu
-                label="Department Distribution"
+                label="Department distribution"
                 actions={TABLE_CARD_MENU_ACTIONS}
               />
             </div>
@@ -250,7 +255,7 @@ export default function ScoreAnalysisView() {
                       Audits
                     </TableHead>
                     <TableHead className="w-[14%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
-                      Avg Score
+                      Avg score
                     </TableHead>
                     <TableHead className="w-[14%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
                       Δ 90d
@@ -317,14 +322,14 @@ export default function ScoreAnalysisView() {
         <CardContent className="flex flex-col p-0">
           <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
             <div className="min-w-0 pr-10">
-              <p className={CARD_SECTION_EYEBROW_CLASS}>Variance Log</p>
+              <p className={CARD_SECTION_EYEBROW_CLASS}>Variance log</p>
               <p className={SECTION_DESCRIPTION_CLASS}>
                 Historical score anomalies and domain-level variance signals.
               </p>
             </div>
             <div className="absolute top-3 right-3">
               <CardActionsMenu
-                label="Variance Log"
+                label="Variance log"
                 actions={CHART_CARD_MENU_ACTIONS}
               />
             </div>

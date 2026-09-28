@@ -28,13 +28,13 @@ export function goldStandardCatalogItem(
   documentType?: string | null,
 ): CartCatalogItem {
   const clauseId = clause?.id ?? "27";
-  const shortName = clause?.shortName ?? "Doc Practices";
+  const shortName = clause?.shortName ?? "Doc practices";
   const docType = documentType?.trim() || "SOP";
   const skuDoc = docType.replace(/\s+/g, "").toUpperCase();
 
   return {
     sku: `GS-${skuDoc}-${clauseId}`,
-    title: `Gold Standard SOP — Clause ${clauseId} Compliance Package`,
+    title: `Gold standard SOP — Clause ${clauseId} Compliance Package`,
     description: `${shortName} ${docType} aligned to ${clause?.section ?? "GMP documentation practices"}.`,
     clauseId,
     unitPriceCents: GOLD_STANDARD_UNIT_PRICE_CENTS,

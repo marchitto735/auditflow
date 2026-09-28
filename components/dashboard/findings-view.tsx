@@ -43,9 +43,21 @@ const SEVERITY_ORDER: FindingSeverity[] = [
 
 const STATUS_SHORT_LABEL: Record<FindingStatus, string> = {
   Open: "Open",
-  "In Remediation": "Remediation",
-  "Pending Verification": "Pending",
+  "In remediation": "In remediation",
+  "Pending verification": "Pending verification",
 };
+
+function findingStatusBadgeVariant(status: FindingStatus) {
+  switch (status) {
+    case "Open":
+    case "In remediation":
+      return "warning" as const;
+    case "Pending verification":
+      return "success" as const;
+    default:
+      return "outline" as const;
+  }
+}
 
 function sortFindings(rows: FindingRow[]) {
   return [...rows].sort(
@@ -85,7 +97,7 @@ export default function FindingsView() {
     setRows((current) =>
       current.map((row) =>
         row.id === active.id
-          ? { ...row, owner: owner.trim(), status: "In Remediation" }
+          ? { ...row, owner: owner.trim(), status: "In remediation" }
           : row,
       ),
     );
@@ -150,20 +162,24 @@ export default function FindingsView() {
                           }
                         >
                           <SelectTrigger
-                            className="h-9 w-full min-w-0 rounded-lg"
+                            className="h-9 w-full min-w-0 rounded-lg border-0 bg-transparent px-0 shadow-none focus:ring-0"
                             title={row.status}
                           >
                             <SelectValue>
-                              {STATUS_SHORT_LABEL[row.status]}
+                              <Badge
+                                variant={findingStatusBadgeVariant(row.status)}
+                              >
+                                {STATUS_SHORT_LABEL[row.status]}
+                              </Badge>
                             </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="Open">Open</SelectItem>
-                            <SelectItem value="In Remediation">
-                              In Remediation
+                            <SelectItem value="In remediation">
+                              In remediation
                             </SelectItem>
-                            <SelectItem value="Pending Verification">
-                              Pending Verification
+                            <SelectItem value="Pending verification">
+                              Pending verification
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -180,7 +196,7 @@ export default function FindingsView() {
           <CardContent className="flex flex-col gap-4 p-4">
             <div>
               <p className={CARD_EYEBROW_MUTED_CLASS}>
-                Selected Finding
+                Selected finding
               </p>
               <h3 className="text-h4 m-0 mt-1 whitespace-normal break-words font-semibold leading-[1.15] text-foreground">
                 {active ? active.title : "Select a finding"}

@@ -81,7 +81,7 @@ const GAP_RULES: { test: RegExp; analysis: string; change: string }[] = [
 /** Full controlled-document text. Every line is parsed; none are optional. */
 export const SOURCE_SOP_TEXT = [
   "FDA 21 CFR PART 11",
-  "Electronic Records — Documentation Controls",
+  "Electronic records — documentation controls",
   "",
   "Procedure — General Requirements",
   "8.0  General Requirements",

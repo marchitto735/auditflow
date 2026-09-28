@@ -9,7 +9,7 @@ export type AuditLogRow = {
 };
 
 export type FindingSeverity = "Critical" | "High" | "Medium" | "Low";
-export type FindingStatus = "Open" | "In Remediation" | "Pending Verification";
+export type FindingStatus = "Open" | "In remediation" | "Pending verification";
 
 export type FindingRow = {
   id: string;
@@ -24,7 +24,7 @@ export type FindingRow = {
 export const AUDIT_LOG: AuditLogRow[] = [
   {
     id: "al-1",
-    document: "SOP-QA-001 Cleaning",
+    document: "SOP-QA-001 cleaning",
     type: "SOP",
     date: "Sep 14, 2026",
     score: 92,
@@ -51,7 +51,7 @@ export const AUDIT_LOG: AuditLogRow[] = [
   },
   {
     id: "al-4",
-    document: "SOP-QA-014 Labeling",
+    document: "SOP-QA-014 labeling",
     type: "SOP",
     date: "Mar 11, 2026",
     score: 88,
@@ -78,7 +78,7 @@ export const AUDIT_LOG: AuditLogRow[] = [
   },
   {
     id: "al-7",
-    document: "SOP-PR-022 Weighing",
+    document: "SOP-PR-022 weighing",
     type: "SOP",
     date: "Mar 8, 2026",
     score: 100,
@@ -105,7 +105,7 @@ export const AUDIT_LOG: AuditLogRow[] = [
   },
   {
     id: "al-10",
-    document: "SOP-QA-008 Deviation",
+    document: "SOP-QA-008 deviation",
     type: "SOP",
     date: "Mar 5, 2026",
     score: 90,
@@ -123,7 +123,7 @@ export const AUDIT_LOG: AuditLogRow[] = [
   },
   {
     id: "al-12",
-    document: "SOP-TR-003 Training",
+    document: "SOP-TR-003 training",
     type: "SOP",
     date: "Mar 2, 2026",
     score: 84,
@@ -136,7 +136,7 @@ export const OPEN_FINDINGS: FindingRow[] = [
   {
     id: "f-1",
     title: "Part 11 citation uses incorrect CFR title",
-    document: "SOP-QA-001 Cleaning",
+    document: "SOP-QA-001 cleaning",
     severity: "High",
     citation: "21 CFR Part 11.10(b)",
     owner: "Unassigned",
@@ -145,7 +145,7 @@ export const OPEN_FINDINGS: FindingRow[] = [
   {
     id: "f-2",
     title: "Missing prohibition on correction fluid",
-    document: "SOP-QA-001 Cleaning",
+    document: "SOP-QA-001 cleaning",
     severity: "Medium",
     citation: "21 CFR 211.180(c)",
     owner: "Unassigned",
@@ -158,7 +158,7 @@ export const OPEN_FINDINGS: FindingRow[] = [
     severity: "Critical",
     citation: "21 CFR 211.103",
     owner: "M. Chen",
-    status: "In Remediation",
+    status: "In remediation",
   },
   {
     id: "f-4",
@@ -172,25 +172,25 @@ export const OPEN_FINDINGS: FindingRow[] = [
   {
     id: "f-5",
     title: "Label reconciliation incomplete for lot 88418",
-    document: "SOP-QA-014 Labeling",
+    document: "SOP-QA-014 labeling",
     severity: "High",
     citation: "21 CFR 211.122(c)",
     owner: "J. Alvarez",
-    status: "In Remediation",
+    status: "In remediation",
   },
   {
     id: "f-6",
     title: "Training record lacks effectiveness check",
-    document: "SOP-TR-003 Training",
+    document: "SOP-TR-003 training",
     severity: "Medium",
     citation: "21 CFR 211.25(a)",
     owner: "S. Okonkwo",
-    status: "Pending Verification",
+    status: "Pending verification",
   },
   {
     id: "f-7",
     title: "Equipment ID missing on weighing printout",
-    document: "SOP-PR-022 Weighing",
+    document: "SOP-PR-022 weighing",
     severity: "High",
     citation: "21 CFR 211.68(b)",
     owner: "Unassigned",
@@ -203,16 +203,16 @@ export const OPEN_FINDINGS: FindingRow[] = [
     severity: "Low",
     citation: "21 CFR 211.56(c)",
     owner: "R. Patel",
-    status: "Pending Verification",
+    status: "Pending verification",
   },
 ];
 
 export const SCORE_CATEGORIES = [
-  { name: "Standard Operating Procedure", score: 94 },
-  { name: "Batch Record Integrity", score: 82 },
-  { name: "Facility Sanitation", score: 88 },
-  { name: "Data Integrity (Part 11)", score: 79 },
-  { name: "Training Effectiveness", score: 91 },
+  { name: "Standard operating procedure", score: 94 },
+  { name: "Batch record integrity", score: 82 },
+  { name: "Facility sanitation", score: 88 },
+  { name: "Data integrity (Part 11)", score: 79 },
+  { name: "Training effectiveness", score: 91 },
 ] as const;
 
 export const GMP_THRESHOLD = 85;
@@ -245,7 +245,7 @@ export type DepartmentScoreRow = {
   avgScore: number;
   delta: string;
   belowGmp: number;
-  status: "On Track" | "Watch" | "At Risk";
+  status: "On track" | "Watch" | "At risk";
 };
 
 /** Department-level distribution for Analytics deep-dive. */
@@ -257,7 +257,7 @@ export const DEPARTMENT_SCORES: DepartmentScoreRow[] = [
     avgScore: 91,
     delta: "+2.1",
     belowGmp: 2,
-    status: "On Track",
+    status: "On track",
   },
   {
     id: "dept-mfg",
@@ -266,7 +266,7 @@ export const DEPARTMENT_SCORES: DepartmentScoreRow[] = [
     avgScore: 86,
     delta: "+0.8",
     belowGmp: 5,
-    status: "On Track",
+    status: "On track",
   },
   {
     id: "dept-pkg",
@@ -284,7 +284,7 @@ export const DEPARTMENT_SCORES: DepartmentScoreRow[] = [
     avgScore: 89,
     delta: "+1.0",
     belowGmp: 1,
-    status: "On Track",
+    status: "On track",
   },
   {
     id: "dept-wh",
@@ -293,7 +293,7 @@ export const DEPARTMENT_SCORES: DepartmentScoreRow[] = [
     avgScore: 78,
     delta: "-3.2",
     belowGmp: 3,
-    status: "At Risk",
+    status: "At risk",
   },
 ];
 
@@ -312,7 +312,7 @@ export const VARIANCE_LOG: VarianceLogRow[] = [
     id: "var-1",
     date: "Sep 22, 2026",
     signal: "Batch yield variance exceeded 2σ on BPR-204",
-    domain: "Batch Record Integrity",
+    domain: "Batch record integrity",
     variance: "-4.8 pts",
     severity: "High",
   },
@@ -320,7 +320,7 @@ export const VARIANCE_LOG: VarianceLogRow[] = [
     id: "var-2",
     date: "Sep 18, 2026",
     signal: "Part 11 audit trail gap on SOP-QA-001 revision",
-    domain: "Data Integrity (Part 11)",
+    domain: "Data integrity (Part 11)",
     variance: "-6.1 pts",
     severity: "Critical",
   },
@@ -328,7 +328,7 @@ export const VARIANCE_LOG: VarianceLogRow[] = [
     id: "var-3",
     date: "Sep 12, 2026",
     signal: "Facility sanitation score rebound after CAPA close",
-    domain: "Facility Sanitation",
+    domain: "Facility sanitation",
     variance: "+3.4 pts",
     severity: "Low",
   },
@@ -336,7 +336,7 @@ export const VARIANCE_LOG: VarianceLogRow[] = [
     id: "var-4",
     date: "Sep 5, 2026",
     signal: "Training effectiveness dip in Packaging cohort",
-    domain: "Training Effectiveness",
+    domain: "Training effectiveness",
     variance: "-2.2 pts",
     severity: "Medium",
   },
@@ -344,7 +344,7 @@ export const VARIANCE_LOG: VarianceLogRow[] = [
     id: "var-5",
     date: "Aug 28, 2026",
     signal: "SOP coverage lag vs scheduled policy cycle",
-    domain: "Standard Operating Procedure",
+    domain: "Standard operating procedure",
     variance: "-1.7 pts",
     severity: "Medium",
   },
@@ -352,7 +352,7 @@ export const VARIANCE_LOG: VarianceLogRow[] = [
     id: "var-6",
     date: "Aug 21, 2026",
     signal: "Warehouse temperature excursion trend week-over-week",
-    domain: "Facility Sanitation",
+    domain: "Facility sanitation",
     variance: "-2.9 pts",
     severity: "High",
   },
@@ -360,7 +360,7 @@ export const VARIANCE_LOG: VarianceLogRow[] = [
     id: "var-7",
     date: "Aug 14, 2026",
     signal: "Label reconciliation cycle time above target",
-    domain: "Batch Record Integrity",
+    domain: "Batch record integrity",
     variance: "-1.1 pts",
     severity: "Low",
   },
@@ -368,7 +368,7 @@ export const VARIANCE_LOG: VarianceLogRow[] = [
     id: "var-8",
     date: "Aug 7, 2026",
     signal: "QC lab OOS rate spike on assay suite B",
-    domain: "Data Integrity (Part 11)",
+    domain: "Data integrity (Part 11)",
     variance: "-3.6 pts",
     severity: "Critical",
   },

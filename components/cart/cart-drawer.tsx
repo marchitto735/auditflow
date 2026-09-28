@@ -72,7 +72,7 @@ export default function CartDrawer() {
               ? "Enter your details to complete this compliance package order."
               : view === "success"
                 ? "A confirmation will be sent to the email you provided."
-                : "Gold Standard SOP packages stay in your cart until checkout."}
+                : "Gold standard SOP packages stay in your cart until checkout."}
           </SheetDescription>
         </SheetHeader>
         <Separator />

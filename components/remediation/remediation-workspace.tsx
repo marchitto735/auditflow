@@ -57,7 +57,7 @@ function findingBadgeVariant(status: FindingStatusValue) {
 function statusLabel(status: FindingStatusValue) {
   if (status === "compliant") return "Compliant";
   if (status === "partial") return "Partial";
-  return "Non-Compliant";
+  return "Non-compliant";
 }
 
 function FindingStatus({ status }: { status: FindingStatusValue }) {
@@ -217,14 +217,14 @@ export default function RemediationWorkspace() {
     link.download = "gold-standard-sop.pdf";
     link.click();
     URL.revokeObjectURL(url);
-    toast.success("Gold Standard SOP downloaded.");
+    toast.success("Gold standard SOP downloaded.");
   }
 
   return (
     <div className={cn("flex h-0 max-h-[calc(100dvh-4rem)] min-h-0 w-full flex-1 flex-col overflow-hidden", PAGE_CANVAS_CLASS)}>
       <header className={cn("mb-6 flex shrink-0 items-start", PAGE_EDGE_ALIGN_CLASS)}>
         <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-foreground")}>
-          Compliance Validation
+          Compliance validation
         </h2>
       </header>
 
@@ -237,7 +237,7 @@ export default function RemediationWorkspace() {
         >
           <header className="flex shrink-0 flex-row items-center gap-3 border-b border-zinc-100 p-4 lg:gap-6">
             <span className="shrink-0 text-base font-medium leading-6 text-foreground">
-              Edit Document
+              Edit document
             </span>
             <span className="ml-auto min-w-0 truncate font-mono text-sm leading-5 tabular-nums text-foreground">
               {SOURCE_DOCUMENT}
@@ -268,7 +268,7 @@ export default function RemediationWorkspace() {
                   },
                 },
                 {
-                  label: "Download Certified SOP",
+                  label: "Download certified SOP",
                   onSelect: finalize,
                 },
               ]}
@@ -321,7 +321,7 @@ export default function RemediationWorkspace() {
                                 className={ACTION_BUTTON_CLASS}
                                 onClick={() => runComplianceCheck(chunk.id)}
                               >
-                                Run Compliance Check
+                                Run compliance check
                               </Button>
                             </div>
                           </div>
@@ -329,7 +329,7 @@ export default function RemediationWorkspace() {
                           <div className="flex flex-col gap-3">
                             <div className="flex flex-col gap-1 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-3">
                               <p className={CARD_EYEBROW_MUTED_CLASS}>
-                                Suggested Revision
+                                Suggested revision
                               </p>
                               <p className="m-0 text-base font-normal leading-6 text-foreground">
                                 {review?.decision === "accepted"
@@ -351,7 +351,7 @@ export default function RemediationWorkspace() {
                                     )
                                   }
                                 >
-                                  Accept Revision
+                                  Accept revision
                                 </Button>
                                 <Button
                                   type="button"
@@ -359,7 +359,7 @@ export default function RemediationWorkspace() {
                                   className={ACTION_BUTTON_CLASS}
                                   onClick={() => startEdit(chunk)}
                                 >
-                                  Edit Manually
+                                  Edit manually
                                 </Button>
                               </div>
                             ) : (
@@ -404,8 +404,8 @@ export default function RemediationWorkspace() {
               )}
               <span>
                 {flaggedCount > 0
-                  ? `${flaggedCount} Non-Compliant ${flaggedCount === 1 ? "Finding" : "Findings"}`
-                  : "Document Compliant"}
+                  ? `${flaggedCount} non-compliant ${flaggedCount === 1 ? "finding" : "findings"}`
+                  : "Document compliant"}
               </span>
             </div>
             <Button
@@ -415,7 +415,7 @@ export default function RemediationWorkspace() {
               disabled={flaggedCount > 0}
               onClick={finalize}
             >
-              Download Certified SOP
+              Download certified SOP
             </Button>
           </footer>
         </Card>

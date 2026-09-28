@@ -63,7 +63,7 @@ export type ProjectCardProps = {
   description: string;
   image: string;
   href?: string;
-  /** Default: “See Case Study”. */
+  /** Default: “See case study”. */
   ctaLabel?: string;
   /** When true, CTA uploads a file and POSTs to /api/audit/run. */
   runAudit?: boolean;
@@ -78,7 +78,7 @@ export default function ProjectCard({
   description,
   image,
   href,
-  ctaLabel = "See Case Study",
+  ctaLabel = "See case study",
   runAudit: isAuditCard = false,
   auditWorkflow = "sop",
   layout = "horizontal",
@@ -222,7 +222,7 @@ export default function ProjectCard({
       return (
         <div className="w-full min-w-0">
           <SectionHeader
-            title="Audit Report"
+            title="Audit report"
             description="Review your compliance breakdown and instantly resolve vulnerabilities by upgrading to a fully compliant SOP version."
             actions={
               <button
@@ -255,7 +255,7 @@ export default function ProjectCard({
                   className="text-button"
                   onClick={downloadReport}
                 >
-                  Download Report
+                  Download report
                 </Button>
                 <Button
                   type="button"
@@ -263,7 +263,7 @@ export default function ProjectCard({
                   className="text-button"
                   onClick={() => router.push("/audit/remediate")}
                 >
-                  Start Compliance Validation
+                  Start compliance validation
                 </Button>
               </CardFooter>
             </Card>
@@ -296,7 +296,7 @@ export default function ProjectCard({
                         !selectedClause && "text-muted-foreground",
                       )}
                     >
-                      {selectedClause?.label ?? "Select Clause..."}
+                      {selectedClause?.label ?? "Select clause..."}
                     </span>
                     <ChevronDown
                       aria-hidden

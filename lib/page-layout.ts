@@ -79,8 +79,8 @@ export const TABLE_TOOLBAR_ACTIONS_CLASS =
   "flex w-full shrink-0 items-center gap-2 sm:ml-auto sm:w-auto sm:justify-end";
 
 /**
- * Primary table-header CTA — fixed width so New Audit / New Policy / Sync /
- * Export / View All buttons align across pages; label stays centered.
+ * Primary table-header CTA — fixed width so New audit / New policy / Sync /
+ * Export / View all buttons align across pages; label stays centered.
  */
 export const TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS =
   "h-9! min-h-9! w-[12rem] shrink-0 justify-center rounded-md px-3 text-sm";
@@ -160,12 +160,11 @@ export const DASHBOARD_TRIPLE_CARD_GRID_CLASS =
 export const RECENT_ACTIVITY_CARD_HEIGHT_CLASS = "h-auto";
 
 /**
- * Shared section label — matches sidebar group headers (Operations, Insights, System).
- * All-caps, xs / semibold, tracked-out. Prefer title case in source copy;
- * CSS `uppercase` handles presentation.
+ * Shared section / card eyebrow label — sentence case at rest (no CSS uppercase).
+ * 14px / semibold; use for card headers, KPI eyebrows, and section overlines.
  */
 export const SECTION_LABEL_CLASS =
-  "text-xs font-semibold uppercase tracking-wider text-neutral-900";
+  "text-sm font-semibold tracking-normal text-neutral-900";
 
 /**
  * Card eyebrow — identical to sidebar section headers for visual hierarchy.
@@ -173,7 +172,14 @@ export const SECTION_LABEL_CLASS =
 export const CARD_EYEBROW_CLASS = `m-0 ${SECTION_LABEL_CLASS}`;
 
 /**
- * Top-right card corner label (SOP / YTD / etc.) — stacked under telemetry sparklines.
+ * Muted overline — sheet/panel sub-headers (Summary, Findings, metadata).
+ * Matches eyebrow size (14px).
+ */
+export const OVERLINE_LABEL_CLASS =
+  "m-0 text-sm font-semibold tracking-normal text-neutral-500";
+
+/**
+ * Top-right card corner label (SOP / YTD / etc.) — acronym codes stay uppercase.
  */
 export const CARD_CORNER_LABEL_CLASS =
   "m-0 shrink-0 font-mono text-xs font-medium uppercase tracking-wider text-neutral-500";

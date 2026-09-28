@@ -64,6 +64,7 @@ import {
   CARD_HEADER_STACK_CLASS,
   CARD_METRIC_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
+  OVERLINE_LABEL_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
@@ -124,7 +125,7 @@ function PoliciesKpiHeader({ policies }: { policies: MasterPolicy[] }) {
     icon: typeof FileText;
   }> = [
     {
-      eyebrow: "Total Documents",
+      eyebrow: "Total documents",
       value: String(kpis.totalDocuments),
       meta:
         kpis.failedCount > 0
@@ -139,7 +140,7 @@ function PoliciesKpiHeader({ policies }: { policies: MasterPolicy[] }) {
       icon: CheckCircle2,
     },
     {
-      eyebrow: "Pending Reviews",
+      eyebrow: "Pending reviews",
       value: String(kpis.pendingCount),
       meta:
         kpis.draftCount > 0
@@ -325,7 +326,7 @@ function UploadPolicyDialog({
                 id="policy-title"
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
-                placeholder="e.g. Document Control & Change Management"
+                placeholder="e.g. Document control & change management"
               />
             </div>
             <div className="flex flex-col gap-1.5">
@@ -449,7 +450,7 @@ function PolicyInspectSheet({
             </div>
 
             <div>
-              <p className="m-0 mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+              <p className={cn(OVERLINE_LABEL_CLASS, "mb-2")}>
                 Frameworks
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -462,7 +463,7 @@ function PolicyInspectSheet({
             </div>
 
             <div>
-              <p className="m-0 mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+              <p className={cn(OVERLINE_LABEL_CLASS, "mb-2")}>
                 Parsed clauses
               </p>
               <ul className="m-0 flex list-none flex-col gap-2 p-0">
@@ -574,7 +575,7 @@ export default function PoliciesTableCard({
         <CardContent className="flex flex-col p-0">
           <div className="relative flex shrink-0 flex-col gap-3 border-b border-neutral-200 px-4 pt-[16px] pb-3">
             <div className="min-w-0 pr-10">
-              <p className={CARD_SECTION_EYEBROW_CLASS}>Master Policy Library</p>
+              <p className={CARD_SECTION_EYEBROW_CLASS}>Master policy library</p>
               <p className={SECTION_DESCRIPTION_CLASS}>
                 Controlled SOP, BPR, and FIR documents with parse status and
                 framework coverage.
@@ -582,7 +583,7 @@ export default function PoliciesTableCard({
             </div>
             <div className="absolute top-3 right-3">
               <CardActionsMenu
-                label="Master Policy Library"
+                label="Master policy library"
                 actions={TABLE_CARD_MENU_ACTIONS}
               />
             </div>
@@ -637,7 +638,7 @@ export default function PoliciesTableCard({
                   className={TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS}
                   onClick={() => setUploadOpen(true)}
                 >
-                  New Policy
+                  New policy
                 </Button>
               </div>
             </div>

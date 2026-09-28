@@ -11,10 +11,10 @@ import {
 import { cn } from "@/lib/utils";
 
 export const CARD_MENU_ACTIONS = [
-  "Copy Configuration Link",
-  "Send to Reviewer",
-  "Export Schema",
-  "View Run History",
+  "Copy configuration link",
+  "Send to reviewer",
+  "Export schema",
+  "View run history",
 ] as const;
 
 export type CardMenuAction = (typeof CARD_MENU_ACTIONS)[number];
@@ -37,7 +37,7 @@ export const CHART_CARD_MENU_ACTIONS = [
 /** Feed / pipeline cards — Activity Feed, Compliance Pipeline. */
 export const FEED_CARD_MENU_ACTIONS = [
   "Filter",
-  "Export Log",
+  "Export log",
   "Refresh",
 ] as const;
 

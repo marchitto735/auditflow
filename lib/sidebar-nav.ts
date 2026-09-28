@@ -81,7 +81,7 @@ export const SIDEBAR_NAV_SECTIONS: SidebarNavSection[] = [
 
 export const SIDEBAR_PROFILE = {
   name: "Kevin Marchitto",
-  role: "Compliance Auditor",
+  role: "Compliance auditor",
   initials: "KM",
   imageSrc: "/images/kevin-marchitto.jpg",
 } as const;
@@ -109,21 +109,21 @@ const BREADCRUMB_NESTED: Record<
   string,
   { parentHref: string; title: string }
 > = {
-  "/dashboard/audits": { parentHref: "/dashboard", title: "Audit Log" },
-  "/dashboard/findings": { parentHref: "/dashboard", title: "Open Findings" },
-  "/audit/results": { parentHref: "/audits", title: "Audit Report" },
+  "/dashboard/audits": { parentHref: "/dashboard", title: "Audit log" },
+  "/dashboard/findings": { parentHref: "/dashboard", title: "Open findings" },
+  "/audit/results": { parentHref: "/audits", title: "Audit report" },
   "/audit/remediate": { parentHref: "/audits", title: "Validation" },
   "/audit/bpr": {
     parentHref: "/audits",
-    title: "Batch Production Record Audit",
+    title: "Batch production record audit",
   },
   "/audit/fir": {
     parentHref: "/audits",
-    title: "Facility Inspection Report Audit",
+    title: "Facility inspection report audit",
   },
   "/audit/sop": {
     parentHref: "/audits",
-    title: "Standard Operating Procedure Audit",
+    title: "Standard operating procedure audit",
   },
   "/analytics": { parentHref: "/dashboard", title: "Analytics" },
   "/users": { parentHref: "/dashboard", title: "Team" },

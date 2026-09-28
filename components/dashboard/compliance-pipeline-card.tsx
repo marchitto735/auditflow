@@ -39,21 +39,21 @@ const STAGES: PipelineStage[] = [
 const ACTIVE_JOBS: PipelineJob[] = [
   {
     id: "job-1",
-    document: "SOP Manufacturing v4.2",
+    document: "SOP manufacturing v4.2",
     stageId: "validate",
     stage: "Validate",
     eta: "2m",
   },
   {
     id: "job-2",
-    document: "BPR-204 Batch Record",
+    document: "BPR-204 batch record",
     stageId: "score",
     stage: "Score",
     eta: "6m",
   },
   {
     id: "job-3",
-    document: "FIR Facility Walkthrough",
+    document: "FIR facility walkthrough",
     stageId: "review",
     stage: "Review",
     eta: "12m",
@@ -72,14 +72,14 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
     >
       <CardContent className={cn(CARD_CONTENT_CLASS, "relative h-auto gap-3")}>
         <div className="min-w-0 shrink-0 pr-10">
-          <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance Pipeline</p>
+          <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance pipeline</p>
           <p className={SECTION_DESCRIPTION_CLASS}>
             Active document volume by stage from ingest through export.
           </p>
         </div>
         <div className="absolute top-3 right-3">
           <CardActionsMenu
-            label="Compliance Pipeline"
+            label="Compliance pipeline"
             actions={FEED_CARD_MENU_ACTIONS}
           />
         </div>
@@ -102,7 +102,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
                   {stage.label}
                 </span>
                 <span className="text-body1 m-0 font-mono tabular-nums text-neutral-900">
-                  {stage.count} active
+                  {stage.count} Active
                 </span>
               </div>
             </li>

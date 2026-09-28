@@ -45,7 +45,7 @@ function ChatSheet({
         <SheetTitle className="sr-only">Chat</SheetTitle>
         <SheetHeader className="shrink-0 gap-4 px-4 pt-4 pr-4">
           <h6 className="text-subtitle1 font-medium text-foreground font-sans">
-            Chat Assistant
+            Chat assistant
           </h6>
           <p className="sr-only text-body2 text-foreground">
             Hello!

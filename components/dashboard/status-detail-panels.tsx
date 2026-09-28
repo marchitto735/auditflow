@@ -48,6 +48,7 @@ import {
   SCORE_CATEGORIES,
   SCORE_TRENDS,
   type FindingSeverity,
+  type FindingStatus,
 } from "@/lib/dashboard-insights";
 import {
   CARD_SECTION_EYEBROW_CLASS,
@@ -62,6 +63,7 @@ import {
   TABLE_TOOLBAR_SEARCH_INPUT_CLASS,
   TABLE_TOOLBAR_SEARCH_WRAP_CLASS,
 } from "@/lib/page-layout";
+import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
 
 const SEVERITY_ORDER: FindingSeverity[] = [
@@ -83,12 +85,29 @@ function SeverityStatus({ severity }: { severity: FindingSeverity }) {
   return <Badge variant={severityBadgeVariant(severity)}>{severity}</Badge>;
 }
 
+function findingStatusBadgeVariant(status: FindingStatus) {
+  switch (status) {
+    case "Open":
+      return "warning" as const;
+    case "In remediation":
+      return "warning" as const;
+    case "Pending verification":
+      return "success" as const;
+    default:
+      return "outline" as const;
+  }
+}
+
+function FindingStatusBadge({ status }: { status: FindingStatus }) {
+  return (
+    <Badge variant={findingStatusBadgeVariant(status)}>
+      {toSentenceCase(status)}
+    </Badge>
+  );
+}
+
 type FindingsSeverityFilter = "all" | FindingSeverity;
-type FindingsStatusFilter =
-  | "all"
-  | "Open"
-  | "In Remediation"
-  | "Pending Verification";
+type FindingsStatusFilter = "all" | FindingStatus;
 
 const FINDINGS_SEVERITY_OPTIONS: {
   value: FindingsSeverityFilter;
@@ -107,8 +126,8 @@ const FINDINGS_STATUS_OPTIONS: {
 }[] = [
   { value: "all", label: "All status" },
   { value: "Open", label: "Open" },
-  { value: "In Remediation", label: "In Remediation" },
-  { value: "Pending Verification", label: "Pending Verification" },
+  { value: "In remediation", label: "In remediation" },
+  { value: "Pending verification", label: "Pending verification" },
 ];
 
 function FindingsFilterSelect<T extends string>({
@@ -240,14 +259,14 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
       <CardContent className="flex h-full min-h-0 flex-col p-0">
         <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
-            <p className={CARD_SECTION_EYEBROW_CLASS}>Priority Findings</p>
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Priority findings</p>
             <p className={SECTION_DESCRIPTION_CLASS}>
               Highest-severity open items across active audits.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
-              label="Priority Findings"
+              label="Priority findings"
               actions={TABLE_CARD_MENU_ACTIONS}
             />
           </div>
@@ -293,7 +312,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
                 className={TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS}
                 asChild
               >
-                <Link href="/dashboard/findings">View All</Link>
+                <Link href="/dashboard/findings">View all</Link>
               </Button>
             </div>
           </div>
@@ -372,7 +391,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
                           <SeverityStatus severity={row.severity} />
                         </TableCell>
                         <TableCell className="h-12 px-4 py-0">
-                          {row.status}
+                          <FindingStatusBadge status={row.status} />
                         </TableCell>
                       </TableRow>
                     ))}
@@ -405,14 +424,14 @@ export function CategoryBreakdownPanel({ className }: { className?: string }) {
     <Card className={cn(DASHBOARD_CARD_CLASS, "h-full", className)}>
       <CardContent className="relative flex h-full flex-col gap-3 p-4 pb-6">
         <div className="min-w-0 pr-10">
-          <p className={CARD_SECTION_EYEBROW_CLASS}>Category Breakdown</p>
+          <p className={CARD_SECTION_EYEBROW_CLASS}>Category breakdown</p>
           <p className={SECTION_DESCRIPTION_CLASS}>
             GMP threshold {GMP_THRESHOLD}%.
           </p>
         </div>
         <div className="absolute top-3 right-3">
           <CardActionsMenu
-            label="Category Breakdown"
+            label="Category breakdown"
             actions={CHART_CARD_MENU_ACTIONS}
           />
         </div>
@@ -477,14 +496,14 @@ export function ComplianceTrendPanel({ className }: { className?: string }) {
     <Card className={cn(DASHBOARD_CARD_CLASS, "h-full", className)}>
       <CardContent className="relative flex h-full flex-col gap-3 p-4">
         <div className="min-w-0 pr-10">
-          <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance Trend</p>
+          <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance trend</p>
           <p className={SECTION_DESCRIPTION_CLASS}>
             90-day score vs {GMP_THRESHOLD}% GMP standard.
           </p>
         </div>
         <div className="absolute top-3 right-3">
           <CardActionsMenu
-            label="Compliance Trend"
+            label="Compliance trend"
             actions={CHART_CARD_MENU_ACTIONS}
           />
         </div>

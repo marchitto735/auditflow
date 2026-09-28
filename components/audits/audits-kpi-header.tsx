@@ -11,19 +11,19 @@ import { cn } from "@/lib/utils";
 
 const AUDITS_KPI_CARDS = [
   {
-    eyebrow: "Policy Control",
+    eyebrow: "Policy control",
     value: "42",
     meta: "SOP documents in active workflows",
     icon: FileText,
   },
   {
-    eyebrow: "Production Log",
+    eyebrow: "Production log",
     value: "128",
     meta: "BPR batches ready for audit",
     icon: ClipboardList,
   },
   {
-    eyebrow: "Site Audit",
+    eyebrow: "Site audit",
     value: "14",
     meta: "FIR checklists in progress",
     icon: MapPin,

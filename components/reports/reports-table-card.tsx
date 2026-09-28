@@ -64,6 +64,7 @@ import {
   CARD_HEADER_STACK_CLASS,
   CARD_METRIC_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
+  OVERLINE_LABEL_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
@@ -262,7 +263,7 @@ function ReportsKpiHeader({ rows }: { rows: ReportRow[] }) {
     monoMeta?: boolean;
   }> = [
     {
-      eyebrow: "Completed Audits",
+      eyebrow: "Completed audits",
       value: String(kpis.totalCompleted),
       meta: kpis.lastAuditAt
         ? `Last audit ${format(new Date(kpis.lastAuditAt), "MMM d")}`
@@ -271,13 +272,13 @@ function ReportsKpiHeader({ rows }: { rows: ReportRow[] }) {
       monoMeta: Boolean(kpis.lastAuditAt),
     },
     {
-      eyebrow: "Avg Compliance",
+      eyebrow: "Avg compliance",
       value: kpis.averageScore != null ? `${kpis.averageScore}%` : "—",
       meta: "Mean score across reports",
       icon: ClipboardList,
     },
     {
-      eyebrow: "Compliant vs Partial",
+      eyebrow: "Compliant vs partial",
       value: `${kpis.compliantCount} / ${kpis.partialCount}`,
       meta:
         compliantPct != null
@@ -329,7 +330,10 @@ function ReportStatusBadge({ status }: { status: string }) {
   const label = activityStatusLabel(status);
   if (label === "—") return <span>—</span>;
   const display =
-    label === "Fail" || label === "Critical"
+    label === "Fail" ||
+    label === "Failed" ||
+    label === "Critical" ||
+    label === "Non-compliant"
       ? "Failed"
       : label === "Pass"
         ? "Compliant"
@@ -376,14 +380,14 @@ function RowActionsMenu({
           onSelect={downloadPdf}
         >
           <Download className="size-4" aria-hidden />
-          Download PDF Report
+          Download PDF report
         </DropdownMenuItem>
         <DropdownMenuItem
           className={DASHBOARD_MENU_ITEM_CLASS}
           onSelect={() => onViewLog(row)}
         >
           <ClipboardList className="size-4" aria-hidden />
-          View Immutable Audit Log
+          View immutable audit log
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -391,7 +395,7 @@ function RowActionsMenu({
           onSelect={() => onInspect(row)}
         >
           <FileText className="size-4" aria-hidden />
-          Inspect Clauses
+          Inspect clauses
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -443,7 +447,7 @@ function ReportInspectSheet({
 
             {report.summary ? (
               <div>
-                <p className="m-0 mb-1 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                <p className={cn(OVERLINE_LABEL_CLASS, "mb-1")}>
                   Summary
                 </p>
                 <p className="m-0 text-sm leading-relaxed text-neutral-800">
@@ -453,7 +457,7 @@ function ReportInspectSheet({
             ) : null}
 
             <div>
-              <p className="m-0 mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+              <p className={cn(OVERLINE_LABEL_CLASS, "mb-2")}>
                 Findings / clauses
               </p>
               {report.findings.length === 0 ? (
@@ -479,7 +483,7 @@ function ReportInspectSheet({
 
             {report.recommendation ? (
               <div>
-                <p className="m-0 mb-1 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                <p className={cn(OVERLINE_LABEL_CLASS, "mb-1")}>
                   Recommendation
                 </p>
                 <p className="m-0 text-sm leading-relaxed text-neutral-800">
@@ -707,7 +711,7 @@ export default function ReportsTableCard({
                     className={TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS}
                     onClick={exportBatch}
                   >
-                    Export Reports
+                    Export reports
                   </Button>
                 </div>
               </div>

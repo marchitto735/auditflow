@@ -9,6 +9,7 @@ import {
   HELP_SYSTEM_STATUS,
   type SystemServiceStatus,
 } from "@/lib/help";
+import { OVERLINE_LABEL_CLASS } from "@/lib/page-layout";
 
 function serviceStatusBadgeVariant(
   status: SystemServiceStatus["status"],
@@ -67,7 +68,7 @@ export default function SystemHealthPanel() {
       </ul>
 
       <div className="flex flex-col gap-2 pt-4 md:pt-0 md:pl-4">
-        <p className="m-0 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+        <p className={OVERLINE_LABEL_CLASS}>
           Diagnostic metadata
         </p>
         <ul className="m-0 flex list-none flex-col gap-1.5 p-0">

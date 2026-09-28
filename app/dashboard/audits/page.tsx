@@ -9,7 +9,7 @@ export default async function AuditsPage() {
 
   return (
     <DashboardPageShell
-      title="Audit Log"
+      title="Audit log"
       description="Filter completed SOP, BPR, and FIR audits, review pass and fail rates, and export the log."
     >
       <AuditLogView rows={rows} />

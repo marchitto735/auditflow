@@ -60,7 +60,7 @@ const SelectStep = React.memo(function SelectStep({
           </div>
         </Tabs>
       </div>
-      <span className="text-subtitle2 font-medium text-foreground dark:text-white color:text-white mt-1.5 mb-5 shrink-0 block w-full text-center">Time Slot</span>
+      <span className="text-subtitle2 font-medium text-foreground dark:text-white color:text-white mt-1.5 mb-5 shrink-0 block w-full text-center">Time slot</span>
       <div className="-mt-3 flex flex-col overflow-y-auto min-w-0 flex-1 min-h-0 lg:max-h-[272px]" data-slot="scheduling-time-slots">
         <div className="flex flex-col gap-2 pt-0 pb-4 lg:pb-4">
           {slots.map(({ value, label }) => (

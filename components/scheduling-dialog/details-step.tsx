@@ -45,7 +45,7 @@ const DetailsStep = React.memo(function DetailsStep({
         className="text-subtitle1 font-medium text-foreground dark:text-white color:text-white mb-4"
         style={{ textTransform: "none" }}
       >
-        Your Details
+        Your details
       </h2>
       <div className="flex flex-col gap-4">
         <div>

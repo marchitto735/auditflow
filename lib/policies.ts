@@ -105,7 +105,7 @@ function clauses(
 export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
   {
     id: "pol-001",
-    title: "Document Control & Change Management",
+    title: "Document control & change management",
     documentId: "SOP-1001-Rev7",
     type: "SOP",
     version: "7.0",
@@ -123,7 +123,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
   },
   {
     id: "pol-002",
-    title: "Batch Record Review Procedure",
+    title: "Batch record review procedure",
     documentId: "BPR-2204-Rev3",
     type: "BPR",
     version: "3.2",
@@ -140,7 +140,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
   },
   {
     id: "pol-003",
-    title: "Facility Hygiene Inspection Checklist",
+    title: "Facility hygiene inspection checklist",
     documentId: "FIR-8840-Rev2",
     type: "FIR",
     version: "2.1",
@@ -157,7 +157,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
   },
   {
     id: "pol-004",
-    title: "Electronic Signature Authority Matrix",
+    title: "Electronic signature authority matrix",
     documentId: "SOP-4410-Rev5",
     type: "SOP",
     version: "5.0",
@@ -174,7 +174,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
   },
   {
     id: "pol-005",
-    title: "Raw Material Release Criteria",
+    title: "Raw material release criteria",
     documentId: "BPR-1102-Rev1",
     type: "BPR",
     version: "1.4",
@@ -190,7 +190,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
   },
   {
     id: "pol-006",
-    title: "Cleanroom Gowning & Access Control",
+    title: "Cleanroom gowning & access control",
     documentId: "FIR-3301-Rev4",
     type: "FIR",
     version: "4.0",
@@ -207,7 +207,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
   },
   {
     id: "pol-007",
-    title: "Complaint Handling & CAPA Intake",
+    title: "Complaint handling & CAPA intake",
     documentId: "SOP-7720-Rev2",
     type: "SOP",
     version: "2.3",
@@ -224,7 +224,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
   },
   {
     id: "pol-008",
-    title: "Packaging Line Clearance Protocol",
+    title: "Packaging line clearance protocol",
     documentId: "BPR-5509-Rev6",
     type: "BPR",
     version: "6.1",
@@ -240,7 +240,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
   },
   {
     id: "pol-009",
-    title: "Environmental Monitoring Rounds",
+    title: "Environmental monitoring rounds",
     documentId: "FIR-9912-Rev1",
     type: "FIR",
     version: "1.0",
@@ -256,7 +256,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
   },
   {
     id: "pol-010",
-    title: "Training Records & Competency",
+    title: "Training records & competency",
     documentId: "SOP-2055-Rev9",
     type: "SOP",
     version: "9.0",
@@ -273,7 +273,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
   },
   {
     id: "pol-011",
-    title: "Equipment Qualification Summary",
+    title: "Equipment qualification summary",
     documentId: "BPR-7800-Rev2",
     type: "BPR",
     version: "2.0",
@@ -289,7 +289,7 @@ export const DEMO_MASTER_POLICIES: MasterPolicy[] = [
   },
   {
     id: "pol-012",
-    title: "Warehouse Pest Control Log",
+    title: "Warehouse pest control log",
     documentId: "FIR-1208-Rev3",
     type: "FIR",
     version: "3.0",

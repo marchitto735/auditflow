@@ -19,7 +19,7 @@ export type TicketCategory = (typeof TICKET_CATEGORIES)[number];
 
 export const TICKET_STATUSES = [
   "Open",
-  "In Progress",
+  "In progress",
   "Waiting",
   "Resolved",
 ] as const;
@@ -60,19 +60,19 @@ export type SupportTicket = {
 export const HELP_SYSTEM_STATUS: SystemServiceStatus[] = [
   {
     id: "supabase",
-    label: "Database Sync",
+    label: "Database sync",
     status: "Operational",
     detail: "Supabase primary · us-east-1",
   },
   {
     id: "n8n",
-    label: "n8n Pipelines",
+    label: "n8n pipelines",
     status: "Operational",
     detail: "SOP / BPR / FIR webhooks healthy",
   },
   {
     id: "openai",
-    label: "OpenAI Gateway",
+    label: "OpenAI gateway",
     status: "Operational",
     detail: "Embeddings + gap analysis ready",
   },
@@ -88,7 +88,7 @@ export const HELP_DIAGNOSTICS: DiagnosticMeta[] = [
 export const HELP_KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   {
     id: "kb-cfr11",
-    title: "21 CFR Part 11 — Electronic Records",
+    title: "21 CFR Part 11 — Electronic records",
     summary:
       "Controls for electronic signatures, audit trails, and system validation in regulated workflows.",
     category: "Regulation",
@@ -96,7 +96,7 @@ export const HELP_KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   },
   {
     id: "kb-iso",
-    title: "ISO 13485 / ISO 9001 Mapping",
+    title: "ISO 13485 / ISO 9001 mapping",
     summary:
       "How AuditFlow clause packs align to quality management system frameworks.",
     category: "Framework",
@@ -104,7 +104,7 @@ export const HELP_KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   },
   {
     id: "kb-ingest",
-    title: "Automated Ingestion Playbook",
+    title: "Automated ingestion playbook",
     summary:
       "n8n webhook setup, chunking strategy, and retry policy for SOP / BPR / FIR uploads.",
     category: "Pipeline",
@@ -112,7 +112,7 @@ export const HELP_KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   },
   {
     id: "kb-mfa",
-    title: "MFA Enrollment for Auditors",
+    title: "MFA enrollment for auditors",
     summary:
       "Step-by-step enrollment and recovery for organization-wide MFA enforcement.",
     category: "Security",
@@ -120,7 +120,7 @@ export const HELP_KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   },
   {
     id: "kb-remediation",
-    title: "Remediation Workspace Guide",
+    title: "Remediation workspace guide",
     summary:
       "Flagging non-compliant findings, exporting certified SOPs, and closing gaps.",
     category: "Product",
@@ -128,9 +128,9 @@ export const HELP_KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   },
   {
     id: "kb-roles",
-    title: "RBAC Role Matrix",
+    title: "RBAC role matrix",
     summary:
-      "Permissions for Compliance Administrator, Lead Auditor, Auditor, and Viewer.",
+      "Permissions for Compliance administrator, Lead auditor, Auditor, and Viewer.",
     category: "Access",
     href: "#rbac",
   },
@@ -142,7 +142,7 @@ export const HELP_SUPPORT_TICKETS: SupportTicket[] = [
     subject: "FIR image ingest timeout on large scans",
     severity: "High",
     category: "Ingestion / n8n",
-    status: "In Progress",
+    status: "In progress",
     assignee: "Priya Shah",
     sla: "4h remaining",
     openedAt: "2026-09-26T14:20:00.000Z",

@@ -76,7 +76,7 @@ export function EditRoleDialog({
         <form onSubmit={handleSubmit}>
           <DialogHeader className="border-b border-border/60 p-4 text-left">
             <DialogTitle className="m-0 text-lg font-medium text-neutral-900">
-              Edit Role
+              Edit role
             </DialogTitle>
             <DialogDescription className="m-0 mt-1 text-sm text-muted-foreground">
               {user

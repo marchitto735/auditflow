@@ -27,12 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  CARD_SECTION_EYEBROW_CLASS,
-  DASHBOARD_CARD_CLASS,
-  DASHBOARD_GAP_CLASS,
-  SECTION_DESCRIPTION_CLASS,
-} from "@/lib/page-layout";
+import { severityBadgeVariant } from "@/lib/chart-tokens";
 import {
   HELP_SUPPORT_TICKETS,
   TICKET_CATEGORIES,
@@ -42,6 +37,12 @@ import {
   type TicketCategory,
   type TicketSeverity,
 } from "@/lib/help";
+import {
+  CARD_SECTION_EYEBROW_CLASS,
+  DASHBOARD_CARD_CLASS,
+  DASHBOARD_GAP_CLASS,
+  SECTION_DESCRIPTION_CLASS,
+} from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 function ticketStatusBadgeVariant(status: SupportTicket["status"]) {
@@ -50,7 +51,7 @@ function ticketStatusBadgeVariant(status: SupportTicket["status"]) {
       return "success" as const;
     case "Waiting":
       return "warning" as const;
-    case "In Progress":
+    case "In progress":
       return "success" as const;
     case "Open":
     default:
@@ -164,7 +165,7 @@ function TicketForm() {
 
   return (
     <CardShell
-      eyebrow="Submit Ticket"
+      eyebrow="Submit ticket"
       description="Log a support request with severity and compliance categorization."
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
@@ -276,7 +277,7 @@ function ActiveTicketsTable() {
 
   return (
     <CardShell
-      eyebrow="Active Tickets"
+      eyebrow="Active tickets"
       description="Open and recent support cases with assignee and SLA windows."
     >
       <div className="overflow-x-auto">
@@ -319,7 +320,9 @@ function ActiveTicketsTable() {
                   <span className="block truncate">{ticket.subject}</span>
                 </TableCell>
                 <TableCell className="h-12 px-4 py-0">
-                  {ticket.severity}
+                  <Badge variant={severityBadgeVariant(ticket.severity)}>
+                    {ticket.severity}
+                  </Badge>
                 </TableCell>
                 <TableCell className="h-12 px-4 py-0">
                   <Badge variant={ticketStatusBadgeVariant(ticket.status)}>

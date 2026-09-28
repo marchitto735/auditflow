@@ -27,6 +27,7 @@ import {
   DASHBOARD_CARD_CLASS,
   TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS,
 } from "@/lib/page-layout";
+import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_PAGE_SIZE = 3;
@@ -70,7 +71,7 @@ const QUEUE_COLUMNS = [
   },
   {
     key: "queueStatus",
-    label: "Queue Status",
+    label: "Queue status",
     width: "28%",
     minWidth: "10rem",
     widthClass: "w-[28%] min-w-[10rem]",
@@ -96,85 +97,85 @@ const SEED_QUEUE_ROWS: QueueRow[] = [
   {
     id: "queue-0",
     document: "SOP-8490-Rev4.pdf",
-    type: "Standard Workflow",
-    queueStatus: "Ready (In Queue)",
+    type: "Standard workflow",
+    queueStatus: "Ready (in queue)",
     estTime: "~4s",
   },
   {
     id: "queue-1",
     document: "BPR-Batch-2026-A.csv",
-    type: "Production Log",
-    queueStatus: "Parsing Chunks",
+    type: "Production log",
+    queueStatus: "Parsing chunks",
     estTime: "~12s",
   },
   {
     id: "queue-2",
     document: "FIR-Facility-East-Q3.docx",
-    type: "Site Audit",
-    queueStatus: "Pending Upload",
+    type: "Site audit",
+    queueStatus: "Pending upload",
     estTime: "—",
   },
   {
     id: "queue-3",
     document: "SOP-Cleaning-Line-B.pdf",
-    type: "Standard Workflow",
-    queueStatus: "Ready (In Queue)",
+    type: "Standard workflow",
+    queueStatus: "Ready (in queue)",
     estTime: "~6s",
   },
   {
     id: "queue-4",
     document: "BPR-Lot-7781.xlsx",
-    type: "Production Log",
-    queueStatus: "Parsing Chunks",
+    type: "Production log",
+    queueStatus: "Parsing chunks",
     estTime: "~9s",
   },
   {
     id: "queue-5",
     document: "FIR-Warehouse-North.docx",
-    type: "Site Audit",
-    queueStatus: "Ready (In Queue)",
+    type: "Site audit",
+    queueStatus: "Ready (in queue)",
     estTime: "~5s",
   },
   {
     id: "queue-6",
     document: "SOP-Changeover-Pack.pdf",
-    type: "Standard Workflow",
-    queueStatus: "Pending Upload",
+    type: "Standard workflow",
+    queueStatus: "Pending upload",
     estTime: "—",
   },
   {
     id: "queue-7",
     document: "BPR-Campaign-14.csv",
-    type: "Production Log",
-    queueStatus: "Ready (In Queue)",
+    type: "Production log",
+    queueStatus: "Ready (in queue)",
     estTime: "~8s",
   },
   {
     id: "queue-8",
     document: "FIR-Cleanroom-A2.docx",
-    type: "Site Audit",
-    queueStatus: "Parsing Chunks",
+    type: "Site audit",
+    queueStatus: "Parsing chunks",
     estTime: "~11s",
   },
   {
     id: "queue-9",
     document: "SOP-Labeling-Control.pdf",
-    type: "Standard Workflow",
-    queueStatus: "Ready (In Queue)",
+    type: "Standard workflow",
+    queueStatus: "Ready (in queue)",
     estTime: "~3s",
   },
   {
     id: "queue-10",
     document: "BPR-Yield-Recalc.xlsx",
-    type: "Production Log",
-    queueStatus: "Pending Upload",
+    type: "Production log",
+    queueStatus: "Pending upload",
     estTime: "—",
   },
   {
     id: "queue-11",
     document: "FIR-Utilities-Round.docx",
-    type: "Site Audit",
-    queueStatus: "Ready (In Queue)",
+    type: "Site audit",
+    queueStatus: "Ready (in queue)",
     estTime: "~7s",
   },
 ];
@@ -231,7 +232,9 @@ function queueStatusBadgeVariant(status: string) {
 
 function QueueStatus({ status }: { status: string }) {
   return (
-    <Badge variant={queueStatusBadgeVariant(status)}>{status}</Badge>
+    <Badge variant={queueStatusBadgeVariant(status)}>
+      {toSentenceCase(status)}
+    </Badge>
   );
 }
 
@@ -370,14 +373,14 @@ export default function ActiveExecutionQueue({
       <CardContent className="flex flex-col p-0">
         <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
-            <p className={CARD_SECTION_EYEBROW_CLASS}>Execution Queue</p>
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Execution queue</p>
             <p className={SECTION_DESCRIPTION_CLASS}>
               Documents waiting to run, parsing, or pending upload.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
-              label="Execution Queue"
+              label="Execution queue"
               actions={QUEUE_MENU_ACTIONS}
               onAction={(action) => {
                 if (action === "Clear filters") {
@@ -398,7 +401,7 @@ export default function ActiveExecutionQueue({
                 className={TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS}
                 onClick={() => openConfigureAudit(null)}
               >
-                New Audit
+                New audit
               </Button>
             }
           />
