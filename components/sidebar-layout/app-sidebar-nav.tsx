@@ -199,8 +199,13 @@ function SidebarProfileCard({
           })}
         </div>
         <div className="flex flex-col gap-0.5 pt-1">
-          <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
-            Log out
+          <DropdownMenuItem asChild className={DASHBOARD_MENU_ITEM_CLASS}>
+            <Link
+              href="/auth/sign-out"
+              className="flex cursor-pointer items-center gap-2 no-underline"
+            >
+              Log out
+            </Link>
           </DropdownMenuItem>
         </div>
       </DropdownMenuContent>

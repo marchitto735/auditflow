@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { usePathname } from "next/navigation";
 import {
   Sidebar,
   SidebarProvider,
@@ -10,6 +11,7 @@ import { AppSidebarNav } from "@/components/sidebar-layout/app-sidebar-nav";
 import { ConfigureAuditProvider } from "@/components/configure-audit-modal/configure-audit-context";
 import Header from "@/components/header/header";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { isAuthShellExcludedPath } from "@/lib/auth/routes";
 import { PAGE_CANVAS_CLASS, PAGE_CONTENT_BOTTOM_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -25,11 +27,9 @@ function SidebarShell({ children }: { children: React.ReactNode }) {
         )}
         style={{ "--sidebar-width": `${width}px` } as React.CSSProperties}
       >
-        {/* Persistent desktop rail (xl+) — fixed flush to viewport top */}
         <Sidebar>
           <AppSidebarNav />
         </Sidebar>
-        {/* Reserves the same box-border width as the fixed rail — width transitions in sync */}
         <div
           className="hidden shrink-0 transition-[width] duration-300 ease-in-out xl:block"
           style={{ width }}
@@ -43,11 +43,6 @@ function SidebarShell({ children }: { children: React.ReactNode }) {
           )}
         >
           <Header />
-          {/*
-            Primary scrollport. A dedicated spacer after page content
-            (h-16 / md:h-20) matches Dashboard breathing room — padding on
-            flex+overflow parents is unreliable and left tables flush.
-          */}
           <div
             className={cn(
               "min-h-0 w-full min-w-0 flex-1 overflow-x-clip overflow-y-auto",
@@ -73,6 +68,12 @@ export default function SidebarLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
+  if (isAuthShellExcludedPath(pathname)) {
+    return <>{children}</>;
+  }
+
   return (
     <SidebarProvider>
       <ConfigureAuditProvider>
