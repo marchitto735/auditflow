@@ -117,6 +117,9 @@ export function activityStatusLabel(status: string | null | undefined) {
   if (value === "pass" || value === "passed") return "Pass";
   if (value === "fail" || value === "failed") return "Failed";
   if (value === "review") return "Review";
+  if (value === "in remediation" || value === "remediation") {
+    return "Remediation";
+  }
 
   return toSentenceCase(raw);
 }

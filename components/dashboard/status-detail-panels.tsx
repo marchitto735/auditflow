@@ -63,7 +63,7 @@ import {
   TABLE_TOOLBAR_SEARCH_INPUT_CLASS,
   TABLE_TOOLBAR_SEARCH_WRAP_CLASS,
 } from "@/lib/page-layout";
-import { toSentenceCase } from "@/lib/status-label";
+import { formatStatusLabel } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
 
 const SEVERITY_ORDER: FindingSeverity[] = [
@@ -89,7 +89,7 @@ function findingStatusBadgeVariant(status: FindingStatus) {
   switch (status) {
     case "Open":
       return "warning" as const;
-    case "In remediation":
+    case "Remediation":
       return "warning" as const;
     case "Pending verification":
       return "success" as const;
@@ -101,7 +101,7 @@ function findingStatusBadgeVariant(status: FindingStatus) {
 function FindingStatusBadge({ status }: { status: FindingStatus }) {
   return (
     <Badge variant={findingStatusBadgeVariant(status)}>
-      {toSentenceCase(status)}
+      {formatStatusLabel(status)}
     </Badge>
   );
 }
@@ -126,7 +126,7 @@ const FINDINGS_STATUS_OPTIONS: {
 }[] = [
   { value: "all", label: "All status" },
   { value: "Open", label: "Open" },
-  { value: "In remediation", label: "In remediation" },
+  { value: "Remediation", label: "Remediation" },
   { value: "Pending verification", label: "Pending verification" },
 ];
 

@@ -9,7 +9,7 @@ export type AuditLogRow = {
 };
 
 export type FindingSeverity = "Critical" | "High" | "Medium" | "Low";
-export type FindingStatus = "Open" | "In remediation" | "Pending verification";
+export type FindingStatus = "Open" | "Remediation" | "Pending verification";
 
 export type FindingRow = {
   id: string;
@@ -158,7 +158,7 @@ export const OPEN_FINDINGS: FindingRow[] = [
     severity: "Critical",
     citation: "21 CFR 211.103",
     owner: "M. Chen",
-    status: "In remediation",
+    status: "Remediation",
   },
   {
     id: "f-4",
@@ -176,7 +176,7 @@ export const OPEN_FINDINGS: FindingRow[] = [
     severity: "High",
     citation: "21 CFR 211.122(c)",
     owner: "J. Alvarez",
-    status: "In remediation",
+    status: "Remediation",
   },
   {
     id: "f-6",

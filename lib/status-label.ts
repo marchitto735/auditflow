@@ -3,7 +3,7 @@
  * first character uppercase, remaining characters lowercase.
  * Preserves internal punctuation (hyphens, spaces).
  *
- * Examples: "In Remediation" → "In remediation", "Non-Compliant" → "Non-compliant"
+ * Examples: "Pending Verification" → "Pending verification", "Non-Compliant" → "Non-compliant"
  */
 export function toSentenceCase(value: string): string {
   const trimmed = value.trim();
@@ -12,10 +12,17 @@ export function toSentenceCase(value: string): string {
   return lower.charAt(0).toUpperCase() + lower.slice(1);
 }
 
+/** Canonical display overrides for shortened status labels. */
+const STATUS_DISPLAY_ALIASES: Record<string, string> = {
+  "in remediation": "Remediation",
+};
+
 /** Display helper for status badges — empty → em dash. */
 export function formatStatusLabel(status: string | null | undefined): string {
   const raw = (status ?? "").trim();
   if (!raw) return "—";
+  const alias = STATUS_DISPLAY_ALIASES[raw.toLowerCase()];
+  if (alias) return alias;
   return toSentenceCase(raw);
 }
 

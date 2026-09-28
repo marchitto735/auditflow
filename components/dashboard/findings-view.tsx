@@ -43,14 +43,14 @@ const SEVERITY_ORDER: FindingSeverity[] = [
 
 const STATUS_SHORT_LABEL: Record<FindingStatus, string> = {
   Open: "Open",
-  "In remediation": "In remediation",
+  Remediation: "Remediation",
   "Pending verification": "Pending verification",
 };
 
 function findingStatusBadgeVariant(status: FindingStatus) {
   switch (status) {
     case "Open":
-    case "In remediation":
+    case "Remediation":
       return "warning" as const;
     case "Pending verification":
       return "success" as const;
@@ -97,7 +97,7 @@ export default function FindingsView() {
     setRows((current) =>
       current.map((row) =>
         row.id === active.id
-          ? { ...row, owner: owner.trim(), status: "In remediation" }
+          ? { ...row, owner: owner.trim(), status: "Remediation" }
           : row,
       ),
     );
@@ -175,8 +175,8 @@ export default function FindingsView() {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="Open">Open</SelectItem>
-                            <SelectItem value="In remediation">
-                              In remediation
+                            <SelectItem value="Remediation">
+                              Remediation
                             </SelectItem>
                             <SelectItem value="Pending verification">
                               Pending verification
