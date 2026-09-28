@@ -10,6 +10,16 @@ export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const { response, user, configured } = await updateSession(request);
 
+  // AUTH_BYPASS_START
+  // Temporary local-dev bypass: all internal routes are publicly accessible.
+  // To re-enable auth, delete this early return and uncomment the block below.
+  void user;
+  void configured;
+  void pathname;
+  void search;
+  return response;
+
+  /*
   // Without public Supabase env, skip enforcement so local/portfolio routes
   // still render; login will surface a configuration error instead.
   if (!configured) {
@@ -44,6 +54,8 @@ export async function middleware(request: NextRequest) {
   }
 
   return response;
+  */
+  // AUTH_BYPASS_END
 }
 
 export const config = {
