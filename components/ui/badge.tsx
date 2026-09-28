@@ -41,7 +41,7 @@ function toneFromVariant(variant: BadgeVariant | null | undefined): BadgeTone {
 }
 
 const BADGE_SHELL_CLASS =
-  "inline-flex w-fit shrink-0 items-center gap-1.5 overflow-visible border-0 bg-transparent p-0 leading-none text-base font-normal whitespace-nowrap text-foreground shadow-none [&>svg]:pointer-events-none [&>svg]:size-3"
+  "inline-flex w-fit shrink-0 items-center gap-1.5 overflow-visible border-0 bg-transparent p-0 leading-none text-sm font-normal whitespace-nowrap text-foreground shadow-none [&>svg]:pointer-events-none [&>svg]:size-3"
 
 /** @deprecated Shell is universal; kept for typed helpers that imported cva variants. */
 const badgeVariants = Object.assign(
@@ -79,7 +79,7 @@ function Badge({
       {showDot ? (
         <span
           className={cn(
-            "size-2 shrink-0 self-center rounded-full",
+            "size-2.5 shrink-0 self-center rounded-full",
             TONE_DOT[resolvedTone],
           )}
           aria-hidden

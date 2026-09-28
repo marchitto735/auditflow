@@ -17,7 +17,7 @@ function Table({
     >
       <table
         data-slot="table"
-        className={cn("w-full caption-bottom text-base font-normal text-foreground", className)}
+        className={cn("w-full caption-bottom text-sm font-normal text-foreground", className)}
         {...props}
       />
     </div>
@@ -39,7 +39,7 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
     <tbody
       data-slot="table-body"
       className={cn(
-        "[&_tr:last-child]:border-0 [&_td]:text-base [&_td]:font-normal [&_td]:text-foreground",
+        "[&_tr:last-child]:border-0 [&_td]:text-sm [&_td]:font-normal [&_td]:text-foreground",
         className
       )}
       {...props}
@@ -91,7 +91,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
     <td
       data-slot="table-cell"
       className={cn(
-        "h-12 max-w-0 overflow-hidden px-4 py-0 align-middle text-base font-normal whitespace-nowrap text-ellipsis text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "h-12 max-w-0 overflow-hidden px-4 py-0 align-middle text-sm font-normal whitespace-nowrap text-ellipsis text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className
       )}
       {...props}

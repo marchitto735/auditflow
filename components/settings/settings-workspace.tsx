@@ -52,7 +52,7 @@ function SettingsSection({
   return (
     <div className="flex flex-col gap-4">
       <div className="min-w-0">
-        <h3 className="m-0 text-base font-medium text-neutral-900">{title}</h3>
+        <h3 className="m-0 text-sm font-medium text-neutral-900">{title}</h3>
         <p className="m-0 mt-1 text-sm text-muted-foreground">{description}</p>
       </div>
       {children}
@@ -194,6 +194,7 @@ export default function SettingsWorkspace({
                     >
                       <Input
                         id="org-name"
+                        className="text-sm"
                         value={settings.organizationName}
                         onChange={(event) =>
                           patch({ organizationName: event.target.value })
@@ -320,7 +321,7 @@ export default function SettingsWorkspace({
                     type="number"
                     min={8}
                     max={128}
-                    className="max-w-[8rem]"
+                    className="max-w-[8rem] text-sm"
                     value={settings.passwordMinLength}
                     onChange={(event) =>
                       patch({

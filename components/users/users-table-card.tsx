@@ -466,7 +466,7 @@ export default function UsersTableCard({
                                 alt={user.name}
                               />
                             ) : null}
-                            <AvatarFallback className="text-[11px]">
+                            <AvatarFallback className="text-sm">
                               {user.initials}
                             </AvatarFallback>
                           </Avatar>

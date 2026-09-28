@@ -95,13 +95,13 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
                   "flex w-full min-w-0 cursor-default flex-col gap-1 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-left select-none",
                 )}
               >
-                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-neutral-900 tabular-nums">
+                <span className="font-mono text-sm font-semibold uppercase tracking-wider text-neutral-900 tabular-nums">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <span className="text-sm font-medium text-neutral-900">
                   {stage.label}
                 </span>
-                <span className="text-body1 m-0 font-mono tabular-nums text-neutral-900">
+                <span className="text-sm m-0 font-mono tabular-nums text-neutral-900">
                   {stage.count} Active
                 </span>
               </div>
@@ -115,7 +115,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
         >
           {ACTIVE_JOBS.map((job) => (
             <li key={job.id} className="contents">
-              <p className="text-base m-0 min-w-0 truncate leading-snug text-foreground">
+              <p className="text-sm m-0 min-w-0 truncate leading-snug text-foreground">
                 {job.document}
               </p>
               <span

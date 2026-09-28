@@ -202,7 +202,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
                 key={`${event.time}-${event.subsystem}-${event.message}`}
                 className="col-span-3 grid grid-cols-subgrid items-center"
               >
-                <p className="text-base m-0 min-w-0 overflow-hidden leading-snug text-pretty text-foreground">
+                <p className="text-sm m-0 min-w-0 overflow-hidden leading-snug text-pretty text-foreground">
                   {event.message}
                 </p>
                 <time

@@ -50,7 +50,7 @@ export default function SystemHealthPanel() {
             className="flex items-start justify-between gap-4 border-b border-neutral-200 px-0 py-3 last:border-b-0 md:pr-4"
           >
             <div className="min-w-0">
-              <p className="m-0 text-base font-normal text-neutral-900">
+              <p className="m-0 text-sm font-normal text-neutral-900">
                 {service.label}
               </p>
               <p className="m-0 mt-0.5 text-xs text-neutral-500">

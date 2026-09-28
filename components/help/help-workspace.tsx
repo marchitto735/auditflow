@@ -174,6 +174,7 @@ function TicketForm() {
           <Input
             id="ticket-subject"
             required
+            className="text-sm"
             placeholder="Brief summary of the issue"
             value={subject}
             onChange={(event) => setSubject(event.target.value)}
@@ -227,6 +228,7 @@ function TicketForm() {
             id="ticket-description"
             required
             rows={4}
+            className="text-sm"
             placeholder="Steps to reproduce, audit workflow, and expected outcome…"
             value={description}
             onChange={(event) => setDescription(event.target.value)}

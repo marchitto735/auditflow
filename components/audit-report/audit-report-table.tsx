@@ -52,7 +52,7 @@ const REPORT_GRID_CLASS = cn(
   COLUMN_GUTTER_CLASS,
 );
 const META_FIELD_CLASS = "flex min-w-0 flex-col gap-2";
-const META_VALUE_CLASS = "text-body1 text-foreground";
+const META_VALUE_CLASS = "text-sm text-foreground";
 const ACTION_ITEM_CLASS =
   "cursor-pointer gap-2 text-sm hover:bg-neutral-50 focus:bg-neutral-100";
 
@@ -82,7 +82,7 @@ function DetailColumn({
       </h3>
       <div
         className={cn(
-          "text-body1 min-w-0 text-left text-foreground whitespace-normal break-words [overflow-wrap:anywhere]",
+          "text-sm min-w-0 text-left text-foreground whitespace-normal break-words [overflow-wrap:anywhere]",
           preview
             ? "line-clamp-3 overflow-hidden"
             : "pb-1",
@@ -240,7 +240,7 @@ export function AuditReportTable({
               </div>
               <div className={cn(META_FIELD_CLASS, "ml-4 min-w-0")}>
                 <HeaderLabel label="Status" />
-                <ActivityStatus status={status} className="text-body1" />
+                <ActivityStatus status={status} className="text-sm" />
               </div>
             </div>
           </div>

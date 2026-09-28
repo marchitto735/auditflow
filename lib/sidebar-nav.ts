@@ -5,7 +5,6 @@ import {
   FileText,
   Gauge,
   Layers,
-  Settings,
   Users,
 } from "lucide-react";
 
@@ -58,11 +57,6 @@ export const SIDEBAR_PROFILE_LINKS: SidebarNavItem[] = [
     title: "Team",
     href: "/users",
     icon: Users,
-  },
-  {
-    title: "Configuration",
-    href: "/settings",
-    icon: Settings,
   },
 ];
 

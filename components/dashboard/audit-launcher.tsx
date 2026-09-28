@@ -289,12 +289,12 @@ export function AuditLauncherCard({
           </div>
 
           <p
-            className="text-body1 m-0 flex min-w-0 flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-neutral-900"
+            className="text-sm m-0 flex min-w-0 flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-neutral-900"
             aria-label={`${workflow.label} status ${workflow.status}, last run ${workflow.lastRun}`}
           >
             <span
               className={cn(
-                "size-2 shrink-0 rounded-full",
+                "size-2.5 shrink-0 rounded-full",
                 workflowStatusDotClass(workflow.status),
               )}
               aria-hidden
@@ -315,7 +315,7 @@ export function AuditLauncherCard({
               className="mt-auto flex min-w-0 flex-wrap items-end justify-between gap-x-3 gap-y-1"
               aria-label={`${workflow.label} operational metrics`}
             >
-              <div className="flex min-w-0 flex-1 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-neutral-900">
+              <div className="flex min-w-0 flex-1 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-snug text-neutral-900">
                 <span className="shrink-0 whitespace-nowrap">
                   <span className="text-neutral-900">{metrics.volumeLabel}</span>{" "}
                   <span className="font-medium text-neutral-900">{metrics.chunks}</span>

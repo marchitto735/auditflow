@@ -248,22 +248,22 @@ export default function ScoreAnalysisView() {
               <Table className="w-full min-w-[40rem] table-fixed border-separate border-spacing-0">
                 <TableHeader>
                   <TableRow className="border-0 bg-white hover:bg-transparent">
-                    <TableHead className="w-[28%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <TableHead className="w-[28%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
                       Department
                     </TableHead>
-                    <TableHead className="w-[12%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <TableHead className="w-[12%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
                       Audits
                     </TableHead>
-                    <TableHead className="w-[14%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <TableHead className="w-[14%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
                       Avg score
                     </TableHead>
-                    <TableHead className="w-[14%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <TableHead className="w-[14%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
                       Δ 90d
                     </TableHead>
-                    <TableHead className="w-[14%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <TableHead className="w-[14%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
                       Below GMP
                     </TableHead>
-                    <TableHead className="w-[18%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <TableHead className="w-[18%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
                       Status
                     </TableHead>
                   </TableRow>
@@ -343,19 +343,19 @@ export default function ScoreAnalysisView() {
               <Table className="w-full min-w-[44rem] table-fixed border-separate border-spacing-0">
                 <TableHeader>
                   <TableRow className="border-0 bg-white hover:bg-transparent">
-                    <TableHead className="w-[16%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <TableHead className="w-[16%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
                       Date
                     </TableHead>
-                    <TableHead className="w-[38%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <TableHead className="w-[38%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
                       Signal
                     </TableHead>
-                    <TableHead className="w-[22%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <TableHead className="w-[22%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
                       Domain
                     </TableHead>
-                    <TableHead className="w-[12%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <TableHead className="w-[12%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
                       Variance
                     </TableHead>
-                    <TableHead className="w-[12%] px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <TableHead className="w-[12%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
                       Severity
                     </TableHead>
                   </TableRow>

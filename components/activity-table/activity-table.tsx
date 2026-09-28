@@ -163,7 +163,7 @@ export function ActivityStatus({
 }
 
 export const TECHNICAL_VALUE_CLASS =
-  "font-mono text-base font-normal tabular-nums text-foreground";
+  "font-mono text-sm font-normal tabular-nums text-foreground";
 
 /** UUID / hash cells — names with spaces stay in Geist Sans. */
 export function isTechnicalId(value: string) {
@@ -388,7 +388,7 @@ export function ActivityTable({
                       <Collapsible open={open}>
                         <CollapsibleContent>
                           <div className="px-4 pb-4 pt-1">
-                            <p className="text-body1 m-0 w-full max-w-lg whitespace-normal break-words text-foreground [overflow-wrap:anywhere]">
+                            <p className="m-0 w-full max-w-lg whitespace-normal break-words text-sm text-foreground [overflow-wrap:anywhere]">
                               {row.detail}
                             </p>
                           </div>
