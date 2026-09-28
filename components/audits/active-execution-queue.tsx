@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useConfigureAudit } from "@/components/configure-audit-modal/configure-audit-context";
 import { CardActionsMenu } from "@/components/dashboard/card-actions-menu";
 import {
   DashboardToolbar,
   type DashboardToolbarValues,
 } from "@/components/dashboard/dashboard-toolbar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -25,7 +23,6 @@ import {
   CARD_SECTION_EYEBROW_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
-  TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS,
 } from "@/lib/page-layout";
 import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
@@ -332,7 +329,6 @@ export default function ActiveExecutionQueue({
 }: {
   className?: string;
 }) {
-  const { openConfigureAudit } = useConfigureAudit();
   const [filters, setFilters] = useState<DashboardToolbarValues>(INITIAL_FILTERS);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [page, setPage] = useState(1);
@@ -394,16 +390,6 @@ export default function ActiveExecutionQueue({
             className="px-0 py-0"
             value={filters}
             onChange={setFilters}
-            action={
-              <Button
-                type="button"
-                variant="black"
-                className={TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS}
-                onClick={() => openConfigureAudit(null)}
-              >
-                New audit
-              </Button>
-            }
           />
         </div>
 

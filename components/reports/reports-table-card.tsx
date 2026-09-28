@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  CalendarDays,
   ChevronDown,
   ClipboardList,
   Download,
@@ -12,7 +11,6 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { format } from "date-fns";
-import type { DateRange } from "react-day-picker";
 import { toast } from "sonner";
 import {
   activityStatusLabel,
@@ -29,7 +27,6 @@ import {
 } from "@/components/dashboard/card-actions-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -39,11 +36,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Sheet,
   SheetContent,
@@ -65,39 +57,55 @@ import {
   CARD_METRIC_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
   OVERLINE_LABEL_CLASS,
+  PAGE_HEADER_PRIMARY_BUTTON_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
   TABLE_ROW_ACTIONS_CELL_CLASS,
   TABLE_ROW_ACTIONS_HEAD_CLASS,
-  TABLE_TOOLBAR_ACTIONS_CLASS,
   TABLE_TOOLBAR_FILTERS_CLASS,
   TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
-  TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS,
   TABLE_TOOLBAR_ROW_CLASS,
   TABLE_TOOLBAR_SEARCH_ICON_CLASS,
   TABLE_TOOLBAR_SEARCH_INPUT_CLASS,
   TABLE_TOOLBAR_SEARCH_WRAP_CLASS,
 } from "@/lib/page-layout";
+import SectionHeader from "@/components/section-header/section-header";
 import {
   INITIAL_REPORT_FILTERS,
   computeReportsKpis,
   filterReportRows,
+  type ReportDateRangeFilter,
   type ReportFilters,
   type ReportRow,
   type ReportStatusFilter,
+  type ReportTypeFilter,
 } from "@/lib/reports";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_PAGE_SIZE = 3;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[56rem]";
 
+const TYPE_OPTIONS: { value: ReportTypeFilter; label: string }[] = [
+  { value: "all", label: "All types" },
+  { value: "SOP", label: "SOP" },
+  { value: "BPR", label: "BPR" },
+  { value: "FIR", label: "FIR" },
+];
+
 const STATUS_OPTIONS: { value: ReportStatusFilter; label: string }[] = [
   { value: "all", label: "All status" },
   { value: "Compliant", label: "Compliant" },
   { value: "Partial", label: "Partial" },
   { value: "Failed", label: "Failed" },
+];
+
+const DATE_OPTIONS: { value: ReportDateRangeFilter; label: string }[] = [
+  { value: "all", label: "All time" },
+  { value: "7d", label: "Last 7 days" },
+  { value: "30d", label: "Last 30 days" },
+  { value: "90d", label: "Last 90 days" },
 ];
 
 function FilterSelect<T extends string>({
@@ -170,80 +178,6 @@ function FilterSelect<T extends string>({
     </DropdownMenu>
   ) : (
     trigger
-  );
-}
-
-function DateRangePicker({
-  from,
-  to,
-  onChange,
-}: {
-  from: Date | null;
-  to: Date | null;
-  onChange: (range: { from: Date | null; to: Date | null }) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const selected: DateRange | undefined =
-    from || to ? { from: from ?? undefined, to: to ?? undefined } : undefined;
-
-  const label =
-    from && to
-      ? `${format(from, "MMM d, yyyy")} – ${format(to, "MMM d, yyyy")}`
-      : from
-        ? `${format(from, "MMM d, yyyy")} – …`
-        : "Date range";
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          aria-label="Filter by date range"
-          className={cn(TABLE_TOOLBAR_FILTER_TRIGGER_CLASS, "min-w-[11rem]")}
-        >
-          <span className="inline-flex min-w-0 items-center gap-2 truncate">
-            <CalendarDays className="size-4 shrink-0 text-zinc-900" aria-hidden />
-            <span className="truncate">{label}</span>
-          </span>
-          <ChevronDown className="size-4 shrink-0 text-zinc-900" aria-hidden />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent align="end" className="w-auto p-3 md:p-4">
-        <Calendar
-          mode="range"
-          numberOfMonths={2}
-          selected={selected}
-          onSelect={(range) => {
-            onChange({
-              from: range?.from ?? null,
-              to: range?.to ?? null,
-            });
-          }}
-          defaultMonth={from ?? to ?? new Date()}
-        />
-        <div className="mt-3 flex items-center justify-between gap-2 border-t border-neutral-200 pt-3">
-          <Button
-            type="button"
-            variant="ghost"
-            className="h-8! min-h-8! px-2 text-sm"
-            onClick={() => {
-              onChange({ from: null, to: null });
-              setOpen(false);
-            }}
-          >
-            Clear
-          </Button>
-          <Button
-            type="button"
-            variant="black"
-            className="h-8! min-h-8! px-3 text-sm"
-            onClick={() => setOpen(false)}
-          >
-            Apply
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
   );
 }
 
@@ -645,6 +579,21 @@ export default function ReportsTableCard({
 
   return (
     <>
+      <SectionHeader
+        className="mb-8"
+        title="Reports"
+        description="Completed SOP, BPR, and FIR audit reports from the native audit pipeline."
+        actions={
+          <Button
+            type="button"
+            variant="black"
+            className={PAGE_HEADER_PRIMARY_BUTTON_CLASS}
+            onClick={exportBatch}
+          >
+            Export reports
+          </Button>
+        }
+      />
       <div className={cn("flex w-full flex-col", DASHBOARD_GAP_CLASS, className)}>
         <ReportsKpiHeader rows={rows} />
 
@@ -692,27 +641,26 @@ export default function ReportsTableCard({
                 </div>
                 <div className={TABLE_TOOLBAR_FILTERS_CLASS}>
                   <FilterSelect
+                    label="Type"
+                    value={filters.type}
+                    options={TYPE_OPTIONS}
+                    menusMounted={menusMounted}
+                    onChange={(type) => patchFilters({ type })}
+                  />
+                  <FilterSelect
                     label="Status"
                     value={filters.status}
                     options={STATUS_OPTIONS}
                     menusMounted={menusMounted}
                     onChange={(status) => patchFilters({ status })}
                   />
-                  <DateRangePicker
-                    from={filters.from}
-                    to={filters.to}
-                    onChange={({ from, to }) => patchFilters({ from, to })}
+                  <FilterSelect
+                    label="Date range"
+                    value={filters.dateRange}
+                    options={DATE_OPTIONS}
+                    menusMounted={menusMounted}
+                    onChange={(dateRange) => patchFilters({ dateRange })}
                   />
-                </div>
-                <div className={TABLE_TOOLBAR_ACTIONS_CLASS}>
-                  <Button
-                    type="button"
-                    variant="black"
-                    className={TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS}
-                    onClick={exportBatch}
-                  >
-                    Export reports
-                  </Button>
                 </div>
               </div>
             </div>

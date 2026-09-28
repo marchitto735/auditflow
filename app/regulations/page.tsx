@@ -1,4 +1,3 @@
-import SectionHeader from "@/components/section-header/section-header";
 import FrameworksWorkspace from "@/components/frameworks/frameworks-workspace";
 import {
   PAGE_CONTENT_TOP_CLASS,
@@ -12,10 +11,6 @@ export default function RegulationsPage() {
     <div className="min-h-0 min-w-0 w-full flex-1">
       <section className={cn(PAGE_GUTTER_CLASS, PAGE_CONTENT_TOP_CLASS)}>
         <div className={cn(PAGE_INNER_CLASS, "flex w-full flex-col")}>
-          <SectionHeader
-            title="Frameworks"
-            description="Regulatory standards, clause coverage, and mapped internal SOP controls."
-          />
           <FrameworksWorkspace />
         </div>
       </section>

@@ -64,26 +64,30 @@ export const FIELD_CONTROL_CLASS =
 
 /**
  * Unified data-table toolbar anatomy:
- * [Search — left] [Filters — middle] [Primary action — far right]
+ * [Search — flush left] …… [exactly 3 filter dropdowns — flush right]
  */
 export const TABLE_TOOLBAR_ROW_CLASS =
-  "flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-3";
+  "flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3";
 
 export const TABLE_TOOLBAR_SEARCH_WRAP_CLASS =
   "relative min-w-0 w-full sm:w-[min(100%,20rem)] sm:shrink-0";
 
 export const TABLE_TOOLBAR_FILTERS_CLASS =
-  "flex min-w-0 flex-1 flex-wrap items-center gap-2";
+  "flex w-full min-w-0 shrink-0 flex-wrap items-center gap-2 sm:ml-auto sm:w-auto sm:justify-end";
 
 export const TABLE_TOOLBAR_ACTIONS_CLASS =
   "flex w-full shrink-0 items-center gap-2 sm:ml-auto sm:w-auto sm:justify-end";
 
 /**
- * Primary table-header CTA — fixed width so New audit / New policy / Sync /
- * Export / View all buttons align across pages; label stays centered.
+ * Primary table-header / page-header CTA — fixed width so New audit / New policy /
+ * Sync / Export buttons align across pages; label stays centered.
  */
 export const TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS =
-  "h-9! min-h-9! w-[12rem] shrink-0 justify-center rounded-md px-3 text-sm";
+  "h-[length:var(--cta-height)]! min-h-[length:var(--cta-height)]! w-[12rem] shrink-0 justify-center rounded-md px-3 text-sm";
+
+/** Page-level primary action in the SectionHeader actions slot. */
+export const PAGE_HEADER_PRIMARY_BUTTON_CLASS =
+  TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS;
 
 /**
  * Filter dropdown / date-picker trigger — same type as toolbar search.

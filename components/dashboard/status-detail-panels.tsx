@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import { ChevronDown, Search } from "lucide-react";
 import {
   CardActionsMenu,
@@ -12,7 +11,6 @@ import {
   TABLE_CARD_MENU_ACTIONS,
 } from "@/components/dashboard/card-actions-menu";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -54,10 +52,8 @@ import {
   CARD_SECTION_EYEBROW_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
-  TABLE_TOOLBAR_ACTIONS_CLASS,
   TABLE_TOOLBAR_FILTERS_CLASS,
   TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
-  TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS,
   TABLE_TOOLBAR_ROW_CLASS,
   TABLE_TOOLBAR_SEARCH_ICON_CLASS,
   TABLE_TOOLBAR_SEARCH_INPUT_CLASS,
@@ -108,6 +104,7 @@ function FindingStatusBadge({ status }: { status: FindingStatus }) {
 
 type FindingsSeverityFilter = "all" | FindingSeverity;
 type FindingsStatusFilter = "all" | FindingStatus;
+type FindingsTypeFilter = "all" | "SOP" | "BPR" | "FIR";
 
 const FINDINGS_SEVERITY_OPTIONS: {
   value: FindingsSeverityFilter;
@@ -130,6 +127,23 @@ const FINDINGS_STATUS_OPTIONS: {
   { value: "Pending verification", label: "Pending verification" },
 ];
 
+const FINDINGS_TYPE_OPTIONS: {
+  value: FindingsTypeFilter;
+  label: string;
+}[] = [
+  { value: "all", label: "All types" },
+  { value: "SOP", label: "SOP" },
+  { value: "BPR", label: "BPR" },
+  { value: "FIR", label: "FIR" },
+];
+
+function findingDocumentType(document: string): FindingsTypeFilter | null {
+  const upper = document.trim().toUpperCase();
+  if (upper.startsWith("SOP")) return "SOP";
+  if (upper.startsWith("BPR")) return "BPR";
+  if (upper.startsWith("FIR")) return "FIR";
+  return null;
+}
 function FindingsFilterSelect<T extends string>({
   label,
   value,
@@ -207,6 +221,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
   const [search, setSearch] = useState("");
   const [severity, setSeverity] = useState<FindingsSeverityFilter>("all");
   const [status, setStatus] = useState<FindingsStatusFilter>("all");
+  const [docType, setDocType] = useState<FindingsTypeFilter>("all");
   const [menusMounted, setMenusMounted] = useState(false);
 
   useEffect(() => {
@@ -218,6 +233,9 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
     return SORTED_FINDINGS.filter((row) => {
       if (severity !== "all" && row.severity !== severity) return false;
       if (status !== "all" && row.status !== status) return false;
+      if (docType !== "all" && findingDocumentType(row.document) !== docType) {
+        return false;
+      }
       if (query) {
         const haystack =
           `${row.title} ${row.document} ${row.severity} ${row.status}`.toLowerCase();
@@ -225,7 +243,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
       }
       return true;
     });
-  }, [search, severity, status]);
+  }, [search, severity, status, docType]);
 
   const totalCount = catalog.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
@@ -235,7 +253,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
 
   useEffect(() => {
     setPage(1);
-  }, [pageSize, search, severity, status]);
+  }, [pageSize, search, severity, status, docType]);
 
   function handlePageSizeChange(value: string) {
     const scrollY = window.scrollY;
@@ -291,6 +309,13 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
             </div>
             <div className={TABLE_TOOLBAR_FILTERS_CLASS}>
               <FindingsFilterSelect
+                label="Type"
+                value={docType}
+                options={FINDINGS_TYPE_OPTIONS}
+                menusMounted={menusMounted}
+                onChange={setDocType}
+              />
+              <FindingsFilterSelect
                 label="Severity"
                 value={severity}
                 options={FINDINGS_SEVERITY_OPTIONS}
@@ -304,16 +329,6 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
                 menusMounted={menusMounted}
                 onChange={setStatus}
               />
-            </div>
-            <div className={TABLE_TOOLBAR_ACTIONS_CLASS}>
-              <Button
-                type="button"
-                variant="black"
-                className={TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS}
-                asChild
-              >
-                <Link href="/dashboard/findings">View all</Link>
-              </Button>
             </div>
           </div>
         </div>

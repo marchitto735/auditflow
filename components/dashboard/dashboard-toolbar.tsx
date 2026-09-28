@@ -362,24 +362,19 @@ export function DashboardToolbar({
       role="search"
       aria-label="Search and filter audits"
     >
-      <div className="flex min-w-0 w-full items-center gap-2 sm:w-auto sm:shrink-0">
-        <div className={cn(TABLE_TOOLBAR_SEARCH_WRAP_CLASS, "flex-1 sm:flex-none")}>
-          <Search
-            className={TABLE_TOOLBAR_SEARCH_ICON_CLASS}
-            aria-hidden
-          />
-          <Input
-            type="search"
-            value={value.search}
-            onChange={(event) => patch({ search: event.target.value })}
-            placeholder="Search documents"
-            aria-label="Search documents"
-            className={TABLE_TOOLBAR_SEARCH_INPUT_CLASS}
-          />
-        </div>
-        <div className="sm:hidden">
-          <MobileFiltersSheet value={value} onChange={patch} />
-        </div>
+      <div className={TABLE_TOOLBAR_SEARCH_WRAP_CLASS}>
+        <Search
+          className={TABLE_TOOLBAR_SEARCH_ICON_CLASS}
+          aria-hidden
+        />
+        <Input
+          type="search"
+          value={value.search}
+          onChange={(event) => patch({ search: event.target.value })}
+          placeholder="Search documents"
+          aria-label="Search documents"
+          className={TABLE_TOOLBAR_SEARCH_INPUT_CLASS}
+        />
       </div>
 
       <div className={cn(TABLE_TOOLBAR_FILTERS_CLASS, "hidden sm:flex")}>
@@ -401,6 +396,10 @@ export function DashboardToolbar({
           options={DATE_OPTIONS}
           onChange={(dateRange) => patch({ dateRange })}
         />
+      </div>
+
+      <div className="sm:hidden">
+        <MobileFiltersSheet value={value} onChange={patch} />
       </div>
 
       {action ? (

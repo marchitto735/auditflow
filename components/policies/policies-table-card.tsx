@@ -65,14 +65,13 @@ import {
   CARD_METRIC_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
   OVERLINE_LABEL_CLASS,
+  PAGE_HEADER_PRIMARY_BUTTON_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
-  TABLE_TOOLBAR_ACTIONS_CLASS,
   TABLE_TOOLBAR_FILTERS_CLASS,
   TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
-  TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS,
   TABLE_TOOLBAR_ROW_CLASS,
   TABLE_TOOLBAR_SEARCH_ICON_CLASS,
   TABLE_TOOLBAR_SEARCH_INPUT_CLASS,
@@ -91,6 +90,7 @@ import {
   type PolicyStatus,
 } from "@/lib/policies";
 import { cn } from "@/lib/utils";
+import SectionHeader from "@/components/section-header/section-header";
 
 const DEFAULT_PAGE_SIZE = 3;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[56rem]";
@@ -563,6 +563,21 @@ export default function PoliciesTableCard({
 
   return (
     <>
+      <SectionHeader
+        className="mb-8"
+        title="Policies"
+        description="Master document library with parse status, chunk counts, and framework coverage."
+        actions={
+          <Button
+            type="button"
+            variant="black"
+            className={PAGE_HEADER_PRIMARY_BUTTON_CLASS}
+            onClick={() => setUploadOpen(true)}
+          >
+            New policy
+          </Button>
+        }
+      />
       <div className={cn("flex w-full flex-col", DASHBOARD_GAP_CLASS, className)}>
         <PoliciesKpiHeader policies={policies} />
 
@@ -630,16 +645,6 @@ export default function PoliciesTableCard({
                   menusMounted={menusMounted}
                   onChange={(version) => patchFilters({ version })}
                 />
-              </div>
-              <div className={TABLE_TOOLBAR_ACTIONS_CLASS}>
-                <Button
-                  type="button"
-                  variant="black"
-                  className={TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS}
-                  onClick={() => setUploadOpen(true)}
-                >
-                  New policy
-                </Button>
               </div>
             </div>
           </div>

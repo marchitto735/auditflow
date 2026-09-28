@@ -7,6 +7,8 @@ import type { SopAuditReport } from "@/lib/sop-report";
 import { toDocumentTitleCase } from "@/lib/status-label";
 
 export type ReportStatusFilter = "all" | "Compliant" | "Partial" | "Failed";
+export type ReportTypeFilter = "all" | "SOP" | "BPR" | "FIR";
+export type ReportDateRangeFilter = "all" | "7d" | "30d" | "90d";
 
 export type ReportRow = ActivityRow & {
   createdAt: string | null;
@@ -18,9 +20,9 @@ export type ReportRow = ActivityRow & {
 
 export type ReportFilters = {
   search: string;
+  type: ReportTypeFilter;
   status: ReportStatusFilter;
-  from: Date | null;
-  to: Date | null;
+  dateRange: ReportDateRangeFilter;
 };
 
 export type ReportsKpis = {
@@ -49,9 +51,9 @@ export const REPORT_STATUS_FILTERS: ReportStatusFilter[] = [
 
 export const INITIAL_REPORT_FILTERS: ReportFilters = {
   search: "",
+  type: "all",
   status: "all",
-  from: null,
-  to: null,
+  dateRange: "all",
 };
 
 /** Stable human-readable document labels by workflow (sentence case + acronyms). */
@@ -366,16 +368,13 @@ export function computeReportsKpis(rows: ReportRow[]): ReportsKpis {
   };
 }
 
-function startOfDay(date: Date) {
-  const next = new Date(date);
-  next.setHours(0, 0, 0, 0);
-  return next;
-}
-
-function endOfDay(date: Date) {
-  const next = new Date(date);
-  next.setHours(23, 59, 59, 999);
-  return next;
+function dateRangeStart(range: ReportDateRangeFilter): number | null {
+  if (range === "all") return null;
+  const days = range === "7d" ? 7 : range === "30d" ? 30 : 90;
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  start.setDate(start.getDate() - days);
+  return start.getTime();
 }
 
 export function filterReportRows(
@@ -383,8 +382,7 @@ export function filterReportRows(
   filters: ReportFilters,
 ): ReportRow[] {
   const query = filters.search.trim().toLowerCase();
-  const from = filters.from ? startOfDay(filters.from).getTime() : null;
-  const to = filters.to ? endOfDay(filters.to).getTime() : null;
+  const from = dateRangeStart(filters.dateRange);
 
   return rows.filter((row) => {
     if (query) {
@@ -392,16 +390,17 @@ export function filterReportRows(
       if (!haystack.includes(query)) return false;
     }
 
+    if (filters.type !== "all" && row.type !== filters.type) return false;
+
     if (filters.status !== "all") {
       if (bucketStatus(row.status) !== filters.status) return false;
     }
 
-    if (from != null || to != null) {
+    if (from != null) {
       if (!row.createdAt) return false;
       const time = Date.parse(row.createdAt);
       if (Number.isNaN(time)) return false;
-      if (from != null && time < from) return false;
-      if (to != null && time > to) return false;
+      if (time < from) return false;
     }
 
     return true;

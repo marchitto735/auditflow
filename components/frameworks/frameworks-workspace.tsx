@@ -55,14 +55,13 @@ import {
   CARD_HEADER_STACK_CLASS,
   CARD_METRIC_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
+  PAGE_HEADER_PRIMARY_BUTTON_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
-  TABLE_TOOLBAR_ACTIONS_CLASS,
   TABLE_TOOLBAR_FILTERS_CLASS,
   TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
-  TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS,
   TABLE_TOOLBAR_ROW_CLASS,
   TABLE_TOOLBAR_SEARCH_ICON_CLASS,
   TABLE_TOOLBAR_SEARCH_INPUT_CLASS,
@@ -80,6 +79,7 @@ import {
   type MappingStatus,
 } from "@/lib/frameworks";
 import { cn } from "@/lib/utils";
+import SectionHeader from "@/components/section-header/section-header";
 
 const DEFAULT_PAGE_SIZE = 3;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[52rem]";
@@ -332,14 +332,12 @@ function MappingTable({
   filters,
   onFiltersChange,
   menusMounted,
-  onOpenSync,
 }: {
   rows: FrameworkClauseRow[];
   frameworks: FrameworkOverview[];
   filters: FrameworkFilters;
   onFiltersChange: (partial: Partial<FrameworkFilters>) => void;
   menusMounted: boolean;
-  onOpenSync: () => void;
 }) {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [page, setPage] = useState(1);
@@ -438,16 +436,6 @@ function MappingTable({
                 menusMounted={menusMounted}
                 onChange={(status) => onFiltersChange({ status })}
               />
-            </div>
-            <div className={TABLE_TOOLBAR_ACTIONS_CLASS}>
-              <Button
-                type="button"
-                variant="black"
-                className={TABLE_TOOLBAR_PRIMARY_BUTTON_CLASS}
-                onClick={onOpenSync}
-              >
-                Sync framework
-              </Button>
             </div>
           </div>
         </div>
@@ -562,7 +550,23 @@ export default function FrameworksWorkspace({
   }
 
   return (
-    <div className={cn("flex w-full flex-col", DASHBOARD_GAP_CLASS)}>
+    <div className="flex w-full flex-col">
+      <SectionHeader
+        className="mb-8"
+        title="Frameworks"
+        description="Regulatory standards, clause coverage, and mapped internal SOP controls."
+        actions={
+          <Button
+            type="button"
+            variant="black"
+            className={PAGE_HEADER_PRIMARY_BUTTON_CLASS}
+            onClick={() => setSyncOpen(true)}
+          >
+            Sync framework
+          </Button>
+        }
+      />
+      <div className={cn("flex w-full flex-col", DASHBOARD_GAP_CLASS)}>
       <FrameworkKpiHeader frameworks={frameworks} />
       <MappingTable
         rows={clauses}
@@ -570,13 +574,13 @@ export default function FrameworksWorkspace({
         filters={filters}
         onFiltersChange={patchFilters}
         menusMounted={menusMounted}
-        onOpenSync={() => setSyncOpen(true)}
       />
       <SyncFrameworkDialog
         open={syncOpen}
         onOpenChange={setSyncOpen}
         frameworks={frameworks}
       />
+      </div>
     </div>
   );
 }
