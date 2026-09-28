@@ -19,13 +19,13 @@ export default function SectionHeader({
   return (
     <div
       className={cn(
-        "mb-4",
-        actions && "flex items-start justify-between gap-6",
+        "mb-8",
+        actions && "flex items-center justify-between gap-6",
         className,
       )}
     >
       <div className="min-w-0">
-        <h2 className={cn(SECTION_HEADER_CLASS, "m-0 text-neutral-900")}>
+        <h2 className={cn(SECTION_HEADER_CLASS, "m-0 leading-7 text-neutral-900")}>
           {title}
         </h2>
         {description ? (

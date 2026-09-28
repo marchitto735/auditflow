@@ -564,7 +564,6 @@ export default function PoliciesTableCard({
   return (
     <>
       <SectionHeader
-        className="mb-8"
         title="Policies"
         description="Master document library with parse status, chunk counts, and framework coverage."
         actions={

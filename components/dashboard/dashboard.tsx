@@ -25,7 +25,6 @@ export default function Dashboard() {
     >
       <div className={cn(PAGE_INNER_CLASS, "flex w-full min-w-0 flex-col")}>
         <SectionHeader
-          className="mb-8"
           title="Dashboard"
           description="Live compliance telemetry, pipeline status, and operational oversight."
           actions={

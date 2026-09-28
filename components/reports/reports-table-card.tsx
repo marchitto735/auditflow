@@ -580,7 +580,6 @@ export default function ReportsTableCard({
   return (
     <>
       <SectionHeader
-        className="mb-8"
         title="Reports"
         description="Completed SOP, BPR, and FIR audit reports from the native audit pipeline."
         actions={

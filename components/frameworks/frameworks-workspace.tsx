@@ -552,7 +552,6 @@ export default function FrameworksWorkspace({
   return (
     <div className="flex w-full flex-col">
       <SectionHeader
-        className="mb-8"
         title="Frameworks"
         description="Regulatory standards, clause coverage, and mapped internal SOP controls."
         actions={
