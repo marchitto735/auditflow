@@ -144,7 +144,7 @@ export default function SettingsWorkspace({
     <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
       <CardContent className="flex flex-col p-0">
         <div className="border-b border-zinc-200 px-4 pt-[16px] pb-3">
-          <p className={CARD_SECTION_EYEBROW_CLASS}>Workspace settings</p>
+          <p className={CARD_SECTION_EYEBROW_CLASS}>Organization settings</p>
           <p className={SECTION_DESCRIPTION_CLASS}>
             Organization defaults, security posture, and alert preferences.
           </p>
@@ -179,86 +179,105 @@ export default function SettingsWorkspace({
             </TabsList>
           </div>
 
-          <TabsContent value="general" className="m-0 p-4 md:p-6">
-            <SettingsSection
-              title="General settings"
-              description="Organization identity and audit timestamp defaults."
-            >
-              <div className="flex flex-col gap-5">
-                <FieldRow
-                  label="Organization name"
-                  htmlFor="org-name"
-                  hint="Displayed on reports and invitations."
+          <TabsContent value="general" className="m-0 space-y-4 p-4 md:p-6">
+            <Card className={cn(DASHBOARD_CARD_CLASS)}>
+              <CardContent className="flex flex-col gap-4 p-4 md:p-5">
+                <SettingsSection
+                  title="Workspace settings"
+                  description="Organization identity used on reports and invitations."
                 >
-                  <Input
-                    id="org-name"
-                    value={settings.organizationName}
-                    onChange={(event) =>
-                      patch({ organizationName: event.target.value })
-                    }
-                  />
-                </FieldRow>
-                <FieldRow
-                  label="Workspace ID"
-                  htmlFor="workspace-id"
-                  hint="Stable identifier used in API traces."
+                  <div className="flex flex-col gap-5">
+                    <FieldRow
+                      label="Organization name"
+                      htmlFor="org-name"
+                      hint="Displayed on reports and invitations."
+                    >
+                      <Input
+                        id="org-name"
+                        value={settings.organizationName}
+                        onChange={(event) =>
+                          patch({ organizationName: event.target.value })
+                        }
+                      />
+                    </FieldRow>
+                    <FieldRow
+                      label="Workspace ID"
+                      htmlFor="workspace-id"
+                      hint="Stable identifier used in API traces."
+                    >
+                      <Input
+                        id="workspace-id"
+                        className="font-mono text-sm"
+                        value={settings.workspaceId}
+                        onChange={(event) =>
+                          patch({ workspaceId: event.target.value })
+                        }
+                      />
+                    </FieldRow>
+                  </div>
+                </SettingsSection>
+              </CardContent>
+            </Card>
+
+            <Card className={cn(DASHBOARD_CARD_CLASS)}>
+              <CardContent className="flex flex-col gap-4 p-4 md:p-5">
+                <SettingsSection
+                  title="Display preferences"
+                  description="Timezone and date format for audit timestamps."
                 >
-                  <Input
-                    id="workspace-id"
-                    className="font-mono text-sm"
-                    value={settings.workspaceId}
-                    onChange={(event) =>
-                      patch({ workspaceId: event.target.value })
-                    }
-                  />
-                </FieldRow>
-                <FieldRow label="Timezone" htmlFor="timezone">
-                  <Select
-                    value={settings.timezone}
-                    onValueChange={(value) => patch({ timezone: value })}
-                  >
-                    <SelectTrigger id="timezone" className="w-full max-w-md">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {TIMEZONE_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FieldRow>
-                <FieldRow
-                  label="Date format"
-                  htmlFor="date-format"
-                  hint="Applied to audit trail timestamps."
-                >
-                  <Select
-                    value={settings.dateFormat}
-                    onValueChange={(value) =>
-                      patch({ dateFormat: value as DateFormat })
-                    }
-                  >
-                    <SelectTrigger id="date-format" className="w-full max-w-md">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {DATE_FORMAT_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FieldRow>
-              </div>
-            </SettingsSection>
+                  <div className="flex flex-col gap-5">
+                    <FieldRow label="Timezone" htmlFor="timezone">
+                      <Select
+                        value={settings.timezone}
+                        onValueChange={(value) => patch({ timezone: value })}
+                      >
+                        <SelectTrigger id="timezone" className="w-full max-w-md">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {TIMEZONE_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FieldRow>
+                    <FieldRow
+                      label="Date format"
+                      htmlFor="date-format"
+                      hint="Applied to audit trail timestamps."
+                    >
+                      <Select
+                        value={settings.dateFormat}
+                        onValueChange={(value) =>
+                          patch({ dateFormat: value as DateFormat })
+                        }
+                      >
+                        <SelectTrigger
+                          id="date-format"
+                          className="w-full max-w-md"
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {DATE_FORMAT_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FieldRow>
+                  </div>
+                </SettingsSection>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="security" className="m-0 p-4 md:p-6">
             <SettingsSection
-              title="Security & access control"
+              title="Security and access control"
               description="MFA enforcement, session lifetime, and password policy."
             >
               <div className="flex flex-col gap-5">

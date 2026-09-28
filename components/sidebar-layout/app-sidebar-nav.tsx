@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bell, CircleHelp, CircleUser, PanelLeftClose, PanelLeft, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -67,13 +67,35 @@ function SidebarProfileCard({
   onNavigate?: () => void;
 }) {
   const [mounted, setMounted] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [menuWidth, setMenuWidth] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (!mounted || compact) {
+      setMenuWidth(undefined);
+      return;
+    }
+
+    const el = triggerRef.current;
+    if (!el) return;
+
+    const syncWidth = () => {
+      setMenuWidth(el.getBoundingClientRect().width);
+    };
+
+    syncWidth();
+    const observer = new ResizeObserver(syncWidth);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [mounted, compact]);
+
   const trigger = (
     <button
+      ref={triggerRef}
       type="button"
       aria-label="Open profile menu"
       className={cn(
@@ -111,7 +133,16 @@ function SidebarProfileCard({
         side={compact ? "right" : "top"}
         align={compact ? "end" : "start"}
         sideOffset={8}
-        className={cn(DASHBOARD_MENU_CONTENT_CLASS, "w-56")}
+        alignOffset={0}
+        style={
+          !compact && menuWidth != null
+            ? { width: menuWidth, minWidth: menuWidth, maxWidth: menuWidth }
+            : undefined
+        }
+        className={cn(
+          DASHBOARD_MENU_CONTENT_CLASS,
+          compact ? "w-56" : "min-w-0",
+        )}
       >
         <div className="flex flex-col gap-0.5">
           <DropdownMenuItem
@@ -168,9 +199,6 @@ function SidebarProfileCard({
           })}
         </div>
         <div className="flex flex-col gap-0.5 pt-1">
-          <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
-            Preferences
-          </DropdownMenuItem>
           <DropdownMenuItem className={DASHBOARD_MENU_ITEM_CLASS}>
             Log out
           </DropdownMenuItem>
