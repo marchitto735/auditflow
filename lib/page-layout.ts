@@ -161,10 +161,10 @@ export const RECENT_ACTIVITY_CARD_HEIGHT_CLASS = "h-auto";
 
 /**
  * Shared section / card eyebrow label — sentence case at rest (no CSS uppercase).
- * 14px / semibold; use for card headers, KPI eyebrows, and section overlines.
+ * 14px / medium; use for card headers, KPI eyebrows, and section overlines.
  */
 export const SECTION_LABEL_CLASS =
-  "text-sm font-semibold tracking-normal text-neutral-900";
+  "text-sm font-medium tracking-normal text-neutral-900";
 
 /**
  * Card eyebrow — identical to sidebar section headers for visual hierarchy.
@@ -173,10 +173,10 @@ export const CARD_EYEBROW_CLASS = `m-0 ${SECTION_LABEL_CLASS}`;
 
 /**
  * Muted overline — sheet/panel sub-headers (Summary, Findings, metadata).
- * Matches eyebrow size (14px).
+ * Matches eyebrow size (14px medium).
  */
 export const OVERLINE_LABEL_CLASS =
-  "m-0 text-sm font-semibold tracking-normal text-neutral-500";
+  "m-0 text-sm font-medium tracking-normal text-neutral-500";
 
 /**
  * Top-right card corner label (SOP / YTD / etc.) — acronym codes stay uppercase.
@@ -219,16 +219,16 @@ export const SECTION_DESCRIPTION_CLASS =
   "m-0 mt-1 text-sm font-normal text-muted-foreground";
 
 /**
- * Primary card title (26px / bold) — audit fleet metric titles, etc.
+ * Primary card title (26px / semibold) — audit fleet metric titles, etc.
  */
 export const CARD_TITLE_CLASS =
-  "text-[26px] font-bold leading-tight tracking-tight";
+  "text-[26px] font-semibold leading-tight tracking-tight";
 
 /**
- * Status KPI primary metric value (26px / bold).
+ * Status KPI primary metric value (26px / semibold).
  */
 export const CARD_METRIC_CLASS =
-  "text-[26px] font-bold leading-tight tracking-tight";
+  "text-[26px] font-semibold leading-tight tracking-tight";
 
 /**
  * Shared interactive card body — compact padding, no fixed min-height.
