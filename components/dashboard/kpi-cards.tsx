@@ -11,7 +11,7 @@ import {
   CARD_CONTENT_CLASS,
   CARD_CORNER_LABEL_CLASS,
   CARD_EYEBROW_MUTED_CLASS,
-  CARD_TITLE_CLASS,
+  CARD_METRIC_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
 } from "@/lib/page-layout";
@@ -105,7 +105,7 @@ export function KpiCard({ card }: { card: KpiCardData }) {
               </p>
               <h3
                 className={cn(
-                  CARD_TITLE_CLASS,
+                  CARD_METRIC_CLASS,
                   METRIC_VALUE_CLASS,
                   "m-0 max-w-full break-words text-pretty text-neutral-900",
                 )}

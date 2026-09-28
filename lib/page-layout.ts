@@ -229,10 +229,10 @@ export const CARD_TITLE_CLASS =
   "text-[26px] font-semibold leading-tight tracking-tight";
 
 /**
- * Status KPI primary metric value (26px / semibold).
+ * Status KPI primary metric value (24px / semibold).
  */
 export const CARD_METRIC_CLASS =
-  "text-[26px] font-semibold leading-tight tracking-tight";
+  "text-[24px] font-semibold leading-tight tracking-tight";
 
 /**
  * Shared interactive card body — compact padding, no fixed min-height.
