@@ -460,9 +460,14 @@ export function CategoryBreakdownPanel({ className }: { className?: string }) {
   );
 }
 
-/** Y-axis ticks — right-aligned tabular nums flush to a fixed-width rail. */
+const COMPLIANCE_TREND_Y_TICKS = [100, 90, 80, 70] as const;
+const COMPLIANCE_TREND_Y_WIDTH = 28;
+
+/**
+ * Native Recharts tick positions; force a shared flush-left x so labels
+ * align with the card header text (SVG origin = content padding edge).
+ */
 function ComplianceTrendYTick({
-  x,
   y,
   payload,
 }: {
@@ -470,15 +475,17 @@ function ComplianceTrendYTick({
   y?: number;
   payload?: { value?: number | string };
 }) {
-  if (x == null || y == null || payload?.value == null) return null;
+  if (y == null || payload?.value == null) return null;
+
+  // Top tick (100) sits on the plot edge — nudge down so it isn't clipped.
+  const isTopTick = Number(payload.value) === COMPLIANCE_TREND_Y_TICKS[0];
 
   return (
     <text
-      x={x}
+      x={0}
       y={y}
-      dx={-2}
-      dy={4}
-      textAnchor="end"
+      dy={isTopTick ? 10 : 4}
+      textAnchor="start"
       fill={CHART.structuralMuted}
       fontSize={12}
       style={{ fontVariantNumeric: "tabular-nums" }}
@@ -507,26 +514,36 @@ export function ComplianceTrendPanel({ className }: { className?: string }) {
             actions={CHART_CARD_MENU_ACTIONS}
           />
         </div>
-        <div className="h-[200px] w-full">
+        <div className="h-[280px] w-full min-w-0">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={[...trend]}
-              margin={{ top: 8, right: 12, left: 4, bottom: 0 }}
+              margin={{ top: 12, right: 4, left: 0, bottom: 0 }}
             >
-              <CartesianGrid stroke={CHART.grid} vertical={false} />
+              <CartesianGrid
+                stroke={CHART.grid}
+                vertical={false}
+                horizontal
+              />
               <XAxis
                 dataKey="label"
                 tickLine={false}
                 axisLine={false}
-                tick={{ fill: CHART.structuralMuted, fontSize: 12 }}
+                padding={{ left: 0, right: 0 }}
+                tick={{
+                  fill: CHART.structuralMuted,
+                  fontSize: 12,
+                }}
               />
               <YAxis
+                orientation="left"
                 domain={[70, 100]}
+                ticks={[...COMPLIANCE_TREND_Y_TICKS]}
                 tickLine={false}
-                axisLine={false}
-                width={36}
-                tick={<ComplianceTrendYTick />}
+                axisLine={{ stroke: CHART.grid, strokeWidth: 1 }}
+                width={COMPLIANCE_TREND_Y_WIDTH}
                 tickMargin={0}
+                tick={<ComplianceTrendYTick />}
               />
               <Tooltip
                 contentStyle={{
