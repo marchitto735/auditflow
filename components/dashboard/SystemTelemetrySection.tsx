@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 /**
  * Desktop: Compliance trend 50% on the left, Activity feed stacked
  * above Compliance pipeline at 50% on the right.
- * The feed card is a fixed 184px and scrolls internally.
+ * The feed card is a fixed 176px and scrolls internally.
  * Narrow viewports stack all three in that order.
  */
 export function SystemTelemetrySection({ className }: { className?: string }) {
@@ -24,7 +24,7 @@ export function SystemTelemetrySection({ className }: { className?: string }) {
     >
       <ComplianceTrendPanel className="h-full w-full min-w-0" />
       <div className={cn("flex min-w-0 flex-col", DASHBOARD_GAP_CLASS)}>
-        <div className="flex h-[184px] min-h-0 min-w-0 flex-col overflow-hidden">
+        <div className="flex h-[176px] min-h-0 min-w-0 flex-col overflow-hidden">
           <AgentFeedCard className="h-full min-h-0" />
         </div>
         <CompliancePipelineCard />

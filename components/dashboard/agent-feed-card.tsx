@@ -182,7 +182,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
 
         <ul
           className={cn(
-            "m-0 grid list-none grid-cols-[minmax(0,1fr)_auto_auto] gap-x-4 gap-y-4 p-0",
+            "m-0 grid list-none grid-cols-[minmax(0,1fr)_auto_auto] gap-x-4 gap-y-3 p-0",
             "min-h-0 flex-1 overflow-x-hidden overflow-y-auto pr-1",
             FEED_SCROLLBAR_CLASS,
           )}
