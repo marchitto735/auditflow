@@ -30,9 +30,9 @@ import {
 } from "@/components/ui/table";
 import { TruncatedText } from "@/components/ui/truncated-text";
 import {
+  Area,
+  AreaChart,
   CartesianGrid,
-  Line,
-  LineChart,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -510,9 +510,39 @@ function ComplianceTrendYTick({
   );
 }
 
-/** Read-only 90d compliance score trend for the command center. */
+const COMPLIANCE_TREND_STROKE = "#10b981";
+const COMPLIANCE_TREND_AMBER = "#f59e0b";
+const COMPLIANCE_TREND_AMBER_LABEL = "#b45309";
+
+/**
+ * Sits just above the dashed GMP line, flush to the right edge of the plot.
+ */
+function GmpStandardLabel({
+  viewBox,
+}: {
+  viewBox?: { x?: number; y?: number; width?: number };
+}) {
+  if (viewBox?.x == null || viewBox.y == null || viewBox.width == null) {
+    return null;
+  }
+
+  return (
+    <text
+      x={viewBox.x + viewBox.width}
+      y={viewBox.y}
+      dy={-8}
+      textAnchor="end"
+      fill={COMPLIANCE_TREND_AMBER_LABEL}
+      fontSize={12}
+      fontWeight={500}
+    >
+      GMP {GMP_THRESHOLD}%
+    </text>
+  );
+}
 export function ComplianceTrendPanel({ className }: { className?: string }) {
   const trend = SCORE_TRENDS[90];
+  const fillId = `compliance-trend-fill-${GMP_THRESHOLD}`;
 
   return (
     <Card className={cn(DASHBOARD_CARD_CLASS, "h-full", className)}>
@@ -529,12 +559,26 @@ export function ComplianceTrendPanel({ className }: { className?: string }) {
             actions={CHART_CARD_MENU_ACTIONS}
           />
         </div>
-        <div className="h-[280px] w-full min-w-0">
+        <div className="min-h-[280px] w-full min-w-0 flex-1">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart
+            <AreaChart
               data={[...trend]}
-              margin={{ top: 12, right: 4, left: 0, bottom: 0 }}
+              margin={{ top: 16, right: 4, left: 0, bottom: 0 }}
             >
+              <defs>
+                <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="0%"
+                    stopColor={COMPLIANCE_TREND_STROKE}
+                    stopOpacity={0.32}
+                  />
+                  <stop
+                    offset="100%"
+                    stopColor={COMPLIANCE_TREND_STROKE}
+                    stopOpacity={0}
+                  />
+                </linearGradient>
+              </defs>
               <CartesianGrid
                 stroke={CHART.grid}
                 vertical={false}
@@ -565,24 +609,28 @@ export function ComplianceTrendPanel({ className }: { className?: string }) {
                   borderRadius: 8,
                   border: `1px solid ${CHART.track}`,
                   boxShadow: "none",
-                  fontSize: 13,
+                  fontSize: 14,
                 }}
+                formatter={(value) => [`${value}%`, "Score"]}
+              />
+              <Area
+                type="monotone"
+                dataKey="score"
+                stroke={COMPLIANCE_TREND_STROKE}
+                strokeWidth={2}
+                fill={`url(#${fillId})`}
+                dot={{ r: 3, fill: COMPLIANCE_TREND_STROKE, strokeWidth: 0 }}
+                activeDot={{ r: 4, fill: COMPLIANCE_TREND_STROKE, strokeWidth: 0 }}
+                isAnimationActive={false}
               />
               <ReferenceLine
                 y={GMP_THRESHOLD}
-                stroke={CHART.reference}
-                strokeDasharray="3 5"
-                strokeWidth={1}
+                stroke={COMPLIANCE_TREND_AMBER}
+                strokeDasharray="4 4"
+                strokeWidth={1.25}
+                label={<GmpStandardLabel />}
               />
-              <Line
-                type="monotone"
-                dataKey="score"
-                stroke={CHART.primary}
-                strokeWidth={1.75}
-                dot={{ r: 2.5, fill: CHART.primary, strokeWidth: 0 }}
-                isAnimationActive={false}
-              />
-            </LineChart>
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </CardContent>
