@@ -26,11 +26,11 @@ export default function Dashboard() {
       <div className={cn(PAGE_INNER_CLASS, "flex w-full min-w-0 flex-col")}>
         <div
           className={cn(
-            "sticky top-0 z-30 -mt-5 mb-8 bg-background pt-5 backdrop-blur-md supports-[backdrop-filter]:bg-background/80",
+            "sticky top-0 z-30 -mt-5 bg-background pt-5 pb-8 backdrop-blur-md supports-[backdrop-filter]:bg-background/80",
           )}
         >
           <SectionHeader
-            className="mb-0"
+            className="mb-0 items-end"
             title="Dashboard"
             description="Real-time compliance status, document workflow, and active audit tracking."
             actions={

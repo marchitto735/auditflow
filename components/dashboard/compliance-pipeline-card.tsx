@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CardActionsMenu, FEED_CARD_MENU_ACTIONS } from "@/components/dashboard/card-actions-menu";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,6 +10,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
+  TablePaginationBar,
   TableRow,
 } from "@/components/ui/table";
 import { TruncatedText } from "@/components/ui/truncated-text";
@@ -105,6 +106,8 @@ const ACTIVE_JOBS: PipelineJob[] = [
   },
 ];
 
+const DEFAULT_PAGE_SIZE = 3;
+
 const STAGES: PipelineStage[] = STAGE_ORDER.map((stage) => ({
   ...stage,
   count: ACTIVE_JOBS.filter((job) => job.stageId === stage.id).length,
@@ -115,23 +118,45 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
   const [selectedStage, setSelectedStage] = useState<PipelineStageId | null>(
     null,
   );
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const [page, setPage] = useState(1);
   const visibleJobs = selectedStage
     ? ACTIVE_JOBS.filter((job) => job.stageId === selectedStage)
     : ACTIVE_JOBS;
   const selectedLabel = STAGES.find((stage) => stage.id === selectedStage)?.label;
+  const totalCount = visibleJobs.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const pageStart = (currentPage - 1) * pageSize;
+  const pageRows = visibleJobs.slice(pageStart, pageStart + pageSize);
+
+  useEffect(() => {
+    setPage(1);
+  }, [pageSize, selectedStage]);
 
   function selectStage(stageId: PipelineStageId) {
     setSelectedStage((current) => (current === stageId ? null : stageId));
+  }
+
+  function handlePageSizeChange(value: string) {
+    const scrollY = window.scrollY;
+    setPageSize(Number(value));
+    setPage(1);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo(0, scrollY);
+      });
+    });
   }
   return (
     <Card
       className={cn(
         DASHBOARD_CARD_CLASS,
-        "flex h-auto w-full flex-col overflow-hidden lg:h-full lg:max-h-full lg:min-h-0",
+        "flex h-auto w-full flex-col overflow-hidden",
         className,
       )}
     >
-      <CardContent className="relative flex h-auto min-h-0 flex-col p-0 lg:h-full lg:overflow-hidden">
+      <CardContent className="flex flex-col p-0">
         <div className="relative min-w-0 shrink-0 px-4 pt-4 pb-3">
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Document Tracker</p>
@@ -151,7 +176,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
           className="m-0 flex shrink-0 list-none flex-wrap items-stretch gap-2 px-4 pt-4 pb-4"
           aria-label="Compliance pipeline stages"
         >
-          {STAGES.map((stage, index) => {
+          {STAGES.map((stage) => {
             const selected = selectedStage === stage.id;
             return (
               <li key={stage.id} className="flex min-w-0 flex-1">
@@ -160,20 +185,17 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
                   aria-pressed={selected}
                   onClick={() => selectStage(stage.id)}
                   className={cn(
-                    "flex w-full min-w-0 cursor-pointer flex-col gap-1 rounded-lg border px-3 py-2 text-left transition-colors select-none",
+                    "flex w-full min-w-0 cursor-pointer flex-col gap-1 overflow-hidden rounded-lg border px-2.5 py-2 text-left transition-colors select-none",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2",
                     selected
                       ? "border-neutral-900 bg-white hover:border-neutral-900 hover:bg-white"
                       : "border-neutral-200 bg-neutral-50 hover:border-neutral-400 hover:bg-white",
                   )}
                 >
-                  <span className="font-mono text-sm font-semibold uppercase tracking-wider text-neutral-900 tabular-nums">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-sm font-medium text-neutral-900">
+                  <span className="min-w-0 truncate text-sm font-medium text-neutral-900">
                     {stage.label}
                   </span>
-                  <span className="m-0 font-mono text-sm tabular-nums text-neutral-900">
+                  <span className="m-0 whitespace-nowrap font-mono text-sm tabular-nums text-neutral-900">
                     {stage.count} Active
                   </span>
                 </button>
@@ -193,7 +215,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
           </div>
         ) : null}
 
-        <div className="min-h-0 w-full max-h-72 overflow-auto overscroll-contain lg:max-h-none lg:flex-1">
+        <div className="flex min-w-0 flex-col">
         <Table
           className="w-full table-fixed border-separate border-spacing-0"
           containerClassName="overflow-visible"
@@ -205,18 +227,18 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
             <col style={{ width: "16%" }} />
             <col style={{ width: "26%" }} />
           </colgroup>
-          <TableHeader className="sticky top-0 z-10 border-b-0 bg-white shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0">
+          <TableHeader className="border-b-0 bg-white shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0">
             <TableRow className="border-0 bg-white hover:bg-transparent">
-              <TableHead className="sticky top-0 z-10 h-10 border-t border-b-0 border-zinc-200 bg-white px-4 text-left">
+              <TableHead className="h-10 border-t border-b-0 border-zinc-200 bg-white px-4 text-left">
                 Document
               </TableHead>
-              <TableHead className="sticky top-0 z-10 h-10 border-t border-b-0 border-zinc-200 bg-white px-4 text-left">
+              <TableHead className="h-10 border-t border-b-0 border-zinc-200 bg-white px-4 text-left">
                 ID / Version
               </TableHead>
-              <TableHead className="sticky top-0 z-10 h-10 border-t border-b-0 border-zinc-200 bg-white px-4 text-left">
+              <TableHead className="h-10 border-t border-b-0 border-zinc-200 bg-white px-4 text-left">
                 ETA
               </TableHead>
-              <TableHead className="sticky top-0 z-10 h-10 border-t border-b-0 border-zinc-200 bg-white px-4 text-left">
+              <TableHead className="h-10 border-t border-b-0 border-zinc-200 bg-white px-4 text-left">
                 Current Stage
               </TableHead>
             </TableRow>
@@ -227,7 +249,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
               "[&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
             )}
           >
-            {visibleJobs.length === 0 ? (
+            {pageRows.length === 0 ? (
               <TableRow className="h-12 border-0 hover:bg-transparent">
                 <TableCell
                   colSpan={4}
@@ -237,7 +259,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
                 </TableCell>
               </TableRow>
             ) : null}
-            {visibleJobs.map((job) => (
+            {pageRows.map((job) => (
               <TableRow
                 key={job.id}
                 className="h-12 border-0 hover:bg-neutral-50"
@@ -261,6 +283,16 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
             ))}
           </TableBody>
         </Table>
+        <TablePaginationBar
+          pageRowsCount={pageRows.length}
+          totalCount={totalCount}
+          pageSize={pageSize}
+          onPageSizeChange={handlePageSizeChange}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          paginationLabel="Document Tracker pagination"
+        />
         </div>
       </CardContent>
     </Card>

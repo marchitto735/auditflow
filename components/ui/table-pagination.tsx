@@ -80,7 +80,7 @@ function PageSizeSelector({
 
   return (
     <div className="flex shrink-0 items-center gap-2">
-      <span className="text-sm text-muted-foreground">Rows per page:</span>
+      <span className="text-sm text-muted-foreground">Rows</span>
       {menusMounted ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
@@ -236,7 +236,7 @@ function TablePaginationBar({
 
   const menusMounted = menusMountedProp ?? menusMountedInternal
   const pageItems = buildTablePageItems(currentPage, totalPages)
-  const countLabel = `Showing ${pageRowsCount} of ${totalCount} results`
+  const countLabel = `${pageRowsCount} of ${totalCount}`
 
   return (
     <div
