@@ -106,6 +106,12 @@ function UnitFilterDropdown({
 }
 
 /**
+ * Time-range filter bar (Last 24 h, 7/30/90 days, All units, Live).
+ * Set to true to show it again above the metric cards.
+ */
+export const SHOW_DASHBOARD_TIME_RANGE_FILTER = false;
+
+/**
  * Command-center chrome — time range, unit scope, live status, and freshness.
  */
 export function DashboardCommandHeader({ className }: { className?: string }) {

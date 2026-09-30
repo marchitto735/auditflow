@@ -1,7 +1,10 @@
 "use client";
 
 import { KpiCardItems } from "@/components/dashboard/kpi-cards";
-import { DashboardCommandHeader } from "@/components/dashboard/dashboard-command-header";
+import {
+  DashboardCommandHeader,
+  SHOW_DASHBOARD_TIME_RANGE_FILTER,
+} from "@/components/dashboard/dashboard-command-header";
 import { SystemTelemetrySection } from "@/components/dashboard/SystemTelemetrySection";
 import { FindingsSummaryPanel } from "@/components/dashboard/status-detail-panels";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -24,7 +27,7 @@ export default function DashboardGrid() {
           DASHBOARD_SECTION_GAP_CLASS,
         )}
       >
-        <DashboardCommandHeader />
+        {SHOW_DASHBOARD_TIME_RANGE_FILTER ? <DashboardCommandHeader /> : null}
 
         {/* Core macro KPIs */}
         <div className={cn("w-full min-w-0", DASHBOARD_TRIPLE_CARD_GRID_CLASS)}>

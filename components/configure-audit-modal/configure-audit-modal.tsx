@@ -34,7 +34,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import type { AuditWorkflowId } from "@/lib/audit-workflows";
-import { AUDIT_TYPE_OPTIONS, AUDIT_WORKFLOWS } from "@/lib/audit-workflows";
+import { AUDIT_TYPE_OPTIONS } from "@/lib/audit-workflows";
 import {
   AUDIT_FRAMEWORKS,
   frameworkSearchKeywords,
@@ -44,28 +44,6 @@ import {
 } from "@/lib/audit-frameworks";
 import { DROPDOWN_TRIGGER_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
-
-/** Primary standard workflow when New audit opens without a card prefill. */
-const DEFAULT_AUDIT_TYPE: AuditWorkflowId = "sop";
-
-/** One in-scope framework so dependent fields open already populated. */
-const DEFAULT_FRAMEWORK_BY_TYPE: Record<AuditWorkflowId, string> = {
-  sop: "iso-9001-2015",
-  bpr: "fda-21-cfr-820",
-  fir: "eu-gmp-annex-1",
-};
-
-const DEFAULT_CLAUSE_COUNT = 3;
-
-function defaultFrameworkFor(workflowId: AuditWorkflowId) {
-  return DEFAULT_FRAMEWORK_BY_TYPE[workflowId];
-}
-
-function defaultClauseIds(frameworkValue: string) {
-  return getClausesForFramework(frameworkValue)
-    .slice(0, DEFAULT_CLAUSE_COUNT)
-    .map((clause) => clause.id);
-}
 
 /** Shared field shell — same resting chrome as the upload/sync selects. */
 const FIELD_SURFACE_CLASS = cn(
@@ -265,24 +243,21 @@ function FieldComboboxTrigger({
 type ConfigureAuditModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Prefill from dashboard card; null when opened blank from New Audit. */
+  /** Callers may pass a workflow from a card launch. The form ignores it and opens blank. */
   initialWorkflowId: AuditWorkflowId | null;
 };
 
 export function ConfigureAuditModal({
   open,
   onOpenChange,
-  initialWorkflowId,
 }: ConfigureAuditModalProps) {
   const router = useRouter();
 
-  const [auditType, setAuditType] = React.useState<AuditWorkflowId>(
-    () => initialWorkflowId ?? DEFAULT_AUDIT_TYPE,
+  const [auditType, setAuditType] = React.useState<AuditWorkflowId | null>(
+    null,
   );
   const [auditTypeOpen, setAuditTypeOpen] = React.useState(false);
-  const [frameworks, setFrameworks] = React.useState<string[]>(() => [
-    defaultFrameworkFor(initialWorkflowId ?? DEFAULT_AUDIT_TYPE),
-  ]);
+  const [frameworks, setFrameworks] = React.useState<string[]>([]);
   const [frameworkOpen, setFrameworkOpen] = React.useState(false);
   const [clauseOpen, setClauseOpen] = React.useState(false);
   const [docsOpen, setDocsOpen] = React.useState(false);
@@ -290,12 +265,7 @@ export function ConfigureAuditModal({
   const [evidenceFiles, setEvidenceFiles] = React.useState<StagedFile[]>([]);
   const [clauseQuery, setClauseQuery] = React.useState("");
   const [selectedClauses, setSelectedClauses] = React.useState<Set<string>>(
-    () =>
-      new Set(
-        defaultClauseIds(
-          defaultFrameworkFor(initialWorkflowId ?? DEFAULT_AUDIT_TYPE),
-        ),
-      ),
+    () => new Set(),
   );
   const [isInitializing, setIsInitializing] = React.useState(false);
   const [initError, setInitError] = React.useState<string | null>(null);
@@ -317,31 +287,29 @@ export function ConfigureAuditModal({
     if (cameraInputRef.current) cameraInputRef.current.value = "";
   }
 
-  function applyWorkflowDefaults(workflowId: AuditWorkflowId) {
-    const framework = defaultFrameworkFor(workflowId);
-    setFrameworks([framework]);
+  function resetSelections() {
+    setFrameworks([]);
     setFrameworkOpen(false);
     setClauseOpen(false);
     setClauseQuery("");
-    setSelectedClauses(new Set(defaultClauseIds(framework)));
+    setSelectedClauses(new Set());
     clearStagedFiles();
   }
 
   React.useEffect(() => {
     if (!open) return;
-    const workflowId = initialWorkflowId ?? DEFAULT_AUDIT_TYPE;
-    setAuditType(workflowId);
+    setAuditType(null);
     setAuditTypeOpen(false);
-    applyWorkflowDefaults(workflowId);
+    resetSelections();
     setIsInitializing(false);
     setInitError(null);
-  }, [open, initialWorkflowId]);
+  }, [open]);
 
   function selectAuditType(value: AuditWorkflowId) {
     setAuditTypeOpen(false);
     if (value === auditType) return;
     setAuditType(value);
-    applyWorkflowDefaults(value);
+    clearStagedFiles();
   }
 
   const selectedFrameworkItems = React.useMemo(
@@ -526,6 +494,10 @@ export function ConfigureAuditModal({
 
   async function handleInitialize() {
     if (isInitializing) return;
+    if (!auditType) {
+      setInitError("Select an audit type before initializing.");
+      return;
+    }
     if (frameworks.length === 0) {
       setInitError("Select at least one framework before initializing.");
       return;
@@ -573,8 +545,10 @@ export function ConfigureAuditModal({
     }
   }
 
-  const assessmentLabel = AUDIT_WORKFLOWS[auditType].label;
-  const helperText = `Choose audit type, framework(s), select clauses, and link target documentation for the ${assessmentLabel} compliance assessment.`;
+  const assessmentLabel = selectedAuditTypeOption?.label ?? "document";
+  const helperText = selectedAuditTypeOption
+    ? `Choose audit type, framework(s), select clauses, and link target documentation for the ${selectedAuditTypeOption.label} compliance assessment.`
+    : "Choose audit type, framework(s), select clauses, and link target documentation for the compliance assessment.";
 
   const submitLabel =
     docCount > 1
@@ -672,7 +646,7 @@ export function ConfigureAuditModal({
                   </Command>
                   <div className={DROPDOWN_FOOTER_CLASS}>
                     <span className="text-sm text-neutral-600">
-                      1 selected
+                      {auditType ? "1 selected" : "0 selected"}
                     </span>
                     <Button
                       type="button"
@@ -1135,8 +1109,9 @@ export function ConfigureAuditModal({
                 void handleInitialize();
               }}
               disabled={
-                selectedClauses.size === 0 ||
+                auditType == null ||
                 frameworks.length === 0 ||
+                selectedClauses.size === 0 ||
                 isInitializing
               }
               aria-busy={isInitializing}
