@@ -1,223 +1,366 @@
 "use client";
 
+import { useState } from "react";
 import { CardActionsMenu, FEED_CARD_MENU_ACTIONS } from "@/components/dashboard/card-actions-menu";
-import { Badge } from "@/components/ui/badge";
+import { Badge, type BadgeTone } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  CARD_CONTENT_CLASS,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TablePaginationBar,
+  TableRow,
+} from "@/components/ui/table";
+import { TruncatedText } from "@/components/ui/truncated-text";
+import {
   CARD_SECTION_EYEBROW_CLASS,
-  SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
+  SECTION_DESCRIPTION_CLASS,
   TELEMETRY_META_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
-type FeedStatus = "info" | "warn" | "error";
+type FeedState = "Success" | "Running" | "Failed";
 
 type FeedEvent = {
-  time: string;
-  subsystem: string;
+  timestamp: string;
+  dateTime: string;
   message: string;
-  status?: FeedStatus;
+  target: string;
+  actor: string;
+  state: FeedState;
 };
 
 const FEED_EVENTS: FeedEvent[] = [
   {
-    time: "10:12 AM",
-    subsystem: "Agent",
+    timestamp: "Sep 30, 10:12 AM",
+    dateTime: "2026-09-30T10:12:00",
     message: "Batch reconciliation queued for BPR-204.",
+    target: "BPR-204",
+    actor: "Agent",
+    state: "Running",
   },
   {
-    time: "10:11 AM",
-    subsystem: "Notifier",
+    timestamp: "Sep 30, 10:11 AM",
+    dateTime: "2026-09-30T10:11:00",
     message: "Stakeholder digest prepared for review.",
+    target: "Stakeholder digest",
+    actor: "Notifier",
+    state: "Success",
   },
   {
-    time: "10:10 AM",
-    subsystem: "Validator",
+    timestamp: "Sep 30, 10:10 AM",
+    dateTime: "2026-09-30T10:10:00",
     message: "Cross-check complete — 2 residual findings.",
+    target: "—",
+    actor: "Validator",
+    state: "Success",
   },
   {
-    time: "10:09 AM",
-    subsystem: "Scanner",
+    timestamp: "Sep 30, 10:09 AM",
+    dateTime: "2026-09-30T10:09:00",
     message: "Low-confidence OCR on page 4 — manual review suggested.",
-    status: "warn",
+    target: "SOP Manufacturing v4.2",
+    actor: "Scanner",
+    state: "Running",
   },
   {
-    time: "10:08 AM",
-    subsystem: "Exporter",
+    timestamp: "Sep 30, 10:08 AM",
+    dateTime: "2026-09-30T10:08:00",
     message: "Draft audit packet packaged (PDF).",
+    target: "Audit packet",
+    actor: "Exporter",
+    state: "Success",
   },
   {
-    time: "10:07 AM",
-    subsystem: "Linker",
+    timestamp: "Sep 30, 10:07 AM",
+    dateTime: "2026-09-30T10:07:00",
     message: "Evidence folder synced to clause 7.5.2.",
+    target: "Clause 7.5.2",
+    actor: "Linker",
+    state: "Success",
   },
   {
-    time: "10:06 AM",
-    subsystem: "Scanner",
+    timestamp: "Sep 30, 10:06 AM",
+    dateTime: "2026-09-30T10:06:00",
     message: "OCR finished on SOP Manufacturing v4.2.",
+    target: "SOP Manufacturing v4.2",
+    actor: "Scanner",
+    state: "Success",
   },
   {
-    time: "10:05 AM",
-    subsystem: "Classifier",
+    timestamp: "Sep 30, 10:05 AM",
+    dateTime: "2026-09-30T10:05:00",
     message: "Document typed as standard operating procedure.",
+    target: "SOP-001",
+    actor: "Classifier",
+    state: "Success",
   },
   {
-    time: "10:04 AM",
-    subsystem: "Parser",
+    timestamp: "Sep 30, 10:04 AM",
+    dateTime: "2026-09-30T10:04:00",
     message: "SOP-001 parsed successfully.",
+    target: "SOP-001",
+    actor: "Parser",
+    state: "Success",
   },
   {
-    time: "10:03 AM",
-    subsystem: "Matcher",
+    timestamp: "Sep 30, 10:03 AM",
+    dateTime: "2026-09-30T10:03:00",
     message: "Clause 5.5.1 mapped to training records.",
+    target: "Clause 5.5.1",
+    actor: "Matcher",
+    state: "Success",
   },
   {
-    time: "10:02 AM",
-    subsystem: "Scorer",
+    timestamp: "Sep 30, 10:02 AM",
+    dateTime: "2026-09-30T10:02:00",
     message: "Compliance score recalculated (88%).",
+    target: "—",
+    actor: "Scorer",
+    state: "Success",
   },
   {
-    time: "10:01 AM",
-    subsystem: "Indexer",
+    timestamp: "Sep 30, 10:01 AM",
+    dateTime: "2026-09-30T10:01:00",
     message: "Framework ISO 13485:2016 loaded.",
+    target: "ISO 13485:2016",
+    actor: "Indexer",
+    state: "Success",
   },
   {
-    time: "10:00 AM",
-    subsystem: "Watcher",
+    timestamp: "Sep 30, 10:00 AM",
+    dateTime: "2026-09-30T10:00:00",
     message: "New document staged for FIR audit.",
+    target: "FIR audit",
+    actor: "Watcher",
+    state: "Running",
   },
   {
-    time: "9:59 AM",
-    subsystem: "Health",
+    timestamp: "Sep 30, 9:59 AM",
+    dateTime: "2026-09-30T09:59:00",
     message: "Downstream model timeout — retrying (attempt 2/3).",
-    status: "error",
+    target: "—",
+    actor: "Health",
+    state: "Failed",
   },
   {
-    time: "9:58 AM",
-    subsystem: "Agent",
+    timestamp: "Sep 30, 9:58 AM",
+    dateTime: "2026-09-30T09:58:00",
     message: "Session ready — awaiting configuration.",
+    target: "—",
+    actor: "Agent",
+    state: "Running",
   },
   {
-    time: "9:57 AM",
-    subsystem: "Cache",
+    timestamp: "Sep 30, 9:57 AM",
+    dateTime: "2026-09-30T09:57:00",
     message: "Clause corpus warmed (142 entries).",
+    target: "Clause corpus",
+    actor: "Cache",
+    state: "Success",
   },
   {
-    time: "9:56 AM",
-    subsystem: "Auth",
+    timestamp: "Sep 30, 9:56 AM",
+    dateTime: "2026-09-30T09:56:00",
     message: "Auditor context bound for Kevin Marchitto.",
+    target: "Kevin Marchitto",
+    actor: "Auth",
+    state: "Success",
   },
   {
-    time: "9:55 AM",
-    subsystem: "Health",
+    timestamp: "Sep 30, 9:55 AM",
+    dateTime: "2026-09-30T09:55:00",
     message: "Downstream model endpoint responding (42ms).",
+    target: "—",
+    actor: "Health",
+    state: "Success",
   },
   {
-    time: "9:54 AM",
-    subsystem: "Scheduler",
+    timestamp: "Sep 30, 9:54 AM",
+    dateTime: "2026-09-30T09:54:00",
     message: "Overnight FIR sweep completed.",
+    target: "FIR sweep",
+    actor: "Scheduler",
+    state: "Success",
   },
   {
-    time: "9:53 AM",
-    subsystem: "Diff",
+    timestamp: "Sep 30, 9:53 AM",
+    dateTime: "2026-09-30T09:53:00",
     message: "Detected revision on SOP_Cleaning_v3.1.",
+    target: "SOP_Cleaning_v3.1",
+    actor: "Diff",
+    state: "Success",
   },
   {
-    time: "9:52 AM",
-    subsystem: "Queue",
+    timestamp: "Sep 30, 9:52 AM",
+    dateTime: "2026-09-30T09:52:00",
     message: "3 audits pending initialization.",
+    target: "Audit queue",
+    actor: "Queue",
+    state: "Running",
   },
   {
-    time: "9:51 AM",
-    subsystem: "Bootstrap",
+    timestamp: "Sep 30, 9:51 AM",
+    dateTime: "2026-09-30T09:51:00",
     message: "AuditFlow agent runtime online.",
+    target: "—",
+    actor: "Bootstrap",
+    state: "Success",
   },
 ];
 
-/** Subtle thin scrollbar for the agent feed log. */
-const FEED_SCROLLBAR_CLASS = cn(
-  "overflow-x-hidden overflow-y-auto overscroll-y-contain overscroll-x-none",
-  "[scrollbar-width:thin]",
-  "[scrollbar-color:#d4d4d8_transparent]",
-  "[&::-webkit-scrollbar]:w-1.5",
-  "[&::-webkit-scrollbar-track]:bg-transparent",
-  "[&::-webkit-scrollbar-thumb]:rounded-full",
-  "[&::-webkit-scrollbar-thumb]:bg-zinc-300",
-  "[&::-webkit-scrollbar-thumb:hover]:bg-zinc-400",
-);
+function stateTone(state: FeedState): BadgeTone {
+  switch (state) {
+    case "Success":
+      return "success";
+    case "Running":
+      return "warning";
+    case "Failed":
+      return "danger";
+  }
+}
+
+const FEED_TABLE_MIN_WIDTH_CLASS = "min-w-[52rem]";
+const DEFAULT_PAGE_SIZE = 10;
 
 type AgentFeedCardProps = {
   className?: string;
 };
 
 export function AgentFeedCard({ className }: AgentFeedCardProps) {
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const [page, setPage] = useState(1);
+
+  const totalCount = FEED_EVENTS.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const pageStart = (currentPage - 1) * pageSize;
+  const pageRows = FEED_EVENTS.slice(pageStart, pageStart + pageSize);
+
+  function handlePageSizeChange(value: string) {
+    const scrollY = window.scrollY;
+    setPageSize(Number(value));
+    setPage(1);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo(0, scrollY);
+      });
+    });
+  }
+
   return (
     <Card
       className={cn(
         DASHBOARD_CARD_CLASS,
-        "flex h-full min-h-0 flex-col overflow-hidden",
+        "flex w-full min-w-0 flex-col overflow-hidden",
         className,
       )}
     >
-      <CardContent
-        className={cn(
-          CARD_CONTENT_CLASS,
-          "relative flex h-full min-h-0 flex-1 flex-col gap-3 overflow-hidden",
-        )}
-      >
-        <div className="min-w-0 shrink-0 pr-10">
-          <p className={CARD_SECTION_EYEBROW_CLASS}>Activity feed</p>
-          <p className={SECTION_DESCRIPTION_CLASS}>
-            Real-time agent events across validation, scoring, and export.
-          </p>
+      <CardContent className="flex min-w-0 flex-col p-0">
+        <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-4 pb-3">
+          <div className="min-w-0 pr-10">
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Activity feed</p>
+            <p className={SECTION_DESCRIPTION_CLASS}>
+              Real-time agent events across validation, scoring, and export.
+            </p>
+          </div>
+          <div className="absolute top-3 right-3">
+            <CardActionsMenu
+              label="Activity feed"
+              actions={FEED_CARD_MENU_ACTIONS}
+            />
+          </div>
         </div>
-        <div className="absolute top-3 right-3">
-          <CardActionsMenu
-            label="Activity feed"
-            actions={FEED_CARD_MENU_ACTIONS}
+
+        <div className="flex min-w-0 flex-col" style={{ overflowAnchor: "none" }}>
+          <div className="min-w-0 overflow-x-auto">
+            <Table
+              className={cn(
+                "w-full table-fixed border-separate border-spacing-0",
+                FEED_TABLE_MIN_WIDTH_CLASS,
+              )}
+              containerClassName="overflow-visible"
+            >
+              <colgroup>
+                <col className="w-[18%]" style={{ width: "18%" }} />
+                <col className="w-[34%]" style={{ width: "34%" }} />
+                <col className="w-[18%]" style={{ width: "18%" }} />
+                <col className="w-[15%]" style={{ width: "15%" }} />
+                <col className="w-[15%]" style={{ width: "15%" }} />
+              </colgroup>
+              <TableHeader className="border-b-0 shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0">
+                <TableRow className="border-0 bg-white hover:bg-transparent">
+                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                    Timestamp
+                  </TableHead>
+                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                    Event / Message
+                  </TableHead>
+                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                    Target Entity
+                  </TableHead>
+                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                    Source / Actor
+                  </TableHead>
+                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                    Status
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody
+                className={cn(
+                  "divide-y divide-border border-b-0",
+                  "[&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
+                )}
+              >
+                {pageRows.map((event) => (
+                  <TableRow
+                    key={`${event.dateTime}-${event.actor}-${event.message}`}
+                    className="h-12 border-0 hover:bg-neutral-50"
+                  >
+                    <TableCell className="h-12 px-4 py-0">
+                      <time
+                        className={TELEMETRY_META_CLASS}
+                        dateTime={event.dateTime}
+                      >
+                        {event.timestamp}
+                      </time>
+                    </TableCell>
+                    <TableCell className="h-12 px-4 py-0">
+                      <TruncatedText text={event.message} />
+                    </TableCell>
+                    <TableCell className="h-12 px-4 py-0">
+                      <TruncatedText
+                        className="font-mono tabular-nums"
+                        text={event.target}
+                      />
+                    </TableCell>
+                    <TableCell className="h-12 px-4 py-0">
+                      <Badge tone="neutral">{event.actor}</Badge>
+                    </TableCell>
+                    <TableCell className="h-12 px-4 py-0">
+                      <Badge tone={stateTone(event.state)}>{event.state}</Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          <TablePaginationBar
+            className={FEED_TABLE_MIN_WIDTH_CLASS}
+            pageRowsCount={pageRows.length}
+            totalCount={totalCount}
+            pageSize={pageSize}
+            onPageSizeChange={handlePageSizeChange}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            paginationLabel="Activity feed pagination"
           />
         </div>
-
-        <ul
-          className={cn(
-            "m-0 grid list-none grid-cols-[minmax(0,1fr)_auto_auto] gap-x-4 gap-y-3 p-0",
-            "min-h-0 flex-1 overflow-x-hidden overflow-y-auto pr-1",
-            FEED_SCROLLBAR_CLASS,
-          )}
-          aria-label="AI agent activity feed"
-        >
-          {FEED_EVENTS.map((event) => {
-            const status = event.status ?? "info";
-            const badgeTone =
-              status === "error"
-                ? "danger"
-                : status === "warn"
-                  ? "warning"
-                  : "neutral";
-
-            return (
-              <li
-                key={`${event.time}-${event.subsystem}-${event.message}`}
-                className="col-span-3 grid grid-cols-subgrid items-center"
-              >
-                <p className="text-sm m-0 min-w-0 overflow-hidden leading-snug text-pretty text-foreground">
-                  {event.message}
-                </p>
-                <time
-                  className={cn(TELEMETRY_META_CLASS, "justify-self-end text-right")}
-                  dateTime={event.time}
-                >
-                  {event.time}
-                </time>
-                <Badge className="justify-self-start" tone={badgeTone}>
-                  {event.subsystem}
-                </Badge>
-              </li>
-            );
-          })}
-        </ul>
       </CardContent>
     </Card>
   );

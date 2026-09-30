@@ -18,6 +18,7 @@ import {
   TECHNICAL_VALUE_CLASS,
   isTechnicalId,
 } from "@/components/activity-table/activity-table";
+import { MetricCard } from "@/components/dashboard/kpi-cards";
 import {
   CardActionsMenu,
   DASHBOARD_MENU_CONTENT_CLASS,
@@ -53,8 +54,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  CARD_HEADER_STACK_CLASS,
-  CARD_METRIC_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
   OVERLINE_LABEL_CLASS,
   PAGE_HEADER_PRIMARY_BUTTON_CLASS,
@@ -181,6 +180,10 @@ function FilterSelect<T extends string>({
   );
 }
 
+function isPartialReport(status: string) {
+  return status.toLowerCase().includes("partial");
+}
+
 function ReportsKpiHeader({ rows }: { rows: ReportRow[] }) {
   const kpis = useMemo(() => computeReportsKpis(rows), [rows]);
   const ratioTotal = kpis.compliantCount + kpis.partialCount;
@@ -189,73 +192,80 @@ function ReportsKpiHeader({ rows }: { rows: ReportRow[] }) {
       ? Math.round((kpis.compliantCount / ratioTotal) * 100)
       : null;
 
-  const cards: Array<{
-    eyebrow: string;
-    value: string;
-    meta: string;
-    icon: typeof FileText;
-    monoMeta?: boolean;
-  }> = [
-    {
-      eyebrow: "Completed audits",
-      value: String(kpis.totalCompleted),
-      meta: kpis.lastAuditAt
-        ? `Last audit ${format(new Date(kpis.lastAuditAt), "MMM d")}`
-        : "Stored pipeline reports",
-      icon: FileText,
-      monoMeta: Boolean(kpis.lastAuditAt),
-    },
-    {
-      eyebrow: "Avg compliance",
-      value: kpis.averageScore != null ? `${kpis.averageScore}%` : "—",
-      meta: "Mean score across reports",
-      icon: ClipboardList,
-    },
-    {
-      eyebrow: "Compliant vs partial",
-      value: `${kpis.compliantCount} / ${kpis.partialCount}`,
-      meta:
-        compliantPct != null
-          ? `${compliantPct}% compliant · ${kpis.failedCount} failed`
-          : `${kpis.failedCount} failed`,
-      icon: ShieldAlert,
-    },
-  ];
+  const cards = useMemo(() => {
+    const ordered = [...rows].sort(
+      (a, b) => Date.parse(a.createdAt ?? "") - Date.parse(b.createdAt ?? ""),
+    );
+    const countTrend = ordered.map((_, index) => index + 1);
+    let scoreSum = 0;
+    let scoreCount = 0;
+    const avgTrend = ordered.reduce<number[]>((series, row) => {
+      if (row.scoreValue == null) return series;
+      scoreSum += row.scoreValue;
+      scoreCount += 1;
+      series.push(Math.round(scoreSum / scoreCount));
+      return series;
+    }, []);
+    let partialCount = 0;
+    const partialTrend = ordered.map((row) => {
+      if (isPartialReport(row.status)) partialCount += 1;
+      return partialCount;
+    });
+    const average = kpis.averageScore;
+
+    return [
+      {
+        title: "Completed audits",
+        value: String(kpis.totalCompleted),
+        description: kpis.lastAuditAt
+          ? `Last audit ${format(new Date(kpis.lastAuditAt), "MMM d")}`
+          : "Stored pipeline reports",
+        code: "ALL",
+        trend: countTrend.length > 0 ? countTrend : [0],
+        status: "Synced",
+      },
+      {
+        title: "Avg compliance",
+        value: average != null ? `${average}%` : "—",
+        description: "Mean score across reports",
+        code: "AVG",
+        trend: avgTrend.length > 0 ? avgTrend : [0],
+        status:
+          average == null
+            ? "Synced"
+            : average >= 85
+              ? "Verified"
+              : average >= 70
+                ? "Pending"
+                : "Flagged",
+      },
+      {
+        title: "Compliant vs partial",
+        value: `${kpis.compliantCount} / ${kpis.partialCount}`,
+        description:
+          compliantPct != null
+            ? `${compliantPct}% compliant · ${kpis.failedCount} failed`
+            : `${kpis.failedCount} failed`,
+        code: "PAR",
+        trend: partialTrend.length > 0 ? partialTrend : [0],
+        status: kpis.partialCount + kpis.failedCount > 0 ? "Flagged" : "Verified",
+      },
+    ];
+  }, [kpis, rows, compliantPct]);
 
   return (
     <div className={DASHBOARD_TRIPLE_CARD_GRID_CLASS}>
-      {cards.map((card) => {
-        const Icon = card.icon;
-        return (
-          <Card
-            key={card.eyebrow}
-            className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}
-          >
-            <CardContent className="flex flex-col gap-3 p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div className={cn(CARD_HEADER_STACK_CLASS, "min-w-0")}>
-                  <p className={CARD_SECTION_EYEBROW_CLASS}>{card.eyebrow}</p>
-                  <p className={cn(CARD_METRIC_CLASS, "m-0 text-neutral-900")}>
-                    {card.value}
-                  </p>
-                </div>
-                <Icon
-                  className="size-4 shrink-0 text-zinc-400"
-                  aria-hidden
-                />
-              </div>
-              <p
-                className={cn(
-                  "m-0 truncate text-xs text-neutral-500",
-                  card.monoMeta && "font-mono tabular-nums",
-                )}
-              >
-                {card.meta}
-              </p>
-            </CardContent>
-          </Card>
-        );
-      })}
+      {cards.map((card) => (
+        <MetricCard
+          key={card.title}
+          title={card.title}
+          value={card.value}
+          description={card.description}
+          trend={card.trend}
+          code={card.code}
+          status={card.status}
+        />
+      ))}
     </div>
   );
 }

@@ -1,14 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition, type FormEvent } from "react";
-import {
-  AlertTriangle,
-  ChevronDown,
-  Layers,
-  Percent,
-  Search,
-} from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import { toast } from "sonner";
+import { MetricCard } from "@/components/dashboard/kpi-cards";
 import {
   CardActionsMenu,
   DASHBOARD_MENU_CONTENT_CLASS,
@@ -52,8 +47,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  CARD_HEADER_STACK_CLASS,
-  CARD_METRIC_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
   PAGE_HEADER_PRIMARY_BUTTON_CLASS,
   SECTION_DESCRIPTION_CLASS,
@@ -250,6 +243,10 @@ function SyncFrameworkDialog({
   );
 }
 
+function needsFrameworkReview(status: FrameworkOverview["status"]) {
+  return status === "Partial" || status === "Review";
+}
+
 function FrameworkKpiHeader({
   frameworks,
 }: {
@@ -263,65 +260,65 @@ function FrameworkKpiHeader({
         : Math.round(
             frameworks.reduce((sum, fw) => sum + fw.coveragePercent, 0) / total,
           );
-    const needsReview = frameworks.filter(
-      (fw) => fw.status === "Partial" || fw.status === "Review",
+    const needsReview = frameworks.filter((fw) =>
+      needsFrameworkReview(fw.status),
     ).length;
     const mappedCount = frameworks.filter((fw) => fw.status === "Mapped").length;
 
+    let coverageSum = 0;
+    let reviewCount = 0;
+    const countTrend = frameworks.map((_, index) => index + 1);
+    const coverageTrend = frameworks.map((fw, index) => {
+      coverageSum += fw.coveragePercent;
+      return Math.round(coverageSum / (index + 1));
+    });
+    const reviewTrend = frameworks.map((fw) => {
+      if (needsFrameworkReview(fw.status)) reviewCount += 1;
+      return reviewCount;
+    });
+
     return [
       {
-        eyebrow: "Active frameworks",
+        title: "Active frameworks",
         value: String(total),
-        meta: `${mappedCount} fully mapped`,
-        icon: Layers,
+        description: `${mappedCount} fully mapped`,
+        code: "ALL",
+        trend: countTrend.length > 0 ? countTrend : [0],
+        status: "Synced",
       },
       {
-        eyebrow: "Avg coverage",
+        title: "Avg coverage",
         value: `${avgCoverage}%`,
-        meta: "Mean clause mapping across packs",
-        icon: Percent,
+        description: "Mean clause mapping across packs",
+        code: "AVG",
+        trend: coverageTrend.length > 0 ? coverageTrend : [0],
+        status: avgCoverage >= 85 ? "Verified" : avgCoverage >= 70 ? "Pending" : "Flagged",
       },
       {
-        eyebrow: "Needs review",
+        title: "Needs review",
         value: String(needsReview),
-        meta:
-          needsReview > 0
-            ? "Partial or review status"
-            : "All frameworks mapped",
-        icon: AlertTriangle,
+        description:
+          needsReview > 0 ? "Partial or review status" : "All frameworks mapped",
+        code: "REV",
+        trend: reviewTrend.length > 0 ? reviewTrend : [0],
+        status: needsReview > 0 ? "Pending" : "Verified",
       },
-    ] as const;
+    ];
   }, [frameworks]);
 
   return (
     <div className={DASHBOARD_TRIPLE_CARD_GRID_CLASS}>
-      {cards.map((card) => {
-        const Icon = card.icon;
-        return (
-          <Card
-            key={card.eyebrow}
-            className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}
-          >
-            <CardContent className="flex flex-col gap-3 p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div className={cn(CARD_HEADER_STACK_CLASS, "min-w-0")}>
-                  <p className={CARD_SECTION_EYEBROW_CLASS}>{card.eyebrow}</p>
-                  <p
-                    className={cn(
-                      CARD_METRIC_CLASS,
-                      "m-0 tabular-nums text-neutral-900",
-                    )}
-                  >
-                    {card.value}
-                  </p>
-                </div>
-                <Icon className="size-4 shrink-0 text-zinc-400" aria-hidden />
-              </div>
-              <p className="m-0 truncate text-xs text-neutral-500">{card.meta}</p>
-            </CardContent>
-          </Card>
-        );
-      })}
+      {cards.map((card) => (
+        <MetricCard
+          key={card.title}
+          title={card.title}
+          value={card.value}
+          description={card.description}
+          trend={card.trend}
+          code={card.code}
+          status={card.status}
+        />
+      ))}
     </div>
   );
 }

@@ -1,12 +1,12 @@
 "use client";
 
 import { KpiCardItems } from "@/components/dashboard/kpi-cards";
+import { AgentFeedCard } from "@/components/dashboard/agent-feed-card";
 import {
   DashboardCommandHeader,
   SHOW_DASHBOARD_TIME_RANGE_FILTER,
 } from "@/components/dashboard/dashboard-command-header";
 import { SystemTelemetrySection } from "@/components/dashboard/SystemTelemetrySection";
-import { FindingsSummaryPanel } from "@/components/dashboard/status-detail-panels";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   DASHBOARD_SECTION_GAP_CLASS,
@@ -15,8 +15,8 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * Telemetry command center — primary KPIs, findings, feeds,
- * and compliance trend.
+ * Telemetry command center — KPI strip, full-width priority findings,
+ * 50/50 trend and pipeline, then a full-width activity log.
  */
 export default function DashboardGrid() {
   return (
@@ -29,16 +29,13 @@ export default function DashboardGrid() {
       >
         {SHOW_DASHBOARD_TIME_RANGE_FILTER ? <DashboardCommandHeader /> : null}
 
-        {/* Core macro KPIs */}
         <div className={cn("w-full min-w-0", DASHBOARD_TRIPLE_CARD_GRID_CLASS)}>
           <KpiCardItems />
         </div>
 
-        {/* Full-width — Priority Findings table */}
-        <FindingsSummaryPanel className="w-full min-w-0" />
-
-        {/* Desktop 50/50 — trend left, feed stacked over pipeline on the right */}
         <SystemTelemetrySection />
+
+        <AgentFeedCard />
       </div>
     </TooltipProvider>
   );

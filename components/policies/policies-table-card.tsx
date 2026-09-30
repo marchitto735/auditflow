@@ -2,15 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition, type FormEvent } from "react";
 import {
-  CheckCircle2,
   ChevronDown,
-  Clock3,
-  FileText,
   FileUp,
   Search,
   ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
+import { MetricCard } from "@/components/dashboard/kpi-cards";
 import {
   CardActionsMenu,
   DASHBOARD_MENU_CONTENT_CLASS,
@@ -61,8 +59,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  CARD_HEADER_STACK_CLASS,
-  CARD_METRIC_CLASS,
   CARD_SECTION_EYEBROW_CLASS,
   OVERLINE_LABEL_CLASS,
   PAGE_HEADER_PRIMARY_BUTTON_CLASS,
@@ -115,65 +111,75 @@ function statusBadgeVariant(status: PolicyStatus) {
   }
 }
 
+function runningCount(
+  policies: MasterPolicy[],
+  match: (policy: MasterPolicy) => boolean,
+): number[] {
+  const sorted = [...policies].sort(
+    (a, b) => Date.parse(a.lastParsedAt) - Date.parse(b.lastParsedAt),
+  );
+  let count = 0;
+  const series = sorted.map((policy) => {
+    if (match(policy)) count += 1;
+    return count;
+  });
+  return series.length > 0 ? series : [0];
+}
+
 function PoliciesKpiHeader({ policies }: { policies: MasterPolicy[] }) {
   const kpis = useMemo(() => computePolicyKpis(policies), [policies]);
-
-  const cards: Array<{
-    eyebrow: string;
-    value: string;
-    meta: string;
-    icon: typeof FileText;
-  }> = [
-    {
-      eyebrow: "Total documents",
-      value: String(kpis.totalDocuments),
-      meta:
-        kpis.failedCount > 0
-          ? `${kpis.syncedCount} synced · ${kpis.failedCount} failed parse`
-          : "SOP · BPR · FIR in the master library",
-      icon: FileText,
-    },
-    {
-      eyebrow: "Active / Ready",
-      value: `${kpis.activeCount} / ${kpis.readyCount}`,
-      meta: `${kpis.activeCount + kpis.readyCount} production-ready policies`,
-      icon: CheckCircle2,
-    },
-    {
-      eyebrow: "Pending reviews",
-      value: String(kpis.pendingCount),
-      meta:
-        kpis.draftCount > 0
-          ? `${kpis.draftCount} still in draft`
-          : "Awaiting compliance sign-off",
-      icon: Clock3,
-    },
-  ];
+  const cards = useMemo(
+    () => [
+      {
+        title: "Total documents",
+        value: String(kpis.totalDocuments),
+        description:
+          kpis.failedCount > 0
+            ? `${kpis.syncedCount} synced · ${kpis.failedCount} failed parse`
+            : "SOP · BPR · FIR in the master library",
+        code: "ALL",
+        trend: runningCount(policies, () => true),
+        status: "Synced",
+      },
+      {
+        title: "Active / Ready",
+        value: `${kpis.activeCount} / ${kpis.readyCount}`,
+        description: `${kpis.activeCount + kpis.readyCount} production-ready policies`,
+        code: "RDY",
+        trend: runningCount(
+          policies,
+          (policy) => policy.status === "Active" || policy.status === "Ready",
+        ),
+        status: "Verified",
+      },
+      {
+        title: "Pending reviews",
+        value: String(kpis.pendingCount),
+        description:
+          kpis.draftCount > 0
+            ? `${kpis.draftCount} still in draft`
+            : "Awaiting compliance sign-off",
+        code: "REV",
+        trend: runningCount(policies, (policy) => policy.status === "Pending"),
+        status: kpis.pendingCount > 0 ? "Pending" : "Verified",
+      },
+    ],
+    [kpis, policies],
+  );
 
   return (
     <div className={DASHBOARD_TRIPLE_CARD_GRID_CLASS}>
-      {cards.map((card) => {
-        const Icon = card.icon;
-        return (
-          <Card
-            key={card.eyebrow}
-            className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}
-          >
-            <CardContent className="flex flex-col gap-3 p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div className={cn(CARD_HEADER_STACK_CLASS, "min-w-0")}>
-                  <p className={CARD_SECTION_EYEBROW_CLASS}>{card.eyebrow}</p>
-                  <p className={cn(CARD_METRIC_CLASS, "m-0 text-neutral-900")}>
-                    {card.value}
-                  </p>
-                </div>
-                <Icon className="size-4 shrink-0 text-zinc-400" aria-hidden />
-              </div>
-              <p className="m-0 truncate text-xs text-neutral-500">{card.meta}</p>
-            </CardContent>
-          </Card>
-        );
-      })}
+      {cards.map((card) => (
+        <MetricCard
+          key={card.title}
+          title={card.title}
+          value={card.value}
+          description={card.description}
+          trend={card.trend}
+          code={card.code}
+          status={card.status}
+        />
+      ))}
     </div>
   );
 }

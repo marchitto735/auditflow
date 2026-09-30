@@ -31,7 +31,6 @@ import {
   type FindingStatus,
 } from "@/lib/dashboard-insights";
 import { DASHBOARD_CARD_CLASS, DASHBOARD_GAP_CLASS, CARD_EYEBROW_MUTED_CLASS } from "@/lib/page-layout";
-import { severityBadgeVariant } from "@/lib/chart-tokens";
 import { cn } from "@/lib/utils";
 
 const SEVERITY_ORDER: FindingSeverity[] = [
@@ -67,7 +66,7 @@ function sortFindings(rows: FindingRow[]) {
 }
 
 function SeverityStatus({ severity }: { severity: FindingSeverity }) {
-  return <Badge variant={severityBadgeVariant(severity)}>{severity}</Badge>;
+  return <span className="text-foreground">{severity}</span>;
 }
 
 export default function FindingsView() {

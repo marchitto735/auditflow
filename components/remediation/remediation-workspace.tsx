@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { CheckCircle2, ChevronDown, TriangleAlert } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -389,25 +389,11 @@ export default function RemediationWorkspace() {
           </div>
 
           <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-zinc-100 p-4">
-            <div
-              className={cn(
-                "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold",
-                flaggedCount > 0
-                  ? "border-red-200 bg-red-50 text-red-700"
-                  : "border-emerald-200 bg-emerald-50 text-emerald-700",
-              )}
-            >
-              {flaggedCount > 0 ? (
-                <TriangleAlert className="size-4 shrink-0" aria-hidden />
-              ) : (
-                <CheckCircle2 className="size-4 shrink-0" aria-hidden />
-              )}
-              <span>
-                {flaggedCount > 0
-                  ? `${flaggedCount} non-compliant ${flaggedCount === 1 ? "finding" : "findings"}`
-                  : "Document compliant"}
-              </span>
-            </div>
+            <Badge tone={flaggedCount > 0 ? "danger" : "success"}>
+              {flaggedCount > 0
+                ? `${flaggedCount} non-compliant ${flaggedCount === 1 ? "finding" : "findings"}`
+                : "Document compliant"}
+            </Badge>
             <Button
               type="button"
               variant="black"

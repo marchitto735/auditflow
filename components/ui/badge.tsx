@@ -3,15 +3,16 @@ import { cn } from "@/lib/utils"
 import { Slot } from "radix-ui"
 
 /**
- * Universal status indicator — borderless dot + label (KPI-card style).
- * No pill chrome, fills, pulse, or glow.
+ * Telemetry status — a semantic dot and plain text, no pill fill.
+ * Green is operational or compliant, amber is warning, open, or
+ * remediation, and red is an error or non-compliant state.
  */
 export type BadgeTone = "success" | "warning" | "danger" | "neutral"
 
 const TONE_DOT: Record<BadgeTone, string> = {
-  success: "bg-emerald-600",
-  warning: "bg-amber-500",
-  danger: "bg-rose-600",
+  success: "bg-status-success",
+  warning: "bg-status-warning",
+  danger: "bg-status-critical",
   neutral: "bg-zinc-400",
 }
 
@@ -41,7 +42,7 @@ function toneFromVariant(variant: BadgeVariant | null | undefined): BadgeTone {
 }
 
 const BADGE_SHELL_CLASS =
-  "inline-flex w-fit shrink-0 items-center gap-1.5 overflow-visible border-0 bg-transparent p-0 leading-none text-sm font-normal whitespace-nowrap text-foreground shadow-none [&>svg]:pointer-events-none [&>svg]:size-3"
+  "inline-flex w-fit shrink-0 items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-normal leading-none whitespace-nowrap text-foreground shadow-none"
 
 /** @deprecated Shell is universal; kept for typed helpers that imported cva variants. */
 const badgeVariants = Object.assign(
@@ -53,7 +54,6 @@ function Badge({
   className,
   tone,
   variant = "outline",
-  showDot = true,
   asChild = false,
   children,
   ...props
@@ -63,8 +63,6 @@ function Badge({
   tone?: BadgeTone
   /** Legacy alias mapped onto `tone`. */
   variant?: BadgeVariant
-  /** When false, omit the leading status dot (e.g. cart count). */
-  showDot?: boolean
 }) {
   const Comp = asChild ? Slot.Root : "span"
   const resolvedTone = tone ?? toneFromVariant(variant)
@@ -76,18 +74,16 @@ function Badge({
       className={cn(BADGE_SHELL_CLASS, className)}
       {...props}
     >
-      {showDot ? (
-        <span
-          className={cn(
-            "size-2.5 shrink-0 self-center rounded-full",
-            TONE_DOT[resolvedTone],
-          )}
-          aria-hidden
-        />
-      ) : null}
+      <span
+        className={cn(
+          "size-2.5 shrink-0 self-center rounded-full",
+          TONE_DOT[resolvedTone],
+        )}
+        aria-hidden
+      />
       {children}
     </Comp>
   )
 }
 
-export { Badge, badgeVariants, TONE_DOT, toneFromVariant }
+export { Badge, badgeVariants, toneFromVariant }

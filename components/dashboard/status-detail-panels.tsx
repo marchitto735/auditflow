@@ -39,7 +39,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { CHART, severityBadgeVariant } from "@/lib/chart-tokens";
+import { CHART } from "@/lib/chart-tokens";
 import {
   GMP_THRESHOLD,
   OPEN_FINDINGS,
@@ -70,7 +70,7 @@ const SEVERITY_ORDER: FindingSeverity[] = [
 ];
 
 const DEFAULT_PAGE_SIZE = 3;
-const FINDINGS_TABLE_MIN_WIDTH_CLASS = "min-w-[36rem]";
+const FINDINGS_TABLE_MIN_WIDTH_CLASS = "min-w-[54rem]";
 
 const SORTED_FINDINGS = [...OPEN_FINDINGS].sort(
   (a, b) =>
@@ -78,7 +78,7 @@ const SORTED_FINDINGS = [...OPEN_FINDINGS].sort(
 );
 
 function SeverityStatus({ severity }: { severity: FindingSeverity }) {
-  return <Badge variant={severityBadgeVariant(severity)}>{severity}</Badge>;
+  return <span className="text-foreground">{severity}</span>;
 }
 
 function findingStatusBadgeVariant(status: FindingStatus) {
@@ -238,7 +238,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
       }
       if (query) {
         const haystack =
-          `${row.title} ${row.document} ${row.severity} ${row.status}`.toLowerCase();
+          `${row.title} ${row.document} ${row.regulation} ${row.source} ${row.detectedAgo} ${row.severity} ${row.status}`.toLowerCase();
         if (!haystack.includes(query)) return false;
       }
       return true;
@@ -352,22 +352,13 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
                   containerClassName="overflow-visible"
                 >
                   <colgroup>
-                    <col
-                      className="w-[40%] min-w-[12rem]"
-                      style={{ width: "40%" }}
-                    />
-                    <col
-                      className="w-[22%] min-w-[8rem]"
-                      style={{ width: "22%" }}
-                    />
-                    <col
-                      className="w-[16%] min-w-[6rem]"
-                      style={{ width: "16%" }}
-                    />
-                    <col
-                      className="w-[22%] min-w-[7rem]"
-                      style={{ width: "22%" }}
-                    />
+                    <col className="w-[24%]" style={{ width: "24%" }} />
+                    <col className="w-[15%]" style={{ width: "15%" }} />
+                    <col className="w-[13%]" style={{ width: "13%" }} />
+                    <col className="w-[12%]" style={{ width: "12%" }} />
+                    <col className="w-[8%]" style={{ width: "8%" }} />
+                    <col className="w-[10%]" style={{ width: "10%" }} />
+                    <col className="w-[18%]" style={{ width: "18%" }} />
                   </colgroup>
                   <TableHeader className="border-b-0 shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0">
                     <TableRow className="border-0 bg-white hover:bg-transparent">
@@ -376,6 +367,15 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
                       </TableHead>
                       <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
                         Document
+                      </TableHead>
+                      <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                        Regulation
+                      </TableHead>
+                      <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                        Source
+                      </TableHead>
+                      <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
+                        Detected
                       </TableHead>
                       <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
                         Severity
@@ -400,7 +400,23 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
                           <TruncatedText text={row.title} />
                         </TableCell>
                         <TableCell className="h-12 px-4 py-0">
-                          <TruncatedText text={row.document} />
+                          <TruncatedText
+                            className="font-mono tabular-nums"
+                            text={row.document}
+                          />
+                        </TableCell>
+                        <TableCell className="h-12 px-4 py-0">
+                          <span className="whitespace-nowrap">
+                            {row.regulation}
+                          </span>
+                        </TableCell>
+                        <TableCell className="h-12 px-4 py-0">
+                          <span className="whitespace-nowrap">{row.source}</span>
+                        </TableCell>
+                        <TableCell className="h-12 px-4 py-0">
+                          <span className="whitespace-nowrap tabular-nums text-neutral-500">
+                            {row.detectedAgo}
+                          </span>
                         </TableCell>
                         <TableCell className="h-12 px-4 py-0">
                           <SeverityStatus severity={row.severity} />

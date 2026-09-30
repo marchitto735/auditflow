@@ -54,6 +54,7 @@ function ticketStatusBadgeVariant(status: SupportTicket["status"]) {
     case "In progress":
       return "success" as const;
     case "Open":
+      return "warning" as const;
     default:
       return "outline" as const;
   }

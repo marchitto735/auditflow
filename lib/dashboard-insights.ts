@@ -10,11 +10,17 @@ export type AuditLogRow = {
 
 export type FindingSeverity = "Critical" | "High" | "Medium" | "Low";
 export type FindingStatus = "Open" | "Remediation" | "Pending verification";
+export type FindingRegulation = "FDA 21 CFR" | "EU GMP" | "ISO 13485";
+export type FindingSource = "AI Agent" | "CI/CD Hook" | "Manual";
 
 export type FindingRow = {
   id: string;
   title: string;
   document: string;
+  regulation: FindingRegulation;
+  source: FindingSource;
+  /** Relative detection age, shown as compact telemetry (e.g. "2h ago"). */
+  detectedAgo: string;
   severity: FindingSeverity;
   citation: string;
   owner: string;
@@ -137,6 +143,9 @@ export const OPEN_FINDINGS: FindingRow[] = [
     id: "f-1",
     title: "Part 11 citation uses incorrect CFR title",
     document: "SOP-QA-001 cleaning",
+    regulation: "FDA 21 CFR",
+    source: "AI Agent",
+    detectedAgo: "2h ago",
     severity: "High",
     citation: "21 CFR Part 11.10(b)",
     owner: "Unassigned",
@@ -146,6 +155,9 @@ export const OPEN_FINDINGS: FindingRow[] = [
     id: "f-2",
     title: "Missing prohibition on correction fluid",
     document: "SOP-QA-001 cleaning",
+    regulation: "FDA 21 CFR",
+    source: "AI Agent",
+    detectedAgo: "5h ago",
     severity: "Medium",
     citation: "21 CFR 211.180(c)",
     owner: "Unassigned",
@@ -155,6 +167,9 @@ export const OPEN_FINDINGS: FindingRow[] = [
     id: "f-3",
     title: "Batch yield calculation not independently verified",
     document: "BPR-LOT-88391",
+    regulation: "FDA 21 CFR",
+    source: "CI/CD Hook",
+    detectedAgo: "1d ago",
     severity: "Critical",
     citation: "21 CFR 211.103",
     owner: "M. Chen",
@@ -164,6 +179,9 @@ export const OPEN_FINDINGS: FindingRow[] = [
     id: "f-4",
     title: "Gowning log gap in Grade C airlock",
     document: "FIR-2024-019",
+    regulation: "EU GMP",
+    source: "Manual",
+    detectedAgo: "3d ago",
     severity: "Critical",
     citation: "21 CFR 211.28(a)",
     owner: "R. Patel",
@@ -173,6 +191,9 @@ export const OPEN_FINDINGS: FindingRow[] = [
     id: "f-5",
     title: "Label reconciliation incomplete for lot 88418",
     document: "SOP-QA-014 labeling",
+    regulation: "FDA 21 CFR",
+    source: "CI/CD Hook",
+    detectedAgo: "6h ago",
     severity: "High",
     citation: "21 CFR 211.122(c)",
     owner: "J. Alvarez",
@@ -182,6 +203,9 @@ export const OPEN_FINDINGS: FindingRow[] = [
     id: "f-6",
     title: "Training record lacks effectiveness check",
     document: "SOP-TR-003 training",
+    regulation: "ISO 13485",
+    source: "Manual",
+    detectedAgo: "2d ago",
     severity: "Medium",
     citation: "21 CFR 211.25(a)",
     owner: "S. Okonkwo",
@@ -191,6 +215,9 @@ export const OPEN_FINDINGS: FindingRow[] = [
     id: "f-7",
     title: "Equipment ID missing on weighing printout",
     document: "SOP-PR-022 weighing",
+    regulation: "FDA 21 CFR",
+    source: "AI Agent",
+    detectedAgo: "4h ago",
     severity: "High",
     citation: "21 CFR 211.68(b)",
     owner: "Unassigned",
@@ -200,6 +227,9 @@ export const OPEN_FINDINGS: FindingRow[] = [
     id: "f-8",
     title: "Pest-control trend review overdue",
     document: "FIR-2024-018",
+    regulation: "FDA 21 CFR",
+    source: "Manual",
+    detectedAgo: "8d ago",
     severity: "Low",
     citation: "21 CFR 211.56(c)",
     owner: "R. Patel",

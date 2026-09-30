@@ -2,20 +2,18 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendSparkline } from "@/components/dashboard/audit-launcher";
-import {
-  workflowStatusDotClass,
-  workflowStatusSparkClass,
-} from "@/lib/chart-tokens";
+import { workflowStatusSparkClass } from "@/lib/chart-tokens";
 import {
   AUDIT_LAUNCHER_CARD_HEIGHT_CLASS,
+  CARD_BODY_CLASS,
   CARD_CONTENT_CLASS,
   CARD_CORNER_LABEL_CLASS,
   CARD_EYEBROW_MUTED_CLASS,
+  CARD_HEADER_STACK_CLASS,
   CARD_METRIC_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
 } from "@/lib/page-layout";
-import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
 
 const METRIC_VALUE_CLASS = "font-sans tabular-nums";
@@ -32,12 +30,9 @@ type KpiCardData = {
   code: string;
   metric: string;
   trend: number[];
+  /** Drives sparkline color only. */
   status: string;
-  lastRun: string;
-  volume: string;
-  delta: string;
-  hit: string;
-  throughput: string;
+  helper: string;
 };
 
 const KPI_CARDS: readonly KpiCardData[] = [
@@ -48,11 +43,7 @@ const KPI_CARDS: readonly KpiCardData[] = [
     metric: "142",
     trend: [118, 124, 129, 134, 138, 140, 142],
     status: "Synced",
-    lastRun: "10m ago",
-    volume: "142",
-    delta: "+4%",
-    hit: "118%",
-    throughput: "4.8 audits/day",
+    helper: "Active records in the current year",
   },
   {
     id: "open-findings",
@@ -61,11 +52,7 @@ const KPI_CARDS: readonly KpiCardData[] = [
     metric: "8",
     trend: [11, 10, 9, 10, 8, 9, 8],
     status: "Flagged",
-    lastRun: "22m ago",
-    volume: "8",
-    delta: "-2",
-    hit: "62%",
-    throughput: "1.1 closed/day",
+    helper: "Open items awaiting review",
   },
   {
     id: "average-score",
@@ -74,34 +61,53 @@ const KPI_CARDS: readonly KpiCardData[] = [
     metric: "88%",
     trend: [84, 85, 86, 87, 86, 88, 88],
     status: "Verified",
-    lastRun: "1h ago",
-    volume: "142",
-    delta: "+1.2",
-    hit: "85%",
-    throughput: "~1.2s/doc",
+    helper: "Score against the 85% GMP benchmark",
   },
 ];
 
-/** Single KPI telemetry card — used in the dashboard primary KPI row. */
-export function KpiCard({ card }: { card: KpiCardData }) {
+/**
+ * Shared metric summary — title, value, helper, and a sparkline
+ * with its scope acronym. Dashboard KPIs and inventory strips use this.
+ */
+export function MetricCard({
+  title,
+  value,
+  description,
+  trend,
+  code,
+  status = "Synced",
+  className,
+}: {
+  title: string;
+  value: string;
+  description: string;
+  trend: number[];
+  /** Short uppercase code under the sparkline (YTD, SOP, AVG). */
+  code: string;
+  /** Colors the sparkline only. */
+  status?: string;
+  className?: string;
+}) {
+  const series = trend.length > 0 ? trend : [0];
+
   return (
-    <div data-kpi-card={card.id} className={CARD_CLASS}>
+    <div data-metric-card={title} className={cn(CARD_CLASS, className)}>
       <Card className="flex h-auto w-full min-h-0 min-w-0 flex-col border-0 bg-transparent shadow-none">
         <CardContent
           className={cn(
             CARD_CONTENT_CLASS,
-            "flex h-auto w-full min-h-0 min-w-0 flex-col gap-3 overflow-hidden px-4 pt-4 pb-[16px] text-left",
+            "flex h-auto w-full min-h-0 min-w-0 flex-col gap-3 overflow-hidden p-4 text-left",
           )}
         >
           <div className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 sm:gap-x-3">
-            <div className="flex min-w-0 flex-col gap-2 overflow-hidden">
+            <div className={cn(CARD_HEADER_STACK_CLASS, "overflow-hidden")}>
               <p
                 className={cn(
                   CARD_EYEBROW_MUTED_CLASS,
                   "min-w-0 max-w-full truncate",
                 )}
               >
-                {card.eyebrow}
+                {title}
               </p>
               <h3
                 className={cn(
@@ -110,87 +116,49 @@ export function KpiCard({ card }: { card: KpiCardData }) {
                   "m-0 max-w-full break-words text-pretty text-neutral-900",
                 )}
               >
-                {card.metric}
+                {value}
               </h3>
             </div>
             <div className="flex w-[3.75rem] max-w-full shrink-0 flex-col items-center justify-start gap-1 sm:w-[4.75rem]">
               <TrendSparkline
-                values={card.trend}
-                label={`${card.eyebrow} trend`}
+                values={series}
+                label={`${title} trend`}
                 className={cn(
                   "max-w-full",
-                  workflowStatusSparkClass(card.status),
+                  workflowStatusSparkClass(status),
                 )}
               />
               <p
                 className={CARD_CORNER_LABEL_CLASS}
-                aria-label={`${card.eyebrow} scope ${card.code}`}
+                aria-label={`${title} scope ${code}`}
               >
-                {card.code}
+                {code}
               </p>
             </div>
           </div>
 
-          <p
-            className="text-sm m-0 flex min-w-0 flex-wrap items-center justify-start gap-x-2 gap-y-1 font-sans leading-snug text-neutral-900"
-            aria-label={`${card.eyebrow} status ${card.status}, last run ${card.lastRun}`}
-          >
-            <span
-              className={cn(
-                "size-2.5 shrink-0 rounded-full",
-                workflowStatusDotClass(card.status),
-              )}
-              aria-hidden
-            />
-            <span className="shrink-0 font-normal text-foreground">
-              {toSentenceCase(card.status)}
-            </span>
-            <span className="shrink-0 text-neutral-900" aria-hidden>
-              •
-            </span>
-            <span className="min-w-0 break-words text-neutral-900">
-              Last run {card.lastRun}
-            </span>
-          </p>
-
-          <div
-            className="mt-auto flex min-w-0 flex-wrap items-end justify-between gap-x-3 gap-y-1"
-            aria-label={`${card.eyebrow} operational metrics`}
-          >
-            <div className="flex min-w-0 flex-1 flex-row flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-snug text-neutral-900">
-              <span className="shrink-0 whitespace-nowrap">
-                <span className="text-neutral-900">Vol</span>{" "}
-                <span className="font-medium text-neutral-900">{card.volume}</span>
-              </span>
-              <span className="shrink-0 text-neutral-900" aria-hidden>
-                ·
-              </span>
-              <span className="shrink-0 whitespace-nowrap">
-                <span className="text-neutral-900">Δ</span>{" "}
-                <span className="font-medium text-neutral-900">{card.delta}</span>
-              </span>
-              <span className="shrink-0 text-neutral-900" aria-hidden>
-                ·
-              </span>
-              <span className="shrink-0 whitespace-nowrap">
-                <span className="text-neutral-900">Hit</span>{" "}
-                <span className="font-medium text-neutral-900">{card.hit}</span>
-              </span>
-            </div>
-            <p
-              className="m-0 max-w-full shrink-0 text-right text-xs font-medium tabular-nums tracking-wider break-words text-muted-foreground"
-              aria-label={`${card.eyebrow} throughput ${card.throughput}`}
-            >
-              {card.throughput}
-            </p>
-          </div>
+          <p className={cn(CARD_BODY_CLASS, "truncate")}>{description}</p>
         </CardContent>
       </Card>
     </div>
   );
 }
 
-/** Status KPI strip — same compact telemetry anatomy as audit launcher cards. */
+/** Single KPI telemetry card — used in the dashboard primary KPI row. */
+export function KpiCard({ card }: { card: KpiCardData }) {
+  return (
+    <MetricCard
+      title={card.eyebrow}
+      value={card.metric}
+      description={card.helper}
+      trend={[...card.trend]}
+      code={card.code}
+      status={card.status}
+    />
+  );
+}
+
+/** Status KPI strip — title, metric, sparkline, and one helper line. */
 export default function KpiCards({ className }: { className?: string }) {
   return (
     <div

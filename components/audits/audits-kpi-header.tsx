@@ -1,66 +1,51 @@
-import { ClipboardList, FileText, MapPin } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  CARD_HEADER_STACK_CLASS,
-  CARD_METRIC_CLASS,
-  CARD_SECTION_EYEBROW_CLASS,
-  DASHBOARD_CARD_CLASS,
-  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
-} from "@/lib/page-layout";
+"use client";
+
+import { MetricCard } from "@/components/dashboard/kpi-cards";
+import { DASHBOARD_TRIPLE_CARD_GRID_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 const AUDITS_KPI_CARDS = [
   {
-    eyebrow: "Policy control",
+    title: "Policy control",
     value: "42",
-    meta: "SOP documents in active workflows",
-    icon: FileText,
+    description: "SOP documents in active workflows",
+    code: "SOP",
+    trend: [38, 40, 39, 41, 42],
+    status: "Synced",
   },
   {
-    eyebrow: "Production log",
+    title: "Production log",
     value: "128",
-    meta: "BPR batches ready for audit",
-    icon: ClipboardList,
+    description: "BPR batches ready for audit",
+    code: "BPR",
+    trend: [112, 118, 121, 125, 128],
+    status: "Synced",
   },
   {
-    eyebrow: "Site audit",
+    title: "Site audit",
     value: "14",
-    meta: "FIR checklists in progress",
-    icon: MapPin,
+    description: "FIR checklists in progress",
+    code: "FIR",
+    trend: [11, 12, 13, 13, 14],
+    status: "Synced",
   },
 ] as const;
 
-/** Streamlined Audits KPI strip — matches Policies / Frameworks / Reports cards. */
+/** Audits KPI strip — same metric card as the dashboard. */
 export default function AuditsKpiHeader({ className }: { className?: string }) {
   return (
     <div className={cn(DASHBOARD_TRIPLE_CARD_GRID_CLASS, className)}>
-      {AUDITS_KPI_CARDS.map((card) => {
-        const Icon = card.icon;
-        return (
-          <Card
-            key={card.eyebrow}
-            className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}
-          >
-            <CardContent className="flex flex-col gap-3 p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div className={cn(CARD_HEADER_STACK_CLASS, "min-w-0")}>
-                  <p className={CARD_SECTION_EYEBROW_CLASS}>{card.eyebrow}</p>
-                  <p
-                    className={cn(
-                      CARD_METRIC_CLASS,
-                      "m-0 tabular-nums text-neutral-900",
-                    )}
-                  >
-                    {card.value}
-                  </p>
-                </div>
-                <Icon className="size-4 shrink-0 text-zinc-400" aria-hidden />
-              </div>
-              <p className="m-0 truncate text-xs text-neutral-500">{card.meta}</p>
-            </CardContent>
-          </Card>
-        );
-      })}
+      {AUDITS_KPI_CARDS.map((card) => (
+        <MetricCard
+          key={card.title}
+          title={card.title}
+          value={card.value}
+          description={card.description}
+          trend={[...card.trend]}
+          code={card.code}
+          status={card.status}
+        />
+      ))}
     </div>
   );
 }
