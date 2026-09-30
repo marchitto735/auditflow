@@ -30,7 +30,7 @@ export function SystemTelemetrySection({ className }: { className?: string }) {
         )}
       >
         <ComplianceTrendPanel className="h-full w-full min-w-0" />
-        <CompliancePipelineCard className="h-auto w-full min-w-0" />
+        <CompliancePipelineCard className="h-full w-full min-w-0" />
       </div>
     </section>
   );

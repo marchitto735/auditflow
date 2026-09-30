@@ -107,6 +107,8 @@ const ACTIVE_JOBS: PipelineJob[] = [
 ];
 
 const DEFAULT_PAGE_SIZE = 3;
+const TABLE_BODY_ROWS = 3;
+const TABLE_ROW_HEIGHT_CLASS = "h-12";
 
 const STAGES: PipelineStage[] = STAGE_ORDER.map((stage) => ({
   ...stage,
@@ -129,6 +131,8 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
   const currentPage = Math.min(page, totalPages);
   const pageStart = (currentPage - 1) * pageSize;
   const pageRows = visibleJobs.slice(pageStart, pageStart + pageSize);
+  const occupiedRows = pageRows.length === 0 ? 1 : pageRows.length;
+  const spacerCount = Math.max(0, TABLE_BODY_ROWS - occupiedRows);
 
   useEffect(() => {
     setPage(1);
@@ -152,11 +156,11 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
     <Card
       className={cn(
         DASHBOARD_CARD_CLASS,
-        "flex h-auto w-full flex-col overflow-hidden",
+        "flex h-full min-h-0 w-full flex-col overflow-hidden",
         className,
       )}
     >
-      <CardContent className="flex flex-col p-0">
+      <CardContent className="flex h-full min-h-0 flex-col p-0">
         <div className="relative min-w-0 shrink-0 px-4 pt-4 pb-3">
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Document Tracker</p>
@@ -203,19 +207,8 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
             );
           })}
         </ol>
-        {selectedStage ? (
-          <div className="shrink-0 px-4 pb-3">
-            <button
-              type="button"
-              onClick={() => setSelectedStage(null)}
-              className="cursor-pointer text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30"
-            >
-              All stages
-            </button>
-          </div>
-        ) : null}
 
-        <div className="flex min-w-0 flex-col">
+        <div className="flex min-h-0 flex-1 flex-col">
         <Table
           className="w-full table-fixed border-separate border-spacing-0"
           containerClassName="overflow-visible"
@@ -250,10 +243,10 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
             )}
           >
             {pageRows.length === 0 ? (
-              <TableRow className="h-12 border-0 hover:bg-transparent">
+              <TableRow className={cn(TABLE_ROW_HEIGHT_CLASS, "border-0 hover:bg-transparent")}>
                 <TableCell
                   colSpan={4}
-                  className="h-12 px-4 py-0 text-muted-foreground"
+                  className={cn(TABLE_ROW_HEIGHT_CLASS, "px-4 py-0 text-muted-foreground")}
                 >
                   No documents in {selectedLabel}.
                 </TableCell>
@@ -262,28 +255,41 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
             {pageRows.map((job) => (
               <TableRow
                 key={job.id}
-                className="h-12 border-0 hover:bg-neutral-50"
+                className={cn(TABLE_ROW_HEIGHT_CLASS, "border-0 hover:bg-neutral-50")}
               >
-                <TableCell className="h-12 px-4 py-0">
+                <TableCell className={cn(TABLE_ROW_HEIGHT_CLASS, "px-4 py-0")}>
                   <TruncatedText text={job.document} />
                 </TableCell>
-                <TableCell className="h-12 px-4 py-0">
+                <TableCell className={cn(TABLE_ROW_HEIGHT_CLASS, "px-4 py-0")}>
                   <TruncatedText
                     className="font-mono tabular-nums"
                     text={job.version}
                   />
                 </TableCell>
-                <TableCell className="h-12 px-4 py-0">
+                <TableCell className={cn(TABLE_ROW_HEIGHT_CLASS, "px-4 py-0")}>
                   <span className={TELEMETRY_META_CLASS}>{job.eta}</span>
                 </TableCell>
-                <TableCell className="h-12 px-4 py-0">
+                <TableCell className={cn(TABLE_ROW_HEIGHT_CLASS, "px-4 py-0")}>
                   <Badge tone="neutral">{job.stage}</Badge>
                 </TableCell>
+              </TableRow>
+            ))}
+            {Array.from({ length: spacerCount }, (_, index) => (
+              <TableRow
+                key={`spacer-${index}`}
+                aria-hidden
+                className={cn(TABLE_ROW_HEIGHT_CLASS, "border-0 hover:bg-transparent")}
+              >
+                <TableCell
+                  colSpan={4}
+                  className={cn(TABLE_ROW_HEIGHT_CLASS, "px-4 py-0")}
+                />
               </TableRow>
             ))}
           </TableBody>
         </Table>
         <TablePaginationBar
+          className="mt-auto"
           pageRowsCount={pageRows.length}
           totalCount={totalCount}
           pageSize={pageSize}
