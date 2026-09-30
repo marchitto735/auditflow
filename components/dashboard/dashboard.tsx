@@ -32,7 +32,7 @@ export default function Dashboard() {
           <SectionHeader
             className="mb-0"
             title="Dashboard"
-            description="Live compliance telemetry, pipeline status, and operational oversight."
+            description="Real-time compliance status, document workflow, and active audit tracking."
             actions={
               <Button
                 type="button"

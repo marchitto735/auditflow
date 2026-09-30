@@ -262,14 +262,14 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
       <CardContent className="flex min-w-0 flex-col p-0">
         <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-4 pb-3">
           <div className="min-w-0 pr-10">
-            <p className={CARD_SECTION_EYEBROW_CLASS}>Activity feed</p>
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Activity Stream</p>
             <p className={SECTION_DESCRIPTION_CLASS}>
-              Real-time agent events across validation, scoring, and export.
+              Real-time system events across validation, scoring, and export.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
-              label="Activity feed"
+              label="Activity Stream"
               actions={FEED_CARD_MENU_ACTIONS}
             />
           </div>

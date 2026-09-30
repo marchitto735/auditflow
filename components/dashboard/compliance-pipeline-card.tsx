@@ -134,14 +134,14 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
       <CardContent className="relative flex h-auto min-h-0 flex-col p-0 lg:h-full lg:overflow-hidden">
         <div className="relative min-w-0 shrink-0 px-4 pt-4 pb-3">
           <div className="min-w-0 pr-10">
-            <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance pipeline</p>
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Document Tracker</p>
             <p className={SECTION_DESCRIPTION_CLASS}>
               Active document volume by stage from ingest through export.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
-              label="Compliance pipeline"
+              label="Document Tracker"
               actions={FEED_CARD_MENU_ACTIONS}
             />
           </div>

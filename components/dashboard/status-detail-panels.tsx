@@ -277,14 +277,14 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
       <CardContent className="flex h-full min-h-0 flex-col p-0">
         <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
           <div className="min-w-0 pr-10">
-            <p className={CARD_SECTION_EYEBROW_CLASS}>Priority findings</p>
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Action Items</p>
             <p className={SECTION_DESCRIPTION_CLASS}>
               Highest-severity open items across active audits.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
-              label="Priority findings"
+              label="Action Items"
               actions={TABLE_CARD_MENU_ACTIONS}
             />
           </div>
@@ -564,14 +564,14 @@ export function ComplianceTrendPanel({ className }: { className?: string }) {
     <Card className={cn(DASHBOARD_CARD_CLASS, "h-full", className)}>
       <CardContent className="relative flex h-full flex-col gap-3 p-4">
         <div className="min-w-0 pr-10">
-          <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance trend</p>
+          <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance Score</p>
           <p className={SECTION_DESCRIPTION_CLASS}>
-            90-day score vs {GMP_THRESHOLD}% GMP standard.
+            90-day rating against the {GMP_THRESHOLD}% benchmark.
           </p>
         </div>
         <div className="absolute top-3 right-3">
           <CardActionsMenu
-            label="Compliance trend"
+            label="Compliance Score"
             actions={CHART_CARD_MENU_ACTIONS}
           />
         </div>
