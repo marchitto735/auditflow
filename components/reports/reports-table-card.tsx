@@ -52,7 +52,7 @@ import {
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
-  DASHBOARD_QUAD_CARD_GRID_CLASS,
+  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
   TABLE_CARD_HEADER_CLASS,
   TABLE_STICKY_HEADER_CLASS,
   TABLE_ROW_ACTIONS_CELL_CLASS,
@@ -178,15 +178,6 @@ function isPartialReport(status: string) {
   return status.toLowerCase().includes("partial");
 }
 
-function isFailedReport(status: string) {
-  const label = status.toLowerCase();
-  return (
-    label.includes("fail") ||
-    label.includes("critical") ||
-    label.includes("non-compliant")
-  );
-}
-
 function ReportsKpiHeader({ rows }: { rows: ReportRow[] }) {
   const kpis = useMemo(() => computeReportsKpis(rows), [rows]);
   const ratioTotal = kpis.compliantCount + kpis.partialCount;
@@ -253,28 +244,11 @@ function ReportsKpiHeader({ rows }: { rows: ReportRow[] }) {
         trend: partialTrend.length > 0 ? partialTrend : [0],
         status: kpis.partialCount > 0 ? "Flagged" : "Verified",
       },
-      {
-        title: "Failed audits",
-        value: String(kpis.failedCount),
-        description:
-          kpis.failedCount > 0
-            ? "Need remediation follow-up"
-            : "No failed reports",
-        code: "FAIL",
-        trend: (() => {
-          let fails = 0;
-          return ordered.map((row) => {
-            if (isFailedReport(row.status)) fails += 1;
-            return fails;
-          });
-        })(),
-        status: kpis.failedCount > 0 ? "Flagged" : "Verified",
-      },
     ];
   }, [kpis, rows, compliantPct]);
 
   return (
-    <div className={DASHBOARD_QUAD_CARD_GRID_CLASS}>
+    <div className={DASHBOARD_TRIPLE_CARD_GRID_CLASS}>
       {cards.map((card) => (
         <MetricCard
           key={card.title}

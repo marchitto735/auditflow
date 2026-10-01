@@ -95,7 +95,7 @@ import {
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
-  DASHBOARD_QUAD_CARD_GRID_CLASS,
+  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
   TABLE_CARD_HEADER_CLASS,
   TABLE_ROW_ACTIONS_CELL_CLASS,
   TABLE_ROW_ACTIONS_HEAD_CLASS,
@@ -460,26 +460,12 @@ function PoliciesKpiHeader({ policies }: { policies: MasterPolicy[] }) {
         trend: runningCount(policies, (policy) => policy.status === "Pending"),
         status: kpis.pendingCount > 0 ? "Pending" : "Verified",
       },
-      {
-        title: "Parse failures",
-        value: String(kpis.failedCount),
-        description:
-          kpis.queuedCount > 0
-            ? `${kpis.queuedCount} still queued in n8n`
-            : "n8n ingest health",
-        code: "ERR",
-        trend: runningCount(
-          policies,
-          (policy) => policy.n8nStatus === "Failed",
-        ),
-        status: kpis.failedCount > 0 ? "Flagged" : "Verified",
-      },
     ],
     [kpis, policies],
   );
 
   return (
-    <div className={DASHBOARD_QUAD_CARD_GRID_CLASS}>
+    <div className={DASHBOARD_TRIPLE_CARD_GRID_CLASS}>
       {cards.map((card) => (
         <MetricCard
           key={card.title}

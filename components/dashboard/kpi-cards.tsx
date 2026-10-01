@@ -12,7 +12,7 @@ import {
   CARD_HEADER_STACK_CLASS,
   CARD_METRIC_CLASS,
   DASHBOARD_CARD_CLASS,
-  DASHBOARD_QUAD_CARD_GRID_CLASS,
+  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -63,20 +63,11 @@ const KPI_CARDS: readonly KpiCardData[] = [
     status: "Verified",
     helper: "Vs 85% GMP benchmark",
   },
-  {
-    id: "in-flight",
-    eyebrow: "In flight",
-    code: "RUN",
-    metric: "7",
-    trend: [4, 5, 6, 5, 6, 7, 7],
-    status: "Pending",
-    helper: "Docs in the pipeline",
-  },
 ];
 
 /**
  * Shared metric summary — title, value, helper, and a sparkline
- * with its scope acronym. Tuned for the 4-column KPI bento strip.
+ * with its scope acronym. Tuned for the 3-column KPI strip.
  */
 export function MetricCard({
   title,
@@ -178,7 +169,7 @@ export function KpiCard({ card }: { card: KpiCardData }) {
 export default function KpiCards({ className }: { className?: string }) {
   return (
     <div
-      className={cn(DASHBOARD_QUAD_CARD_GRID_CLASS, "items-stretch", className)}
+      className={cn(DASHBOARD_TRIPLE_CARD_GRID_CLASS, "items-stretch", className)}
     >
       {KPI_CARDS.map((card) => (
         <KpiCard key={card.id} card={card} />

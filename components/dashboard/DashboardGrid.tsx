@@ -10,7 +10,7 @@ import { SystemTelemetrySection } from "@/components/dashboard/SystemTelemetrySe
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   DASHBOARD_SECTION_GAP_CLASS,
-  DASHBOARD_QUAD_CARD_GRID_CLASS,
+  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -29,7 +29,7 @@ export default function DashboardGrid() {
       >
         {SHOW_DASHBOARD_TIME_RANGE_FILTER ? <DashboardCommandHeader /> : null}
 
-        <div className={cn("w-full min-w-0", DASHBOARD_QUAD_CARD_GRID_CLASS)}>
+        <div className={cn("w-full min-w-0", DASHBOARD_TRIPLE_CARD_GRID_CLASS)}>
           <KpiCardItems />
         </div>
 
