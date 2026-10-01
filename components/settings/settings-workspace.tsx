@@ -144,7 +144,7 @@ export default function SettingsWorkspace({
   return (
     <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
       <CardContent className="flex flex-col p-0">
-        <div className={TABLE_CARD_TITLE_HEADER_CLASS}>
+        <div className={cn(TABLE_CARD_TITLE_HEADER_CLASS, "border-b-0 pb-4")}>
           <p className={CARD_SECTION_EYEBROW_CLASS}>Organization settings</p>
           <p className={SECTION_DESCRIPTION_CLASS}>
             Organization defaults, security posture, and alert preferences.
@@ -152,7 +152,7 @@ export default function SettingsWorkspace({
         </div>
 
         <Tabs defaultValue="general" className="flex flex-col">
-          <div className="border-b border-zinc-200 px-4 py-3">
+          <div className="border-b border-zinc-200 px-4 pt-0 pb-3">
             <TabsList
               className="h-auto w-full justify-start gap-1 rounded-lg bg-neutral-100 p-1"
               noBg
@@ -416,7 +416,7 @@ export default function SettingsWorkspace({
           </TabsContent>
         </Tabs>
 
-        <div className="flex shrink-0 items-center justify-end gap-3 border-t border-zinc-200 bg-white px-4 py-3">
+        <div className="flex shrink-0 items-center justify-end gap-3 bg-white px-4 py-3">
           <Button
             type="button"
             variant="black"
