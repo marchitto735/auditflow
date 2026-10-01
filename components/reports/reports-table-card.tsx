@@ -1,15 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  ChevronDown,
-  ClipboardList,
-  Download,
-  FileText,
-  MoreHorizontal,
-  Search,
-  ShieldAlert,
-} from "lucide-react";
+import { ChevronDown, Search, ShieldAlert } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import {
@@ -33,7 +25,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -53,6 +44,7 @@ import {
   TablePaginationBar,
   TableRow,
 } from "@/components/ui/table";
+import { TableRowActionsMenu } from "@/components/ui/table-row-actions";
 import {
   CARD_SECTION_EYEBROW_CLASS,
   OVERLINE_LABEL_CLASS,
@@ -298,53 +290,44 @@ function RowActionsMenu({
   onInspect: (row: ReportRow) => void;
   onViewLog: (row: ReportRow) => void;
 }) {
-  const trigger = (
-    <Button
-      type="button"
-      variant="ghost"
-      className="h-8! min-h-8! w-8! rounded-md p-0!"
-      aria-label={`Actions for ${row.document}`}
-    >
-      <MoreHorizontal className="size-4" />
-    </Button>
-  );
-
-  function downloadPdf() {
-    toast.success("PDF export queued", {
-      description: `${row.document} · report package`,
-    });
-  }
-
-  if (!menusMounted) return trigger;
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className={DASHBOARD_MENU_CONTENT_CLASS}>
-        <DropdownMenuItem
-          className={DASHBOARD_MENU_ITEM_CLASS}
-          onSelect={downloadPdf}
-        >
-          <Download className="size-4" aria-hidden />
-          Download PDF report
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className={DASHBOARD_MENU_ITEM_CLASS}
-          onSelect={() => onViewLog(row)}
-        >
-          <ClipboardList className="size-4" aria-hidden />
-          View immutable audit log
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className={DASHBOARD_MENU_ITEM_CLASS}
-          onSelect={() => onInspect(row)}
-        >
-          <FileText className="size-4" aria-hidden />
-          Inspect clauses
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <TableRowActionsMenu
+      label={`Actions for ${row.document}`}
+      menusMounted={menusMounted}
+    >
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.success("PDF export queued", {
+            description: `${row.document} · report package`,
+          });
+        }}
+      >
+        Download PDF
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => onViewLog(row)}
+      >
+        View audit trail
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.success("Share link copied", {
+            description: row.document,
+          });
+        }}
+      >
+        Share
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => onInspect(row)}
+      >
+        Inspect clauses
+      </DropdownMenuItem>
+    </TableRowActionsMenu>
   );
 }
 

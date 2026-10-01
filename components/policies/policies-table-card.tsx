@@ -58,6 +58,7 @@ import {
   TablePaginationBar,
   TableRow,
 } from "@/components/ui/table";
+import { TableRowActionsMenu } from "@/components/ui/table-row-actions";
 import {
   CARD_SECTION_EYEBROW_CLASS,
   DIALOG_BODY_CLASS,
@@ -78,6 +79,8 @@ import {
   DASHBOARD_GAP_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
   TABLE_CARD_HEADER_CLASS,
+  TABLE_ROW_ACTIONS_CELL_CLASS,
+  TABLE_ROW_ACTIONS_HEAD_CLASS,
   TABLE_STICKY_HEADER_CLASS,
   TABLE_TOOLBAR_FILTERS_CLASS,
   TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
@@ -466,6 +469,60 @@ function UploadPolicyDialog({
   );
 }
 
+function PolicyRowActions({
+  policy,
+  menusMounted,
+  onView,
+}: {
+  policy: MasterPolicy;
+  menusMounted: boolean;
+  onView: (policy: MasterPolicy) => void;
+}) {
+  return (
+    <TableRowActionsMenu
+      label={`Actions for ${policy.title}`}
+      menusMounted={menusMounted}
+    >
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => onView(policy)}
+      >
+        View policy
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.message("Edit metadata", {
+            description: policy.documentId,
+          });
+        }}
+      >
+        Edit metadata
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.success("Re-parse queued", {
+            description: policy.documentId,
+          });
+        }}
+      >
+        Re-parse document
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.success("Download started", {
+            description: policy.title,
+          });
+        }}
+      >
+        Download
+      </DropdownMenuItem>
+    </TableRowActionsMenu>
+  );
+}
+
 function PolicyInspectSheet({
   policy,
   open,
@@ -735,14 +792,17 @@ export default function PoliciesTableCard({
               >
                 <TableHeader className={TABLE_STICKY_HEADER_CLASS}>
                   <TableRow>
-                    <TableHead className="w-[22%]">Title</TableHead>
-                    <TableHead className="w-[14%]">Document ID</TableHead>
+                    <TableHead className="w-[20%]">Title</TableHead>
+                    <TableHead className="w-[12%]">Document ID</TableHead>
                     <TableHead className="w-[8%]">Type</TableHead>
                     <TableHead className="w-[8%]">Version</TableHead>
-                    <TableHead className="w-[14%]">Last parsed</TableHead>
+                    <TableHead className="w-[12%]">Last parsed</TableHead>
                     <TableHead className="w-[8%]">Chunks</TableHead>
-                    <TableHead className="w-[14%]">Frameworks</TableHead>
+                    <TableHead className="w-[12%]">Frameworks</TableHead>
                     <TableHead className="w-[12%]">Status</TableHead>
+                    <TableHead className={TABLE_ROW_ACTIONS_HEAD_CLASS}>
+                      <span className="sr-only">Actions</span>
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -781,6 +841,16 @@ export default function PoliciesTableCard({
                         <Badge variant={statusBadgeVariant(policy.status)}>
                           {policy.status}
                         </Badge>
+                      </TableCell>
+                      <TableCell
+                        className={TABLE_ROW_ACTIONS_CELL_CLASS}
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <PolicyRowActions
+                          policy={policy}
+                          menusMounted={menusMounted}
+                          onView={setSelected}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}

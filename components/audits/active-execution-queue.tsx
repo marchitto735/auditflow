@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { CardActionsMenu } from "@/components/dashboard/card-actions-menu";
+import {
+  CardActionsMenu,
+  DASHBOARD_MENU_ITEM_CLASS,
+} from "@/components/dashboard/card-actions-menu";
 import {
   DashboardToolbar,
   type DashboardToolbarValues,
 } from "@/components/dashboard/dashboard-toolbar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -17,6 +21,7 @@ import {
   TablePaginationBar,
   TableRow,
 } from "@/components/ui/table";
+import { TableRowActionsMenu } from "@/components/ui/table-row-actions";
 import { TruncatedText } from "@/components/ui/truncated-text";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
@@ -24,10 +29,13 @@ import {
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   TABLE_CARD_HEADER_CLASS,
+  TABLE_ROW_ACTIONS_CELL_CLASS,
+  TABLE_ROW_ACTIONS_HEAD_CLASS,
   TABLE_STICKY_HEADER_CLASS,
 } from "@/lib/page-layout";
 import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const DEFAULT_PAGE_SIZE = 3;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[42rem]";
@@ -235,11 +243,78 @@ function QueueStatus({ status }: { status: string }) {
   );
 }
 
-function ExecutionQueueTable({ rows }: { rows: QueueRow[] }) {
+function QueueRowActions({
+  row,
+  menusMounted,
+}: {
+  row: QueueRow;
+  menusMounted: boolean;
+}) {
+  const canCancel =
+    row.queueStatus !== "Pending upload" &&
+    !row.queueStatus.toLowerCase().includes("cancel");
+
+  return (
+    <TableRowActionsMenu
+      label={`Actions for ${row.document}`}
+      menusMounted={menusMounted}
+    >
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.message("Execution details", {
+            description: `${row.document} · ${row.queueStatus}`,
+          });
+        }}
+      >
+        View details
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.success("Report download queued", {
+            description: row.document,
+          });
+        }}
+      >
+        Download report
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        disabled={!canCancel}
+        onSelect={() => {
+          toast.message("Cancel requested", {
+            description: row.document,
+          });
+        }}
+      >
+        Cancel execution
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.message("Delete queued", {
+            description: row.document,
+          });
+        }}
+      >
+        Delete
+      </DropdownMenuItem>
+    </TableRowActionsMenu>
+  );
+}
+
+function ExecutionQueueTable({
+  rows,
+  menusMounted,
+}: {
+  rows: QueueRow[];
+  menusMounted: boolean;
+}) {
   return (
     <TooltipProvider delayDuration={150}>
       <Table
-        className="min-w-[42rem]"
+        className="min-w-[48rem]"
         containerClassName="overflow-visible"
       >
         <colgroup>
@@ -250,6 +325,7 @@ function ExecutionQueueTable({ rows }: { rows: QueueRow[] }) {
               style={{ width: column.width, minWidth: column.minWidth }}
             />
           ))}
+          <col className="w-14" style={{ width: "3.5rem" }} />
         </colgroup>
         <TableHeader className={TABLE_STICKY_HEADER_CLASS}>
           <TableRow>
@@ -265,6 +341,9 @@ function ExecutionQueueTable({ rows }: { rows: QueueRow[] }) {
                 {column.label}
               </TableHead>
             ))}
+            <TableHead className={cn(TABLE_ROW_ACTIONS_HEAD_CLASS, "sticky top-0 z-20")}>
+              <span className="sr-only">Actions</span>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -306,6 +385,9 @@ function ExecutionQueueTable({ rows }: { rows: QueueRow[] }) {
               >
                 <QueueStatus status={row.queueStatus} />
               </TableCell>
+              <TableCell className={TABLE_ROW_ACTIONS_CELL_CLASS}>
+                <QueueRowActions row={row} menusMounted={menusMounted} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -325,6 +407,7 @@ export default function ActiveExecutionQueue({
   const [filters, setFilters] = useState<DashboardToolbarValues>(INITIAL_FILTERS);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [page, setPage] = useState(1);
+  const [menusMounted, setMenusMounted] = useState(false);
 
   const catalog = useMemo(
     () => filterQueueRows(SEED_QUEUE_ROWS, filters),
@@ -335,6 +418,10 @@ export default function ActiveExecutionQueue({
   const currentPage = Math.min(page, totalPages);
   const pageStart = (currentPage - 1) * pageSize;
   const pageRows = catalog.slice(pageStart, pageStart + pageSize);
+
+  useEffect(() => {
+    setMenusMounted(true);
+  }, []);
 
   useEffect(() => {
     setPage(1);
@@ -395,7 +482,7 @@ export default function ActiveExecutionQueue({
             className="flex shrink-0 flex-col"
             style={{ overflowAnchor: "none" }}
           >
-            <ExecutionQueueTable rows={pageRows} />
+            <ExecutionQueueTable rows={pageRows} menusMounted={menusMounted} />
 
             <TablePaginationBar
               className={TABLE_MIN_WIDTH_CLASS}

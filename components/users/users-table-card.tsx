@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import {
   ChevronDown,
-  MoreHorizontal,
   Search,
 } from "lucide-react";
 import {
@@ -44,6 +43,7 @@ import {
   TablePaginationBar,
   TableRow,
 } from "@/components/ui/table";
+import { TableRowActionsMenu } from "@/components/ui/table-row-actions";
 import {
   CARD_SECTION_EYEBROW_CLASS,
   SECTION_DESCRIPTION_CLASS,
@@ -194,80 +194,53 @@ function UserRowActions({
 }) {
   const [, startTransition] = useTransition();
 
-  if (!menusMounted) {
-    return (
-      <Button
-        type="button"
-        variant="ghost"
-        className="h-8! w-8! min-h-8! min-w-8! rounded-md p-0!"
-        aria-label={`Actions for ${user.name}`}
-        disabled
-      >
-        <MoreHorizontal className="size-4" />
-      </Button>
-    );
-  }
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          className="h-8! w-8! min-h-8! min-w-8! rounded-md p-0!"
-          aria-label={`Actions for ${user.name}`}
-        >
-          <MoreHorizontal className="size-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        sideOffset={6}
-        className={cn(DASHBOARD_MENU_CONTENT_CLASS, "min-w-[11.5rem]")}
+    <TableRowActionsMenu
+      label={`Actions for ${user.name}`}
+      menusMounted={menusMounted}
+    >
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => onEditRole(user)}
       >
-        <DropdownMenuItem
-          className={DASHBOARD_MENU_ITEM_CLASS}
-          onSelect={() => onEditRole(user)}
-        >
-          Edit role
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className={DASHBOARD_MENU_ITEM_CLASS}
-          onSelect={() => {
-            startTransition(async () => {
-              const result = await resetDirectoryUserPassword(user.email);
-              onActionMessage(result.message);
-            });
-          }}
-        >
-          Reset password
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className={DASHBOARD_MENU_ITEM_CLASS}
-          onSelect={() => {
-            startTransition(async () => {
-              const result = await revokeDirectoryUserSessions(user.id);
-              onActionMessage(result.message);
-            });
-          }}
-        >
-          Revoke sessions
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className={DASHBOARD_MENU_ITEM_CLASS}
-          disabled={user.status === "Suspended"}
-          onSelect={() => {
-            startTransition(async () => {
-              const result = await deactivateDirectoryUser(user.id);
-              onActionMessage(result.message);
-              if (result.ok) onDeactivated(user.id);
-            });
-          }}
-        >
-          Deactivate user
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        Edit role
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          startTransition(async () => {
+            const result = await resetDirectoryUserPassword(user.email);
+            onActionMessage(result.message);
+          });
+        }}
+      >
+        Reset password
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          startTransition(async () => {
+            const result = await revokeDirectoryUserSessions(user.id);
+            onActionMessage(result.message);
+          });
+        }}
+      >
+        Revoke sessions
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        disabled={user.status === "Suspended"}
+        onSelect={() => {
+          startTransition(async () => {
+            const result = await deactivateDirectoryUser(user.id);
+            onActionMessage(result.message);
+            if (result.ok) onDeactivated(user.id);
+          });
+        }}
+      >
+        Deactivate user
+      </DropdownMenuItem>
+    </TableRowActionsMenu>
   );
 }
 

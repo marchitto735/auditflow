@@ -1,13 +1,19 @@
 "use client";
 
-import { useMemo, useState, useTransition, type FormEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useState, useTransition, type FormEvent, type ReactNode } from "react";
 import { ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { submitSupportTicket } from "@/app/actions/help-actions";
+import {
+  CardActionsMenu,
+  DASHBOARD_MENU_ITEM_CLASS,
+  TABLE_CARD_MENU_ACTIONS,
+} from "@/components/dashboard/card-actions-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -26,6 +32,7 @@ import {
   TablePaginationBar,
   TableRow,
 } from "@/components/ui/table";
+import { TableRowActionsMenu } from "@/components/ui/table-row-actions";
 import { Textarea } from "@/components/ui/textarea";
 import {
   HELP_SUPPORT_TICKETS,
@@ -42,6 +49,8 @@ import {
   DASHBOARD_GAP_CLASS,
   SECTION_DESCRIPTION_CLASS,
   TABLE_CARD_TITLE_HEADER_CLASS,
+  TABLE_ROW_ACTIONS_CELL_CLASS,
+  TABLE_ROW_ACTIONS_HEAD_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -261,9 +270,73 @@ function TicketForm() {
   );
 }
 
+function TicketRowActions({
+  ticket,
+  menusMounted,
+}: {
+  ticket: SupportTicket;
+  menusMounted: boolean;
+}) {
+  const isClosed = ticket.status === "Resolved";
+
+  return (
+    <TableRowActionsMenu
+      label={`Actions for ${ticket.id}`}
+      menusMounted={menusMounted}
+    >
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.message("Ticket details", {
+            description: `${ticket.id} · ${ticket.subject}`,
+          });
+        }}
+      >
+        View ticket
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.message("Assign user", {
+            description: `Current assignee: ${ticket.assignee}`,
+          });
+        }}
+      >
+        Assign user
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.message("Update status", {
+            description: `${ticket.id} · ${ticket.status}`,
+          });
+        }}
+      >
+        Update status
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        disabled={isClosed}
+        onSelect={() => {
+          toast.success("Ticket closed", {
+            description: ticket.id,
+          });
+        }}
+      >
+        Close
+      </DropdownMenuItem>
+    </TableRowActionsMenu>
+  );
+}
+
 function ActiveTicketsTable() {
   const [pageSize, setPageSize] = useState(TICKET_DEFAULT_PAGE_SIZE);
   const [page, setPage] = useState(1);
+  const [menusMounted, setMenusMounted] = useState(false);
+
+  useEffect(() => {
+    setMenusMounted(true);
+  }, []);
 
   const totalCount = HELP_SUPPORT_TICKETS.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
@@ -282,28 +355,37 @@ function ActiveTicketsTable() {
     <CardShell
       eyebrow="Active tickets"
       description="Open and recent support cases with assignee and SLA windows."
+      headerAction={
+        <CardActionsMenu
+          label="Active tickets"
+          actions={TABLE_CARD_MENU_ACTIONS}
+        />
+      }
     >
       <div className="overflow-x-auto">
         <Table
-          className="min-w-[44rem]"
+          className="min-w-[48rem]"
           containerClassName="overflow-visible"
         >
           <TableHeader>
             <TableRow>
               {(
                 [
-                  ["Ticket", "w-[14%]"],
-                  ["Subject", "w-[32%]"],
-                  ["Assignee", "w-[16%]"],
-                  ["SLA", "w-[12%]"],
+                  ["Ticket", "w-[12%]"],
+                  ["Subject", "w-[28%]"],
+                  ["Assignee", "w-[14%]"],
+                  ["SLA", "w-[10%]"],
                   ["Opened", "w-[10%]"],
-                  ["Status", "w-[16%]"],
+                  ["Status", "w-[14%]"],
                 ] as const
               ).map(([label, width]) => (
                 <TableHead key={label} className={width}>
                   {label}
                 </TableHead>
               ))}
+              <TableHead className={TABLE_ROW_ACTIONS_HEAD_CLASS}>
+                <span className="sr-only">Actions</span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -325,13 +407,19 @@ function ActiveTicketsTable() {
                     {ticket.status}
                   </Badge>
                 </TableCell>
+                <TableCell className={TABLE_ROW_ACTIONS_CELL_CLASS}>
+                  <TicketRowActions
+                    ticket={ticket}
+                    menusMounted={menusMounted}
+                  />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
       <TablePaginationBar
-        className="min-w-[44rem]"
+        className="min-w-[48rem]"
         pageRowsCount={pageRows.length}
         totalCount={totalCount}
         pageSize={pageSize}

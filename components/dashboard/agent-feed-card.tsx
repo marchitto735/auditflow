@@ -321,7 +321,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
                       />
                     </TableCell>
                     <TableCell>
-                      <Badge tone="neutral">{event.actor}</Badge>
+                      <span className="whitespace-nowrap">{event.actor}</span>
                     </TableCell>
                     <TableCell>
                       <Badge tone={stateTone(event.state)}>{event.state}</Badge>

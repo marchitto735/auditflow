@@ -16,6 +16,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 
+/** Numeric chrome in table footers — mono + tabular for stable alignment. */
+const PAGINATION_NUM_CLASS = "font-mono tabular-nums"
+
 /** Canonical page-size choices for every AuditFlow data table. */
 export const TABLE_PAGE_SIZE_OPTIONS = [3, 5, 10, 25, 50] as const
 
@@ -71,7 +74,10 @@ function PageSizeSelector({
       ref={triggerRef}
       type="button"
       aria-label="Rows per page"
-      className="inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-neutral-200 bg-white px-2 text-sm font-medium text-neutral-900 transition-colors duration-200 hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className={cn(
+        "inline-flex h-8 w-[4.5rem] items-center justify-between gap-1 rounded-md border border-neutral-200 bg-white px-2 text-sm font-medium text-neutral-900 transition-colors duration-200 hover:border-neutral-400 hover:bg-neutral-50 data-[state=open]:border-neutral-400 data-[state=open]:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        PAGINATION_NUM_CLASS,
+      )}
     >
       <span>{pageSize}</span>
       <ChevronDown className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden />
@@ -100,6 +106,7 @@ function PageSizeSelector({
                   key={size}
                   className={cn(
                     DASHBOARD_MENU_ITEM_CLASS,
+                    PAGINATION_NUM_CLASS,
                     isSelected && DASHBOARD_MENU_ITEM_SELECTED_CLASS,
                   )}
                   onSelect={() => {
@@ -153,7 +160,10 @@ function TablePaginationNav({
         item === "ellipsis" ? (
           <span
             key={`ellipsis-${index}`}
-            className="inline-flex h-8 items-center px-1 text-sm text-neutral-900"
+            className={cn(
+              "inline-flex h-8 items-center px-1 text-sm text-neutral-900",
+              PAGINATION_NUM_CLASS,
+            )}
             aria-hidden
           >
             …
@@ -165,6 +175,7 @@ function TablePaginationNav({
             variant="ghost"
             className={cn(
               "h-8! min-h-8! w-8! rounded-md p-0! text-sm font-medium",
+              PAGINATION_NUM_CLASS,
               item === currentPage
                 ? "bg-primary text-primary-foreground hover:bg-[var(--primary-hover)] hover:text-primary-foreground"
                 : "text-neutral-900 hover:bg-neutral-100 hover:text-neutral-900",
@@ -249,7 +260,14 @@ function TablePaginationBar({
       {/* Mobile: count + rows selector, then centered pagination */}
       <div className="flex flex-col gap-3 px-4 md:hidden">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <p className="m-0 min-w-0 text-sm text-muted-foreground">{countLabel}</p>
+          <p
+            className={cn(
+              "m-0 min-w-0 text-sm text-muted-foreground",
+              PAGINATION_NUM_CLASS,
+            )}
+          >
+            {countLabel}
+          </p>
           <PageSizeSelector
             pageSize={pageSize}
             pageSizeOptions={pageSizeOptions}
@@ -270,7 +288,14 @@ function TablePaginationBar({
 
       {/* Desktop: count left — rows/page + prev/next right */}
       <div className="hidden w-full items-center justify-between gap-4 md:flex">
-        <p className="m-0 px-4 text-sm text-muted-foreground">{countLabel}</p>
+        <p
+          className={cn(
+            "m-0 px-4 text-sm text-muted-foreground",
+            PAGINATION_NUM_CLASS,
+          )}
+        >
+          {countLabel}
+        </p>
         <div className="flex min-w-0 items-center justify-end gap-4 px-4">
           <PageSizeSelector
             pageSize={pageSize}

@@ -46,6 +46,7 @@ import {
   TablePaginationBar,
   TableRow,
 } from "@/components/ui/table";
+import { TableRowActionsMenu } from "@/components/ui/table-row-actions";
 import {
   CARD_SECTION_EYEBROW_CLASS,
   DIALOG_BODY_CLASS,
@@ -63,6 +64,8 @@ import {
   DASHBOARD_GAP_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
   TABLE_CARD_HEADER_CLASS,
+  TABLE_ROW_ACTIONS_CELL_CLASS,
+  TABLE_ROW_ACTIONS_HEAD_CLASS,
   TABLE_STICKY_HEADER_CLASS,
   TABLE_TOOLBAR_FILTERS_CLASS,
   TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
@@ -378,6 +381,52 @@ function FrameworkKpiHeader({
   );
 }
 
+function FrameworkRowActions({
+  row,
+  menusMounted,
+}: {
+  row: FrameworkClauseRow;
+  menusMounted: boolean;
+}) {
+  return (
+    <TableRowActionsMenu
+      label={`Actions for ${row.article}`}
+      menusMounted={menusMounted}
+    >
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.message("Article details", {
+            description: `${row.article} · ${row.frameworkName}`,
+          });
+        }}
+      >
+        View article details
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.message("Map control", {
+            description: row.mappedSop || "No SOP mapped yet",
+          });
+        }}
+      >
+        Map control
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        className={DASHBOARD_MENU_ITEM_CLASS}
+        onSelect={() => {
+          toast.success("Status override queued", {
+            description: `${row.article} · ${row.status}`,
+          });
+        }}
+      >
+        Override status
+      </DropdownMenuItem>
+    </TableRowActionsMenu>
+  );
+}
+
 function MappingTable({
   rows,
   frameworks,
@@ -506,10 +555,13 @@ function MappingTable({
                 <TableRow>
                   <TableHead className="w-[12%]">Article</TableHead>
                   <TableHead className="w-[14%]">Framework</TableHead>
-                  <TableHead className="w-[32%]">Description</TableHead>
-                  <TableHead className="w-[18%]">Mapped SOP</TableHead>
+                  <TableHead className="w-[28%]">Description</TableHead>
+                  <TableHead className="w-[16%]">Mapped SOP</TableHead>
                   <TableHead className="w-[12%]">Verified</TableHead>
                   <TableHead className="w-[12%]">Status</TableHead>
+                  <TableHead className={TABLE_ROW_ACTIONS_HEAD_CLASS}>
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -538,6 +590,12 @@ function MappingTable({
                       <Badge variant={mappingBadgeVariant(row.status)}>
                         {row.status}
                       </Badge>
+                    </TableCell>
+                    <TableCell className={TABLE_ROW_ACTIONS_CELL_CLASS}>
+                      <FrameworkRowActions
+                        row={row}
+                        menusMounted={menusMounted}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}

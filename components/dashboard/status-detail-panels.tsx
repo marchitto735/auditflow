@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { ChevronDown, Search } from "lucide-react";
 import {
   CardActionsMenu,
@@ -367,7 +368,12 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
                     {pageRows.map((row) => (
                       <TableRow key={row.id}>
                         <TableCell>
-                          <TruncatedText text={row.title} />
+                          <Link
+                            href="/dashboard/findings"
+                            className="block min-w-0 max-w-full truncate text-neutral-900 transition-colors hover:underline focus-visible:underline focus-visible:outline-none"
+                          >
+                            {row.title}
+                          </Link>
                         </TableCell>
                         <TableCell>
                           <TruncatedText
