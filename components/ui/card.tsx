@@ -43,7 +43,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 /**
- * Card section eyebrow — matches sidebar group headers (xs / semibold / uppercase / tracking-wider).
+ * Card section eyebrow — sentence case, 14px medium (no CSS uppercase).
  */
 function CardEyebrow({ className, ...props }: React.ComponentProps<"p">) {
   return (

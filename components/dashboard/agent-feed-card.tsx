@@ -18,6 +18,7 @@ import {
   CARD_SECTION_EYEBROW_CLASS,
   DASHBOARD_CARD_CLASS,
   SECTION_DESCRIPTION_CLASS,
+  TABLE_CARD_TITLE_HEADER_CLASS,
   TELEMETRY_META_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
@@ -224,7 +225,7 @@ function stateTone(state: FeedState): BadgeTone {
 }
 
 const FEED_TABLE_MIN_WIDTH_CLASS = "min-w-[52rem]";
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 5;
 
 type AgentFeedCardProps = {
   className?: string;
@@ -260,16 +261,16 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
       )}
     >
       <CardContent className="flex min-w-0 flex-col p-0">
-        <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-4 pb-3">
+        <div className={TABLE_CARD_TITLE_HEADER_CLASS}>
           <div className="min-w-0 pr-10">
-            <p className={CARD_SECTION_EYEBROW_CLASS}>Activity Stream</p>
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Activity stream</p>
             <p className={SECTION_DESCRIPTION_CLASS}>
               Real-time system events across validation, scoring, and export.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
-              label="Activity Stream"
+              label="Activity stream"
               actions={FEED_CARD_MENU_ACTIONS}
             />
           </div>
@@ -278,10 +279,7 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
         <div className="flex min-w-0 flex-col" style={{ overflowAnchor: "none" }}>
           <div className="min-w-0 overflow-x-auto">
             <Table
-              className={cn(
-                "w-full table-fixed border-separate border-spacing-0",
-                FEED_TABLE_MIN_WIDTH_CLASS,
-              )}
+              className={FEED_TABLE_MIN_WIDTH_CLASS}
               containerClassName="overflow-visible"
             >
               <colgroup>
@@ -291,37 +289,21 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
                 <col className="w-[15%]" style={{ width: "15%" }} />
                 <col className="w-[15%]" style={{ width: "15%" }} />
               </colgroup>
-              <TableHeader className="border-b-0 shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0">
-                <TableRow className="border-0 bg-white hover:bg-transparent">
-                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                    Timestamp
-                  </TableHead>
-                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                    Event / Message
-                  </TableHead>
-                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                    Target Entity
-                  </TableHead>
-                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                    Source / Actor
-                  </TableHead>
-                  <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                    Status
-                  </TableHead>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Timestamp</TableHead>
+                  <TableHead>Event / Message</TableHead>
+                  <TableHead>Target Entity</TableHead>
+                  <TableHead>Source / Actor</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody
-                className={cn(
-                  "divide-y divide-border border-b-0",
-                  "[&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
-                )}
-              >
+              <TableBody>
                 {pageRows.map((event) => (
                   <TableRow
                     key={`${event.dateTime}-${event.actor}-${event.message}`}
-                    className="h-12 border-0 hover:bg-neutral-50"
                   >
-                    <TableCell className="h-12 px-4 py-0">
+                    <TableCell>
                       <time
                         className={TELEMETRY_META_CLASS}
                         dateTime={event.dateTime}
@@ -329,19 +311,19 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
                         {event.timestamp}
                       </time>
                     </TableCell>
-                    <TableCell className="h-12 px-4 py-0">
+                    <TableCell>
                       <TruncatedText text={event.message} />
                     </TableCell>
-                    <TableCell className="h-12 px-4 py-0">
+                    <TableCell>
                       <TruncatedText
                         className="font-mono tabular-nums"
                         text={event.target}
                       />
                     </TableCell>
-                    <TableCell className="h-12 px-4 py-0">
+                    <TableCell>
                       <Badge tone="neutral">{event.actor}</Badge>
                     </TableCell>
-                    <TableCell className="h-12 px-4 py-0">
+                    <TableCell>
                       <Badge tone={stateTone(event.state)}>{event.state}</Badge>
                     </TableCell>
                   </TableRow>

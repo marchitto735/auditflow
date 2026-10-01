@@ -52,6 +52,7 @@ import {
   CARD_SECTION_EYEBROW_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
+  TABLE_CARD_HEADER_CLASS,
   TABLE_TOOLBAR_FILTERS_CLASS,
   TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
   TABLE_TOOLBAR_ROW_CLASS,
@@ -275,16 +276,16 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
       )}
     >
       <CardContent className="flex h-full min-h-0 flex-col p-0">
-        <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
+        <div className={TABLE_CARD_HEADER_CLASS}>
           <div className="min-w-0 pr-10">
-            <p className={CARD_SECTION_EYEBROW_CLASS}>Action Items</p>
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Action items</p>
             <p className={SECTION_DESCRIPTION_CLASS}>
               Highest-severity open items across active audits.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
-              label="Action Items"
+              label="Action items"
               actions={TABLE_CARD_MENU_ACTIONS}
             />
           </div>
@@ -345,10 +346,7 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
             <>
               <div className="min-h-0 flex-1 overflow-x-auto">
                 <Table
-                  className={cn(
-                    "w-full table-fixed border-separate border-spacing-0",
-                    FINDINGS_TABLE_MIN_WIDTH_CLASS,
-                  )}
+                  className={FINDINGS_TABLE_MIN_WIDTH_CLASS}
                   containerClassName="overflow-visible"
                 >
                   <colgroup>
@@ -360,68 +358,46 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
                     <col className="w-[10%]" style={{ width: "10%" }} />
                     <col className="w-[18%]" style={{ width: "18%" }} />
                   </colgroup>
-                  <TableHeader className="border-b-0 shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0">
-                    <TableRow className="border-0 bg-white hover:bg-transparent">
-                      <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                        Finding
-                      </TableHead>
-                      <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                        Document
-                      </TableHead>
-                      <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                        Regulation
-                      </TableHead>
-                      <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                        Source
-                      </TableHead>
-                      <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                        Detected
-                      </TableHead>
-                      <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                        Severity
-                      </TableHead>
-                      <TableHead className="h-10 border-b-0 bg-white px-4 text-left">
-                        Status
-                      </TableHead>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Finding</TableHead>
+                      <TableHead>Document</TableHead>
+                      <TableHead>Regulation</TableHead>
+                      <TableHead>Source</TableHead>
+                      <TableHead>Detected</TableHead>
+                      <TableHead>Severity</TableHead>
+                      <TableHead>Status</TableHead>
                     </TableRow>
                   </TableHeader>
-                  <TableBody
-                    className={cn(
-                      "divide-y divide-border border-b-0",
-                      "[&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
-                    )}
-                  >
+                  <TableBody>
                     {pageRows.map((row) => (
-                      <TableRow
-                        key={row.id}
-                        className="h-12 border-0 hover:bg-neutral-50"
-                      >
-                        <TableCell className="h-12 px-4 py-0">
+                      <TableRow key={row.id}>
+                        <TableCell>
                           <TruncatedText text={row.title} />
                         </TableCell>
-                        <TableCell className="h-12 px-4 py-0">
+                        <TableCell>
                           <TruncatedText
                             className="font-mono tabular-nums"
                             text={row.document}
                           />
                         </TableCell>
-                        <TableCell className="h-12 px-4 py-0">
+                        <TableCell>
                           <span className="whitespace-nowrap">
                             {row.regulation}
                           </span>
                         </TableCell>
-                        <TableCell className="h-12 px-4 py-0">
+                        <TableCell>
                           <span className="whitespace-nowrap">{row.source}</span>
                         </TableCell>
-                        <TableCell className="h-12 px-4 py-0">
-                          <span className="whitespace-nowrap tabular-nums text-neutral-500">
+                        <TableCell>
+                          <span className="whitespace-nowrap tabular-nums text-neutral-900">
                             {row.detectedAgo}
                           </span>
                         </TableCell>
-                        <TableCell className="h-12 px-4 py-0">
+                        <TableCell>
                           <SeverityStatus severity={row.severity} />
                         </TableCell>
-                        <TableCell className="h-12 px-4 py-0">
+                        <TableCell>
                           <FindingStatusBadge status={row.status} />
                         </TableCell>
                       </TableRow>
@@ -508,14 +484,11 @@ function ComplianceTrendYTick({
 }) {
   if (y == null || payload?.value == null) return null;
 
-  // Top tick (100) sits on the plot edge — nudge down so it isn't clipped.
-  const isTopTick = Number(payload.value) === COMPLIANCE_TREND_Y_TICKS[0];
-
   return (
     <text
       x={0}
       y={y}
-      dy={isTopTick ? 10 : 4}
+      dy={4}
       textAnchor="start"
       fill={CHART.structuralMuted}
       fontSize={12}
@@ -562,16 +535,16 @@ export function ComplianceTrendPanel({ className }: { className?: string }) {
 
   return (
     <Card className={cn(DASHBOARD_CARD_CLASS, "h-full", className)}>
-      <CardContent className="relative flex h-full flex-col gap-3 p-4">
+      <CardContent className="relative flex h-full flex-col gap-0 px-4 pt-4 pb-[10px]">
         <div className="min-w-0 pr-10">
-          <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance Score</p>
+          <p className={CARD_SECTION_EYEBROW_CLASS}>Compliance score</p>
           <p className={SECTION_DESCRIPTION_CLASS}>
             90-day rating against the {GMP_THRESHOLD}% benchmark.
           </p>
         </div>
         <div className="absolute top-3 right-3">
           <CardActionsMenu
-            label="Compliance Score"
+            label="Compliance score"
             actions={CHART_CARD_MENU_ACTIONS}
           />
         </div>
@@ -579,7 +552,7 @@ export function ComplianceTrendPanel({ className }: { className?: string }) {
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={[...trend]}
-              margin={{ top: 16, right: 4, left: 0, bottom: 0 }}
+              margin={{ top: 18, right: 4, left: 0, bottom: 0 }}
             >
               <defs>
                 <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">

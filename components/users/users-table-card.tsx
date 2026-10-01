@@ -48,6 +48,8 @@ import {
   CARD_SECTION_EYEBROW_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
+  TABLE_CARD_HEADER_CLASS,
+  TABLE_STICKY_HEADER_CLASS,
   TABLE_ROW_ACTIONS_CELL_CLASS,
   TABLE_ROW_ACTIONS_HEAD_CLASS,
   TABLE_TOOLBAR_ACTIONS_CLASS,
@@ -337,7 +339,7 @@ export default function UsersTableCard({
         )}
       >
         <CardContent className="flex flex-col p-0">
-          <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
+          <div className={TABLE_CARD_HEADER_CLASS}>
             <div className="min-w-0 pr-10">
               <p className={CARD_SECTION_EYEBROW_CLASS}>User directory</p>
               <p className={SECTION_DESCRIPTION_CLASS}>
@@ -420,44 +422,26 @@ export default function UsersTableCard({
               style={{ overflowAnchor: "none" }}
             >
               <Table
-                className={cn(
-                  "w-full table-fixed border-separate border-spacing-0",
-                  TABLE_MIN_WIDTH_CLASS,
-                )}
+                className={TABLE_MIN_WIDTH_CLASS}
                 containerClassName="overflow-x-auto"
               >
-                <TableHeader className="sticky top-0 z-20 bg-white shadow-[0_1px_0_0_var(--border)]">
-                  <TableRow className="border-0 bg-white hover:bg-transparent">
-                    <TableHead className="h-10 w-[22%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Name
-                    </TableHead>
-                    <TableHead className="h-10 w-[20%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Email
-                    </TableHead>
-                    <TableHead className="h-10 w-[18%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Assigned role
-                    </TableHead>
-                    <TableHead className="h-10 w-[12%] px-4 text-left text-sm font-medium text-neutral-900">
-                      MFA
-                    </TableHead>
-                    <TableHead className="h-10 w-[12%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Status
-                    </TableHead>
-                    <TableHead className="h-10 w-[12%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Last active
-                    </TableHead>
+                <TableHeader className={TABLE_STICKY_HEADER_CLASS}>
+                  <TableRow>
+                    <TableHead className="w-[22%]">Name</TableHead>
+                    <TableHead className="w-[20%]">Email</TableHead>
+                    <TableHead className="w-[18%]">Assigned role</TableHead>
+                    <TableHead className="w-[12%]">MFA</TableHead>
+                    <TableHead className="w-[12%]">Status</TableHead>
+                    <TableHead className="w-[12%]">Last active</TableHead>
                     <TableHead className={TABLE_ROW_ACTIONS_HEAD_CLASS}>
                       <span className="sr-only">Actions</span>
                     </TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="divide-y divide-border border-b-0 [&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border">
+                <TableBody>
                   {pageRows.map((user) => (
-                    <TableRow
-                      key={user.id}
-                      className="border-0 bg-white hover:bg-neutral-50"
-                    >
-                      <TableCell className="h-12 max-w-0 px-4 py-0 align-middle">
+                    <TableRow key={user.id} className="bg-white">
+                      <TableCell>
                         <div className="flex min-w-0 items-center gap-3">
                           <Avatar className="size-8">
                             {user.avatarUrl ? (
@@ -475,29 +459,29 @@ export default function UsersTableCard({
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="h-12 max-w-0 px-4 py-0 align-middle">
+                      <TableCell>
                         <span className="block truncate">
                           {user.email}
                         </span>
                       </TableCell>
-                      <TableCell className="h-12 max-w-0 px-4 py-0 align-middle">
+                      <TableCell>
                         <span className="block truncate">
                           {user.role}
                         </span>
                       </TableCell>
-                      <TableCell className="h-12 px-4 py-0 align-middle">
+                      <TableCell>
                         <Badge
                           tone={user.mfaEnabled ? "success" : "neutral"}
                         >
                           {user.mfaEnabled ? "Enabled" : "Disabled"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="h-12 px-4 py-0 align-middle">
+                      <TableCell>
                         <Badge variant={userStatusBadgeVariant(user.status)}>
                           {user.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="h-12 px-4 py-0 align-middle">
+                      <TableCell>
                         <span className="font-mono tabular-nums">
                           {formatLastActive(user.lastActiveAt)}
                         </span>

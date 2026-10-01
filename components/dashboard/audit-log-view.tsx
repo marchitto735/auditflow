@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -16,6 +16,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
+  TablePaginationBar,
   TableRow,
 } from "@/components/ui/table";
 import {
@@ -28,6 +29,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { type AuditLogRow } from "@/lib/dashboard-insights";
 import { DASHBOARD_CARD_CLASS, DASHBOARD_GAP_CLASS, CARD_EYEBROW_MUTED_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
+
+const DEFAULT_PAGE_SIZE = 3;
 
 type TypeFilter = "All" | AuditLogRow["type"];
 
@@ -99,11 +102,25 @@ export default function AuditLogView({
   rows: AuditLogRow[];
 }) {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("All");
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const [page, setPage] = useState(1);
 
   const rows = useMemo(() => {
     if (typeFilter === "All") return sourceRows;
     return sourceRows.filter((row) => row.type === typeFilter);
   }, [sourceRows, typeFilter]);
+
+  const totalCount = rows.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const pageRows = rows.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  );
+
+  useEffect(() => {
+    setPage(1);
+  }, [pageSize, typeFilter]);
 
   const passCount = rows.filter((row) => row.status === "Compliant").length;
   const failCount = rows.filter((row) => row.status !== "Compliant").length;
@@ -215,32 +232,32 @@ export default function AuditLogView({
       <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <Table className="table-fixed w-full min-w-[720px]">
+            <Table className="min-w-[720px]">
               <TableHeader>
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="px-4 w-[28%]">Document</TableHead>
+                <TableRow>
+                  <TableHead className="w-[28%]">Document</TableHead>
                   <TableHead className="w-[10%]">Type</TableHead>
                   <TableHead className="w-[16%]">Date</TableHead>
                   <TableHead className="w-[10%]">Score</TableHead>
                   <TableHead className="w-[16%]">Auditor</TableHead>
-                  <TableHead className="px-4 w-[20%]">Status</TableHead>
+                  <TableHead className="w-[20%]">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {rows.length === 0 ? (
-                  <TableRow className="hover:bg-neutral-50">
+                  <TableRow>
                     <TableCell
                       colSpan={6}
-                      className="max-w-none whitespace-normal px-4 py-4 text-muted-foreground"
+                      className="max-w-none text-muted-foreground"
                     >
                       No stored audits yet. Run an SOP, BPR, or FIR audit to
                       populate this log.
                     </TableCell>
                   </TableRow>
                 ) : (
-                  rows.map((row) => (
-                  <TableRow key={row.id} className="hover:bg-neutral-50">
-                    <TableCell className="px-4">
+                  pageRows.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell>
                       <TruncatedText
                         className={cn(
                           isTechnicalId(row.document) && TECHNICAL_VALUE_CLASS,
@@ -266,7 +283,7 @@ export default function AuditLogView({
                     <TableCell>
                       <TruncatedText text={row.auditor} />
                     </TableCell>
-                    <TableCell className="px-4">
+                    <TableCell>
                       <ActivityStatus status={row.status} />
                     </TableCell>
                   </TableRow>
@@ -275,6 +292,19 @@ export default function AuditLogView({
               </TableBody>
             </Table>
           </div>
+          <TablePaginationBar
+            pageRowsCount={rows.length === 0 ? 0 : pageRows.length}
+            totalCount={totalCount}
+            pageSize={pageSize}
+            onPageSizeChange={(value) => {
+              setPageSize(Number(value));
+              setPage(1);
+            }}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            paginationLabel="Audit log pagination"
+          />
         </CardContent>
       </Card>
     </div>

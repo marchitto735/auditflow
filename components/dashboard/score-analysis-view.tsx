@@ -42,6 +42,7 @@ import {
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
+  TABLE_CARD_TITLE_HEADER_CLASS,
 } from "@/lib/page-layout";
 import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
@@ -223,7 +224,7 @@ export default function ScoreAnalysisView() {
         )}
       >
         <CardContent className="flex flex-col p-0">
-          <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
+          <div className={TABLE_CARD_TITLE_HEADER_CLASS}>
             <div className="min-w-0 pr-10">
               <p className={CARD_SECTION_EYEBROW_CLASS}>
                 Department distribution
@@ -245,51 +246,36 @@ export default function ScoreAnalysisView() {
             style={{ overflowAnchor: "none" }}
           >
             <div className="min-h-0 overflow-x-auto">
-              <Table className="w-full min-w-[40rem] table-fixed border-separate border-spacing-0">
+              <Table className="min-w-[40rem]">
                 <TableHeader>
-                  <TableRow className="border-0 bg-white hover:bg-transparent">
-                    <TableHead className="w-[28%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
-                      Department
-                    </TableHead>
-                    <TableHead className="w-[12%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
-                      Audits
-                    </TableHead>
-                    <TableHead className="w-[14%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
-                      Avg score
-                    </TableHead>
-                    <TableHead className="w-[14%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
-                      Δ 90d
-                    </TableHead>
-                    <TableHead className="w-[14%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
-                      Below GMP
-                    </TableHead>
-                    <TableHead className="w-[18%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
-                      Status
-                    </TableHead>
+                  <TableRow>
+                    <TableHead className="w-[28%]">Department</TableHead>
+                    <TableHead className="w-[12%]">Audits</TableHead>
+                    <TableHead className="w-[14%]">Avg score</TableHead>
+                    <TableHead className="w-[14%]">Δ 90d</TableHead>
+                    <TableHead className="w-[14%]">Below GMP</TableHead>
+                    <TableHead className="w-[18%]">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {deptPaging.pageRows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      className="border-0 hover:bg-neutral-50"
-                    >
-                      <TableCell className="border-t border-zinc-100 px-4 py-3">
+                    <TableRow key={row.id}>
+                      <TableCell>
                         <TruncatedText text={row.department} />
                       </TableCell>
-                      <TableCell className="border-t border-zinc-100 px-4 py-3 font-mono tabular-nums">
+                      <TableCell className="font-mono tabular-nums">
                         {row.audits}
                       </TableCell>
-                      <TableCell className="border-t border-zinc-100 px-4 py-3 font-mono tabular-nums">
+                      <TableCell className="font-mono tabular-nums">
                         {row.avgScore}%
                       </TableCell>
-                      <TableCell className="border-t border-zinc-100 px-4 py-3 font-mono tabular-nums">
+                      <TableCell className="font-mono tabular-nums">
                         {row.delta}
                       </TableCell>
-                      <TableCell className="border-t border-zinc-100 px-4 py-3 font-mono tabular-nums">
+                      <TableCell className="font-mono tabular-nums">
                         {row.belowGmp}
                       </TableCell>
-                      <TableCell className="border-t border-zinc-100 px-4 py-3">
+                      <TableCell>
                         <DepartmentStatus status={row.status} />
                       </TableCell>
                     </TableRow>
@@ -320,7 +306,7 @@ export default function ScoreAnalysisView() {
         )}
       >
         <CardContent className="flex flex-col p-0">
-          <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
+          <div className={TABLE_CARD_TITLE_HEADER_CLASS}>
             <div className="min-w-0 pr-10">
               <p className={CARD_SECTION_EYEBROW_CLASS}>Variance log</p>
               <p className={SECTION_DESCRIPTION_CLASS}>
@@ -340,45 +326,32 @@ export default function ScoreAnalysisView() {
             style={{ overflowAnchor: "none" }}
           >
             <div className="min-h-0 overflow-x-auto">
-              <Table className="w-full min-w-[44rem] table-fixed border-separate border-spacing-0">
+              <Table className="min-w-[44rem]">
                 <TableHeader>
-                  <TableRow className="border-0 bg-white hover:bg-transparent">
-                    <TableHead className="w-[16%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
-                      Date
-                    </TableHead>
-                    <TableHead className="w-[38%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
-                      Signal
-                    </TableHead>
-                    <TableHead className="w-[22%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
-                      Domain
-                    </TableHead>
-                    <TableHead className="w-[12%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
-                      Variance
-                    </TableHead>
-                    <TableHead className="w-[12%] px-4 py-3 text-left text-sm font-medium uppercase tracking-wider text-neutral-500">
-                      Severity
-                    </TableHead>
+                  <TableRow>
+                    <TableHead className="w-[16%]">Date</TableHead>
+                    <TableHead className="w-[38%]">Signal</TableHead>
+                    <TableHead className="w-[22%]">Domain</TableHead>
+                    <TableHead className="w-[12%]">Variance</TableHead>
+                    <TableHead className="w-[12%]">Severity</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {variancePaging.pageRows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      className="border-0 hover:bg-neutral-50"
-                    >
-                      <TableCell className="border-t border-zinc-100 px-4 py-3 font-mono tabular-nums">
+                    <TableRow key={row.id}>
+                      <TableCell className="font-mono tabular-nums">
                         {row.date}
                       </TableCell>
-                      <TableCell className="border-t border-zinc-100 px-4 py-3">
+                      <TableCell>
                         <TruncatedText text={row.signal} />
                       </TableCell>
-                      <TableCell className="border-t border-zinc-100 px-4 py-3">
+                      <TableCell>
                         <TruncatedText text={row.domain} />
                       </TableCell>
-                      <TableCell className="border-t border-zinc-100 px-4 py-3 font-mono tabular-nums">
+                      <TableCell className="font-mono tabular-nums">
                         {row.variance}
                       </TableCell>
-                      <TableCell className="border-t border-zinc-100 px-4 py-3">
+                      <TableCell>
                         <VarianceSeverity severity={row.severity} />
                       </TableCell>
                     </TableRow>

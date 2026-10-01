@@ -27,6 +27,7 @@ import {
   CARD_SECTION_EYEBROW_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
+  TABLE_CARD_TITLE_HEADER_CLASS,
 } from "@/lib/page-layout";
 import {
   DATE_FORMAT_OPTIONS,
@@ -143,7 +144,7 @@ export default function SettingsWorkspace({
   return (
     <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
       <CardContent className="flex flex-col p-0">
-        <div className="border-b border-zinc-200 px-4 pt-[16px] pb-3">
+        <div className={TABLE_CARD_TITLE_HEADER_CLASS}>
           <p className={CARD_SECTION_EYEBROW_CLASS}>Organization settings</p>
           <p className={SECTION_DESCRIPTION_CLASS}>
             Organization defaults, security posture, and alert preferences.

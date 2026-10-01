@@ -63,11 +63,72 @@ export const FIELD_CONTROL_CLASS =
   "border border-neutral-200 bg-white text-neutral-900 transition-colors placeholder:text-neutral-500 hover:border-neutral-400 hover:bg-neutral-50 focus-visible:outline-none focus-visible:border-neutral-400 focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 /**
+ * Compact form dialogs (Upload policy, Sync framework, Invite user, etc.).
+ * Overrides DialogContent defaults to a shared md width + flat chrome.
+ */
+export const DIALOG_CONTENT_CLASS =
+  "gap-0 overflow-hidden bg-white p-0 shadow-none md:max-w-md md:rounded-2xl md:border md:border-neutral-200";
+
+/**
+ * Tall form dialogs (New audit) — same shell as `DIALOG_CONTENT_CLASS` with a height cap.
+ */
+export const DIALOG_CONTENT_TALL_CLASS =
+  "gap-0 overflow-hidden bg-white p-0 shadow-none md:max-h-[min(90vh,840px)] md:max-w-md md:rounded-2xl md:border md:border-neutral-200";
+
+/** Dialog title row — hairline under header, room for absolute close. */
+export const DIALOG_HEADER_CLASS =
+  "shrink-0 border-b border-neutral-200 p-4 pr-12 text-left";
+
+export const DIALOG_TITLE_CLASS =
+  "m-0 text-lg font-medium text-neutral-900";
+
+export const DIALOG_DESCRIPTION_CLASS =
+  "m-0 mt-1 text-sm font-normal text-muted-foreground";
+
+/** Scrollable field stack between header and footer. */
+export const DIALOG_BODY_CLASS = "flex flex-col gap-4 p-4";
+
+export const DIALOG_FOOTER_CLASS =
+  "shrink-0 border-t border-neutral-200 p-4";
+
+/** Label → control stack inside dialogs. */
+export const DIALOG_FIELD_CLASS = "flex flex-col gap-1.5";
+
+export const DIALOG_LABEL_CLASS =
+  "text-sm font-medium leading-none text-neutral-900";
+
+/** Invalid field border / focus — pairs with `FIELD_ERROR_TEXT_CLASS`. */
+export const FIELD_INVALID_CLASS =
+  "border-rose-500 hover:border-rose-500 focus-visible:border-rose-500 focus-visible:ring-rose-500/20 data-[state=open]:border-rose-500";
+
+export const FIELD_ERROR_TEXT_CLASS = "m-0 text-xs text-rose-600";
+
+/**
+ * File picker / specialized field trigger — same height & chrome as Input / Select.
+ */
+export const DIALOG_FILE_TRIGGER_CLASS =
+  "flex h-9 min-h-9 w-full items-center justify-start gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-normal text-neutral-900 shadow-none transition-colors hover:border-neutral-400 hover:bg-neutral-50 focus-visible:outline-none focus-visible:border-neutral-400 focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+
+/**
  * Unified data-table toolbar anatomy:
  * [Search — flush left] …… [exactly 3 filter dropdowns — flush right]
  */
 export const TABLE_TOOLBAR_ROW_CLASS =
   "flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3";
+
+/**
+ * Card header block above a data table — title/subtitle (+ optional toolbar).
+ * Matches Action Items: 16px top/bottom padding, zinc hairline under the block.
+ */
+export const TABLE_CARD_HEADER_CLASS =
+  "relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-4 pb-4";
+
+/** Title-only card header (no toolbar row) — same padding and hairline. */
+export const TABLE_CARD_TITLE_HEADER_CLASS =
+  "relative shrink-0 border-b border-zinc-200 px-4 pt-4 pb-4";
+
+/** Sticky column-header chrome for long inventory tables. */
+export const TABLE_STICKY_HEADER_CLASS = "sticky top-0 z-20";
 
 export const TABLE_TOOLBAR_SEARCH_WRAP_CLASS =
   "relative min-w-0 w-full sm:w-[min(100%,20rem)] sm:shrink-0";
@@ -121,7 +182,7 @@ export const TABLE_ROW_HOVER_CLASS =
  * `text-ellipsis` phantom dots), and right padding inside the card edge.
  */
 export const TABLE_ROW_ACTIONS_HEAD_CLASS =
-  "h-10 w-14 max-w-none overflow-visible px-2 pr-4 text-right text-sm font-medium text-clip text-neutral-900";
+  "w-14 max-w-none overflow-visible px-2 pr-4 text-right text-sm font-medium text-clip text-neutral-900";
 
 export const TABLE_ROW_ACTIONS_CELL_CLASS =
   "h-12 w-14 max-w-none overflow-visible px-2 pr-4 py-0 text-right text-clip align-middle";

@@ -60,12 +60,25 @@ import {
 } from "@/components/ui/table";
 import {
   CARD_SECTION_EYEBROW_CLASS,
+  DIALOG_BODY_CLASS,
+  DIALOG_CONTENT_CLASS,
+  DIALOG_DESCRIPTION_CLASS,
+  DIALOG_FIELD_CLASS,
+  DIALOG_FILE_TRIGGER_CLASS,
+  DIALOG_FOOTER_CLASS,
+  DIALOG_HEADER_CLASS,
+  DIALOG_LABEL_CLASS,
+  DIALOG_TITLE_CLASS,
+  FIELD_ERROR_TEXT_CLASS,
+  FIELD_INVALID_CLASS,
   OVERLINE_LABEL_CLASS,
   PAGE_HEADER_PRIMARY_BUTTON_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
+  TABLE_CARD_HEADER_CLASS,
+  TABLE_STICKY_HEADER_CLASS,
   TABLE_TOOLBAR_FILTERS_CLASS,
   TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
   TABLE_TOOLBAR_ROW_CLASS,
@@ -281,6 +294,10 @@ function UploadPolicyDialog({
   const [title, setTitle] = useState("");
   const [type, setType] = useState<PolicyDocType>("SOP");
   const [fileName, setFileName] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{
+    title?: string;
+    file?: string;
+  }>({});
   const [pending, startTransition] = useTransition();
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -288,6 +305,7 @@ function UploadPolicyDialog({
     setTitle("");
     setType("SOP");
     setFileName(null);
+    setFieldErrors({});
     if (fileRef.current) fileRef.current.value = "";
   }
 
@@ -298,14 +316,21 @@ function UploadPolicyDialog({
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    if (pending) return;
+
+    const nextErrors: { title?: string; file?: string } = {};
     if (!title.trim()) {
-      toast.error("Enter a policy title.");
-      return;
+      nextErrors.title = "Enter a policy title.";
     }
     if (!fileName) {
-      toast.error("Choose a master document to upload.");
+      nextErrors.file = "Choose a master document to upload.";
+    }
+    if (Object.keys(nextErrors).length > 0) {
+      setFieldErrors(nextErrors);
       return;
     }
+
+    setFieldErrors({});
     startTransition(async () => {
       await new Promise((resolve) => setTimeout(resolve, 400));
       toast.success(`Queued ${type} ingest for “${title.trim()}”.`);
@@ -315,28 +340,50 @@ function UploadPolicyDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="gap-0 overflow-hidden p-0 md:max-w-md" showCloseButton>
+      <DialogContent className={DIALOG_CONTENT_CLASS} showCloseButton>
         <form onSubmit={handleSubmit}>
-          <DialogHeader className="border-b border-neutral-200 p-4 pr-12 text-left">
-            <DialogTitle className="m-0 text-lg font-medium text-neutral-900">
+          <DialogHeader className={DIALOG_HEADER_CLASS}>
+            <DialogTitle className={DIALOG_TITLE_CLASS}>
               Upload master document
             </DialogTitle>
-            <DialogDescription className="m-0 mt-1 text-sm text-muted-foreground">
+            <DialogDescription className={DIALOG_DESCRIPTION_CLASS}>
               Register a new SOP, BPR, or FIR for n8n parsing and clause extraction.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col gap-4 p-4">
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="policy-title">Policy title</Label>
+          <div className={DIALOG_BODY_CLASS}>
+            <div className={DIALOG_FIELD_CLASS}>
+              <Label htmlFor="policy-title" className={DIALOG_LABEL_CLASS}>
+                Policy title
+              </Label>
               <Input
                 id="policy-title"
                 value={title}
-                onChange={(event) => setTitle(event.target.value)}
+                onChange={(event) => {
+                  setTitle(event.target.value);
+                  if (event.target.value.trim()) {
+                    setFieldErrors((prev) => ({ ...prev, title: undefined }));
+                  }
+                }}
                 placeholder="e.g. Document control & change management"
+                aria-invalid={Boolean(fieldErrors.title)}
+                aria-describedby={
+                  fieldErrors.title ? "policy-title-error" : undefined
+                }
               />
+              {fieldErrors.title ? (
+                <p
+                  id="policy-title-error"
+                  className={FIELD_ERROR_TEXT_CLASS}
+                  role="alert"
+                >
+                  {fieldErrors.title}
+                </p>
+              ) : null}
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="policy-type">Document type</Label>
+            <div className={DIALOG_FIELD_CLASS}>
+              <Label htmlFor="policy-type" className={DIALOG_LABEL_CLASS}>
+                Document type
+              </Label>
               <Select
                 value={type}
                 onValueChange={(value) => setType(value as PolicyDocType)}
@@ -353,32 +400,54 @@ function UploadPolicyDialog({
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="policy-file">Master file</Label>
+            <div className={DIALOG_FIELD_CLASS}>
+              <Label htmlFor="policy-file" className={DIALOG_LABEL_CLASS}>
+                Master file
+              </Label>
               <input
                 ref={fileRef}
                 id="policy-file"
                 type="file"
                 accept=".pdf,.doc,.docx"
                 className="sr-only"
-                onChange={(event) =>
-                  setFileName(event.target.files?.[0]?.name ?? null)
-                }
+                onChange={(event) => {
+                  const nextName = event.target.files?.[0]?.name ?? null;
+                  setFileName(nextName);
+                  if (nextName) {
+                    setFieldErrors((prev) => ({ ...prev, file: undefined }));
+                  }
+                }}
               />
-              <Button
+              <button
                 type="button"
-                variant="outline"
-                className="h-9! min-h-9! justify-start gap-2 rounded-lg px-3 text-sm font-normal"
+                className={cn(
+                  DIALOG_FILE_TRIGGER_CLASS,
+                  fieldErrors.file && FIELD_INVALID_CLASS,
+                  !fileName && "text-muted-foreground",
+                )}
                 onClick={() => fileRef.current?.click()}
+                aria-invalid={Boolean(fieldErrors.file)}
+                aria-describedby={
+                  fieldErrors.file ? "policy-file-error" : undefined
+                }
               >
-                <FileUp className="size-4 shrink-0" aria-hidden />
+                <FileUp className="size-4 shrink-0 text-neutral-900" aria-hidden />
                 <span className="truncate">
                   {fileName ?? "Choose PDF or Word document"}
                 </span>
-              </Button>
+              </button>
+              {fieldErrors.file ? (
+                <p
+                  id="policy-file-error"
+                  className={FIELD_ERROR_TEXT_CLASS}
+                  role="alert"
+                >
+                  {fieldErrors.file}
+                </p>
+              ) : null}
             </div>
           </div>
-          <DialogFooter className="border-t border-neutral-200 p-4">
+          <DialogFooter className={DIALOG_FOOTER_CLASS}>
             <Button
               type="button"
               variant="outline"
@@ -593,7 +662,7 @@ export default function PoliciesTableCard({
           )}
         >
         <CardContent className="flex flex-col p-0">
-          <div className="relative flex shrink-0 flex-col gap-3 border-b border-neutral-200 px-4 pt-[16px] pb-3">
+          <div className={TABLE_CARD_HEADER_CLASS}>
             <div className="min-w-0 pr-10">
               <p className={CARD_SECTION_EYEBROW_CLASS}>Master policy library</p>
               <p className={SECTION_DESCRIPTION_CLASS}>
@@ -661,75 +730,54 @@ export default function PoliciesTableCard({
           ) : (
             <div className="flex shrink-0 flex-col" style={{ overflowAnchor: "none" }}>
               <Table
-                className={cn(
-                  "w-full table-fixed border-separate border-spacing-0",
-                  TABLE_MIN_WIDTH_CLASS,
-                )}
+                className={TABLE_MIN_WIDTH_CLASS}
                 containerClassName="overflow-x-auto"
               >
-                <TableHeader className="sticky top-0 z-20 bg-white shadow-[0_1px_0_0_var(--border)]">
-                  <TableRow className="border-0 bg-white hover:bg-transparent">
-                    <TableHead className="h-10 w-[22%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Title
-                    </TableHead>
-                    <TableHead className="h-10 w-[14%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Document ID
-                    </TableHead>
-                    <TableHead className="h-10 w-[8%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Type
-                    </TableHead>
-                    <TableHead className="h-10 w-[8%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Version
-                    </TableHead>
-                    <TableHead className="h-10 w-[12%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Status
-                    </TableHead>
-                    <TableHead className="h-10 w-[14%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Last parsed
-                    </TableHead>
-                    <TableHead className="h-10 w-[8%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Chunks
-                    </TableHead>
-                    <TableHead className="h-10 w-[14%] px-4 text-left text-sm font-medium text-neutral-900">
-                      Frameworks
-                    </TableHead>
+                <TableHeader className={TABLE_STICKY_HEADER_CLASS}>
+                  <TableRow>
+                    <TableHead className="w-[22%]">Title</TableHead>
+                    <TableHead className="w-[14%]">Document ID</TableHead>
+                    <TableHead className="w-[8%]">Type</TableHead>
+                    <TableHead className="w-[8%]">Version</TableHead>
+                    <TableHead className="w-[12%]">Status</TableHead>
+                    <TableHead className="w-[14%]">Last parsed</TableHead>
+                    <TableHead className="w-[8%]">Chunks</TableHead>
+                    <TableHead className="w-[14%]">Frameworks</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="divide-y divide-border border-b-0 [&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border">
+                <TableBody>
                   {pageRows.map((policy) => (
                     <TableRow
                       key={policy.id}
-                      className="cursor-pointer border-0 bg-white hover:bg-neutral-50"
+                      className="cursor-pointer bg-white"
                       onClick={() => setSelected(policy)}
                     >
-                      <TableCell className="h-12 max-w-0 px-4 py-0 align-middle">
+                      <TableCell>
                         <span className="block truncate">
                           {policy.title}
                         </span>
                       </TableCell>
-                      <TableCell className="h-12 max-w-0 px-4 py-0 align-middle">
+                      <TableCell>
                         <span className="block truncate font-mono">
                           {policy.documentId}
                         </span>
                       </TableCell>
-                      <TableCell className="h-12 px-4 py-0 align-middle">
-                        {policy.type}
-                      </TableCell>
-                      <TableCell className="h-12 px-4 py-0 align-middle font-mono">
+                      <TableCell>{policy.type}</TableCell>
+                      <TableCell className="font-mono">
                         v{policy.version}
                       </TableCell>
-                      <TableCell className="h-12 px-4 py-0 align-middle">
+                      <TableCell>
                         <Badge variant={statusBadgeVariant(policy.status)}>
                           {policy.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="h-12 px-4 py-0 align-middle font-mono tabular-nums">
+                      <TableCell className="font-mono tabular-nums">
                         {formatPolicyTimestamp(policy.lastParsedAt)}
                       </TableCell>
-                      <TableCell className="h-12 px-4 py-0 align-middle font-mono">
+                      <TableCell className="font-mono">
                         {policy.chunkCount}
                       </TableCell>
-                      <TableCell className="h-12 max-w-0 px-4 py-0 align-middle">
+                      <TableCell>
                         <span className="block truncate">
                           {policy.frameworks.join(" · ")}
                         </span>

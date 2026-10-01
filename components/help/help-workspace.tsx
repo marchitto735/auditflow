@@ -42,6 +42,7 @@ import {
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
   SECTION_DESCRIPTION_CLASS,
+  TABLE_CARD_TITLE_HEADER_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -78,7 +79,7 @@ function CardShell({
   return (
     <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS, className)}>
       <CardContent className="flex flex-col p-0">
-        <div className="relative shrink-0 border-b border-neutral-200 px-4 pt-[16px] pb-3">
+        <div className={TABLE_CARD_TITLE_HEADER_CLASS}>
           <div className={cn("min-w-0", headerAction && "pr-28")}>
             <p className={CARD_SECTION_EYEBROW_CLASS}>{eyebrow}</p>
             {description ? (
@@ -284,9 +285,9 @@ function ActiveTicketsTable() {
       description="Open and recent support cases with assignee and SLA windows."
     >
       <div className="overflow-x-auto">
-        <Table className="w-full min-w-[44rem] table-fixed border-separate border-spacing-0">
-          <TableHeader className="bg-white shadow-[0_1px_0_0_var(--border)]">
-            <TableRow className="border-0 hover:bg-transparent">
+        <Table className="min-w-[44rem]">
+          <TableHeader>
+            <TableRow>
               {(
                 [
                   ["Ticket", "w-[12%]"],
@@ -298,45 +299,34 @@ function ActiveTicketsTable() {
                   ["Opened", "w-[10%]"],
                 ] as const
               ).map(([label, width]) => (
-                <TableHead
-                  key={label}
-                  className={cn(
-                    "h-10 px-4 text-left text-sm font-medium text-neutral-900",
-                    width,
-                  )}
-                >
+                <TableHead key={label} className={width}>
                   {label}
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
-          <TableBody className="divide-y divide-border [&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border">
+          <TableBody>
             {pageRows.map((ticket) => (
-              <TableRow
-                key={ticket.id}
-                className="border-0 bg-white hover:bg-neutral-50"
-              >
-                <TableCell className="h-12 px-4 py-0 font-mono">
-                  {ticket.id}
-                </TableCell>
-                <TableCell className="h-12 max-w-0 px-4 py-0">
+              <TableRow key={ticket.id} className="bg-white">
+                <TableCell className="font-mono">{ticket.id}</TableCell>
+                <TableCell>
                   <span className="block truncate">{ticket.subject}</span>
                 </TableCell>
-                <TableCell className="h-12 px-4 py-0">
+                <TableCell>
                   <Badge variant={severityBadgeVariant(ticket.severity)}>
                     {ticket.severity}
                   </Badge>
                 </TableCell>
-                <TableCell className="h-12 px-4 py-0">
+                <TableCell>
                   <Badge variant={ticketStatusBadgeVariant(ticket.status)}>
                     {ticket.status}
                   </Badge>
                 </TableCell>
-                <TableCell className="h-12 max-w-0 px-4 py-0">
+                <TableCell>
                   <span className="block truncate">{ticket.assignee}</span>
                 </TableCell>
-                <TableCell className="h-12 px-4 py-0">{ticket.sla}</TableCell>
-                <TableCell className="h-12 px-4 py-0 font-mono tabular-nums">
+                <TableCell>{ticket.sla}</TableCell>
+                <TableCell className="font-mono tabular-nums">
                   {formatHelpTimestamp(ticket.openedAt)}
                 </TableCell>
               </TableRow>

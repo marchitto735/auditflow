@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,6 +18,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
+  TablePaginationBar,
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,6 +33,8 @@ import {
 } from "@/lib/dashboard-insights";
 import { DASHBOARD_CARD_CLASS, DASHBOARD_GAP_CLASS, CARD_EYEBROW_MUTED_CLASS } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
+
+const DEFAULT_PAGE_SIZE = 3;
 
 const SEVERITY_ORDER: FindingSeverity[] = [
   "Critical",
@@ -77,9 +80,23 @@ export default function FindingsView() {
   const [owner, setOwner] = useState("");
   const [plan, setPlan] = useState("");
 
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const [page, setPage] = useState(1);
+
   const sorted = useMemo(() => sortFindings(rows), [rows]);
+  const totalCount = sorted.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const pageRows = sorted.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  );
 
   const active = sorted.find((row) => row.id === activeId) ?? sorted[0];
+
+  useEffect(() => {
+    setPage(1);
+  }, [pageSize, rows]);
 
   function updateStatus(id: string, status: FindingStatus) {
     setRows((current) =>
@@ -111,28 +128,28 @@ export default function FindingsView() {
         <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
-              <Table className="table-fixed w-full min-w-[880px]">
+              <Table className="min-w-[880px]">
                 <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead className="w-[28%] px-4">Finding</TableHead>
+                  <TableRow>
+                    <TableHead className="w-[28%]">Finding</TableHead>
                     <TableHead className="w-[16%]">Document</TableHead>
                     <TableHead className="w-[12%]">Severity</TableHead>
                     <TableHead className="w-[16%]">Citation</TableHead>
                     <TableHead className="w-[12%]">Owner</TableHead>
-                    <TableHead className="w-[16%] px-4">Status</TableHead>
+                    <TableHead className="w-[16%]">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {sorted.map((row) => (
+                  {pageRows.map((row) => (
                     <TableRow
                       key={row.id}
                       className={cn(
-                        "cursor-pointer hover:bg-neutral-50",
+                        "cursor-pointer",
                         active?.id === row.id && "bg-[oklch(97%_0_0)]",
                       )}
                       onClick={() => setActiveId(row.id)}
                     >
-                      <TableCell className="px-4">
+                      <TableCell>
                         <TruncatedText text={row.title} />
                       </TableCell>
                       <TableCell>
@@ -151,7 +168,6 @@ export default function FindingsView() {
                         <TruncatedText text={row.owner} />
                       </TableCell>
                       <TableCell
-                        className="px-4"
                         onClick={(event) => event.stopPropagation()}
                       >
                         <Select
@@ -188,6 +204,19 @@ export default function FindingsView() {
                 </TableBody>
               </Table>
             </div>
+            <TablePaginationBar
+              pageRowsCount={pageRows.length}
+              totalCount={totalCount}
+              pageSize={pageSize}
+              onPageSizeChange={(value) => {
+                setPageSize(Number(value));
+                setPage(1);
+              }}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setPage}
+              paginationLabel="Findings pagination"
+            />
           </CardContent>
         </Card>
 

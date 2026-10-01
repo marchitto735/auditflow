@@ -242,7 +242,7 @@ function TablePaginationBar({
     <div
       data-slot="table-pagination"
       className={cn(
-        "relative z-20 shrink-0 border-t-0 bg-white py-3 shadow-[0_-1px_0_0_var(--border)]",
+        "relative z-20 shrink-0 border-t-0 bg-white py-4 shadow-[0_-1px_0_0_var(--border)]",
         className,
       )}
     >

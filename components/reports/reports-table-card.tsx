@@ -61,6 +61,8 @@ import {
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
+  TABLE_CARD_HEADER_CLASS,
+  TABLE_STICKY_HEADER_CLASS,
   TABLE_ROW_ACTIONS_CELL_CLASS,
   TABLE_ROW_ACTIONS_HEAD_CLASS,
   TABLE_TOOLBAR_FILTERS_CLASS,
@@ -613,7 +615,7 @@ export default function ReportsTableCard({
           )}
         >
           <CardContent className="flex flex-col p-0">
-            <div className="relative flex shrink-0 flex-col gap-3 border-b border-neutral-200 px-4 pt-[16px] pb-3">
+            <div className={TABLE_CARD_HEADER_CLASS}>
               <div className="min-w-0 pr-10">
                 <p className={CARD_SECTION_EYEBROW_CLASS}>Reports</p>
                 <p className={SECTION_DESCRIPTION_CLASS}>
@@ -684,41 +686,25 @@ export default function ReportsTableCard({
                 style={{ overflowAnchor: "none" }}
               >
                 <Table
-                  className={cn(
-                    "w-full table-fixed border-separate border-spacing-0",
-                    TABLE_MIN_WIDTH_CLASS,
-                  )}
+                  className={TABLE_MIN_WIDTH_CLASS}
                   containerClassName="overflow-x-auto"
                 >
-                  <TableHeader className="sticky top-0 z-20 bg-white shadow-[0_1px_0_0_var(--border)]">
-                    <TableRow className="border-0 bg-white hover:bg-transparent">
-                      <TableHead className="h-10 w-[28%] px-4 text-left text-sm font-medium text-neutral-900">
-                        Document
-                      </TableHead>
-                      <TableHead className="h-10 w-[10%] px-4 text-left text-sm font-medium text-neutral-900">
-                        Type
-                      </TableHead>
-                      <TableHead className="h-10 w-[22%] px-4 text-left text-sm font-medium text-neutral-900">
-                        Timestamp
-                      </TableHead>
-                      <TableHead className="h-10 w-[10%] px-4 text-left text-sm font-medium text-neutral-900">
-                        Score
-                      </TableHead>
-                      <TableHead className="h-10 w-[18%] px-4 text-left text-sm font-medium text-neutral-900">
-                        Status
-                      </TableHead>
+                  <TableHeader className={TABLE_STICKY_HEADER_CLASS}>
+                    <TableRow>
+                      <TableHead className="w-[28%]">Document</TableHead>
+                      <TableHead className="w-[10%]">Type</TableHead>
+                      <TableHead className="w-[22%]">Timestamp</TableHead>
+                      <TableHead className="w-[10%]">Score</TableHead>
+                      <TableHead className="w-[18%]">Status</TableHead>
                       <TableHead className={TABLE_ROW_ACTIONS_HEAD_CLASS}>
                         <span className="sr-only">Actions</span>
                       </TableHead>
                     </TableRow>
                   </TableHeader>
-                  <TableBody className="divide-y divide-border border-b-0 [&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border">
+                  <TableBody>
                     {pageRows.map((row) => (
-                      <TableRow
-                        key={row.id}
-                        className="border-0 bg-white hover:bg-neutral-50"
-                      >
-                        <TableCell className="h-12 max-w-0 px-4 py-0 align-middle">
+                      <TableRow key={row.id} className="bg-white">
+                        <TableCell>
                           <button
                             type="button"
                             className={cn(
@@ -730,12 +716,12 @@ export default function ReportsTableCard({
                             {row.document}
                           </button>
                         </TableCell>
-                        <TableCell className="h-12 max-w-0 px-4 py-0 align-middle">
+                        <TableCell>
                           <span className="block truncate">
                             {row.type}
                           </span>
                         </TableCell>
-                        <TableCell className="h-12 max-w-0 px-4 py-0 align-middle">
+                        <TableCell>
                           <span
                             className={cn(
                               "block truncate",
@@ -745,13 +731,13 @@ export default function ReportsTableCard({
                             {row.date}
                           </span>
                         </TableCell>
-                        <TableCell className="h-12 px-4 py-0 align-middle">
+                        <TableCell>
                           <span className={TECHNICAL_VALUE_CLASS}>
                             {row.score}
                             {row.score !== "—" ? "%" : ""}
                           </span>
                         </TableCell>
-                        <TableCell className="h-12 px-4 py-0 align-middle">
+                        <TableCell>
                           <ReportStatusBadge status={row.status} />
                         </TableCell>
                         <TableCell className={TABLE_ROW_ACTIONS_CELL_CLASS}>

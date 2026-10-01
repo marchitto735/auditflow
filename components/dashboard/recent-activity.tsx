@@ -17,6 +17,7 @@ import {
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   RECENT_ACTIVITY_CARD_HEIGHT_CLASS,
+  TABLE_CARD_TITLE_HEADER_CLASS,
 } from "@/lib/page-layout";
 
 const DEFAULT_PAGE_SIZE = 3;
@@ -149,7 +150,7 @@ export default function RecentActivity({
       )}
     >
       <CardContent className="flex flex-col p-0">
-        <div className="relative shrink-0 border-b border-zinc-200 px-4 pt-[16px] pb-3">
+        <div className={TABLE_CARD_TITLE_HEADER_CLASS}>
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Audit history</p>
             <p className={SECTION_DESCRIPTION_CLASS}>

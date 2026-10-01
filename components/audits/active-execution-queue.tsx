@@ -23,6 +23,8 @@ import {
   CARD_SECTION_EYEBROW_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
+  TABLE_CARD_HEADER_CLASS,
+  TABLE_STICKY_HEADER_CLASS,
 } from "@/lib/page-layout";
 import { toSentenceCase } from "@/lib/status-label";
 import { cn } from "@/lib/utils";
@@ -45,11 +47,9 @@ const INITIAL_FILTERS: DashboardToolbarValues = {
 };
 
 const CELL_X_PAD_CLASS = "px-4";
-const HEADER_CELL_CLASS = cn(CELL_X_PAD_CLASS, "h-10");
-const BODY_CELL_CLASS = cn(CELL_X_PAD_CLASS, "h-12 py-0");
-const BODY_ROW_CLASS = "h-12 border-0";
-const STICKY_HEADER_DIVIDER_CLASS =
-  "border-b-0 shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0";
+const HEADER_CELL_CLASS = CELL_X_PAD_CLASS;
+const BODY_CELL_CLASS = CELL_X_PAD_CLASS;
+const BODY_ROW_CLASS = "bg-white";
 
 const QUEUE_COLUMNS = [
   {
@@ -239,7 +239,7 @@ function ExecutionQueueTable({ rows }: { rows: QueueRow[] }) {
   return (
     <TooltipProvider delayDuration={150}>
       <Table
-        className="w-full min-w-[42rem] table-fixed border-separate border-spacing-0"
+        className="min-w-[42rem]"
         containerClassName="overflow-visible"
       >
         <colgroup>
@@ -251,17 +251,15 @@ function ExecutionQueueTable({ rows }: { rows: QueueRow[] }) {
             />
           ))}
         </colgroup>
-        <TableHeader
-          className={cn("sticky top-0 z-20 bg-white", STICKY_HEADER_DIVIDER_CLASS)}
-        >
-          <TableRow className="border-0 bg-white hover:bg-transparent">
+        <TableHeader className={TABLE_STICKY_HEADER_CLASS}>
+          <TableRow>
             {QUEUE_COLUMNS.map((column) => (
               <TableHead
                 key={column.key}
                 className={cn(
                   HEADER_CELL_CLASS,
                   column.widthClass,
-                  "sticky top-0 z-20 border-b-0 bg-white text-left",
+                  "sticky top-0 z-20",
                 )}
               >
                 {column.label}
@@ -269,14 +267,9 @@ function ExecutionQueueTable({ rows }: { rows: QueueRow[] }) {
             ))}
           </TableRow>
         </TableHeader>
-        <TableBody
-          className={cn(
-            "divide-y divide-border border-b-0",
-            "[&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
-          )}
-        >
+        <TableBody>
           {rows.map((row) => (
-            <TableRow key={row.id} className={cn(BODY_ROW_CLASS, "hover:bg-neutral-50")}>
+            <TableRow key={row.id} className={BODY_ROW_CLASS}>
               <TableCell
                 className={cn(
                   BODY_CELL_CLASS,
@@ -367,7 +360,7 @@ export default function ActiveExecutionQueue({
       )}
     >
       <CardContent className="flex flex-col p-0">
-        <div className="relative flex shrink-0 flex-col gap-3 border-b border-zinc-200 px-4 pt-[16px] pb-3">
+        <div className={TABLE_CARD_HEADER_CLASS}>
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Execution queue</p>
             <p className={SECTION_DESCRIPTION_CLASS}>

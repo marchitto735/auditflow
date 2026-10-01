@@ -3,6 +3,11 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
+/**
+ * Canonical AuditFlow data table — matches the Action Items dashboard card:
+ * fixed 48px header + body rows, hairline column header, row separators on
+ * cells (border-separate), and pagination via TablePaginationBar.
+ */
 function Table({
   className,
   containerClassName,
@@ -17,7 +22,10 @@ function Table({
     >
       <table
         data-slot="table"
-        className={cn("w-full caption-bottom text-sm font-normal text-foreground", className)}
+        className={cn(
+          "w-full caption-bottom table-fixed border-separate border-spacing-0 text-sm font-normal text-foreground",
+          className,
+        )}
         {...props}
       />
     </div>
@@ -28,7 +36,10 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
       data-slot="table-header"
-      className={cn("[&_tr]:border-b", className)}
+      className={cn(
+        "border-b-0 bg-white shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0 [&_tr]:bg-white [&_tr]:hover:bg-transparent",
+        className,
+      )}
       {...props}
     />
   )
@@ -39,8 +50,8 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
     <tbody
       data-slot="table-body"
       className={cn(
-        "[&_tr:last-child]:border-0 [&_td]:text-sm [&_td]:font-normal [&_td]:text-foreground",
-        className
+        "divide-y divide-border border-b-0 [&_td]:text-sm [&_td]:font-normal [&_td]:text-foreground [&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
+        className,
       )}
       {...props}
     />
@@ -53,7 +64,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
       data-slot="table-footer"
       className={cn(
         "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
-        className
+        className,
       )}
       {...props}
     />
@@ -65,8 +76,8 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "border-b transition-colors hover:bg-neutral-50 has-aria-expanded:bg-neutral-50 data-[state=selected]:bg-neutral-100",
-        className
+        "h-12 border-0 transition-colors hover:bg-neutral-50 has-aria-expanded:bg-neutral-50 data-[state=selected]:bg-neutral-100",
+        className,
       )}
       {...props}
     />
@@ -78,8 +89,8 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "h-10 max-w-0 overflow-hidden px-4 text-left align-middle text-sm font-medium whitespace-nowrap text-ellipsis text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        className
+        "h-12 max-w-0 overflow-hidden bg-white px-4 py-0 text-left align-middle text-sm font-medium whitespace-nowrap text-ellipsis text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        className,
       )}
       {...props}
     />
@@ -92,7 +103,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
       data-slot="table-cell"
       className={cn(
         "h-12 max-w-0 overflow-hidden px-4 py-0 align-middle text-sm font-normal whitespace-nowrap text-ellipsis text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        className
+        className,
       )}
       {...props}
     />

@@ -48,11 +48,22 @@ import {
 } from "@/components/ui/table";
 import {
   CARD_SECTION_EYEBROW_CLASS,
+  DIALOG_BODY_CLASS,
+  DIALOG_CONTENT_CLASS,
+  DIALOG_DESCRIPTION_CLASS,
+  DIALOG_FIELD_CLASS,
+  DIALOG_FOOTER_CLASS,
+  DIALOG_HEADER_CLASS,
+  DIALOG_LABEL_CLASS,
+  DIALOG_TITLE_CLASS,
+  FIELD_ERROR_TEXT_CLASS,
   PAGE_HEADER_PRIMARY_BUTTON_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
   DASHBOARD_TRIPLE_CARD_GRID_CLASS,
+  TABLE_CARD_HEADER_CLASS,
+  TABLE_STICKY_HEADER_CLASS,
   TABLE_TOOLBAR_FILTERS_CLASS,
   TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
   TABLE_TOOLBAR_ROW_CLASS,
@@ -179,11 +190,31 @@ function SyncFrameworkDialog({
   frameworks: FrameworkOverview[];
 }) {
   const [frameworkId, setFrameworkId] = useState(frameworks[0]?.id ?? "");
+  const [fieldError, setFieldError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!open) return;
+    setFrameworkId(frameworks[0]?.id ?? "");
+    setFieldError(null);
+  }, [open, frameworks]);
+
+  function handleOpenChange(next: boolean) {
+    if (!next) setFieldError(null);
+    onOpenChange(next);
+  }
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    if (pending) return;
+
+    if (!frameworkId) {
+      setFieldError("Select a framework to sync.");
+      return;
+    }
+
     const selected = frameworks.find((fw) => fw.id === frameworkId);
+    setFieldError(null);
     startTransition(async () => {
       await new Promise((resolve) => setTimeout(resolve, 500));
       toast.success(
@@ -191,27 +222,42 @@ function SyncFrameworkDialog({
           ? `Sync queued for ${selected.name}.`
           : "Framework sync queued.",
       );
-      onOpenChange(false);
+      handleOpenChange(false);
     });
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="gap-0 overflow-hidden p-0 md:max-w-md" showCloseButton>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className={DIALOG_CONTENT_CLASS} showCloseButton>
         <form onSubmit={handleSubmit}>
-          <DialogHeader className="border-b border-neutral-200 p-4 pr-12 text-left">
-            <DialogTitle className="m-0 text-lg font-medium text-neutral-900">
+          <DialogHeader className={DIALOG_HEADER_CLASS}>
+            <DialogTitle className={DIALOG_TITLE_CLASS}>
               Import / sync framework
             </DialogTitle>
-            <DialogDescription className="m-0 mt-1 text-sm text-muted-foreground">
+            <DialogDescription className={DIALOG_DESCRIPTION_CLASS}>
               Pull the latest clause pack and refresh policy mapping coverage.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col gap-4 p-4">
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="sync-framework">Framework</Label>
-              <Select value={frameworkId} onValueChange={setFrameworkId}>
-                <SelectTrigger id="sync-framework" className="w-full">
+          <div className={DIALOG_BODY_CLASS}>
+            <div className={DIALOG_FIELD_CLASS}>
+              <Label htmlFor="sync-framework" className={DIALOG_LABEL_CLASS}>
+                Framework
+              </Label>
+              <Select
+                value={frameworkId || undefined}
+                onValueChange={(value) => {
+                  setFrameworkId(value);
+                  setFieldError(null);
+                }}
+              >
+                <SelectTrigger
+                  id="sync-framework"
+                  className="w-full"
+                  aria-invalid={Boolean(fieldError)}
+                  aria-describedby={
+                    fieldError ? "sync-framework-error" : undefined
+                  }
+                >
                   <SelectValue placeholder="Select framework" />
                 </SelectTrigger>
                 <SelectContent>
@@ -222,14 +268,23 @@ function SyncFrameworkDialog({
                   ))}
                 </SelectContent>
               </Select>
+              {fieldError ? (
+                <p
+                  id="sync-framework-error"
+                  className={FIELD_ERROR_TEXT_CLASS}
+                  role="alert"
+                >
+                  {fieldError}
+                </p>
+              ) : null}
             </div>
           </div>
-          <DialogFooter className="border-t border-neutral-200 p-4">
+          <DialogFooter className={DIALOG_FOOTER_CLASS}>
             <Button
               type="button"
               variant="outline"
               disabled={pending}
-              onClick={() => onOpenChange(false)}
+              onClick={() => handleOpenChange(false)}
             >
               Cancel
             </Button>
@@ -377,7 +432,7 @@ function MappingTable({
   return (
     <Card className={cn("overflow-hidden", DASHBOARD_CARD_CLASS)}>
       <CardContent className="flex flex-col p-0">
-        <div className="relative flex shrink-0 flex-col gap-3 border-b border-neutral-200 px-4 pt-[16px] pb-3">
+        <div className={TABLE_CARD_HEADER_CLASS}>
           <div className="min-w-0 pr-10">
             <p className={CARD_SECTION_EYEBROW_CLASS}>Clause mapping</p>
             <p className={SECTION_DESCRIPTION_CLASS}>
@@ -444,64 +499,44 @@ function MappingTable({
         ) : (
           <div className="flex shrink-0 flex-col" style={{ overflowAnchor: "none" }}>
             <Table
-              className={cn(
-                "w-full table-fixed border-separate border-spacing-0",
-                TABLE_MIN_WIDTH_CLASS,
-              )}
+              className={TABLE_MIN_WIDTH_CLASS}
               containerClassName="overflow-x-auto"
             >
-              <TableHeader className="sticky top-0 z-20 bg-white shadow-[0_1px_0_0_var(--border)]">
-                <TableRow className="border-0 bg-white hover:bg-transparent">
-                  <TableHead className="h-10 w-[12%] px-4 text-left text-sm font-medium text-neutral-900">
-                    Article
-                  </TableHead>
-                  <TableHead className="h-10 w-[14%] px-4 text-left text-sm font-medium text-neutral-900">
-                    Framework
-                  </TableHead>
-                  <TableHead className="h-10 w-[32%] px-4 text-left text-sm font-medium text-neutral-900">
-                    Description
-                  </TableHead>
-                  <TableHead className="h-10 w-[18%] px-4 text-left text-sm font-medium text-neutral-900">
-                    Mapped SOP
-                  </TableHead>
-                  <TableHead className="h-10 w-[12%] px-4 text-left text-sm font-medium text-neutral-900">
-                    Status
-                  </TableHead>
-                  <TableHead className="h-10 w-[12%] px-4 text-left text-sm font-medium text-neutral-900">
-                    Verified
-                  </TableHead>
+              <TableHeader className={TABLE_STICKY_HEADER_CLASS}>
+                <TableRow>
+                  <TableHead className="w-[12%]">Article</TableHead>
+                  <TableHead className="w-[14%]">Framework</TableHead>
+                  <TableHead className="w-[32%]">Description</TableHead>
+                  <TableHead className="w-[18%]">Mapped SOP</TableHead>
+                  <TableHead className="w-[12%]">Status</TableHead>
+                  <TableHead className="w-[12%]">Verified</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="divide-y divide-border border-b-0 [&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border">
+              <TableBody>
                 {pageRows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    className="border-0 bg-white hover:bg-neutral-50"
-                  >
-                    <TableCell className="h-12 px-4 py-0 font-mono">
-                      {row.article}
-                    </TableCell>
-                    <TableCell className="h-12 max-w-0 px-4 py-0">
+                  <TableRow key={row.id} className="bg-white">
+                    <TableCell className="font-mono">{row.article}</TableCell>
+                    <TableCell>
                       <span className="block truncate">
                         {row.frameworkName}
                       </span>
                     </TableCell>
-                    <TableCell className="h-12 max-w-0 px-4 py-0">
+                    <TableCell>
                       <span className="block truncate">
                         {row.description}
                       </span>
                     </TableCell>
-                    <TableCell className="h-12 max-w-0 px-4 py-0">
+                    <TableCell>
                       <span className="block truncate">
                         {row.mappedSop}
                       </span>
                     </TableCell>
-                    <TableCell className="h-12 px-4 py-0">
+                    <TableCell>
                       <Badge variant={mappingBadgeVariant(row.status)}>
                         {row.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="h-12 px-4 py-0 font-mono tabular-nums">
+                    <TableCell className="font-mono tabular-nums">
                       {formatFrameworkTimestamp(row.lastVerifiedAt)}
                     </TableCell>
                   </TableRow>

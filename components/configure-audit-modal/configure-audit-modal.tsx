@@ -42,7 +42,19 @@ import {
   getAuditFramework,
   getClausesForFramework,
 } from "@/lib/audit-frameworks";
-import { DROPDOWN_TRIGGER_CLASS } from "@/lib/page-layout";
+import {
+  DIALOG_BODY_CLASS,
+  DIALOG_CONTENT_TALL_CLASS,
+  DIALOG_DESCRIPTION_CLASS,
+  DIALOG_FIELD_CLASS,
+  DIALOG_FOOTER_CLASS,
+  DIALOG_HEADER_CLASS,
+  DIALOG_LABEL_CLASS,
+  DIALOG_TITLE_CLASS,
+  DROPDOWN_TRIGGER_CLASS,
+  FIELD_ERROR_TEXT_CLASS,
+  FIELD_INVALID_CLASS,
+} from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
 /** Shared field shell — same resting chrome as the upload/sync selects. */
@@ -95,6 +107,12 @@ const DONE_BUTTON_CLASS =
 
 const DROPDOWN_EMPTY_CLASS =
   "px-3 py-6 text-center text-sm text-neutral-500";
+
+type FieldErrors = {
+  auditType?: string;
+  frameworks?: string;
+  clauses?: string;
+};
 
 type StagedFile = {
   id: string;
@@ -269,6 +287,7 @@ export function ConfigureAuditModal({
   );
   const [isInitializing, setIsInitializing] = React.useState(false);
   const [initError, setInitError] = React.useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = React.useState<FieldErrors>({});
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const evidenceInputRef = React.useRef<HTMLInputElement>(null);
   const cameraInputRef = React.useRef<HTMLInputElement>(null);
@@ -303,12 +322,14 @@ export function ConfigureAuditModal({
     resetSelections();
     setIsInitializing(false);
     setInitError(null);
+    setFieldErrors({});
   }, [open]);
 
   function selectAuditType(value: AuditWorkflowId) {
     setAuditTypeOpen(false);
     if (value === auditType) return;
     setAuditType(value);
+    setFieldErrors((prev) => ({ ...prev, auditType: undefined }));
     clearStagedFiles();
   }
 
@@ -370,6 +391,12 @@ export function ConfigureAuditModal({
       setSelectedClauses((prevClauses) =>
         pruneClausesToFrameworks(prevClauses, next),
       );
+      if (next.length > 0) {
+        setFieldErrors((prevErrors) => ({
+          ...prevErrors,
+          frameworks: undefined,
+        }));
+      }
       return next;
     });
     setClauseQuery("");
@@ -390,6 +417,12 @@ export function ConfigureAuditModal({
       const next = new Set(prev);
       if (checked) next.add(id);
       else next.delete(id);
+      if (next.size > 0) {
+        setFieldErrors((prevErrors) => ({
+          ...prevErrors,
+          clauses: undefined,
+        }));
+      }
       return next;
     });
   }
@@ -494,19 +527,28 @@ export function ConfigureAuditModal({
 
   async function handleInitialize() {
     if (isInitializing) return;
+
+    const nextErrors: FieldErrors = {};
     if (!auditType) {
-      setInitError("Select an audit type before initializing.");
-      return;
+      nextErrors.auditType = "Select an audit type.";
     }
     if (frameworks.length === 0) {
-      setInitError("Select at least one framework before initializing.");
-      return;
+      nextErrors.frameworks = "Select at least one framework.";
     }
     if (selectedClauses.size === 0) {
-      setInitError("Select at least one clause before initializing.");
+      nextErrors.clauses = "Select at least one clause.";
+    }
+
+    if (Object.keys(nextErrors).length > 0) {
+      setFieldErrors(nextErrors);
+      setInitError(null);
       return;
     }
 
+    const selectedAuditType = auditType;
+    if (!selectedAuditType) return;
+
+    setFieldErrors({});
     setInitError(null);
     setIsInitializing(true);
     setAuditTypeOpen(false);
@@ -520,7 +562,7 @@ export function ConfigureAuditModal({
       if (frameworks.length > 1) {
         params.set("frameworks", frameworks.join(","));
       }
-      params.set("workflow", auditType);
+      params.set("workflow", selectedAuditType);
       if (attachedFiles.length === 1) {
         params.set("document", attachedFiles[0].name);
       } else if (attachedFiles.length > 1) {
@@ -560,21 +602,20 @@ export function ConfigureAuditModal({
       <DialogContent
         showCloseButton
         onOpenAutoFocus={(event) => event.preventDefault()}
-        className="gap-0 overflow-hidden p-0 md:max-h-[min(90vh,840px)] md:max-w-md"
+        className={DIALOG_CONTENT_TALL_CLASS}
       >
-        <div className="flex max-h-[min(90vh,840px)] w-full flex-col overflow-hidden bg-white text-neutral-900">
-          <DialogHeader className="shrink-0 border-b border-neutral-200 p-4 pr-12 text-left">
-            <DialogTitle className="m-0 text-lg font-medium text-neutral-900">
-              New audit
-            </DialogTitle>
-            <DialogDescription className="m-0 mt-1 text-sm text-muted-foreground">
-              {helperText}
-            </DialogDescription>
-          </DialogHeader>
+        <DialogHeader className={DIALOG_HEADER_CLASS}>
+          <DialogTitle className={DIALOG_TITLE_CLASS}>
+            New audit
+          </DialogTitle>
+          <DialogDescription className={DIALOG_DESCRIPTION_CLASS}>
+            {helperText}
+          </DialogDescription>
+        </DialogHeader>
 
-          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4">
-            <div className="flex flex-col gap-1.5">
-              <Label>Audit type</Label>
+        <div className={cn(DIALOG_BODY_CLASS, "min-h-0 flex-1 overflow-y-auto")}>
+            <div className={DIALOG_FIELD_CLASS}>
+              <Label className={DIALOG_LABEL_CLASS}>Audit type</Label>
               <Popover
                 modal
                 open={auditTypeOpen}
@@ -584,6 +625,15 @@ export function ConfigureAuditModal({
                   <FieldComboboxTrigger
                     open={auditTypeOpen}
                     onOpenChange={setAuditTypeOpen}
+                    aria-invalid={Boolean(fieldErrors.auditType)}
+                    aria-describedby={
+                      fieldErrors.auditType
+                        ? "audit-type-error"
+                        : undefined
+                    }
+                    className={
+                      fieldErrors.auditType ? FIELD_INVALID_CLASS : undefined
+                    }
                   >
                     <div
                       className={PILL_AREA_CLASS}
@@ -659,10 +709,19 @@ export function ConfigureAuditModal({
                   </div>
                 </PopoverContent>
               </Popover>
+              {fieldErrors.auditType ? (
+                <p
+                  id="audit-type-error"
+                  className={FIELD_ERROR_TEXT_CLASS}
+                  role="alert"
+                >
+                  {fieldErrors.auditType}
+                </p>
+              ) : null}
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <Label>Framework selection</Label>
+            <div className={DIALOG_FIELD_CLASS}>
+              <Label className={DIALOG_LABEL_CLASS}>Framework selection</Label>
               <Popover
                 modal
                 open={frameworkOpen}
@@ -672,6 +731,15 @@ export function ConfigureAuditModal({
                   <FieldComboboxTrigger
                     open={frameworkOpen}
                     onOpenChange={handleFrameworkOpenChange}
+                    aria-invalid={Boolean(fieldErrors.frameworks)}
+                    aria-describedby={
+                      fieldErrors.frameworks
+                        ? "framework-selection-error"
+                        : undefined
+                    }
+                    className={
+                      fieldErrors.frameworks ? FIELD_INVALID_CLASS : undefined
+                    }
                   >
                     <div
                       className={PILL_AREA_CLASS}
@@ -752,10 +820,19 @@ export function ConfigureAuditModal({
                   </div>
                 </PopoverContent>
               </Popover>
+              {fieldErrors.frameworks ? (
+                <p
+                  id="framework-selection-error"
+                  className={FIELD_ERROR_TEXT_CLASS}
+                  role="alert"
+                >
+                  {fieldErrors.frameworks}
+                </p>
+              ) : null}
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <Label>Clause selection</Label>
+            <div className={DIALOG_FIELD_CLASS}>
+              <Label className={DIALOG_LABEL_CLASS}>Clause selection</Label>
               <Popover
                 modal
                 open={clauseOpen}
@@ -765,6 +842,15 @@ export function ConfigureAuditModal({
                   <FieldComboboxTrigger
                     open={clauseOpen}
                     onOpenChange={handleClauseOpenChange}
+                    aria-invalid={Boolean(fieldErrors.clauses)}
+                    aria-describedby={
+                      fieldErrors.clauses
+                        ? "clause-selection-error"
+                        : undefined
+                    }
+                    className={
+                      fieldErrors.clauses ? FIELD_INVALID_CLASS : undefined
+                    }
                   >
                     <div
                       className={PILL_AREA_CLASS}
@@ -866,10 +952,19 @@ export function ConfigureAuditModal({
                   </div>
                 </PopoverContent>
               </Popover>
+              {fieldErrors.clauses ? (
+                <p
+                  id="clause-selection-error"
+                  className={FIELD_ERROR_TEXT_CLASS}
+                  role="alert"
+                >
+                  {fieldErrors.clauses}
+                </p>
+              ) : null}
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <Label>Target documentation</Label>
+            <div className={DIALOG_FIELD_CLASS}>
+              <Label className={DIALOG_LABEL_CLASS}>Target documentation</Label>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -963,8 +1058,8 @@ export function ConfigureAuditModal({
             </div>
 
             {isFirAudit ? (
-              <div className="flex flex-col gap-1.5">
-                <Label>Field evidence and scans</Label>
+              <div className={DIALOG_FIELD_CLASS}>
+                <Label className={DIALOG_LABEL_CLASS}>Field evidence and scans</Label>
                 <p className="m-0 text-sm text-muted-foreground">
                   Capture or upload equipment photos, asset tags, and physical
                   inspection logs.
@@ -1087,13 +1182,15 @@ export function ConfigureAuditModal({
             ) : null}
           </div>
 
-          <div className="shrink-0 border-t border-neutral-200">
-            {initError ? (
-              <p className="m-0 px-4 pt-4 text-sm text-neutral-900" role="alert">
-                {initError}
-              </p>
-            ) : null}
-          <DialogFooter className="p-4">
+          {initError ? (
+            <p
+              className="m-0 shrink-0 px-4 pt-3 text-sm text-neutral-900"
+              role="alert"
+            >
+              {initError}
+            </p>
+          ) : null}
+          <DialogFooter className={DIALOG_FOOTER_CLASS}>
             <Button
               type="button"
               variant="outline"
@@ -1108,12 +1205,7 @@ export function ConfigureAuditModal({
               onClick={() => {
                 void handleInitialize();
               }}
-              disabled={
-                auditType == null ||
-                frameworks.length === 0 ||
-                selectedClauses.size === 0 ||
-                isInitializing
-              }
+              disabled={isInitializing}
               aria-busy={isInitializing}
             >
               {isInitializing ? (
@@ -1126,8 +1218,6 @@ export function ConfigureAuditModal({
               )}
             </Button>
           </DialogFooter>
-          </div>
-        </div>
       </DialogContent>
     </Dialog>
   );

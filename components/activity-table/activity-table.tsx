@@ -23,15 +23,12 @@ const CELL_X_PAD_CLASS = "px-4";
  * Locked row metrics for consistent History row sizing.
  * Internal separators use `divide-y` on `tbody` (not per-row `border-b`).
  */
-export const ACTIVITY_TABLE_HEADER_HEIGHT = "2.5rem"; // h-10
+export const ACTIVITY_TABLE_HEADER_HEIGHT = "3rem"; // h-12
 export const ACTIVITY_TABLE_ROW_HEIGHT = "3rem"; // h-12
 
-const HEADER_CELL_CLASS = cn(CELL_X_PAD_CLASS, "h-10");
-const BODY_CELL_CLASS = cn(CELL_X_PAD_CLASS, "h-12 py-0");
-const BODY_ROW_CLASS = "h-12 border-0";
-/** 1px bottom hairline — shadow avoids stacking with row/footer borders while sticky. */
-const STICKY_HEADER_DIVIDER_CLASS =
-  "border-b-0 shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0";
+const HEADER_CELL_CLASS = CELL_X_PAD_CLASS;
+const BODY_CELL_CLASS = CELL_X_PAD_CLASS;
+const BODY_ROW_CLASS = "bg-white";
 type CellOverflow = "truncate" | "nowrap";
 
 /**
@@ -293,7 +290,7 @@ export function ActivityTable({
   return (
     <TooltipProvider delayDuration={150}>
       <Table
-        className="w-full min-w-[42rem] table-fixed border-separate border-spacing-0"
+        className="min-w-[42rem]"
         containerClassName="overflow-visible"
       >
         <colgroup>
@@ -305,20 +302,15 @@ export function ActivityTable({
             />
           ))}
         </colgroup>
-        <TableHeader
-          className={cn(
-            "sticky top-0 z-20 bg-white",
-            STICKY_HEADER_DIVIDER_CLASS,
-          )}
-        >
-          <TableRow className="border-0 bg-white hover:bg-transparent">
+        <TableHeader className="sticky top-0 z-20">
+          <TableRow>
             {ACTIVITY_COLUMNS.map((column) => (
               <TableHead
                 key={column.key}
                 className={cn(
                   HEADER_CELL_CLASS,
                   column.widthClass,
-                  "sticky top-0 z-20 border-b-0 bg-white text-left",
+                  "sticky top-0 z-20",
                   cellOverflowClass(column.overflow),
                   expandable && "cursor-pointer select-none",
                 )}
@@ -336,14 +328,7 @@ export function ActivityTable({
             ))}
           </TableRow>
         </TableHeader>
-        <TableBody
-          className={cn(
-            // divide-y = no trailing border after the last row (footer-safe).
-            // border-separate ignores tr borders, so paint the same rule on tds.
-            "divide-y divide-border border-b-0",
-            "[&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
-          )}
-        >
+        <TableBody>
           {rows.map((row) => {
             const open = openRows.has(row.id);
             return (
@@ -351,7 +336,6 @@ export function ActivityTable({
                 <TableRow
                   className={cn(
                     BODY_ROW_CLASS,
-                    "hover:bg-neutral-50",
                     expandable && "cursor-pointer",
                   )}
                   onClick={() => handleRowClick(row)}

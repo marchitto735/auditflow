@@ -108,7 +108,6 @@ const ACTIVE_JOBS: PipelineJob[] = [
 
 const DEFAULT_PAGE_SIZE = 3;
 const TABLE_BODY_ROWS = 3;
-const TABLE_ROW_HEIGHT_CLASS = "h-12";
 
 const STAGES: PipelineStage[] = STAGE_ORDER.map((stage) => ({
   ...stage,
@@ -161,23 +160,23 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
       )}
     >
       <CardContent className="flex h-full min-h-0 flex-col p-0">
-        <div className="relative min-w-0 shrink-0 px-4 pt-4 pb-3">
+        <div className="relative min-w-0 shrink-0 px-4 pt-4 pb-0">
           <div className="min-w-0 pr-10">
-            <p className={CARD_SECTION_EYEBROW_CLASS}>Document Tracker</p>
+            <p className={CARD_SECTION_EYEBROW_CLASS}>Document tracker</p>
             <p className={SECTION_DESCRIPTION_CLASS}>
               Active document volume by stage from ingest through export.
             </p>
           </div>
           <div className="absolute top-3 right-3">
             <CardActionsMenu
-              label="Document Tracker"
+              label="Document tracker"
               actions={FEED_CARD_MENU_ACTIONS}
             />
           </div>
         </div>
 
         <ol
-          className="m-0 flex shrink-0 list-none flex-wrap items-stretch gap-2 px-4 pt-4 pb-4"
+          className="m-0 flex shrink-0 list-none flex-wrap items-stretch gap-2 border-b border-zinc-200 px-4 pt-3 pb-4"
           aria-label="Compliance pipeline stages"
         >
           {STAGES.map((stage) => {
@@ -210,7 +209,6 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
 
         <div className="flex min-h-0 flex-1 flex-col">
         <Table
-          className="w-full table-fixed border-separate border-spacing-0"
           containerClassName="overflow-visible"
           aria-label="Active pipeline jobs"
         >
@@ -220,56 +218,37 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
             <col style={{ width: "16%" }} />
             <col style={{ width: "26%" }} />
           </colgroup>
-          <TableHeader className="border-b-0 bg-white shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0">
-            <TableRow className="border-0 bg-white hover:bg-transparent">
-              <TableHead className="h-10 border-t border-b-0 border-zinc-200 bg-white px-4 text-left">
-                Document
-              </TableHead>
-              <TableHead className="h-10 border-t border-b-0 border-zinc-200 bg-white px-4 text-left">
-                ID / Version
-              </TableHead>
-              <TableHead className="h-10 border-t border-b-0 border-zinc-200 bg-white px-4 text-left">
-                ETA
-              </TableHead>
-              <TableHead className="h-10 border-t border-b-0 border-zinc-200 bg-white px-4 text-left">
-                Current Stage
-              </TableHead>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Document</TableHead>
+              <TableHead>ID / Version</TableHead>
+              <TableHead>ETA</TableHead>
+              <TableHead>Current Stage</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody
-            className={cn(
-              "divide-y divide-border border-b-0",
-              "[&>tr:not(:first-child)>td]:border-t [&>tr:not(:first-child)>td]:border-border",
-            )}
-          >
+          <TableBody>
             {pageRows.length === 0 ? (
-              <TableRow className={cn(TABLE_ROW_HEIGHT_CLASS, "border-0 hover:bg-transparent")}>
-                <TableCell
-                  colSpan={4}
-                  className={cn(TABLE_ROW_HEIGHT_CLASS, "px-4 py-0 text-muted-foreground")}
-                >
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={4} className="text-muted-foreground">
                   No documents in {selectedLabel}.
                 </TableCell>
               </TableRow>
             ) : null}
             {pageRows.map((job) => (
-              <TableRow
-                key={job.id}
-                className={cn(TABLE_ROW_HEIGHT_CLASS, "border-0 hover:bg-neutral-50")}
-              >
-                <TableCell className={cn(TABLE_ROW_HEIGHT_CLASS, "px-4 py-0")}>
+              <TableRow key={job.id}>
+                <TableCell>
                   <TruncatedText text={job.document} />
                 </TableCell>
-                <TableCell className={cn(TABLE_ROW_HEIGHT_CLASS, "px-4 py-0")}>
+                <TableCell>
                   <TruncatedText
                     className="font-mono tabular-nums"
                     text={job.version}
                   />
                 </TableCell>
-                <TableCell className={cn(TABLE_ROW_HEIGHT_CLASS, "px-4 py-0")}>
+                <TableCell>
                   <span className={TELEMETRY_META_CLASS}>{job.eta}</span>
                 </TableCell>
-                <TableCell className={cn(TABLE_ROW_HEIGHT_CLASS, "px-4 py-0")}>
+                <TableCell>
                   <Badge tone="neutral">{job.stage}</Badge>
                 </TableCell>
               </TableRow>
@@ -278,12 +257,9 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
               <TableRow
                 key={`spacer-${index}`}
                 aria-hidden
-                className={cn(TABLE_ROW_HEIGHT_CLASS, "border-0 hover:bg-transparent")}
+                className="hover:bg-transparent"
               >
-                <TableCell
-                  colSpan={4}
-                  className={cn(TABLE_ROW_HEIGHT_CLASS, "px-4 py-0")}
-                />
+                <TableCell colSpan={4} />
               </TableRow>
             ))}
           </TableBody>
@@ -297,7 +273,7 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={setPage}
-          paginationLabel="Document Tracker pagination"
+          paginationLabel="Document tracker pagination"
         />
         </div>
       </CardContent>
