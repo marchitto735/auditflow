@@ -1,11 +1,23 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useTransition, type FormEvent } from "react";
 import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+  type ChangeEvent,
+  type ComponentProps,
+  type DragEvent,
+  type FormEvent,
+} from "react";
+import {
+  Check,
   ChevronDown,
-  FileUp,
   Search,
   ShieldCheck,
+  Upload,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { MetricCard } from "@/components/dashboard/kpi-cards";
@@ -19,6 +31,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Dialog,
   DialogContent,
@@ -36,12 +56,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Sheet,
   SheetContent,
@@ -65,11 +83,11 @@ import {
   DIALOG_CONTENT_CLASS,
   DIALOG_DESCRIPTION_CLASS,
   DIALOG_FIELD_CLASS,
-  DIALOG_FILE_TRIGGER_CLASS,
   DIALOG_FOOTER_CLASS,
   DIALOG_HEADER_CLASS,
   DIALOG_LABEL_CLASS,
   DIALOG_TITLE_CLASS,
+  DROPDOWN_TRIGGER_CLASS,
   FIELD_ERROR_TEXT_CLASS,
   FIELD_INVALID_CLASS,
   OVERLINE_LABEL_CLASS,
@@ -113,6 +131,269 @@ const INITIAL_FILTERS: PolicyFilters = {
   status: "all",
   version: "all",
 };
+
+/** Matches New audit “Audit type” option richness for searchable combobox. */
+const DOCUMENT_TYPE_OPTIONS: {
+  value: PolicyDocType;
+  label: string;
+  keywords: string[];
+}[] = [
+  {
+    value: "SOP",
+    label: "Standard operating procedure (SOP)",
+    keywords: ["sop", "standard", "operating", "procedure"],
+  },
+  {
+    value: "BPR",
+    label: "Batch production record (BPR)",
+    keywords: ["bpr", "batch", "production", "record"],
+  },
+  {
+    value: "FIR",
+    label: "Facility inspection report (FIR)",
+    keywords: ["fir", "facility", "inspection", "report"],
+  },
+];
+
+/** Searchable policy title catalog — same combobox pattern as Document type. */
+const POLICY_TITLE_OPTIONS: {
+  value: string;
+  label: string;
+  keywords: string[];
+}[] = [
+  {
+    value: "Document control & change management",
+    label: "Document control & change management",
+    keywords: ["document", "control", "change", "management", "sop"],
+  },
+  {
+    value: "Batch record review procedure",
+    label: "Batch record review procedure",
+    keywords: ["batch", "record", "review", "bpr"],
+  },
+  {
+    value: "Facility hygiene inspection checklist",
+    label: "Facility hygiene inspection checklist",
+    keywords: ["facility", "hygiene", "inspection", "fir"],
+  },
+  {
+    value: "Electronic signature authority matrix",
+    label: "Electronic signature authority matrix",
+    keywords: ["electronic", "signature", "authority", "part 11"],
+  },
+  {
+    value: "Raw material release criteria",
+    label: "Raw material release criteria",
+    keywords: ["raw", "material", "release"],
+  },
+  {
+    value: "Cleanroom gowning & access control",
+    label: "Cleanroom gowning & access control",
+    keywords: ["cleanroom", "gowning", "access"],
+  },
+  {
+    value: "Complaint handling & CAPA intake",
+    label: "Complaint handling & CAPA intake",
+    keywords: ["complaint", "capa", "intake"],
+  },
+  {
+    value: "Packaging line clearance protocol",
+    label: "Packaging line clearance protocol",
+    keywords: ["packaging", "line", "clearance"],
+  },
+  {
+    value: "Environmental monitoring rounds",
+    label: "Environmental monitoring rounds",
+    keywords: ["environmental", "monitoring"],
+  },
+  {
+    value: "Training records & competency",
+    label: "Training records & competency",
+    keywords: ["training", "records", "competency"],
+  },
+  {
+    value: "Equipment qualification summary",
+    label: "Equipment qualification summary",
+    keywords: ["equipment", "qualification"],
+  },
+  {
+    value: "Warehouse pest control log",
+    label: "Warehouse pest control log",
+    keywords: ["warehouse", "pest", "control"],
+  },
+];
+
+const FIELD_SURFACE_CLASS = cn(
+  DROPDOWN_TRIGGER_CLASS,
+  "relative flex min-h-9 w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-left text-sm text-neutral-900",
+);
+
+const FIELD_SURFACE_OPEN_CLASS = "border-border bg-zinc-50 shadow-sm";
+
+/** Selected pills scroll inside the field — same token as New audit. */
+const PILL_AREA_CLASS =
+  "flex max-h-28 min-w-0 flex-1 flex-wrap content-start items-center gap-1.5 overflow-y-auto overscroll-contain py-0.5";
+
+/** Inline selection / file pill token. */
+const PILL_CLASS =
+  "inline-flex h-6 max-w-full items-center gap-1 rounded-full border border-neutral-200 bg-neutral-50 py-0 pl-2 pr-0.5 text-sm font-medium leading-none text-neutral-900";
+
+const PILL_REMOVE_CLASS =
+  "inline-flex size-5 shrink-0 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900";
+
+const PLACEHOLDER_CLASS =
+  "flex items-center py-0.5 text-sm leading-normal text-muted-foreground";
+
+const POPOVER_CLASS =
+  "z-[300] flex w-[var(--radix-popover-trigger-width)] max-h-[min(18rem,var(--radix-popover-content-available-height,18rem))] flex-col overflow-hidden rounded-lg border border-border/60 bg-white p-0 text-neutral-900 shadow-sm";
+
+const POPOVER_POSITION_PROPS = {
+  side: "bottom" as const,
+  align: "start" as const,
+  sideOffset: 6,
+  avoidCollisions: false,
+};
+
+const DROPDOWN_FOOTER_CLASS =
+  "flex shrink-0 items-center justify-between border-t border-border/60 bg-white px-3 py-2";
+
+const COMMAND_SHELL_CLASS =
+  "flex h-auto max-h-full min-h-0 flex-1 flex-col overflow-hidden bg-white text-neutral-900 [&_[cmdk-list]]:max-h-60 [&_[cmdk-list]]:min-h-0 [&_[cmdk-list]]:overflow-y-auto [&_[cmdk-list]]:overscroll-contain";
+
+const COMMAND_LIST_CLASS =
+  "max-h-60 min-h-0 overflow-y-auto overscroll-contain";
+
+const COMMAND_ITEM_CLASS =
+  "cursor-pointer gap-2 rounded-md text-sm text-neutral-900 data-[selected=true]:bg-zinc-100 data-[selected=true]:text-neutral-900";
+
+const DONE_BUTTON_CLASS =
+  "h-8 px-2 text-sm font-medium text-neutral-900 hover:bg-neutral-100 hover:text-neutral-900";
+
+function comboboxFilter(
+  value: string,
+  search: string,
+  keywords?: string[],
+) {
+  const query = search.trim().toLowerCase();
+  if (!query) return 1;
+  const haystack = [value, ...(keywords ?? [])].join(" ").toLowerCase();
+  const words = query.split(/\s+/).filter(Boolean);
+  return words.every((word) => haystack.includes(word)) ? 1 : 0;
+}
+
+function ComboboxCheck({ checked }: { checked: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-black bg-white text-white transition-colors",
+        checked && "border-neutral-900 bg-neutral-900",
+      )}
+    >
+      <Check
+        className={cn("size-3", checked ? "opacity-100" : "opacity-0")}
+        strokeWidth={3}
+      />
+    </span>
+  );
+}
+
+type StagedFile = {
+  id: string;
+  name: string;
+  sizeBytes: number | null;
+  file: File | null;
+};
+
+function formatFileSize(bytes: number | null) {
+  if (bytes == null || Number.isNaN(bytes)) return null;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function createStagedFile(file: File): StagedFile {
+  return {
+    id: `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 8)}`,
+    name: file.name,
+    sizeBytes: file.size,
+    file,
+  };
+}
+
+function SelectionPill({
+  label,
+  onRemove,
+  removeLabel,
+}: {
+  label: string;
+  onRemove: () => void;
+  removeLabel: string;
+}) {
+  return (
+    <span className={PILL_CLASS}>
+      <span className="min-w-0 truncate leading-normal">{label}</span>
+      <button
+        type="button"
+        className={PILL_REMOVE_CLASS}
+        aria-label={removeLabel}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          onRemove();
+        }}
+      >
+        <X className="size-3" aria-hidden />
+      </button>
+    </span>
+  );
+}
+
+function FieldChevron() {
+  return (
+    <ChevronDown
+      aria-hidden
+      className="pointer-events-none absolute right-3 top-1/2 size-4 shrink-0 -translate-y-1/2 text-neutral-900 opacity-70"
+    />
+  );
+}
+
+/** Non-button combobox shell — identical to New audit “Audit type”. */
+function FieldComboboxTrigger({
+  open,
+  onOpenChange,
+  className,
+  children,
+  onKeyDown,
+  ...props
+}: ComponentProps<"div"> & {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  return (
+    <div
+      role="combobox"
+      tabIndex={0}
+      aria-expanded={open}
+      {...props}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onOpenChange(!open);
+        }
+        onKeyDown?.(event);
+      }}
+      className={cn(
+        FIELD_SURFACE_CLASS,
+        "pr-10",
+        open && FIELD_SURFACE_OPEN_CLASS,
+        className,
+      )}
+    >
+      {children}
+      <FieldChevron />
+    </div>
+  );
+}
 
 function statusBadgeVariant(status: PolicyStatus) {
   switch (status) {
@@ -308,20 +589,35 @@ function UploadPolicyDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const [title, setTitle] = useState("");
-  const [type, setType] = useState<PolicyDocType>("SOP");
-  const [fileName, setFileName] = useState<string | null>(null);
+  const [type, setType] = useState<PolicyDocType | null>(null);
+  const [typeOpen, setTypeOpen] = useState(false);
+  const [title, setTitle] = useState<string | null>(null);
+  const [titleOpen, setTitleOpen] = useState(false);
+  const [docsOpen, setDocsOpen] = useState(false);
+  const [attachedFiles, setAttachedFiles] = useState<StagedFile[]>([]);
   const [fieldErrors, setFieldErrors] = useState<{
+    type?: string;
     title?: string;
     file?: string;
   }>({});
   const [pending, startTransition] = useTransition();
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const selectedTypeOption = DOCUMENT_TYPE_OPTIONS.find(
+    (item) => item.value === type,
+  );
+  const selectedTitleOption = POLICY_TITLE_OPTIONS.find(
+    (item) => item.value === title,
+  );
+  const docCount = attachedFiles.length;
+
   function reset() {
-    setTitle("");
-    setType("SOP");
-    setFileName(null);
+    setType(null);
+    setTypeOpen(false);
+    setTitle(null);
+    setTitleOpen(false);
+    setDocsOpen(false);
+    setAttachedFiles([]);
     setFieldErrors({});
     if (fileRef.current) fileRef.current.value = "";
   }
@@ -331,16 +627,68 @@ function UploadPolicyDialog({
     onOpenChange(next);
   }
 
+  function selectDocumentType(value: PolicyDocType) {
+    setType(value);
+    setTypeOpen(false);
+    setFieldErrors((prev) => ({ ...prev, type: undefined }));
+  }
+
+  function selectPolicyTitle(value: string) {
+    setTitle(value);
+    setTitleOpen(false);
+    setFieldErrors((prev) => ({ ...prev, title: undefined }));
+  }
+
+  function addFiles(files: FileList | File[] | null) {
+    if (!files || files.length === 0) return;
+    const incoming = Array.from(files).map(createStagedFile);
+    setAttachedFiles((prev) => {
+      const names = new Set(prev.map((item) => item.name));
+      const unique = incoming.filter((item) => !names.has(item.name));
+      return [...prev, ...unique];
+    });
+    if (fileRef.current) fileRef.current.value = "";
+    setDocsOpen(false);
+    setFieldErrors((prev) => ({ ...prev, file: undefined }));
+  }
+
+  function removeFile(id: string) {
+    setAttachedFiles((prev) => prev.filter((item) => item.id !== id));
+    if (fileRef.current) fileRef.current.value = "";
+  }
+
+  function handleBrowseClick() {
+    fileRef.current?.click();
+  }
+
+  function handleFileInputChange(event: ChangeEvent<HTMLInputElement>) {
+    addFiles(event.target.files);
+  }
+
+  function handleDropZoneDragOver(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function handleDropZoneDrop(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    addFiles(event.dataTransfer.files);
+  }
+
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (pending) return;
 
-    const nextErrors: { title?: string; file?: string } = {};
-    if (!title.trim()) {
-      nextErrors.title = "Enter a policy title.";
+    const nextErrors: { type?: string; title?: string; file?: string } = {};
+    if (!type) {
+      nextErrors.type = "Select a document type.";
     }
-    if (!fileName) {
-      nextErrors.file = "Choose a master document to upload.";
+    if (!title) {
+      nextErrors.title = "Select a policy title.";
+    }
+    if (attachedFiles.length === 0) {
+      nextErrors.file = "Upload at least one master document.";
     }
     if (Object.keys(nextErrors).length > 0) {
       setFieldErrors(nextErrors);
@@ -350,7 +698,11 @@ function UploadPolicyDialog({
     setFieldErrors({});
     startTransition(async () => {
       await new Promise((resolve) => setTimeout(resolve, 400));
-      toast.success(`Queued ${type} ingest for “${title.trim()}”.`);
+      toast.success(
+        docCount > 1
+          ? `Registered ${type} policy “${title}” with ${docCount} files.`
+          : `Registered ${type} policy “${title}”.`,
+      );
       handleOpenChange(false);
     });
   }
@@ -361,32 +713,201 @@ function UploadPolicyDialog({
         <form onSubmit={handleSubmit}>
           <DialogHeader className={DIALOG_HEADER_CLASS}>
             <DialogTitle className={DIALOG_TITLE_CLASS}>
-              Upload master document
+              New policy
             </DialogTitle>
             <DialogDescription className={DIALOG_DESCRIPTION_CLASS}>
-              Register a new SOP, BPR, or FIR for n8n parsing and clause extraction.
+              Register a new policy for n8n parsing and clause extraction.
             </DialogDescription>
           </DialogHeader>
           <div className={DIALOG_BODY_CLASS}>
             <div className={DIALOG_FIELD_CLASS}>
-              <Label htmlFor="policy-title" className={DIALOG_LABEL_CLASS}>
-                Policy title
-              </Label>
-              <Input
-                id="policy-title"
-                value={title}
-                onChange={(event) => {
-                  setTitle(event.target.value);
-                  if (event.target.value.trim()) {
-                    setFieldErrors((prev) => ({ ...prev, title: undefined }));
-                  }
-                }}
-                placeholder="e.g. Document control & change management"
-                aria-invalid={Boolean(fieldErrors.title)}
-                aria-describedby={
-                  fieldErrors.title ? "policy-title-error" : undefined
-                }
-              />
+              <Label className={DIALOG_LABEL_CLASS}>Document type</Label>
+              <Popover modal open={typeOpen} onOpenChange={setTypeOpen}>
+                <PopoverTrigger asChild>
+                  <FieldComboboxTrigger
+                    open={typeOpen}
+                    onOpenChange={setTypeOpen}
+                    aria-invalid={Boolean(fieldErrors.type)}
+                    aria-describedby={
+                      fieldErrors.type ? "policy-type-error" : undefined
+                    }
+                    className={
+                      fieldErrors.type ? FIELD_INVALID_CLASS : undefined
+                    }
+                  >
+                    <div
+                      className={PILL_AREA_CLASS}
+                      onWheel={(event) => event.stopPropagation()}
+                    >
+                      {selectedTypeOption ? (
+                        <span className="min-w-0 flex-1 truncate text-sm text-neutral-900">
+                          {selectedTypeOption.label}
+                        </span>
+                      ) : (
+                        <span className={PLACEHOLDER_CLASS}>
+                          Select document type…
+                        </span>
+                      )}
+                    </div>
+                  </FieldComboboxTrigger>
+                </PopoverTrigger>
+                <PopoverContent
+                  {...POPOVER_POSITION_PROPS}
+                  onWheel={(event) => event.stopPropagation()}
+                  onTouchMove={(event) => event.stopPropagation()}
+                  className={POPOVER_CLASS}
+                >
+                  <Command
+                    filter={comboboxFilter}
+                    className={COMMAND_SHELL_CLASS}
+                  >
+                    <CommandInput
+                      placeholder="Search document types (SOP, BPR, FIR…)"
+                      className="shrink-0 text-sm text-neutral-900 placeholder:text-neutral-400"
+                    />
+                    <CommandList
+                      className={COMMAND_LIST_CLASS}
+                      onWheel={(event) => event.stopPropagation()}
+                    >
+                      <CommandEmpty>No document type found.</CommandEmpty>
+                      <CommandGroup>
+                        {DOCUMENT_TYPE_OPTIONS.map((item) => {
+                          const isSelected = type === item.value;
+                          return (
+                            <CommandItem
+                              key={item.value}
+                              value={item.label}
+                              keywords={item.keywords}
+                              onSelect={() => selectDocumentType(item.value)}
+                              className={cn(
+                                COMMAND_ITEM_CLASS,
+                                isSelected && "bg-zinc-100",
+                              )}
+                            >
+                              <ComboboxCheck checked={isSelected} />
+                              <span className="min-w-0 flex-1 truncate">
+                                {item.label}
+                              </span>
+                            </CommandItem>
+                          );
+                        })}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                  <div className={DROPDOWN_FOOTER_CLASS}>
+                    <span className="text-sm text-neutral-600">
+                      {type ? "1 selected" : "0 selected"}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className={DONE_BUTTON_CLASS}
+                      onClick={() => setTypeOpen(false)}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              {fieldErrors.type ? (
+                <p
+                  id="policy-type-error"
+                  className={FIELD_ERROR_TEXT_CLASS}
+                  role="alert"
+                >
+                  {fieldErrors.type}
+                </p>
+              ) : null}
+            </div>
+            <div className={DIALOG_FIELD_CLASS}>
+              <Label className={DIALOG_LABEL_CLASS}>Policy title</Label>
+              <Popover modal open={titleOpen} onOpenChange={setTitleOpen}>
+                <PopoverTrigger asChild>
+                  <FieldComboboxTrigger
+                    open={titleOpen}
+                    onOpenChange={setTitleOpen}
+                    aria-invalid={Boolean(fieldErrors.title)}
+                    aria-describedby={
+                      fieldErrors.title ? "policy-title-error" : undefined
+                    }
+                    className={
+                      fieldErrors.title ? FIELD_INVALID_CLASS : undefined
+                    }
+                  >
+                    <div
+                      className={PILL_AREA_CLASS}
+                      onWheel={(event) => event.stopPropagation()}
+                    >
+                      {selectedTitleOption ? (
+                        <span className="min-w-0 flex-1 truncate text-sm text-neutral-900">
+                          {selectedTitleOption.label}
+                        </span>
+                      ) : (
+                        <span className={PLACEHOLDER_CLASS}>
+                          Select policy title…
+                        </span>
+                      )}
+                    </div>
+                  </FieldComboboxTrigger>
+                </PopoverTrigger>
+                <PopoverContent
+                  {...POPOVER_POSITION_PROPS}
+                  onWheel={(event) => event.stopPropagation()}
+                  onTouchMove={(event) => event.stopPropagation()}
+                  className={POPOVER_CLASS}
+                >
+                  <Command
+                    filter={comboboxFilter}
+                    className={COMMAND_SHELL_CLASS}
+                  >
+                    <CommandInput
+                      placeholder="Search policy titles…"
+                      className="shrink-0 text-sm text-neutral-900 placeholder:text-neutral-400"
+                    />
+                    <CommandList
+                      className={COMMAND_LIST_CLASS}
+                      onWheel={(event) => event.stopPropagation()}
+                    >
+                      <CommandEmpty>No policy title found.</CommandEmpty>
+                      <CommandGroup>
+                        {POLICY_TITLE_OPTIONS.map((item) => {
+                          const isSelected = title === item.value;
+                          return (
+                            <CommandItem
+                              key={item.value}
+                              value={item.label}
+                              keywords={item.keywords}
+                              onSelect={() => selectPolicyTitle(item.value)}
+                              className={cn(
+                                COMMAND_ITEM_CLASS,
+                                isSelected && "bg-zinc-100",
+                              )}
+                            >
+                              <ComboboxCheck checked={isSelected} />
+                              <span className="min-w-0 flex-1 truncate">
+                                {item.label}
+                              </span>
+                            </CommandItem>
+                          );
+                        })}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                  <div className={DROPDOWN_FOOTER_CLASS}>
+                    <span className="text-sm text-neutral-600">
+                      {title ? "1 selected" : "0 selected"}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className={DONE_BUTTON_CLASS}
+                      onClick={() => setTitleOpen(false)}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
               {fieldErrors.title ? (
                 <p
                   id="policy-title-error"
@@ -398,61 +919,107 @@ function UploadPolicyDialog({
               ) : null}
             </div>
             <div className={DIALOG_FIELD_CLASS}>
-              <Label htmlFor="policy-type" className={DIALOG_LABEL_CLASS}>
-                Document type
-              </Label>
-              <Select
-                value={type}
-                onValueChange={(value) => setType(value as PolicyDocType)}
-              >
-                <SelectTrigger id="policy-type" className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {POLICY_DOC_TYPES.map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className={DIALOG_FIELD_CLASS}>
-              <Label htmlFor="policy-file" className={DIALOG_LABEL_CLASS}>
-                Master file
-              </Label>
+              <Label className={DIALOG_LABEL_CLASS}>Master document</Label>
               <input
                 ref={fileRef}
-                id="policy-file"
                 type="file"
-                accept=".pdf,.doc,.docx"
+                multiple
+                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 className="sr-only"
-                onChange={(event) => {
-                  const nextName = event.target.files?.[0]?.name ?? null;
-                  setFileName(nextName);
-                  if (nextName) {
-                    setFieldErrors((prev) => ({ ...prev, file: undefined }));
-                  }
-                }}
+                onChange={handleFileInputChange}
+                aria-hidden
+                tabIndex={-1}
               />
-              <button
-                type="button"
-                className={cn(
-                  DIALOG_FILE_TRIGGER_CLASS,
-                  fieldErrors.file && FIELD_INVALID_CLASS,
-                  !fileName && "text-muted-foreground",
-                )}
-                onClick={() => fileRef.current?.click()}
-                aria-invalid={Boolean(fieldErrors.file)}
-                aria-describedby={
-                  fieldErrors.file ? "policy-file-error" : undefined
-                }
-              >
-                <FileUp className="size-4 shrink-0 text-neutral-900" aria-hidden />
-                <span className="truncate">
-                  {fileName ?? "Choose PDF or Word document"}
-                </span>
-              </button>
+              <Popover modal open={docsOpen} onOpenChange={setDocsOpen}>
+                <PopoverTrigger asChild>
+                  <div
+                    role="combobox"
+                    tabIndex={0}
+                    aria-expanded={docsOpen}
+                    aria-invalid={Boolean(fieldErrors.file)}
+                    aria-describedby={
+                      fieldErrors.file ? "policy-file-error" : undefined
+                    }
+                    onDragOver={handleDropZoneDragOver}
+                    onDrop={handleDropZoneDrop}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setDocsOpen(true);
+                      }
+                    }}
+                    className={cn(
+                      FIELD_SURFACE_CLASS,
+                      "pr-10",
+                      docsOpen && FIELD_SURFACE_OPEN_CLASS,
+                      fieldErrors.file && FIELD_INVALID_CLASS,
+                    )}
+                  >
+                    <div
+                      className={PILL_AREA_CLASS}
+                      onWheel={(event) => event.stopPropagation()}
+                    >
+                      {attachedFiles.length === 0 ? (
+                        <span className={PLACEHOLDER_CLASS}>
+                          Drag & drop master document PDFs…
+                        </span>
+                      ) : (
+                        attachedFiles.map((item) => {
+                          const size = formatFileSize(item.sizeBytes);
+                          return (
+                            <SelectionPill
+                              key={item.id}
+                              label={
+                                size ? `${item.name} · ${size}` : item.name
+                              }
+                              removeLabel={`Remove ${item.name}`}
+                              onRemove={() => removeFile(item.id)}
+                            />
+                          );
+                        })
+                      )}
+                    </div>
+                    <FieldChevron />
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent
+                  {...POPOVER_POSITION_PROPS}
+                  className={POPOVER_CLASS}
+                >
+                  <div className="p-2">
+                    <button
+                      type="button"
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-neutral-900 transition-colors hover:bg-neutral-50"
+                      onClick={handleBrowseClick}
+                    >
+                      <Upload
+                        className="size-4 shrink-0 text-neutral-500"
+                        aria-hidden
+                      />
+                      <span className="min-w-0 flex-1">
+                        Upload master document PDF or documents…
+                      </span>
+                    </button>
+                    <p className="m-0 px-3 pb-2 pt-1 text-sm text-neutral-500">
+                      Or drag files onto the field above. Multiple files
+                      supported.
+                    </p>
+                  </div>
+                  <div className={DROPDOWN_FOOTER_CLASS}>
+                    <span className="text-sm text-neutral-600">
+                      {docCount} selected
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className={DONE_BUTTON_CLASS}
+                      onClick={() => setDocsOpen(false)}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
               {fieldErrors.file ? (
                 <p
                   id="policy-file-error"
@@ -474,7 +1041,7 @@ function UploadPolicyDialog({
               Cancel
             </Button>
             <Button type="submit" variant="black" disabled={pending}>
-              {pending ? "Uploading…" : "Upload & queue"}
+              {pending ? "Creating…" : "Create policy"}
             </Button>
           </DialogFooter>
         </form>

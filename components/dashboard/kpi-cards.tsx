@@ -109,11 +109,11 @@ export function MetricCard({
           )}
         >
           <div className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2">
-            <div className={cn(CARD_HEADER_STACK_CLASS, "min-w-0 overflow-hidden gap-1.5")}>
+            <div className={cn(CARD_HEADER_STACK_CLASS, "min-w-0 gap-1.5")}>
               <p
                 className={cn(
                   CARD_EYEBROW_MUTED_CLASS,
-                  "min-w-0 max-w-full truncate",
+                  "min-w-0 max-w-full whitespace-normal break-words",
                 )}
               >
                 {title}
@@ -122,7 +122,7 @@ export function MetricCard({
                 className={cn(
                   CARD_METRIC_CLASS,
                   METRIC_VALUE_CLASS,
-                  "m-0 max-w-full truncate text-[22px] leading-tight text-neutral-900",
+                  "m-0 max-w-full whitespace-normal break-words text-[22px] leading-tight text-neutral-900",
                 )}
               >
                 {value}
@@ -146,7 +146,14 @@ export function MetricCard({
             </div>
           </div>
 
-          <p className={cn(CARD_BODY_CLASS, "truncate")}>{description}</p>
+          <p
+            className={cn(
+              CARD_BODY_CLASS,
+              "whitespace-normal break-words",
+            )}
+          >
+            {description}
+          </p>
         </CardContent>
       </Card>
     </div>

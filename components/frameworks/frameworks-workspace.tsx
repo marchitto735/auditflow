@@ -235,7 +235,7 @@ function SyncFrameworkDialog({
         <form onSubmit={handleSubmit}>
           <DialogHeader className={DIALOG_HEADER_CLASS}>
             <DialogTitle className={DIALOG_TITLE_CLASS}>
-              Import / sync framework
+              Sync framework
             </DialogTitle>
             <DialogDescription className={DIALOG_DESCRIPTION_CLASS}>
               Pull the latest clause pack and refresh policy mapping coverage.

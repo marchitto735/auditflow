@@ -589,8 +589,8 @@ export function ConfigureAuditModal({
 
   const assessmentLabel = selectedAuditTypeOption?.label ?? "document";
   const helperText = selectedAuditTypeOption
-    ? `Choose audit type, framework(s), select clauses, and link target documentation for the ${selectedAuditTypeOption.label} compliance assessment.`
-    : "Choose audit type, framework(s), select clauses, and link target documentation for the compliance assessment.";
+    ? `Choose audit type, framework(s), select clauses, and link master document(s) for the ${selectedAuditTypeOption.label} compliance assessment.`
+    : "Choose audit type, framework(s), select clauses, and link master document(s) for the compliance assessment.";
 
   const submitLabel =
     docCount > 1
@@ -964,7 +964,7 @@ export function ConfigureAuditModal({
             </div>
 
             <div className={DIALOG_FIELD_CLASS}>
-              <Label className={DIALOG_LABEL_CLASS}>Target documentation</Label>
+              <Label className={DIALOG_LABEL_CLASS}>Master document</Label>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -1001,7 +1001,7 @@ export function ConfigureAuditModal({
                     >
                       {attachedFiles.length === 0 ? (
                         <span className={PLACEHOLDER_CLASS}>
-                          Drag & drop target {assessmentLabel} PDFs…
+                          Drag & drop master document PDFs…
                         </span>
                       ) : (
                         attachedFiles.map((item) => {
@@ -1032,7 +1032,7 @@ export function ConfigureAuditModal({
                     >
                       <Upload className="size-4 shrink-0 text-neutral-500" aria-hidden />
                       <span className="min-w-0 flex-1">
-                        Upload {assessmentLabel} PDF or documents…
+                        Upload master document PDF or documents…
                       </span>
                     </button>
                     <p className="m-0 px-3 pb-2 pt-1 text-sm text-neutral-500">
