@@ -188,11 +188,11 @@ export function CompliancePipelineCard({ className }: { className?: string }) {
                   aria-pressed={selected}
                   onClick={() => selectStage(stage.id)}
                   className={cn(
-                    "flex w-full min-w-0 cursor-pointer flex-col gap-1 overflow-hidden rounded-lg border px-2.5 py-2 text-left transition-colors select-none",
+                    "flex w-full min-w-0 cursor-pointer flex-col gap-1 overflow-hidden rounded-lg border border-neutral-200 bg-white px-2.5 py-2 text-left transition-colors select-none",
+                    "hover:border-neutral-400 hover:bg-neutral-50",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2",
-                    selected
-                      ? "border-neutral-900 bg-white hover:border-neutral-900 hover:bg-white"
-                      : "border-neutral-200 bg-neutral-50 hover:border-neutral-400 hover:bg-white",
+                    selected &&
+                      "border-neutral-400 bg-neutral-50 hover:border-neutral-400 hover:bg-neutral-50",
                   )}
                 >
                   <span className="min-w-0 truncate text-sm font-medium text-neutral-900">
