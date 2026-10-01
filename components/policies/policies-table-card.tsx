@@ -739,10 +739,10 @@ export default function PoliciesTableCard({
                     <TableHead className="w-[14%]">Document ID</TableHead>
                     <TableHead className="w-[8%]">Type</TableHead>
                     <TableHead className="w-[8%]">Version</TableHead>
-                    <TableHead className="w-[12%]">Status</TableHead>
                     <TableHead className="w-[14%]">Last parsed</TableHead>
                     <TableHead className="w-[8%]">Chunks</TableHead>
                     <TableHead className="w-[14%]">Frameworks</TableHead>
+                    <TableHead className="w-[12%]">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -766,11 +766,6 @@ export default function PoliciesTableCard({
                       <TableCell className="font-mono">
                         v{policy.version}
                       </TableCell>
-                      <TableCell>
-                        <Badge variant={statusBadgeVariant(policy.status)}>
-                          {policy.status}
-                        </Badge>
-                      </TableCell>
                       <TableCell className="font-mono tabular-nums">
                         {formatPolicyTimestamp(policy.lastParsedAt)}
                       </TableCell>
@@ -781,6 +776,11 @@ export default function PoliciesTableCard({
                         <span className="block truncate">
                           {policy.frameworks.join(" · ")}
                         </span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={statusBadgeVariant(policy.status)}>
+                          {policy.status}
+                        </Badge>
                       </TableCell>
                     </TableRow>
                   ))}

@@ -292,9 +292,9 @@ export function AgentFeedCard({ className }: AgentFeedCardProps) {
               <TableHeader>
                 <TableRow>
                   <TableHead>Timestamp</TableHead>
-                  <TableHead>Event / Message</TableHead>
-                  <TableHead>Target Entity</TableHead>
-                  <TableHead>Source / Actor</TableHead>
+                  <TableHead>Event</TableHead>
+                  <TableHead>Entity</TableHead>
+                  <TableHead>Source</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>

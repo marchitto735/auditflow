@@ -67,18 +67,18 @@ const QUEUE_COLUMNS = [
     widthClass: "w-[22%] min-w-[8rem]",
   },
   {
-    key: "queueStatus",
-    label: "Queue status",
-    width: "28%",
-    minWidth: "10rem",
-    widthClass: "w-[28%] min-w-[10rem]",
-  },
-  {
     key: "estTime",
     label: "Est. Time",
     width: "18%",
     minWidth: "5rem",
     widthClass: "w-[18%] min-w-[5rem]",
+  },
+  {
+    key: "queueStatus",
+    label: "Queue status",
+    width: "28%",
+    minWidth: "10rem",
+    widthClass: "w-[28%] min-w-[10rem]",
   },
 ] as const;
 
@@ -292,19 +292,19 @@ function ExecutionQueueTable({ rows }: { rows: QueueRow[] }) {
                 className={cn(
                   BODY_CELL_CLASS,
                   QUEUE_COLUMNS[2].widthClass,
-                  "max-w-0 overflow-hidden text-left",
+                  "text-left font-mono tabular-nums",
                 )}
               >
-                <QueueStatus status={row.queueStatus} />
+                {row.estTime}
               </TableCell>
               <TableCell
                 className={cn(
                   BODY_CELL_CLASS,
                   QUEUE_COLUMNS[3].widthClass,
-                  "text-left font-mono tabular-nums",
+                  "max-w-0 overflow-hidden text-left",
                 )}
               >
-                {row.estTime}
+                <QueueStatus status={row.queueStatus} />
               </TableCell>
             </TableRow>
           ))}

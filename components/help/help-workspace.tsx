@@ -294,10 +294,10 @@ function ActiveTicketsTable() {
                 [
                   ["Ticket", "w-[14%]"],
                   ["Subject", "w-[32%]"],
-                  ["Status", "w-[16%]"],
                   ["Assignee", "w-[16%]"],
                   ["SLA", "w-[12%]"],
                   ["Opened", "w-[10%]"],
+                  ["Status", "w-[16%]"],
                 ] as const
               ).map(([label, width]) => (
                 <TableHead key={label} className={width}>
@@ -314,16 +314,16 @@ function ActiveTicketsTable() {
                   <span className="block truncate">{ticket.subject}</span>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={ticketStatusBadgeVariant(ticket.status)}>
-                    {ticket.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
                   <span className="block truncate">{ticket.assignee}</span>
                 </TableCell>
                 <TableCell>{ticket.sla}</TableCell>
                 <TableCell className="font-mono tabular-nums">
                   {formatHelpTimestamp(ticket.openedAt)}
+                </TableCell>
+                <TableCell>
+                  <Badge variant={ticketStatusBadgeVariant(ticket.status)}>
+                    {ticket.status}
+                  </Badge>
                 </TableCell>
               </TableRow>
             ))}

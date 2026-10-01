@@ -508,8 +508,8 @@ function MappingTable({
                   <TableHead className="w-[14%]">Framework</TableHead>
                   <TableHead className="w-[32%]">Description</TableHead>
                   <TableHead className="w-[18%]">Mapped SOP</TableHead>
-                  <TableHead className="w-[12%]">Status</TableHead>
                   <TableHead className="w-[12%]">Verified</TableHead>
+                  <TableHead className="w-[12%]">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -531,13 +531,13 @@ function MappingTable({
                         {row.mappedSop}
                       </span>
                     </TableCell>
+                    <TableCell className="font-mono tabular-nums">
+                      {formatFrameworkTimestamp(row.lastVerifiedAt)}
+                    </TableCell>
                     <TableCell>
                       <Badge variant={mappingBadgeVariant(row.status)}>
                         {row.status}
                       </Badge>
-                    </TableCell>
-                    <TableCell className="font-mono tabular-nums">
-                      {formatFrameworkTimestamp(row.lastVerifiedAt)}
                     </TableCell>
                   </TableRow>
                 ))}

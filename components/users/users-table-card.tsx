@@ -436,8 +436,8 @@ export default function UsersTableCard({
                     <TableHead className="w-[20%]">Email</TableHead>
                     <TableHead className="w-[18%]">Assigned role</TableHead>
                     <TableHead className="w-[12%]">MFA</TableHead>
-                    <TableHead className="w-[12%]">Status</TableHead>
                     <TableHead className="w-[12%]">Last active</TableHead>
+                    <TableHead className="w-[12%]">Status</TableHead>
                     <TableHead className={TABLE_ROW_ACTIONS_HEAD_CLASS}>
                       <span className="sr-only">Actions</span>
                     </TableHead>
@@ -482,14 +482,14 @@ export default function UsersTableCard({
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={userStatusBadgeVariant(user.status)}>
-                          {user.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
                         <span className="font-mono tabular-nums">
                           {formatLastActive(user.lastActiveAt)}
                         </span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={userStatusBadgeVariant(user.status)}>
+                          {user.status}
+                        </Badge>
                       </TableCell>
                       <TableCell className={TABLE_ROW_ACTIONS_CELL_CLASS}>
                         <UserRowActions
