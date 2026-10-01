@@ -208,11 +208,18 @@ export const DASHBOARD_TRACK_CARD_HEIGHT_CLASS = "h-auto min-h-0";
 export const AUDIT_LAUNCHER_CARD_HEIGHT_CLASS = "h-auto min-h-0";
 
 /**
- * Shared responsive grid for 3-card strips (KPI row, framework row, Audits featured).
+ * Shared responsive grid for 3-card strips (audit launcher / featured fleets).
  * Never 2-up — odd count of 3 orphans a card. Stack, then 3-across.
  */
 export const DASHBOARD_TRIPLE_CARD_GRID_CLASS =
   "grid grid-cols-1 items-stretch gap-6 md:grid-cols-3";
+
+/**
+ * Shared KPI / bento summary strip — four equal cards across md+.
+ * Used on Dashboard, Audits, Policies, Frameworks, and Reports.
+ */
+export const DASHBOARD_QUAD_CARD_GRID_CLASS =
+  "grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 md:grid-cols-4";
 
 /**
  * Recent Activity card — filter bar + table header + 3 body rows + pagination.

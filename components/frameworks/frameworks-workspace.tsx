@@ -62,7 +62,7 @@ import {
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
-  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
+  DASHBOARD_QUAD_CARD_GRID_CLASS,
   TABLE_CARD_HEADER_CLASS,
   TABLE_ROW_ACTIONS_CELL_CLASS,
   TABLE_ROW_ACTIONS_HEAD_CLASS,
@@ -322,9 +322,14 @@ function FrameworkKpiHeader({
       needsFrameworkReview(fw.status),
     ).length;
     const mappedCount = frameworks.filter((fw) => fw.status === "Mapped").length;
+    const totalClauses = frameworks.reduce(
+      (sum, fw) => sum + fw.totalClauses,
+      0,
+    );
 
     let coverageSum = 0;
     let reviewCount = 0;
+    let clauseSum = 0;
     const countTrend = frameworks.map((_, index) => index + 1);
     const coverageTrend = frameworks.map((fw, index) => {
       coverageSum += fw.coveragePercent;
@@ -333,6 +338,10 @@ function FrameworkKpiHeader({
     const reviewTrend = frameworks.map((fw) => {
       if (needsFrameworkReview(fw.status)) reviewCount += 1;
       return reviewCount;
+    });
+    const clauseTrend = frameworks.map((fw) => {
+      clauseSum += fw.totalClauses;
+      return clauseSum;
     });
 
     return [
@@ -347,7 +356,7 @@ function FrameworkKpiHeader({
       {
         title: "Avg coverage",
         value: `${avgCoverage}%`,
-        description: "Mean clause mapping across packs",
+        description: "Mean clause mapping",
         code: "AVG",
         trend: coverageTrend.length > 0 ? coverageTrend : [0],
         status: avgCoverage >= 85 ? "Verified" : avgCoverage >= 70 ? "Pending" : "Flagged",
@@ -361,11 +370,19 @@ function FrameworkKpiHeader({
         trend: reviewTrend.length > 0 ? reviewTrend : [0],
         status: needsReview > 0 ? "Pending" : "Verified",
       },
+      {
+        title: "Total clauses",
+        value: String(totalClauses),
+        description: "Across all framework packs",
+        code: "CLS",
+        trend: clauseTrend.length > 0 ? clauseTrend : [0],
+        status: "Synced",
+      },
     ];
   }, [frameworks]);
 
   return (
-    <div className={DASHBOARD_TRIPLE_CARD_GRID_CLASS}>
+    <div className={DASHBOARD_QUAD_CARD_GRID_CLASS}>
       {cards.map((card) => (
         <MetricCard
           key={card.title}

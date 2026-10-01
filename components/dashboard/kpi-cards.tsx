@@ -12,7 +12,7 @@ import {
   CARD_HEADER_STACK_CLASS,
   CARD_METRIC_CLASS,
   DASHBOARD_CARD_CLASS,
-  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
+  DASHBOARD_QUAD_CARD_GRID_CLASS,
 } from "@/lib/page-layout";
 import { cn } from "@/lib/utils";
 
@@ -43,7 +43,7 @@ const KPI_CARDS: readonly KpiCardData[] = [
     metric: "142",
     trend: [118, 124, 129, 134, 138, 140, 142],
     status: "Synced",
-    helper: "Active records in the current year",
+    helper: "Active records this year",
   },
   {
     id: "open-findings",
@@ -52,7 +52,7 @@ const KPI_CARDS: readonly KpiCardData[] = [
     metric: "8",
     trend: [11, 10, 9, 10, 8, 9, 8],
     status: "Flagged",
-    helper: "Open items awaiting review",
+    helper: "Awaiting review",
   },
   {
     id: "average-score",
@@ -61,13 +61,22 @@ const KPI_CARDS: readonly KpiCardData[] = [
     metric: "88%",
     trend: [84, 85, 86, 87, 86, 88, 88],
     status: "Verified",
-    helper: "Score against the 85% GMP benchmark",
+    helper: "Vs 85% GMP benchmark",
+  },
+  {
+    id: "in-flight",
+    eyebrow: "In flight",
+    code: "RUN",
+    metric: "7",
+    trend: [4, 5, 6, 5, 6, 7, 7],
+    status: "Pending",
+    helper: "Docs in the pipeline",
   },
 ];
 
 /**
  * Shared metric summary — title, value, helper, and a sparkline
- * with its scope acronym. Dashboard KPIs and inventory strips use this.
+ * with its scope acronym. Tuned for the 4-column KPI bento strip.
  */
 export function MetricCard({
   title,
@@ -96,11 +105,11 @@ export function MetricCard({
         <CardContent
           className={cn(
             CARD_CONTENT_CLASS,
-            "flex h-auto w-full min-h-0 min-w-0 flex-col gap-3 overflow-hidden p-4 text-left",
+            "flex h-auto w-full min-h-0 min-w-0 flex-col gap-2.5 overflow-hidden p-3.5 text-left sm:p-4",
           )}
         >
-          <div className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 sm:gap-x-3">
-            <div className={cn(CARD_HEADER_STACK_CLASS, "overflow-hidden")}>
+          <div className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2">
+            <div className={cn(CARD_HEADER_STACK_CLASS, "min-w-0 overflow-hidden gap-1.5")}>
               <p
                 className={cn(
                   CARD_EYEBROW_MUTED_CLASS,
@@ -113,13 +122,13 @@ export function MetricCard({
                 className={cn(
                   CARD_METRIC_CLASS,
                   METRIC_VALUE_CLASS,
-                  "m-0 max-w-full break-words text-pretty text-neutral-900",
+                  "m-0 max-w-full truncate text-[22px] leading-tight text-neutral-900",
                 )}
               >
                 {value}
               </h3>
             </div>
-            <div className="flex w-[3.75rem] max-w-full shrink-0 flex-col items-center justify-start gap-1 sm:w-[4.75rem]">
+            <div className="flex w-[3rem] max-w-full shrink-0 flex-col items-center justify-start gap-1 sm:w-[3.5rem]">
               <TrendSparkline
                 values={series}
                 label={`${title} trend`}
@@ -162,7 +171,7 @@ export function KpiCard({ card }: { card: KpiCardData }) {
 export default function KpiCards({ className }: { className?: string }) {
   return (
     <div
-      className={cn(DASHBOARD_TRIPLE_CARD_GRID_CLASS, "items-stretch", className)}
+      className={cn(DASHBOARD_QUAD_CARD_GRID_CLASS, "items-stretch", className)}
     >
       {KPI_CARDS.map((card) => (
         <KpiCard key={card.id} card={card} />

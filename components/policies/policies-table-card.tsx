@@ -77,7 +77,7 @@ import {
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
   DASHBOARD_GAP_CLASS,
-  DASHBOARD_TRIPLE_CARD_GRID_CLASS,
+  DASHBOARD_QUAD_CARD_GRID_CLASS,
   TABLE_CARD_HEADER_CLASS,
   TABLE_ROW_ACTIONS_CELL_CLASS,
   TABLE_ROW_ACTIONS_HEAD_CLASS,
@@ -151,8 +151,8 @@ function PoliciesKpiHeader({ policies }: { policies: MasterPolicy[] }) {
         value: String(kpis.totalDocuments),
         description:
           kpis.failedCount > 0
-            ? `${kpis.syncedCount} synced · ${kpis.failedCount} failed parse`
-            : "SOP · BPR · FIR in the master library",
+            ? `${kpis.syncedCount} synced · ${kpis.failedCount} failed`
+            : "SOP · BPR · FIR library",
         code: "ALL",
         trend: runningCount(policies, () => true),
         status: "Synced",
@@ -160,7 +160,7 @@ function PoliciesKpiHeader({ policies }: { policies: MasterPolicy[] }) {
       {
         title: "Active / Ready",
         value: `${kpis.activeCount} / ${kpis.readyCount}`,
-        description: `${kpis.activeCount + kpis.readyCount} production-ready policies`,
+        description: `${kpis.activeCount + kpis.readyCount} production-ready`,
         code: "RDY",
         trend: runningCount(
           policies,
@@ -174,17 +174,31 @@ function PoliciesKpiHeader({ policies }: { policies: MasterPolicy[] }) {
         description:
           kpis.draftCount > 0
             ? `${kpis.draftCount} still in draft`
-            : "Awaiting compliance sign-off",
+            : "Awaiting sign-off",
         code: "REV",
         trend: runningCount(policies, (policy) => policy.status === "Pending"),
         status: kpis.pendingCount > 0 ? "Pending" : "Verified",
+      },
+      {
+        title: "Parse failures",
+        value: String(kpis.failedCount),
+        description:
+          kpis.queuedCount > 0
+            ? `${kpis.queuedCount} still queued in n8n`
+            : "n8n ingest health",
+        code: "ERR",
+        trend: runningCount(
+          policies,
+          (policy) => policy.n8nStatus === "Failed",
+        ),
+        status: kpis.failedCount > 0 ? "Flagged" : "Verified",
       },
     ],
     [kpis, policies],
   );
 
   return (
-    <div className={DASHBOARD_TRIPLE_CARD_GRID_CLASS}>
+    <div className={DASHBOARD_QUAD_CARD_GRID_CLASS}>
       {cards.map((card) => (
         <MetricCard
           key={card.title}
