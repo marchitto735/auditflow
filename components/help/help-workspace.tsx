@@ -27,7 +27,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { severityBadgeVariant } from "@/lib/chart-tokens";
 import {
   HELP_SUPPORT_TICKETS,
   TICKET_CATEGORIES,
@@ -285,16 +284,18 @@ function ActiveTicketsTable() {
       description="Open and recent support cases with assignee and SLA windows."
     >
       <div className="overflow-x-auto">
-        <Table className="min-w-[44rem]">
+        <Table
+          className="min-w-[44rem]"
+          containerClassName="overflow-visible"
+        >
           <TableHeader>
             <TableRow>
               {(
                 [
-                  ["Ticket", "w-[12%]"],
-                  ["Subject", "w-[28%]"],
-                  ["Severity", "w-[10%]"],
-                  ["Status", "w-[14%]"],
-                  ["Assignee", "w-[14%]"],
+                  ["Ticket", "w-[14%]"],
+                  ["Subject", "w-[32%]"],
+                  ["Status", "w-[16%]"],
+                  ["Assignee", "w-[16%]"],
                   ["SLA", "w-[12%]"],
                   ["Opened", "w-[10%]"],
                 ] as const
@@ -311,11 +312,6 @@ function ActiveTicketsTable() {
                 <TableCell className="font-mono">{ticket.id}</TableCell>
                 <TableCell>
                   <span className="block truncate">{ticket.subject}</span>
-                </TableCell>
-                <TableCell>
-                  <Badge variant={severityBadgeVariant(ticket.severity)}>
-                    {ticket.severity}
-                  </Badge>
                 </TableCell>
                 <TableCell>
                   <Badge variant={ticketStatusBadgeVariant(ticket.status)}>

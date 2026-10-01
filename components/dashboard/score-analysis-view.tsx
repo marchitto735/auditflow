@@ -30,12 +30,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TruncatedText } from "@/components/ui/truncated-text";
-import { severityBadgeVariant } from "@/lib/chart-tokens";
 import {
   DEPARTMENT_SCORES,
   VARIANCE_LOG,
   type DepartmentScoreRow,
-  type VarianceLogRow,
 } from "@/lib/dashboard-insights";
 import {
   CARD_SECTION_EYEBROW_CLASS,
@@ -87,14 +85,6 @@ function DepartmentStatus({ status }: { status: DepartmentScoreRow["status"] }) 
       {toSentenceCase(status)}
     </Badge>
   );
-}
-
-function VarianceSeverity({
-  severity,
-}: {
-  severity: VarianceLogRow["severity"];
-}) {
-  return <Badge variant={severityBadgeVariant(severity)}>{severity}</Badge>;
 }
 
 function usePagedRows<T>(rows: readonly T[], pageSize: number, page: number) {
@@ -329,11 +319,10 @@ export default function ScoreAnalysisView() {
               <Table className="min-w-[44rem]">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[16%]">Date</TableHead>
-                    <TableHead className="w-[38%]">Signal</TableHead>
-                    <TableHead className="w-[22%]">Domain</TableHead>
-                    <TableHead className="w-[12%]">Variance</TableHead>
-                    <TableHead className="w-[12%]">Severity</TableHead>
+                    <TableHead className="w-[18%]">Date</TableHead>
+                    <TableHead className="w-[42%]">Signal</TableHead>
+                    <TableHead className="w-[24%]">Domain</TableHead>
+                    <TableHead className="w-[16%]">Variance</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -350,9 +339,6 @@ export default function ScoreAnalysisView() {
                       </TableCell>
                       <TableCell className="font-mono tabular-nums">
                         {row.variance}
-                      </TableCell>
-                      <TableCell>
-                        <VarianceSeverity severity={row.severity} />
                       </TableCell>
                     </TableRow>
                   ))}

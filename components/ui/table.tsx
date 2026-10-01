@@ -5,16 +5,22 @@ import { cn } from "@/lib/utils"
 
 /**
  * Canonical AuditFlow data table — matches the Action Items dashboard card:
- * fixed 48px header + body rows, hairline column header, row separators on
- * cells (border-separate), and pagination via TablePaginationBar.
+ * fixed 48px header + body rows, hairline under column headers via cell
+ * border (border-separate), row separators on body cells, and pagination
+ * via TablePaginationBar.
  */
 function Table({
   className,
   containerClassName,
+  children,
   ...props
 }: React.ComponentProps<"table"> & {
   containerClassName?: string
 }) {
+  const tableChildren = React.Children.toArray(children).filter(
+    (child) => typeof child !== "string" || child.trim().length > 0,
+  )
+
   return (
     <div
       data-slot="table-container"
@@ -27,7 +33,9 @@ function Table({
           className,
         )}
         {...props}
-      />
+      >
+        {tableChildren}
+      </table>
     </div>
   )
 }
@@ -37,7 +45,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
     <thead
       data-slot="table-header"
       className={cn(
-        "border-b-0 bg-white shadow-[0_1px_0_0_var(--border)] [&_tr]:border-b-0 [&_tr]:bg-white [&_tr]:hover:bg-transparent",
+        "border-b-0 bg-white [&_tr]:border-b-0 [&_tr]:bg-white [&_tr]:hover:bg-transparent",
         className,
       )}
       {...props}
@@ -89,7 +97,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "h-12 max-w-0 overflow-hidden bg-white px-4 py-0 text-left align-middle text-sm font-medium whitespace-nowrap text-ellipsis text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "h-12 max-w-0 overflow-hidden border-b border-border bg-white px-4 py-0 text-left align-middle text-sm font-medium whitespace-nowrap text-ellipsis text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className,
       )}
       {...props}

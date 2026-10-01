@@ -68,10 +68,6 @@ function sortFindings(rows: FindingRow[]) {
   );
 }
 
-function SeverityStatus({ severity }: { severity: FindingSeverity }) {
-  return <span className="text-foreground">{severity}</span>;
-}
-
 export default function FindingsView() {
   const [rows, setRows] = useState<FindingRow[]>(OPEN_FINDINGS);
   const [activeId, setActiveId] = useState<string | null>(
@@ -131,12 +127,11 @@ export default function FindingsView() {
               <Table className="min-w-[880px]">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[28%]">Finding</TableHead>
-                    <TableHead className="w-[16%]">Document</TableHead>
-                    <TableHead className="w-[12%]">Severity</TableHead>
-                    <TableHead className="w-[16%]">Citation</TableHead>
-                    <TableHead className="w-[12%]">Owner</TableHead>
-                    <TableHead className="w-[16%]">Status</TableHead>
+                    <TableHead className="w-[32%]">Finding</TableHead>
+                    <TableHead className="w-[18%]">Document</TableHead>
+                    <TableHead className="w-[18%]">Citation</TableHead>
+                    <TableHead className="w-[14%]">Owner</TableHead>
+                    <TableHead className="w-[18%]">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -154,9 +149,6 @@ export default function FindingsView() {
                       </TableCell>
                       <TableCell>
                         <TruncatedText text={row.document} />
-                      </TableCell>
-                      <TableCell>
-                        <SeverityStatus severity={row.severity} />
                       </TableCell>
                       <TableCell>
                         <TruncatedText

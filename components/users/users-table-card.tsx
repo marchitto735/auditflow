@@ -48,11 +48,11 @@ import {
   CARD_SECTION_EYEBROW_CLASS,
   SECTION_DESCRIPTION_CLASS,
   DASHBOARD_CARD_CLASS,
+  PAGE_HEADER_PRIMARY_BUTTON_CLASS,
   TABLE_CARD_HEADER_CLASS,
   TABLE_STICKY_HEADER_CLASS,
   TABLE_ROW_ACTIONS_CELL_CLASS,
   TABLE_ROW_ACTIONS_HEAD_CLASS,
-  TABLE_TOOLBAR_ACTIONS_CLASS,
   TABLE_TOOLBAR_FILTERS_CLASS,
   TABLE_TOOLBAR_FILTER_TRIGGER_CLASS,
   TABLE_TOOLBAR_ROW_CLASS,
@@ -72,6 +72,7 @@ import {
   type UserStatusFilter,
 } from "@/lib/users";
 import { cn } from "@/lib/utils";
+import SectionHeader from "@/components/section-header/section-header";
 
 const DEFAULT_PAGE_SIZE = 3;
 const TABLE_MIN_WIDTH_CLASS = "min-w-[56rem]";
@@ -331,6 +332,20 @@ export default function UsersTableCard({
 
   return (
     <>
+      <SectionHeader
+        title="Team"
+        description="Invite teammates, assign AuditFlow roles, and monitor MFA and account status."
+        actions={
+          <Button
+            type="button"
+            variant="black"
+            className={PAGE_HEADER_PRIMARY_BUTTON_CLASS}
+            onClick={() => setInviteOpen(true)}
+          >
+            Invite user
+          </Button>
+        }
+      />
       <Card
         className={cn(
           "flex shrink-0 flex-col overflow-hidden",
@@ -389,16 +404,6 @@ export default function UsersTableCard({
                   menusMounted={menusMounted}
                   onChange={(status) => patchFilters({ status })}
                 />
-              </div>
-              <div className={TABLE_TOOLBAR_ACTIONS_CLASS}>
-                <Button
-                  type="button"
-                  variant="black"
-                  className="h-9! min-h-9! shrink-0 gap-1.5 rounded-md px-3 text-sm"
-                  onClick={() => setInviteOpen(true)}
-                >
-                  Invite user
-                </Button>
               </div>
             </div>
 

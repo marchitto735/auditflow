@@ -78,10 +78,6 @@ const SORTED_FINDINGS = [...OPEN_FINDINGS].sort(
     SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity),
 );
 
-function SeverityStatus({ severity }: { severity: FindingSeverity }) {
-  return <span className="text-foreground">{severity}</span>;
-}
-
 function findingStatusBadgeVariant(status: FindingStatus) {
   switch (status) {
     case "Open":
@@ -350,13 +346,12 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
                   containerClassName="overflow-visible"
                 >
                   <colgroup>
-                    <col className="w-[24%]" style={{ width: "24%" }} />
+                    <col className="w-[28%]" style={{ width: "28%" }} />
+                    <col className="w-[17%]" style={{ width: "17%" }} />
                     <col className="w-[15%]" style={{ width: "15%" }} />
-                    <col className="w-[13%]" style={{ width: "13%" }} />
-                    <col className="w-[12%]" style={{ width: "12%" }} />
-                    <col className="w-[8%]" style={{ width: "8%" }} />
+                    <col className="w-[14%]" style={{ width: "14%" }} />
                     <col className="w-[10%]" style={{ width: "10%" }} />
-                    <col className="w-[18%]" style={{ width: "18%" }} />
+                    <col className="w-[16%]" style={{ width: "16%" }} />
                   </colgroup>
                   <TableHeader>
                     <TableRow>
@@ -365,7 +360,6 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
                       <TableHead>Regulation</TableHead>
                       <TableHead>Source</TableHead>
                       <TableHead>Detected</TableHead>
-                      <TableHead>Severity</TableHead>
                       <TableHead>Status</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -393,9 +387,6 @@ export function FindingsSummaryPanel({ className }: { className?: string }) {
                           <span className="whitespace-nowrap tabular-nums text-neutral-900">
                             {row.detectedAgo}
                           </span>
-                        </TableCell>
-                        <TableCell>
-                          <SeverityStatus severity={row.severity} />
                         </TableCell>
                         <TableCell>
                           <FindingStatusBadge status={row.status} />
